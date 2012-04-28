@@ -1,0 +1,9 @@
+*~
+*.pyc
+*.pyo
+
+doc/*
+lib/*
+
+# Compiled Mako templates
+*.mako.py

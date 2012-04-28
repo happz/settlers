@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. ../conf/tools.sh
+
+rm -f `find $ROOT_DIR -name '*~'`

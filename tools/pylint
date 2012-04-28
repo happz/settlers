@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. ../conf/tools.sh
+
+pylint $PYLINT_OPTIONS $1 2> /dev/null

@@ -1,0 +1,22 @@
+@import "lib.scss";
+
+.recent-events {
+}
+
+.recent-events li:hover {
+    background:			$color_background none;
+}
+
+ul.recent-events > li:first-child {
+    @include corners-top();
+}
+
+ul.recent-events > li:last-child {
+    @include corners-bottom();
+}
+
+.game-menu {
+}
+
+.game-preview {
+}

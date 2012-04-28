@@ -1,0 +1,14 @@
+#!/bin/bash
+
+. ../conf/tools.sh
+
+INPUT_FILES=""
+for package in $PACKAGES; do
+  INPUT_FILES="$INPUT_FILES `find $ROOT_DIR/src/$package -name '*.py'`"
+done;
+
+# Remove old documentation
+rm -rf $DOC_DIR
+
+# Generate documentation
+epydoc -v -o $DOC_DIR $EPYDOC_OPTIONS $INPUT_FILES

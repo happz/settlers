@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. ../conf/tools.sh
+
+for package in $PACKAGES; do
+  grep -nr "$1" $ROOT_DIR/src/$package | egrep '\.[py|mako]' | egrep -v \.svn | egrep -v \~ | egrep -v \.pyc | egrep -v compiled
+done;

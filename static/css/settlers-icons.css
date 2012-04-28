@@ -1,0 +1,99 @@
+span.icon {
+  display:                      inline-block;
+  cursor:                       pointer;
+  background-repeat:		no-repeat;
+}
+
+span.icon-disabled {
+  cursor:			default;
+}
+
+span.icon-large {
+  width:			48px;
+  height:			48px;
+}
+
+span.icon-medium {
+  width:                        32px;
+  height:                       32px;
+  max-width:			32px;
+  max-height:			32px;
+}
+
+span.icon-menu-home {
+  background-image:		url(/static/images/icons/Home48.png);
+}
+
+span.icon-menu-add {
+  background-image:		url(/static/images/icons/Add48.png);
+}
+
+span.icon-menu-chat {
+  background-image:		url(/static/images/icons/Chat48.png);
+}
+
+span.icon-menu-stats {
+  background-image:             url(/static/images/icons/Pools48.png);
+}
+
+span.icon-menu-settings {
+  background-image:             url(/static/images/icons/Wrench48.png);
+}
+
+span.icon-menu-help {
+  background-image:             url(/static/images/icons/Faq48.png);
+}
+
+span.icon-menu-monitor {
+  background-image:		url(/static/images/icons/Wheels48.png);
+}
+
+span.icon-menu-logout {
+  background-image:             url(/static/images/icons/Login_out48.png);
+}
+
+span.icon-game-on-turn {
+  background-image:             url(/static/images/icons/Alert32.png);
+}
+
+span.icon-game-board {
+  background-image:             url(/static/images/icons/GameBoard32.gif);
+}
+
+span.icon-game-pass-turn {
+  background-image:		url(/static/images/icons/File32.png);
+}
+
+span.icon-game-roll-dice {
+  background-image:             url(/static/images/icons/File32.png);
+}
+
+span.icon-game-refresh {
+  background-image:             url(/static/images/icons/Refresh32.png);
+}
+
+span.icon-game-cards {
+  background-image:		url(/static/images/icons/File32.png);
+}
+
+span.icon-game-history {
+  background-image:             url(/static/images/icons/GameHistory32.gif);
+  height:			18px;
+}
+
+span.icon-game-chat {
+  background-image:             url(/static/images/icons/Chat32.png);
+}
+
+span.icon-game-join {
+  background-image:             url(/static/images/icons/Accept32.png);
+}
+  
+span.icon-roll-open {
+  background-image:             url(/static/images/icons/Add32.png);
+}
+
+span.icon-roll-close {
+  background-image:             url(/static/images/icons/Delete32.png);
+}
+

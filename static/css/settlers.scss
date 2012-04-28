@@ -1,0 +1,69 @@
+@import "lib.scss";
+
+/*
+ * ----- ----- Reset of Blueprint' reset
+ */
+tbody {
+    tr:nth-child(even) {
+        td {
+            background:			$color_background;
+        }
+    }
+    tr.even {
+        td {
+            background:			$color_background;
+        }
+    }
+}
+
+
+/*
+ * ----- ----- Our defaults
+ */
+div {
+    text-align:				justify;
+}
+
+li {
+    list-style:				none outside none;
+}
+
+/*
+ * ----- ----- Basic UI bits
+ */
+.corners-top {
+  @include corners-top();
+}
+
+.corners-bottom {
+  @include corners-bottom();
+}
+
+.centered {
+  text-align:				center;
+}
+
+.hidden {
+  display:				none;
+}
+
+label, .label {
+    color:				$color_control_text;
+    font-size:				$font_size_text;
+    line-height:			$font_size_text;
+    vertical-align:			middle;
+}
+
+/*
+ * ----- ----- Ajax utils
+ */
+img.ajax_spinner {
+    width:				32px;
+    height:				32px;
+    float:				right;
+    margin:				0 10px 10px 10px;
+}
+
+.ui-icon-closethick {
+  display:		none;
+}

@@ -1,0 +1,98 @@
+/*
+ * ----- ----- Variables
+ */
+
+/* Colors */
+$color_background:                      #ffffff;
+$color_text:                            #000000;
+
+$color_block_background:                #fafafa;
+$color_block_text:                      #222;
+
+$color_control_background:              #5393c2;
+$color_control_text:                    #2b2b2b;
+$color_control_background_gradient_end: #3a77a4;
+
+$color_border:                          #c6c6c6 #dadada #eaeaea;
+
+$color_user_online:                     #006400;
+$color_user_invited:                    red;
+$color_user_onturn:                     red;
+
+/* Fonts */
+$font_size_text:                        1.4em;
+
+/*
+ * ----- ----- Basic UI bits
+ */
+@mixin default-font() {
+    font: {
+        size:				$font_size_text;
+        family:				inherit;
+    }
+}
+
+@mixin block() {
+    color:				$color_block_text;
+    background:				$color_block_background;
+    border:				1px solid;
+    border-color:			$color_border;
+}
+
+@mixin corners-top($radius: 4px) {
+    border-top-left-radius:		$radius;
+    border-top-right-radius:		$radius;
+    -moz-border-radius-topleft:		$radius;
+    -moz-border-radius-topright:	$radius;
+    -webkit-border-radius-topleft:	$radius;
+    -webkit-border-radius-topright:	$radius;
+    border-top-width:			1px !important;
+}
+
+@mixin corners-bottom($radius: 4px) {
+    border-bottom-left-radius:		$radius;
+    border-bottom-right-radius:		$radius;
+    -moz-border-radius-bottomleft:	$radius;
+    -moz-border-radius-bottomright:	$radius;
+    -webkit-border-radius-bottomleft:	$radius;
+    -webkit-border-radius-bottomright:	$radius;
+    border-bottom-width:		1px !important;
+}
+
+@mixin control() {
+    font-size:				1.5em;
+    letter-spacing:			-.035em;
+    color:				$color_control_text !important;
+    font-weight:			normal;
+
+    padding:				8px 15px 9px;
+
+    background:				$color_control_background !important;
+    background:				-moz-linear-gradient(top, $color_control_background 40%, $color_control_background_gradient_end) !important;
+    background:				-webkit-linear-gradient(top, $color_control_background 40%, $color_control_background_gradient_end) !important;
+    filter:				progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$color_control_background}, endColorstr=#{$color_control_background_gradient_end}) !important;
+}
+
+@mixin chat-post() {
+    @include corners-top();
+    @include corners-bottom();
+    @include block();
+    @include default-font();
+
+    font: {
+        align:                          justify;
+    }
+
+    &:hover {
+        background:                     $color_background none;
+    }
+}
+
+@mixin chat-button() {
+    @include corners-top();
+    @include corners-bottom();
+    @include control();
+    @include default-font();
+
+    cursor:				pointer;
+}

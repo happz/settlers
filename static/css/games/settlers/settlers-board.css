@@ -1,0 +1,2351 @@
+
+.settlers-board-field-simple-clay {
+  background-image:		url(/static/images/games/settlers/board/simple/field/clay.gif);
+}
+
+.settlers-board-field-simple-grain {
+  background-image:		url(/static/images/games/settlers/board/simple/field/grain.gif);
+}
+
+.settlers-board-field-simple-rock {
+  background-image:		url(/static/images/games/settlers/board/simple/field/rock.gif);
+}
+
+.settlers-board-field-simple-wood {
+  background-image:		url(/static/images/games/settlers/board/simple/field/wood.gif);
+}
+
+.settlers-board-field-simple-sheep {
+  background-image:		url(/static/images/games/settlers/board/simple/field/sheep.gif);
+}
+
+.settlers-board-field-simple-desert {
+  background-image:		url(/static/images/games/settlers/board/simple/field/desert.gif);
+}
+
+.settlers-board-field-real-clay {
+  background-image:		url(/static/images/games/settlers/board/real/field/clay.gif);
+}
+
+.settlers-board-field-real-grain {
+  background-image:		url(/static/images/games/settlers/board/real/field/grain.gif);
+}
+
+.settlers-board-field-real-rock {
+  background-image:		url(/static/images/games/settlers/board/real/field/rock.gif);
+}
+
+.settlers-board-field-real-wood {
+  background-image:		url(/static/images/games/settlers/board/real/field/wood.gif);
+}
+
+.settlers-board-field-real-sheep {
+  background-image:		url(/static/images/games/settlers/board/real/field/sheep.gif);
+}
+
+.settlers-board-field-real-desert {
+  background-image:		url(/static/images/games/settlers/board/real/field/desert.gif);
+}
+
+.settlers-board-field-1 {
+  left:		88px;
+  top:		204px;
+}
+
+.settlers-board-field-2 {
+  left:		88px;
+  top:		306px;
+}
+
+.settlers-board-field-3 {
+  left:		88px;
+  top:		408px;
+}
+
+.settlers-board-field-4 {
+  left:		176px;
+  top:		153px;
+}
+
+.settlers-board-field-5 {
+  left:		176px;
+  top:		255px;
+}
+
+.settlers-board-field-6 {
+  left:		176px;
+  top:		357px;
+}
+
+.settlers-board-field-7 {
+  left:		176px;
+  top:		459px;
+}
+
+.settlers-board-field-8 {
+  left:		265px;
+  top:		102px;
+}
+
+.settlers-board-field-9 {
+  left:		265px;
+  top:		204px;
+}
+
+.settlers-board-field-10 {
+  left:		265px;
+  top:		306px;
+}
+
+.settlers-board-field-11 {
+  left:		265px;
+  top:		408px;
+}
+
+.settlers-board-field-12 {
+  left:		265px;
+  top:		510px;
+}
+
+.settlers-board-field-13 {
+  left:		353px;
+  top:		153px;
+}
+
+.settlers-board-field-14 {
+  left:		353px;
+  top:		255px;
+}
+
+.settlers-board-field-15 {
+  left:		353px;
+  top:		357px;
+}
+
+.settlers-board-field-16 {
+  left:		353px;
+  top:		459px;
+}
+
+.settlers-board-field-17 {
+  left:		442px;
+  top:		204px;
+}
+
+.settlers-board-field-18 {
+  left:		442px;
+  top:		306px;
+}
+
+.settlers-board-field-19 {
+  left:		442px;
+  top:		408px;
+}
+
+.settlers-board-thief-1 {
+  left:			114px;
+  top:			222px;
+}
+
+.settlers-board-thief-2 {
+  left:			114px;
+  top:			324px;
+}
+
+.settlers-board-thief-3 {
+  left:			114px;
+  top:			426px;
+}
+
+.settlers-board-thief-4 {
+  left:			202.5px;
+  top:			171.0px;
+}
+
+.settlers-board-thief-5 {
+  left:			202.5px;
+  top:			273.0px;
+}
+
+.settlers-board-thief-6 {
+  left:			202.5px;
+  top:			375.0px;
+}
+
+.settlers-board-thief-7 {
+  left:			202.5px;
+  top:			477.0px;
+}
+
+.settlers-board-thief-8 {
+  left:			291px;
+  top:			120px;
+}
+
+.settlers-board-thief-9 {
+  left:			291px;
+  top:			222px;
+}
+
+.settlers-board-thief-10 {
+  left:			291px;
+  top:			324px;
+}
+
+.settlers-board-thief-11 {
+  left:			291px;
+  top:			426px;
+}
+
+.settlers-board-thief-12 {
+  left:			291px;
+  top:			528px;
+}
+
+.settlers-board-thief-13 {
+  left:			379.5px;
+  top:			171.0px;
+}
+
+.settlers-board-thief-14 {
+  left:			379.5px;
+  top:			273.0px;
+}
+
+.settlers-board-thief-15 {
+  left:			379.5px;
+  top:			375.0px;
+}
+
+.settlers-board-thief-16 {
+  left:			379.5px;
+  top:			477.0px;
+}
+
+.settlers-board-thief-17 {
+  left:			468px;
+  top:			222px;
+}
+
+.settlers-board-thief-18 {
+  left:			468px;
+  top:			324px;
+}
+
+.settlers-board-thief-19 {
+  left:			468px;
+  top:			426px;
+}
+
+.settlers-board-number-field-1 {
+  left:			129px;
+  top:			237px;
+}
+
+.settlers-board-number-field-2 {
+  left:			129px;
+  top:			339px;
+}
+
+.settlers-board-number-field-3 {
+  left:			129px;
+  top:			441px;
+}
+
+.settlers-board-number-field-4 {
+  left:			217.5px;
+  top:			186.0px;
+}
+
+.settlers-board-number-field-5 {
+  left:			217.5px;
+  top:			288.0px;
+}
+
+.settlers-board-number-field-6 {
+  left:			217.5px;
+  top:			390.0px;
+}
+
+.settlers-board-number-field-7 {
+  left:			217.5px;
+  top:			492.0px;
+}
+
+.settlers-board-number-field-8 {
+  left:			306px;
+  top:			135px;
+}
+
+.settlers-board-number-field-9 {
+  left:			306px;
+  top:			237px;
+}
+
+.settlers-board-number-field-10 {
+  left:			306px;
+  top:			339px;
+}
+
+.settlers-board-number-field-11 {
+  left:			306px;
+  top:			441px;
+}
+
+.settlers-board-number-field-12 {
+  left:			306px;
+  top:			543px;
+}
+
+.settlers-board-number-field-13 {
+  left:			394.5px;
+  top:			186.0px;
+}
+
+.settlers-board-number-field-14 {
+  left:			394.5px;
+  top:			288.0px;
+}
+
+.settlers-board-number-field-15 {
+  left:			394.5px;
+  top:			390.0px;
+}
+
+.settlers-board-number-field-16 {
+  left:			394.5px;
+  top:			492.0px;
+}
+
+.settlers-board-number-field-17 {
+  left:			483px;
+  top:			237px;
+}
+
+.settlers-board-number-field-18 {
+  left:			483px;
+  top:			339px;
+}
+
+.settlers-board-number-field-19 {
+  left:			483px;
+  top:			441px;
+}
+
+.settlers-board-number-2 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/2.gif);
+}
+
+.settlers-board-number-3 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/3.gif);
+}
+
+.settlers-board-number-4 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/4.gif);
+}
+
+.settlers-board-number-5 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/5.gif);
+}
+
+.settlers-board-number-6 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/6.gif);
+}
+
+.settlers-board-number-7 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/7.gif);
+}
+
+.settlers-board-number-8 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/8.gif);
+}
+
+.settlers-board-number-9 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/9.gif);
+}
+
+.settlers-board-number-10 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/10.gif);
+}
+
+.settlers-board-number-11 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/11.gif);
+}
+
+.settlers-board-number-12 {
+  background-image:		url(/static/images/games/settlers/board/simple/numbers/12.gif);
+}
+
+.settlers-board-node-simple-village-black {
+  background-image:             url(/static/images/games/settlers/board/simple/players/black/node/village.gif);
+}
+
+.settlers-board-node-simple-village-black-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/black/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-brown {
+  background-image:             url(/static/images/games/settlers/board/simple/players/brown/node/village.gif);
+}
+
+.settlers-board-node-simple-village-brown-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/brown/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-dark_blue {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_blue/node/village.gif);
+}
+
+.settlers-board-node-simple-village-dark_blue-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/dark_blue/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-dark_green {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_green/node/village.gif);
+}
+
+.settlers-board-node-simple-village-dark_green-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/dark_green/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-green {
+  background-image:             url(/static/images/games/settlers/board/simple/players/green/node/village.gif);
+}
+
+.settlers-board-node-simple-village-green-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/green/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-light_blue {
+  background-image:             url(/static/images/games/settlers/board/simple/players/light_blue/node/village.gif);
+}
+
+.settlers-board-node-simple-village-light_blue-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/light_blue/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-orange {
+  background-image:             url(/static/images/games/settlers/board/simple/players/orange/node/village.gif);
+}
+
+.settlers-board-node-simple-village-orange-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/orange/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-pink {
+  background-image:             url(/static/images/games/settlers/board/simple/players/pink/node/village.gif);
+}
+
+.settlers-board-node-simple-village-pink-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/pink/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-purple {
+  background-image:             url(/static/images/games/settlers/board/simple/players/purple/node/village.gif);
+}
+
+.settlers-board-node-simple-village-purple-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/purple/node/village_active.gif);
+}
+
+.settlers-board-node-simple-village-red {
+  background-image:             url(/static/images/games/settlers/board/simple/players/red/node/village.gif);
+}
+
+.settlers-board-node-simple-village-red-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/red/node/village_active.gif);
+}
+
+.settlers-board-node-simple-town-black {
+  background-image:             url(/static/images/games/settlers/board/simple/players/black/node/town.gif);
+}
+
+.settlers-board-node-simple-town-black-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/black/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-brown {
+  background-image:             url(/static/images/games/settlers/board/simple/players/brown/node/town.gif);
+}
+
+.settlers-board-node-simple-town-brown-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/brown/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-dark_blue {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_blue/node/town.gif);
+}
+
+.settlers-board-node-simple-town-dark_blue-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/dark_blue/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-dark_green {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_green/node/town.gif);
+}
+
+.settlers-board-node-simple-town-dark_green-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/dark_green/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-green {
+  background-image:             url(/static/images/games/settlers/board/simple/players/green/node/town.gif);
+}
+
+.settlers-board-node-simple-town-green-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/green/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-light_blue {
+  background-image:             url(/static/images/games/settlers/board/simple/players/light_blue/node/town.gif);
+}
+
+.settlers-board-node-simple-town-light_blue-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/light_blue/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-orange {
+  background-image:             url(/static/images/games/settlers/board/simple/players/orange/node/town.gif);
+}
+
+.settlers-board-node-simple-town-orange-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/orange/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-pink {
+  background-image:             url(/static/images/games/settlers/board/simple/players/pink/node/town.gif);
+}
+
+.settlers-board-node-simple-town-pink-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/pink/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-purple {
+  background-image:             url(/static/images/games/settlers/board/simple/players/purple/node/town.gif);
+}
+
+.settlers-board-node-simple-town-purple-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/purple/node/town_active.gif);
+}
+
+.settlers-board-node-simple-town-red {
+  background-image:             url(/static/images/games/settlers/board/simple/players/red/node/town.gif);
+}
+
+.settlers-board-node-simple-town-red-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/red/node/town_active.gif);
+}
+
+.settlers-board-node-real-village-black {
+  background-image:             url(/static/images/games/settlers/board/real/players/black/node/village.gif);
+}
+
+.settlers-board-node-real-village-black-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/black/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-brown {
+  background-image:             url(/static/images/games/settlers/board/real/players/brown/node/village.gif);
+}
+
+.settlers-board-node-real-village-brown-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/brown/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-dark_blue {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_blue/node/village.gif);
+}
+
+.settlers-board-node-real-village-dark_blue-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/dark_blue/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-dark_green {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_green/node/village.gif);
+}
+
+.settlers-board-node-real-village-dark_green-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/dark_green/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-green {
+  background-image:             url(/static/images/games/settlers/board/real/players/green/node/village.gif);
+}
+
+.settlers-board-node-real-village-green-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/green/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-light_blue {
+  background-image:             url(/static/images/games/settlers/board/real/players/light_blue/node/village.gif);
+}
+
+.settlers-board-node-real-village-light_blue-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/light_blue/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-orange {
+  background-image:             url(/static/images/games/settlers/board/real/players/orange/node/village.gif);
+}
+
+.settlers-board-node-real-village-orange-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/orange/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-pink {
+  background-image:             url(/static/images/games/settlers/board/real/players/pink/node/village.gif);
+}
+
+.settlers-board-node-real-village-pink-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/pink/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-purple {
+  background-image:             url(/static/images/games/settlers/board/real/players/purple/node/village.gif);
+}
+
+.settlers-board-node-real-village-purple-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/purple/node/village_active.gif);
+}
+
+.settlers-board-node-real-village-red {
+  background-image:             url(/static/images/games/settlers/board/real/players/red/node/village.gif);
+}
+
+.settlers-board-node-real-village-red-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/red/node/village_active.gif);
+}
+
+.settlers-board-node-real-town-black {
+  background-image:             url(/static/images/games/settlers/board/real/players/black/node/town.gif);
+}
+
+.settlers-board-node-real-town-black-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/black/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-brown {
+  background-image:             url(/static/images/games/settlers/board/real/players/brown/node/town.gif);
+}
+
+.settlers-board-node-real-town-brown-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/brown/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-dark_blue {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_blue/node/town.gif);
+}
+
+.settlers-board-node-real-town-dark_blue-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/dark_blue/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-dark_green {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_green/node/town.gif);
+}
+
+.settlers-board-node-real-town-dark_green-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/dark_green/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-green {
+  background-image:             url(/static/images/games/settlers/board/real/players/green/node/town.gif);
+}
+
+.settlers-board-node-real-town-green-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/green/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-light_blue {
+  background-image:             url(/static/images/games/settlers/board/real/players/light_blue/node/town.gif);
+}
+
+.settlers-board-node-real-town-light_blue-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/light_blue/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-orange {
+  background-image:             url(/static/images/games/settlers/board/real/players/orange/node/town.gif);
+}
+
+.settlers-board-node-real-town-orange-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/orange/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-pink {
+  background-image:             url(/static/images/games/settlers/board/real/players/pink/node/town.gif);
+}
+
+.settlers-board-node-real-town-pink-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/pink/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-purple {
+  background-image:             url(/static/images/games/settlers/board/real/players/purple/node/town.gif);
+}
+
+.settlers-board-node-real-town-purple-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/purple/node/town_active.gif);
+}
+
+.settlers-board-node-real-town-red {
+  background-image:             url(/static/images/games/settlers/board/real/players/red/node/town.gif);
+}
+
+.settlers-board-node-real-town-red-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/red/node/town_active.gif);
+}
+
+.settlers-board-node-simple-free {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/node/free.gif);
+}
+
+.settlers-board-node-simple-free-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/node/free_active.gif);
+}
+
+.settlers-board-node-real-free {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/node/free.gif);
+}
+
+.settlers-board-node-real-free-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/node/free_active.gif);
+}
+
+.settlers-board-node-free-1 {
+  left:			111.5px;
+  top:			198px;
+}
+
+.settlers-board-node-owned-1 {
+  left:			107.5px;
+  top:			194px;
+}
+
+
+.settlers-board-node-free-2 {
+  left:			82px;
+  top:			249.0px;
+}
+
+.settlers-board-node-owned-2 {
+  left:			78px;
+  top:			245.0px;
+}
+
+
+.settlers-board-node-free-3 {
+  left:			111.5px;
+  top:			300px;
+}
+
+.settlers-board-node-owned-3 {
+  left:			107.5px;
+  top:			296px;
+}
+
+
+.settlers-board-node-free-4 {
+  left:			170.5px;
+  top:			300px;
+}
+
+.settlers-board-node-owned-4 {
+  left:			166.5px;
+  top:			296px;
+}
+
+
+.settlers-board-node-free-5 {
+  left:			200px;
+  top:			249.0px;
+}
+
+.settlers-board-node-owned-5 {
+  left:			196px;
+  top:			245.0px;
+}
+
+
+.settlers-board-node-free-6 {
+  left:			170.5px;
+  top:			198px;
+}
+
+.settlers-board-node-owned-6 {
+  left:			166.5px;
+  top:			194px;
+}
+
+
+.settlers-board-node-free-7 {
+  left:			82px;
+  top:			351.0px;
+}
+
+.settlers-board-node-owned-7 {
+  left:			78px;
+  top:			347.0px;
+}
+
+
+.settlers-board-node-free-8 {
+  left:			111.5px;
+  top:			402px;
+}
+
+.settlers-board-node-owned-8 {
+  left:			107.5px;
+  top:			398px;
+}
+
+
+.settlers-board-node-free-9 {
+  left:			170.5px;
+  top:			402px;
+}
+
+.settlers-board-node-owned-9 {
+  left:			166.5px;
+  top:			398px;
+}
+
+
+.settlers-board-node-free-10 {
+  left:			200px;
+  top:			351.0px;
+}
+
+.settlers-board-node-owned-10 {
+  left:			196px;
+  top:			347.0px;
+}
+
+
+.settlers-board-node-free-11 {
+  left:			82px;
+  top:			453.0px;
+}
+
+.settlers-board-node-owned-11 {
+  left:			78px;
+  top:			449.0px;
+}
+
+
+.settlers-board-node-free-12 {
+  left:			111.5px;
+  top:			504px;
+}
+
+.settlers-board-node-owned-12 {
+  left:			107.5px;
+  top:			500px;
+}
+
+
+.settlers-board-node-free-13 {
+  left:			170.5px;
+  top:			504px;
+}
+
+.settlers-board-node-owned-13 {
+  left:			166.5px;
+  top:			500px;
+}
+
+
+.settlers-board-node-free-14 {
+  left:			200px;
+  top:			453.0px;
+}
+
+.settlers-board-node-owned-14 {
+  left:			196px;
+  top:			449.0px;
+}
+
+
+.settlers-board-node-free-15 {
+  left:			200px;
+  top:			147.0px;
+}
+
+.settlers-board-node-owned-15 {
+  left:			196px;
+  top:			143.0px;
+}
+
+
+.settlers-board-node-free-16 {
+  left:			259px;
+  top:			249.0px;
+}
+
+.settlers-board-node-owned-16 {
+  left:			255px;
+  top:			245.0px;
+}
+
+
+.settlers-board-node-free-17 {
+  left:			288.5px;
+  top:			198px;
+}
+
+.settlers-board-node-owned-17 {
+  left:			284.5px;
+  top:			194px;
+}
+
+
+.settlers-board-node-free-18 {
+  left:			259px;
+  top:			147.0px;
+}
+
+.settlers-board-node-owned-18 {
+  left:			255px;
+  top:			143.0px;
+}
+
+
+.settlers-board-node-free-19 {
+  left:			259px;
+  top:			351.0px;
+}
+
+.settlers-board-node-owned-19 {
+  left:			255px;
+  top:			347.0px;
+}
+
+
+.settlers-board-node-free-20 {
+  left:			288.5px;
+  top:			300px;
+}
+
+.settlers-board-node-owned-20 {
+  left:			284.5px;
+  top:			296px;
+}
+
+
+.settlers-board-node-free-21 {
+  left:			259px;
+  top:			453.0px;
+}
+
+.settlers-board-node-owned-21 {
+  left:			255px;
+  top:			449.0px;
+}
+
+
+.settlers-board-node-free-22 {
+  left:			288.5px;
+  top:			402px;
+}
+
+.settlers-board-node-owned-22 {
+  left:			284.5px;
+  top:			398px;
+}
+
+
+.settlers-board-node-free-23 {
+  left:			200px;
+  top:			555.0px;
+}
+
+.settlers-board-node-owned-23 {
+  left:			196px;
+  top:			551.0px;
+}
+
+
+.settlers-board-node-free-24 {
+  left:			259px;
+  top:			555.0px;
+}
+
+.settlers-board-node-owned-24 {
+  left:			255px;
+  top:			551.0px;
+}
+
+
+.settlers-board-node-free-25 {
+  left:			288.5px;
+  top:			504px;
+}
+
+.settlers-board-node-owned-25 {
+  left:			284.5px;
+  top:			500px;
+}
+
+
+.settlers-board-node-free-26 {
+  left:			288.5px;
+  top:			96px;
+}
+
+.settlers-board-node-owned-26 {
+  left:			284.5px;
+  top:			92px;
+}
+
+
+.settlers-board-node-free-27 {
+  left:			347.5px;
+  top:			198px;
+}
+
+.settlers-board-node-owned-27 {
+  left:			343.5px;
+  top:			194px;
+}
+
+
+.settlers-board-node-free-28 {
+  left:			377px;
+  top:			147.0px;
+}
+
+.settlers-board-node-owned-28 {
+  left:			373px;
+  top:			143.0px;
+}
+
+
+.settlers-board-node-free-29 {
+  left:			347.5px;
+  top:			96px;
+}
+
+.settlers-board-node-owned-29 {
+  left:			343.5px;
+  top:			92px;
+}
+
+
+.settlers-board-node-free-30 {
+  left:			347.5px;
+  top:			300px;
+}
+
+.settlers-board-node-owned-30 {
+  left:			343.5px;
+  top:			296px;
+}
+
+
+.settlers-board-node-free-31 {
+  left:			377px;
+  top:			249.0px;
+}
+
+.settlers-board-node-owned-31 {
+  left:			373px;
+  top:			245.0px;
+}
+
+
+.settlers-board-node-free-32 {
+  left:			347.5px;
+  top:			402px;
+}
+
+.settlers-board-node-owned-32 {
+  left:			343.5px;
+  top:			398px;
+}
+
+
+.settlers-board-node-free-33 {
+  left:			377px;
+  top:			351.0px;
+}
+
+.settlers-board-node-owned-33 {
+  left:			373px;
+  top:			347.0px;
+}
+
+
+.settlers-board-node-free-34 {
+  left:			347.5px;
+  top:			504px;
+}
+
+.settlers-board-node-owned-34 {
+  left:			343.5px;
+  top:			500px;
+}
+
+
+.settlers-board-node-free-35 {
+  left:			377px;
+  top:			453.0px;
+}
+
+.settlers-board-node-owned-35 {
+  left:			373px;
+  top:			449.0px;
+}
+
+
+.settlers-board-node-free-36 {
+  left:			288.5px;
+  top:			606px;
+}
+
+.settlers-board-node-owned-36 {
+  left:			284.5px;
+  top:			602px;
+}
+
+
+.settlers-board-node-free-37 {
+  left:			347.5px;
+  top:			606px;
+}
+
+.settlers-board-node-owned-37 {
+  left:			343.5px;
+  top:			602px;
+}
+
+
+.settlers-board-node-free-38 {
+  left:			377px;
+  top:			555.0px;
+}
+
+.settlers-board-node-owned-38 {
+  left:			373px;
+  top:			551.0px;
+}
+
+
+.settlers-board-node-free-39 {
+  left:			436px;
+  top:			249.0px;
+}
+
+.settlers-board-node-owned-39 {
+  left:			432px;
+  top:			245.0px;
+}
+
+
+.settlers-board-node-free-40 {
+  left:			465.5px;
+  top:			198px;
+}
+
+.settlers-board-node-owned-40 {
+  left:			461.5px;
+  top:			194px;
+}
+
+
+.settlers-board-node-free-41 {
+  left:			436px;
+  top:			147.0px;
+}
+
+.settlers-board-node-owned-41 {
+  left:			432px;
+  top:			143.0px;
+}
+
+
+.settlers-board-node-free-42 {
+  left:			436px;
+  top:			351.0px;
+}
+
+.settlers-board-node-owned-42 {
+  left:			432px;
+  top:			347.0px;
+}
+
+
+.settlers-board-node-free-43 {
+  left:			465.5px;
+  top:			300px;
+}
+
+.settlers-board-node-owned-43 {
+  left:			461.5px;
+  top:			296px;
+}
+
+
+.settlers-board-node-free-44 {
+  left:			436px;
+  top:			453.0px;
+}
+
+.settlers-board-node-owned-44 {
+  left:			432px;
+  top:			449.0px;
+}
+
+
+.settlers-board-node-free-45 {
+  left:			465.5px;
+  top:			402px;
+}
+
+.settlers-board-node-owned-45 {
+  left:			461.5px;
+  top:			398px;
+}
+
+
+.settlers-board-node-free-46 {
+  left:			436px;
+  top:			555.0px;
+}
+
+.settlers-board-node-owned-46 {
+  left:			432px;
+  top:			551.0px;
+}
+
+
+.settlers-board-node-free-47 {
+  left:			465.5px;
+  top:			504px;
+}
+
+.settlers-board-node-owned-47 {
+  left:			461.5px;
+  top:			500px;
+}
+
+
+.settlers-board-node-free-48 {
+  left:			524.5px;
+  top:			300px;
+}
+
+.settlers-board-node-owned-48 {
+  left:			520.5px;
+  top:			296px;
+}
+
+
+.settlers-board-node-free-49 {
+  left:			554px;
+  top:			249.0px;
+}
+
+.settlers-board-node-owned-49 {
+  left:			550px;
+  top:			245.0px;
+}
+
+
+.settlers-board-node-free-50 {
+  left:			524.5px;
+  top:			198px;
+}
+
+.settlers-board-node-owned-50 {
+  left:			520.5px;
+  top:			194px;
+}
+
+
+.settlers-board-node-free-51 {
+  left:			524.5px;
+  top:			402px;
+}
+
+.settlers-board-node-owned-51 {
+  left:			520.5px;
+  top:			398px;
+}
+
+
+.settlers-board-node-free-52 {
+  left:			554px;
+  top:			351.0px;
+}
+
+.settlers-board-node-owned-52 {
+  left:			550px;
+  top:			347.0px;
+}
+
+
+.settlers-board-node-free-53 {
+  left:			524.5px;
+  top:			504px;
+}
+
+.settlers-board-node-owned-53 {
+  left:			520.5px;
+  top:			500px;
+}
+
+
+.settlers-board-node-free-54 {
+  left:			554px;
+  top:			453.0px;
+}
+
+.settlers-board-node-owned-54 {
+  left:			550px;
+  top:			449.0px;
+}
+
+
+.settlers-board-sea-1 {
+  left:			-0.5px;
+  top:			153.0px;
+}
+
+
+.settlers-board-sea-2 {
+  left:			-0.5px;
+  top:			255.0px;
+}
+
+
+.settlers-board-sea-3 {
+  left:			-0.5px;
+  top:			357.0px;
+}
+
+
+.settlers-board-sea-4 {
+  left:			-0.5px;
+  top:			459.0px;
+}
+
+
+.settlers-board-sea-5 {
+  left:			88px;
+  top:			510px;
+}
+
+
+.settlers-board-sea-6 {
+  left:			176.5px;
+  top:			561.0px;
+}
+
+
+.settlers-board-sea-7 {
+  left:			265px;
+  top:			612px;
+}
+
+
+.settlers-board-sea-8 {
+  left:			353.5px;
+  top:			561.0px;
+}
+
+
+.settlers-board-sea-9 {
+  left:			442px;
+  top:			510px;
+}
+
+
+.settlers-board-sea-10 {
+  left:			530.5px;
+  top:			459.0px;
+}
+
+
+.settlers-board-sea-11 {
+  left:			530.5px;
+  top:			357.0px;
+}
+
+
+.settlers-board-sea-12 {
+  left:			530.5px;
+  top:			255.0px;
+}
+
+
+.settlers-board-sea-13 {
+  left:			530.5px;
+  top:			153.0px;
+}
+
+
+.settlers-board-sea-14 {
+  left:			442px;
+  top:			102px;
+}
+
+
+.settlers-board-sea-15 {
+  left:			353.5px;
+  top:			51.0px;
+}
+
+
+.settlers-board-sea-16 {
+  left:			265px;
+  top:			0px;
+}
+
+
+.settlers-board-sea-17 {
+  left:			176.5px;
+  top:			51.0px;
+}
+
+
+.settlers-board-sea-18 {
+  left:			88px;
+  top:			102px;
+}
+
+
+.settlers-board-port-wood-1-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/wood/1.gif);
+}
+
+.settlers-board-port-wood-1-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/wood/1.gif);
+}
+
+
+.settlers-board-port-wood-2-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/wood/2.gif);
+}
+
+.settlers-board-port-wood-2-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/wood/2.gif);
+}
+
+
+.settlers-board-port-wood-3-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/wood/3.gif);
+}
+
+.settlers-board-port-wood-3-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/wood/3.gif);
+}
+
+
+.settlers-board-port-wood-4-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/wood/4.gif);
+}
+
+.settlers-board-port-wood-4-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/wood/4.gif);
+}
+
+
+.settlers-board-port-wood-5-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/wood/5.gif);
+}
+
+.settlers-board-port-wood-5-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/wood/5.gif);
+}
+
+
+.settlers-board-port-wood-6-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/wood/6.gif);
+}
+
+.settlers-board-port-wood-6-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/wood/6.gif);
+}
+
+
+.settlers-board-port-clay-1-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/clay/1.gif);
+}
+
+.settlers-board-port-clay-1-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/clay/1.gif);
+}
+
+
+.settlers-board-port-clay-2-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/clay/2.gif);
+}
+
+.settlers-board-port-clay-2-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/clay/2.gif);
+}
+
+
+.settlers-board-port-clay-3-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/clay/3.gif);
+}
+
+.settlers-board-port-clay-3-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/clay/3.gif);
+}
+
+
+.settlers-board-port-clay-4-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/clay/4.gif);
+}
+
+.settlers-board-port-clay-4-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/clay/4.gif);
+}
+
+
+.settlers-board-port-clay-5-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/clay/5.gif);
+}
+
+.settlers-board-port-clay-5-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/clay/5.gif);
+}
+
+
+.settlers-board-port-clay-6-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/clay/6.gif);
+}
+
+.settlers-board-port-clay-6-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/clay/6.gif);
+}
+
+
+.settlers-board-port-sheep-1-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/sheep/1.gif);
+}
+
+.settlers-board-port-sheep-1-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/sheep/1.gif);
+}
+
+
+.settlers-board-port-sheep-2-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/sheep/2.gif);
+}
+
+.settlers-board-port-sheep-2-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/sheep/2.gif);
+}
+
+
+.settlers-board-port-sheep-3-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/sheep/3.gif);
+}
+
+.settlers-board-port-sheep-3-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/sheep/3.gif);
+}
+
+
+.settlers-board-port-sheep-4-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/sheep/4.gif);
+}
+
+.settlers-board-port-sheep-4-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/sheep/4.gif);
+}
+
+
+.settlers-board-port-sheep-5-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/sheep/5.gif);
+}
+
+.settlers-board-port-sheep-5-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/sheep/5.gif);
+}
+
+
+.settlers-board-port-sheep-6-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/sheep/6.gif);
+}
+
+.settlers-board-port-sheep-6-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/sheep/6.gif);
+}
+
+
+.settlers-board-port-grain-1-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/grain/1.gif);
+}
+
+.settlers-board-port-grain-1-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/grain/1.gif);
+}
+
+
+.settlers-board-port-grain-2-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/grain/2.gif);
+}
+
+.settlers-board-port-grain-2-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/grain/2.gif);
+}
+
+
+.settlers-board-port-grain-3-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/grain/3.gif);
+}
+
+.settlers-board-port-grain-3-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/grain/3.gif);
+}
+
+
+.settlers-board-port-grain-4-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/grain/4.gif);
+}
+
+.settlers-board-port-grain-4-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/grain/4.gif);
+}
+
+
+.settlers-board-port-grain-5-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/grain/5.gif);
+}
+
+.settlers-board-port-grain-5-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/grain/5.gif);
+}
+
+
+.settlers-board-port-grain-6-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/grain/6.gif);
+}
+
+.settlers-board-port-grain-6-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/grain/6.gif);
+}
+
+
+.settlers-board-port-rock-1-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/rock/1.gif);
+}
+
+.settlers-board-port-rock-1-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/rock/1.gif);
+}
+
+
+.settlers-board-port-rock-2-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/rock/2.gif);
+}
+
+.settlers-board-port-rock-2-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/rock/2.gif);
+}
+
+
+.settlers-board-port-rock-3-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/rock/3.gif);
+}
+
+.settlers-board-port-rock-3-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/rock/3.gif);
+}
+
+
+.settlers-board-port-rock-4-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/rock/4.gif);
+}
+
+.settlers-board-port-rock-4-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/rock/4.gif);
+}
+
+
+.settlers-board-port-rock-5-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/rock/5.gif);
+}
+
+.settlers-board-port-rock-5-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/rock/5.gif);
+}
+
+
+.settlers-board-port-rock-6-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/rock/6.gif);
+}
+
+.settlers-board-port-rock-6-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/rock/6.gif);
+}
+
+
+.settlers-board-port-free-1-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/free/1.gif);
+}
+
+.settlers-board-port-free-1-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/free/1.gif);
+}
+
+
+.settlers-board-port-free-2-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/free/2.gif);
+}
+
+.settlers-board-port-free-2-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/free/2.gif);
+}
+
+
+.settlers-board-port-free-3-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/free/3.gif);
+}
+
+.settlers-board-port-free-3-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/free/3.gif);
+}
+
+
+.settlers-board-port-free-4-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/free/4.gif);
+}
+
+.settlers-board-port-free-4-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/free/4.gif);
+}
+
+
+.settlers-board-port-free-5-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/free/5.gif);
+}
+
+.settlers-board-port-free-5-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/free/5.gif);
+}
+
+
+.settlers-board-port-free-6-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/ports/free/6.gif);
+}
+
+.settlers-board-port-free-6-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/ports/free/6.gif);
+}
+
+
+.settlers-board-path-simple-black-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/black/path/t.gif);
+}
+
+.settlers-board-path-simple-black-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/black/path/lt.gif);
+}
+
+.settlers-board-path-simple-black-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/black/path/rt.gif);
+}
+
+.settlers-board-path-simple-brown-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/brown/path/t.gif);
+}
+
+.settlers-board-path-simple-brown-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/brown/path/lt.gif);
+}
+
+.settlers-board-path-simple-brown-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/brown/path/rt.gif);
+}
+
+.settlers-board-path-simple-dark_blue-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_blue/path/t.gif);
+}
+
+.settlers-board-path-simple-dark_blue-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_blue/path/lt.gif);
+}
+
+.settlers-board-path-simple-dark_blue-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_blue/path/rt.gif);
+}
+
+.settlers-board-path-simple-dark_green-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_green/path/t.gif);
+}
+
+.settlers-board-path-simple-dark_green-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_green/path/lt.gif);
+}
+
+.settlers-board-path-simple-dark_green-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/dark_green/path/rt.gif);
+}
+
+.settlers-board-path-simple-green-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/green/path/t.gif);
+}
+
+.settlers-board-path-simple-green-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/green/path/lt.gif);
+}
+
+.settlers-board-path-simple-green-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/green/path/rt.gif);
+}
+
+.settlers-board-path-simple-light_blue-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/light_blue/path/t.gif);
+}
+
+.settlers-board-path-simple-light_blue-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/light_blue/path/lt.gif);
+}
+
+.settlers-board-path-simple-light_blue-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/light_blue/path/rt.gif);
+}
+
+.settlers-board-path-simple-orange-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/orange/path/t.gif);
+}
+
+.settlers-board-path-simple-orange-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/orange/path/lt.gif);
+}
+
+.settlers-board-path-simple-orange-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/orange/path/rt.gif);
+}
+
+.settlers-board-path-simple-pink-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/pink/path/t.gif);
+}
+
+.settlers-board-path-simple-pink-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/pink/path/lt.gif);
+}
+
+.settlers-board-path-simple-pink-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/pink/path/rt.gif);
+}
+
+.settlers-board-path-simple-purple-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/purple/path/t.gif);
+}
+
+.settlers-board-path-simple-purple-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/purple/path/lt.gif);
+}
+
+.settlers-board-path-simple-purple-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/purple/path/rt.gif);
+}
+
+.settlers-board-path-simple-red-t {
+  background-image:             url(/static/images/games/settlers/board/simple/players/red/path/t.gif);
+}
+
+.settlers-board-path-simple-red-lt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/red/path/lt.gif);
+}
+
+.settlers-board-path-simple-red-rt {
+  background-image:             url(/static/images/games/settlers/board/simple/players/red/path/rt.gif);
+}
+
+.settlers-board-path-real-black-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/black/path/t.gif);
+}
+
+.settlers-board-path-real-black-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/black/path/lt.gif);
+}
+
+.settlers-board-path-real-black-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/black/path/rt.gif);
+}
+
+.settlers-board-path-real-brown-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/brown/path/t.gif);
+}
+
+.settlers-board-path-real-brown-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/brown/path/lt.gif);
+}
+
+.settlers-board-path-real-brown-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/brown/path/rt.gif);
+}
+
+.settlers-board-path-real-dark_blue-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_blue/path/t.gif);
+}
+
+.settlers-board-path-real-dark_blue-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_blue/path/lt.gif);
+}
+
+.settlers-board-path-real-dark_blue-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_blue/path/rt.gif);
+}
+
+.settlers-board-path-real-dark_green-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_green/path/t.gif);
+}
+
+.settlers-board-path-real-dark_green-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_green/path/lt.gif);
+}
+
+.settlers-board-path-real-dark_green-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/dark_green/path/rt.gif);
+}
+
+.settlers-board-path-real-green-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/green/path/t.gif);
+}
+
+.settlers-board-path-real-green-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/green/path/lt.gif);
+}
+
+.settlers-board-path-real-green-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/green/path/rt.gif);
+}
+
+.settlers-board-path-real-light_blue-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/light_blue/path/t.gif);
+}
+
+.settlers-board-path-real-light_blue-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/light_blue/path/lt.gif);
+}
+
+.settlers-board-path-real-light_blue-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/light_blue/path/rt.gif);
+}
+
+.settlers-board-path-real-orange-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/orange/path/t.gif);
+}
+
+.settlers-board-path-real-orange-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/orange/path/lt.gif);
+}
+
+.settlers-board-path-real-orange-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/orange/path/rt.gif);
+}
+
+.settlers-board-path-real-pink-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/pink/path/t.gif);
+}
+
+.settlers-board-path-real-pink-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/pink/path/lt.gif);
+}
+
+.settlers-board-path-real-pink-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/pink/path/rt.gif);
+}
+
+.settlers-board-path-real-purple-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/purple/path/t.gif);
+}
+
+.settlers-board-path-real-purple-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/purple/path/lt.gif);
+}
+
+.settlers-board-path-real-purple-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/purple/path/rt.gif);
+}
+
+.settlers-board-path-real-red-t {
+  background-image:             url(/static/images/games/settlers/board/real/players/red/path/t.gif);
+}
+
+.settlers-board-path-real-red-lt {
+  background-image:             url(/static/images/games/settlers/board/real/players/red/path/lt.gif);
+}
+
+.settlers-board-path-real-red-rt {
+  background-image:             url(/static/images/games/settlers/board/real/players/red/path/rt.gif);
+}
+
+.settlers-board-path-t-active {
+  background-image:             url(/static/images/games/settlers/board/simple/players/free/path/t_active.gif);
+}
+
+.settlers-board-path-lt-active {
+  background-image:             url(/static/images/games/settlers/board/simple/players/free/path/lt_active.gif);
+}
+
+.settlers-board-path-rt-active {
+  background-image:             url(/static/images/games/settlers/board/simple/players/free/path/rt_active.gif);
+}
+
+.settlers-board-path-1 {
+  left:				91px;
+  top:				214px;
+}
+
+.settlers-board-path-2 {
+  left:				91px;
+  top:				264px;
+}
+
+.settlers-board-path-3 {
+  left:				129px;
+  top:				201px;
+}
+
+.settlers-board-path-4 {
+  left:				129px;
+  top:				303px;
+}
+
+.settlers-board-path-5 {
+  left:				91px;
+  top:				316px;
+}
+
+.settlers-board-path-6 {
+  left:				91px;
+  top:				366px;
+}
+
+.settlers-board-path-7 {
+  left:				129px;
+  top:				405px;
+}
+
+.settlers-board-path-8 {
+  left:				91px;
+  top:				418px;
+}
+
+.settlers-board-path-9 {
+  left:				91px;
+  top:				468px;
+}
+
+.settlers-board-path-10 {
+  left:				129px;
+  top:				507px;
+}
+
+.settlers-board-path-11 {
+  left:				217.5px;
+  top:				150.0px;
+}
+
+.settlers-board-path-12 {
+  left:				179.5px;
+  top:				163.0px;
+}
+
+.settlers-board-path-13 {
+  left:				179.5px;
+  top:				213.0px;
+}
+
+.settlers-board-path-14 {
+  left:				217.5px;
+  top:				252.0px;
+}
+
+.settlers-board-path-15 {
+  left:				179.5px;
+  top:				265.0px;
+}
+
+.settlers-board-path-16 {
+  left:				179.5px;
+  top:				315.0px;
+}
+
+.settlers-board-path-17 {
+  left:				217.5px;
+  top:				354.0px;
+}
+
+.settlers-board-path-18 {
+  left:				179.5px;
+  top:				367.0px;
+}
+
+.settlers-board-path-19 {
+  left:				179.5px;
+  top:				417.0px;
+}
+
+.settlers-board-path-20 {
+  left:				217.5px;
+  top:				456.0px;
+}
+
+.settlers-board-path-21 {
+  left:				179.5px;
+  top:				469.0px;
+}
+
+.settlers-board-path-22 {
+  left:				179.5px;
+  top:				519.0px;
+}
+
+.settlers-board-path-23 {
+  left:				217.5px;
+  top:				558.0px;
+}
+
+.settlers-board-path-24 {
+  left:				306px;
+  top:				99px;
+}
+
+.settlers-board-path-25 {
+  left:				268px;
+  top:				112px;
+}
+
+.settlers-board-path-26 {
+  left:				268px;
+  top:				162px;
+}
+
+.settlers-board-path-27 {
+  left:				306px;
+  top:				201px;
+}
+
+.settlers-board-path-28 {
+  left:				268px;
+  top:				214px;
+}
+
+.settlers-board-path-29 {
+  left:				268px;
+  top:				264px;
+}
+
+.settlers-board-path-30 {
+  left:				306px;
+  top:				303px;
+}
+
+.settlers-board-path-31 {
+  left:				268px;
+  top:				316px;
+}
+
+.settlers-board-path-32 {
+  left:				268px;
+  top:				366px;
+}
+
+.settlers-board-path-33 {
+  left:				306px;
+  top:				405px;
+}
+
+.settlers-board-path-34 {
+  left:				268px;
+  top:				418px;
+}
+
+.settlers-board-path-35 {
+  left:				268px;
+  top:				468px;
+}
+
+.settlers-board-path-36 {
+  left:				306px;
+  top:				507px;
+}
+
+.settlers-board-path-37 {
+  left:				268px;
+  top:				520px;
+}
+
+.settlers-board-path-38 {
+  left:				268px;
+  top:				570px;
+}
+
+.settlers-board-path-39 {
+  left:				306px;
+  top:				609px;
+}
+
+.settlers-board-path-40 {
+  left:				355.5px;
+  top:				112px;
+}
+
+.settlers-board-path-41 {
+  left:				355px;
+  top:				570px;
+}
+
+.settlers-board-path-42 {
+  left:				394.5px;
+  top:				150.0px;
+}
+
+.settlers-board-path-43 {
+  left:				356.5px;
+  top:				163.0px;
+}
+
+.settlers-board-path-44 {
+  left:				356.5px;
+  top:				213.0px;
+}
+
+.settlers-board-path-45 {
+  left:				394.5px;
+  top:				252.0px;
+}
+
+.settlers-board-path-46 {
+  left:				356.5px;
+  top:				265.0px;
+}
+
+.settlers-board-path-47 {
+  left:				356.5px;
+  top:				315.0px;
+}
+
+.settlers-board-path-48 {
+  left:				394.5px;
+  top:				354.0px;
+}
+
+.settlers-board-path-49 {
+  left:				356.5px;
+  top:				367.0px;
+}
+
+.settlers-board-path-50 {
+  left:				356.5px;
+  top:				417.0px;
+}
+
+.settlers-board-path-51 {
+  left:				394.5px;
+  top:				456.0px;
+}
+
+.settlers-board-path-52 {
+  left:				356.5px;
+  top:				469.0px;
+}
+
+.settlers-board-path-53 {
+  left:				356.5px;
+  top:				519.0px;
+}
+
+.settlers-board-path-54 {
+  left:				394.5px;
+  top:				558.0px;
+}
+
+.settlers-board-path-55 {
+  left:				443.5px;
+  top:				519.0px;
+}
+
+.settlers-board-path-56 {
+  left:				483px;
+  top:				201px;
+}
+
+.settlers-board-path-57 {
+  left:				445px;
+  top:				214px;
+}
+
+.settlers-board-path-58 {
+  left:				445px;
+  top:				264px;
+}
+
+.settlers-board-path-59 {
+  left:				483px;
+  top:				303px;
+}
+
+.settlers-board-path-60 {
+  left:				445px;
+  top:				316px;
+}
+
+.settlers-board-path-61 {
+  left:				445px;
+  top:				366px;
+}
+
+.settlers-board-path-62 {
+  left:				483px;
+  top:				405px;
+}
+
+.settlers-board-path-63 {
+  left:				445px;
+  top:				418px;
+}
+
+.settlers-board-path-64 {
+  left:				445px;
+  top:				468px;
+}
+
+.settlers-board-path-65 {
+  left:				483px;
+  top:				507px;
+}
+
+.settlers-board-path-66 {
+  left:				532.5px;
+  top:				214px;
+}
+
+.settlers-board-path-67 {
+  left:				532px;
+  top:				264px;
+}
+
+.settlers-board-path-68 {
+  left:				532.5px;
+  top:				316px;
+}
+
+.settlers-board-path-69 {
+  left:				532px;
+  top:				366px;
+}
+
+.settlers-board-path-70 {
+  left:				532.5px;
+  top:				418px;
+}
+
+.settlers-board-path-71 {
+  left:				532px;
+  top:				468px;
+}
+
+.settlers-board-path-72 {
+  left:				444.0px;
+  top:				163.0px;
+}

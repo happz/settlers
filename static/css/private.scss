@@ -1,0 +1,114 @@
+@import "lib.scss";
+
+/*
+ * ----- ----- Basic UI bits
+ */
+.framed {
+    @include block();
+    @include corners-top();
+    @include corners-bottom();
+
+    margin-bottom:                      5px;
+    padding:                            5px;
+}
+
+.header, .ui-datepicker-header {
+    @include control();
+
+    cursor:                             pointer;
+    padding:                            0.3em;
+}
+
+.info {
+    @include block();
+
+    display:                            block;
+    padding:                            0.5em;
+    margin:                             0px;  
+    overflow:                           hidden;
+    position:                           relative;
+    text-align:                         left;
+    height:                             1em; 
+    cursor:                             default;
+
+    border-top-width:                   0px;
+    border-bottom-width:                0px;
+}
+
+.info-with-menu {
+    height:                             32px;
+    border-width:                       1px; 
+
+    &:hover {
+        background:                     $color_background none;
+    }
+}
+
+.important-info {
+    font-size:                            1.5em;
+}                                
+
+/*
+ * ----- ----- Menu
+ */
+.menu-widget {
+    position:				fixed;
+    right:				5px;
+    top:				20%;
+    margin-top:				-2.5em;
+    list-style-type:			none;
+    padding-left:			10px;
+    padding-right:			10px;
+}
+
+.menu-widget {
+    div {
+        position:			relative;
+    }
+}
+
+.menu-widget {
+    div {
+        a {
+            img {
+                width:			48px;
+                height:			48px;
+            }
+        }
+    }
+}
+
+.menu-alert {
+    @include corners-top();
+    @include corners-bottom();
+
+    position:				absolute;
+    right:				1px;
+    top:				3px;
+    min-width:				1em;
+    text-align:				center;
+
+    background-color:			red;
+    color:                              white;
+    font-weight:                        bold;
+
+    display:                            none;
+
+    padding:                            3px;
+}  
+
+/*
+ * ----- ----- User names
+ */
+.user-online {
+    font-weight:			bold;
+    color:				$color_user_online;
+}
+
+.user-invited {
+    color:				$color_user_invited;
+}
+
+.user-onturn {
+    color:				$color_user_onturn;
+}
