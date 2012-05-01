@@ -75,6 +75,8 @@
     ${parent.script_file('pages/' + current_page_name, 'js')}
   % endif
 
+  <!-- <script src="/i18n" type="text/javascript"></script> -->
+
   ${parent.page_header()}
 </%def>
 
@@ -150,8 +152,11 @@
     <div><hr /></div>
     <div><a href="/help/" title="${_('Help')}"><span class="icon icon-large icon-menu-help"></span></a></div>
     <div><hr /></div>
-    <div><a href="/monitor/" title="${_('Monitor')}"><span class="icon icon-large icon-menu-monitor"></span></a></div>
-    <div><hr /></div>
+    % if hruntime.user.is_admin:
+      <div><a href="/admin/" title="${_('Admin')}"><span class="icon icon-large icon-menu-admin"></span></a></div>
+      <div><a href="/monitor/" title="${_('Monitor')}"><span class="icon icon-large icon-menu-monitor"></span></a></div>
+      <div><hr /></div>
+    % endif
     <div><a href="/logout/" id="menu_logout" title="${_('Log out')}"><span class="icon icon-large icon-menu-logout"></span></a></div>
   </div>
 % endif

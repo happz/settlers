@@ -61,7 +61,7 @@ def main():
   import hlib.log.channels.stderr, hlib.log.channels.file
 
   stderr = hlib.log.channels.stderr.Channel()
-  access = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'access.log')
+  access = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'access.log'))
   error  = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'error.log'))
 
   hlib.config['log.channels.error'] = stderr

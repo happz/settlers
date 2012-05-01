@@ -957,7 +957,6 @@ class Game(games.Game):
       return ss
 
     if name == 'last_numbers':
-      print self.dice_rolls
       if self.round == 0:
         return []
 

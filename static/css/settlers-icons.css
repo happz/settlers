@@ -44,6 +44,10 @@ span.icon-menu-help {
   background-image:             url(/static/images/icons/Faq48.png);
 }
 
+span.icon-menu-admin {
+  background-image:		url(/static/images/icons/Tools48.png);
+}
+
 span.icon-menu-monitor {
   background-image:		url(/static/images/icons/Wheels48.png);
 }
@@ -96,4 +100,3 @@ span.icon-roll-open {
 span.icon-roll-close {
   background-image:             url(/static/images/icons/Delete32.png);
 }
-
