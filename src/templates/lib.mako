@@ -107,9 +107,16 @@ window.settlers.templates.chat_post = '
   ${w_form_end()}
 </%def>
 
-<%def name="chat_table(width)">
+<%def name="chat_table(width, prepend = None)">
+  <%
+    if prepend != None:
+      classes = 'prepend-%i span-%i append-%i' % (prepend, width - 2 * prepend, prepend)
+    else:
+      classes = 'span-' + str(width)
+  %>
+
   <div id="chat_posts">
-    <div class="prepend-3 span-${width - 6} append-3 last centered">
+    <div class="${classes} last centered">
       <span class="chat-first">&lt;&lt;</span>
       <span class="chat-prev">&lt;</span>
       <span class="chat-position"></span>
@@ -124,7 +131,7 @@ window.settlers.templates.chat_post = '
       </table>
     </div>
 
-    <div class="prepend-3 span-${width - 6} append-3 last centered">
+    <div class="${classes} last centered">
       <span class="chat-first">&lt;&lt;</span>
       <span class="chat-prev">&lt;</span>
       <span class="chat-position"></span>

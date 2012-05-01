@@ -52,7 +52,7 @@
   </div>
 </div>
 
-<div class="span-10 prepend-top">
+<div class="span-10 prepend-top append-bottom">
   <div id="views">
 
     <ul class="hidden">
@@ -61,6 +61,7 @@
       <li><a href="#history">History</a></li>
       <li><a href="#board">Board</a></li>
       <li><a href="#cards">Cards</a></li>
+      <li><a href="#exchange">Exchange</a></li>
     </ul>
 
     <div id="empty" class="hidden" ></div>

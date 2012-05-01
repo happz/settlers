@@ -1,37 +1,42 @@
 """
 Basic game classes
-
-@author:                        Milos Prchlik
-@contact:                       U{happz@happz.cz}
-@license:                       DPL (U{http://www.php-suit.com/dpl})
 """
 
-import sys
-import hlib
-import lib.datalayer
-import hlib.error
-import threading
+__author__		= 'Milos Prchlik'
+__copyright__		= 'Copyright 2010 - 2012, Milos Prchlik'
+__contact__		= 'happz@happz.cz'
+__license__		= 'http://www.php-suit.com/dpl'
 
+import sys
+import threading
+import time
+
+import hlib
+import hlib.error
 import hlib.event
 import hlib.i18n
+import hlib.input
 import hlib.log
 
 import lib
 import lib.chat
+import lib.datalayer
 
 # pylint: disable-msg=F0401
 import hruntime
-import time
 
 GAME_KINDS = ['settlers']
+"""
+List of all known game kinds.
 
-from hlib.input import validator_factory, CommonString, OneOf, Int, NotEmpty, SchemaValidator
+@type:			C{list} of C{string}s
+"""
 
-ValidateKind = validator_factory(CommonString(), OneOf(GAME_KINDS))
-ValidateGID  = validator_factory(NotEmpty(), Int())
-ValidateCardID = validator_factory(NotEmpty(), Int())
+ValidateKind = hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.OneOf(GAME_KINDS))
+ValidateGID  = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
+ValidateCardID = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
 
-class GenericValidateGID(SchemaValidator):
+class GenericValidateGID(hlib.input.SchemaValidator):
   gid = ValidateGID()
 
 # ----- Lists --------------------------------
@@ -44,12 +49,6 @@ class GameLists(object):
     self._active	= {}
     self._inactive	= {}
     self._archived	= {}
-
-  def dump(self):
-    with self._lock:
-      print 'Active: ', self._active
-      print 'Inactive: ', self._inactive
-      print 'Archived: ', self._archived
 
   def __get_f_list(self, name, user, update):
     cache = getattr(self, '_' + name)
@@ -124,8 +123,7 @@ f_inactive	= _game_lists.f_inactive
 f_archived	= _game_lists.f_archived
 
 def game_module(k, submodule = None):
-  assert k in GAME_KINDS, 'Unknown game kind \'%s\'' % k
-  return sys.modules['games.' + k + (submodule != None and '.' + submodule or '')]
+  return sys.modules['games.' + k + ('.' + submodule if submodule != None else '')]
 
 class GameCreationFlags(hlib.database.DBObject):
   FLAGS = ['name', 'limit', 'turn_limit', 'password', 'desc', 'kind', 'opponent1', 'opponent2', 'opponent3', 'tournament_players', 'dont_shuffle', 'owner']
@@ -151,7 +149,6 @@ class GameCreationFlags(hlib.database.DBObject):
 
     hlib.database.DBObject.__setattr__(self, name, value)
 
-# --- Storage records -----------------------------------------------
 class Card(hlib.database.DBObject):
   def __init__(self, game, player, typ, bought):
     hlib.database.DBObject.__init__(self)
@@ -686,18 +683,6 @@ class Resources(hlib.database.DBObject):
   def __str__(self):
     return ', '.join([str(k) + '=' + str(self[k]) for k in self.keys()])
 
-class BoardRenderPiece(object):
-  def __init__(self, t, i, active = False, obj = None):
-    object.__init__(self)
-
-    self.type   = t
-    self.id     = i
-    self.layer  = 100
-    self.img    = ''
-    self.coor   = (0, 0)
-    self.active = active
-    self.obj    = obj
-
 class Board(hlib.database.DBObject):
   def __init__(self, game):
     hlib.database.DBObject.__init__(self)
@@ -730,12 +715,10 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
   return g
 
 # Event hooks
-_game_created_hook  = hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.game_created(e.game))
-#_game_started_hook  = hlib.event.Hook('game.GameStarted', 'invalidate_caches',  lambda e: _game_lists.game_started(e.game))
-_game_finished_hook = hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.game_finished(e.game))
-_game_canceled_hook = hlib.event.Hook('game.GameCanceled', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
-_game_player_joined = hlib.event.Hook('game.PlayerJoined', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
-_game_player_invited = hlib.event.Hook('game.PlayerInvited', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
+hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.game_created(e.game))
+hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.game_finished(e.game))
+hlib.event.Hook('game.PlayerJoined', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
+hlib.event.Hook('game.PlayerInvited', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
 
 import games.settlers
 

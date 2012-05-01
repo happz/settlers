@@ -61,8 +61,8 @@ def main():
   import hlib.log.channels.stderr, hlib.log.channels.file
 
   stderr = hlib.log.channels.stderr.Channel()
-  access = hlib.log.channels.file.Channel('/data/osadnici/logs/access.log')
-  error  = hlib.log.channels.file.Channel('/data/osadnici/logs/error.log')
+  access = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'access.log')
+  error  = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'error.log'))
 
   hlib.config['log.channels.error'] = stderr
 
@@ -73,7 +73,7 @@ def main():
   db.open()
 
   app_config			= hlib.engine.Application.default_config(config.get('server', 'path'))
-  app_config['title']		= 'Settlers - test'
+  app_config['title']		= config.get('web', 'title')
   app_config['cache.enabled']	= False
 
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)

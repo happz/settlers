@@ -51,6 +51,7 @@
       kind = self.uri.split('/')[1].split('.')[0]
     %>
 
+    <link rel="stylesheet" href="/static/css/pages/game.css" type="text/css" />
     <link rel="stylesheet" href="/static/css/games/${kind}/${kind}.css" type="text/css" />
     <link rel="stylesheet" href="/static/css/games/${kind}/${kind}-board.css" type="text/css" />
     <link rel="stylesheet" href="/static/css/games/${kind}/${kind}-icons.css" type="text/css" />

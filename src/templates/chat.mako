@@ -10,6 +10,6 @@ ${chat_new_post('/chat')}
 </div>
 <div class="span-14">
 
-${chat_table(14)}
+${chat_table(14, prepend = 2)}
 
 ${page_content_end()}

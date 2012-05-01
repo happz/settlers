@@ -3,8 +3,8 @@ STYLES = settlers.css public.css private.css \
          pages/chat.css \
          pages/new.css \
          pages/settings.css \
-         pages/chat.scss \
-         pages/game.scss
+         pages/chat.css \
+         pages/game.css
 
 all: $(STYLES)
 

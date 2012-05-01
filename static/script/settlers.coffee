@@ -100,6 +100,7 @@ window.settlers.setup_chat_form = (opts) ->
     handlers:
       s200:   (response, form) ->
         form.info.success 'Posted'
+        opts.handlers.h200()
 
 window.settlers.setup_chat = (opts) ->
   pager = new window.hlib.Pager
@@ -111,6 +112,8 @@ window.settlers.setup_chat = (opts) ->
     length:		20
 
   pager.refresh()
+
+  return pager
 
 window.settlers.startup = () ->
   window.hlib.setup_common

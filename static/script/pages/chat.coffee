@@ -24,5 +24,3 @@ window.settlers.setup_page = () ->
   window.settlers.setup_chat
     eid:			'#chat_posts'
     url:			'/chat/page'
-    data:
-      gid:			window.settlers.game.gid

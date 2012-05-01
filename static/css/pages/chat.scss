@@ -1,25 +1,2 @@
 @import "lib.scss";
-
-.chat-post {
-    @include chat-post();
-}
-
-.chat-first {
-    @include chat-button();
-}
-
-.chat-prev {
-    @include chat-button();
-}
-
-.chat-next {
-    @include chat-button();
-}
-
-.chat-last {
-    @include chat-button();
-}
-
-.chat-position {
-    @include default-font();
-}
+@import "chat.scss";

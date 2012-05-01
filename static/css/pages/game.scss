@@ -1,3 +1,30 @@
+@import "lib.scss";
+@import "chat.scss";
+
+/*
+ * ----- ----- UI Tabs
+ */
+.ui-tabs {
+    position:                           relative;
+    padding:                            .2em;
+    zoom:                               1;
+}
+
+.ui-tabs .ui-tabs-nav {
+    display:                            none;
+}
+
+.ui-tabs .ui-tabs-panel {
+    display:                            block;
+    border-width:                       0;
+    padding:                            1em 1.4em;
+    background:                         none;
+}
+
+.ui-tabs .ui-tabs-hide {
+    display:                            none !important;
+}
+
 .game-info {
     padding-bottom:			0.4em;
 }
