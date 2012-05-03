@@ -114,9 +114,9 @@ class ChatPager(hlib.pageable.Pageable):
     records = self.entity.chat_posts.get_posts(start, length)
     records = [cp for cp in reversed(records)]
 
+    import hlib.handlers
+
     if len(records) > 0 and self.accessed_by.last_board < records[0].id:
-      # pylint: disable-msg=W0621
-      import hlib.handlers
       hlib.handlers.enable_write()
 
       self.accessed_by.last_board = records[0].id

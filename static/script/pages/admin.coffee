@@ -1,4 +1,18 @@
 window.settlers.templates = window.settlers.templates or {}
+window.settlers.templates.i18n_unused_tokens = '
+  <ul>
+    {{#tokens}}
+      <li>{{name}}</li>
+    {{/tokens}}
+  </ul>
+'
+window.settlers.templates.i18n_missing_tokens = '
+  <ul>
+    {{#tokens}}
+      <li>{{name}}</li>
+    {{/tokens}}
+  </ul>
+'
 window.settlers.templates.i18n_tokens = '
   <option value="Vybrat...">Vybrat...</option>
   {{#tokens}}
@@ -6,15 +20,37 @@ window.settlers.templates.i18n_tokens = '
   {{/tokens}}
 '
 
-window.settlers.refresh_token_list = () ->
+window.settlers.refresh_token_list = (opts) ->
   new window.hlib.Ajax
-    url:		'/admin/i18n/tokens'
+    url:		opts.url
     data:
-      lang:		$('#i18n_edit_lang').val()
+      lang:		$(opts.lang).val()
     handlers:
-      h200:		(response, ajax) ->
-        $('#i18n_edit_token').html window.hlib.render window.settlers.templates.i18n_tokens, response
-        $('#i18n_edit_token').val ''
+      h200:		opts.h200
+
+window.settlers.refresh_unused_list = () ->
+  window.settlers.refresh_token_list
+    url:		'/admin/i18n/unused'
+    lang:		'#i18n_edit_lang'
+    h200:		(response, ajax) ->
+      $('#i18n_unused_tokens_list').html window.hlib.render window.settlers.templates.i18n_unused_tokens, response
+      $('#i18n_unused_tokens').show()
+
+window.settlers.refresh_missed_list = () ->
+  window.settlers.refresh_token_list
+    url:		'/admin/i18n/missing'
+    lang:		'#i18n_add_lang'
+    h200:               (response, ajax) ->
+      $('#i18n_missing_tokens_list').html window.hlib.render window.settlers.templates.i18n_missing_tokens, response
+      $('#i18n_missing_tokens').show()
+
+window.settlers.refresh_present_list = () ->
+  window.settlers.refresh_token_list
+    url:		'/admin/i18n/tokens'
+    lang:		'#i18n_edit_lang'
+    h200:		(response, ajax) ->
+      $('#i18n_edit_token').html window.hlib.render window.settlers.templates.i18n_tokens, response
+      $('#i18n_edit_token').val ''
 
 window.settlers.setup_forms = () ->
   new window.hlib.Form
@@ -34,15 +70,30 @@ window.settlers.setup_forms = () ->
     dont_clean:		true
     handlers:
       s200:	(response, form) ->
+        $('#i18n_add_name').val ''
+        $('#i18n_add_value').val ''
+
         form.info.success 'Added'
-        window.settlers.refresh_token_list()
+
+        window.settlers.refresh_missed_list()
         window.hlib.INFO._hide()
+
+  $('#i18n_add_lang').change () ->
+    if $('#i18n_add_lang').val() == ''
+      $('#i18n_missing_tokens').hide()
+      return
+
+    window.settlers.refresh_missed_list()
+    window.hlib.INFO._hide()
 
   $('#i18n_edit_lang').change () ->
     if $('#i18n_edit_lang').val() == ''
+      $('#i18n_unused_tokens').hide()
       return
 
-    window.settlers.refresh_token_list()
+    window.settlers.refresh_unused_list()
+    window.settlers.refresh_present_list()
+
     window.hlib.INFO._hide()
 
   $('#i18n_remove').click () ->
@@ -56,7 +107,8 @@ window.settlers.setup_forms = () ->
           i18n_edit.info.success 'Removed'
 
           $('#i18n_edit').hide()
-          window.settlers.refresh_token_list()
+          window.settlers.refresh_unused_list()
+          window.settlers.refresh_present_list()
           window.hlib.INFO._hide()
 
   $('#i18n_edit_token').change () ->

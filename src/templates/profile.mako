@@ -10,7 +10,6 @@ ${header(plugins = 'accordion', functions = ['start_game_on_turn_timer'])}
 ${error_msg()}
 ${menu_level1()}
 <br />
-${trumpet_board()}
 
 <b>Player ${profile_user.name}</b>
 

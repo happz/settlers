@@ -4,7 +4,8 @@ STYLES = settlers.css public.css private.css \
          pages/new.css \
          pages/settings.css \
          pages/chat.css \
-         pages/game.css
+         pages/game.css \
+         pages/admin.css
 
 all: $(STYLES)
 

@@ -18,9 +18,12 @@ window.settlers.templates.chat_post = '
 '
 
 window.settlers.setup_page = () ->
-  window.settlers.setup_chat_form
-    eid:			'#chat_post'
-
-  window.settlers.setup_chat
+  chat_pager = window.settlers.setup_chat
     eid:			'#chat_posts'
     url:			'/chat/page'
+
+  window.settlers.setup_chat_form
+    eid:			'#chat_post'
+    handlers:
+      h200:		() ->
+        chat_pager.refresh()

@@ -13,4 +13,6 @@ window.settlers.setup_settlers = () ->
   if window.settlers.setup_menu
     window.settlers.setup_menu()
 
+#  window.settlers.PULL_NOTIFY.update()
+
   return true

@@ -14,29 +14,6 @@
   </div>
 </%def>
 
-<%def name="quote(s)">${'"' + s + '"'}</%def>
-
-<%def name="username_taint(user)">
-  ${user.name}
-  % if hruntime.request.is_tainted():
-    ${str(hruntime.session.tainted)}
-  % endif
-</%def>
-
-<%def name="username_onlined(user)">
-  % if user.is_online:
-    <span style="font-weight: bold">${username_taint(user)}</span>
-
-  % else:
-    ${username_taint(user)}
-
-  % endif
-</%def>
-
-<%def name="username_simple_onlined(user)">
-  ${user.name}
-</%def>
-
 <%def name="stamp_to_days_hours(s)">
   ${int(s / 86400)} days, ${int((s % 86400) / 3600)} hours, ${int(((s % 86400) % 3600) / 60)} minutes
 </%def>
@@ -45,35 +22,6 @@
   import types
   import hlib.i18n
 %>
-
-<%def name="motd()">
-  <% import lib.trumpet %>
-
-  % if lib.trumpet.MOTD().text != '':
-    <span style="font-weight: bold">${_('Message of the day')}</span>
-    <div style="text-align: justify; font-weight: bold">
-      % for line in lib.trumpet.MOTD().text_splitted:
-        ${line}
-        <br />
-      % endfor
-    </div>
-  % endif
-</%def>
-
-<%def name="trumpet_board()">
-  <% import lib.trumpet %>
-
-  % if lib.trumpet.Board().text != '':
-    <div style="text-align: center; color: red">
-      % for line in lib.trumpet.Board().text_splitted:
-        ${line}
-        <br />
-      % endfor
-    </div>
-  % endif
-</%def>
-
-<%namespace file="hlib_widgets.mako"  import="*"/>
 
 <%def name="chat_post_template()">
 window.settlers.templates.chat_post = '

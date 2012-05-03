@@ -14,72 +14,39 @@ class window.settlers.PullNotify
     __call_update = () ->
       pull_notify.update()
 
-    $('.menu-widget').everyTime '120s', __call_update
+    $('.menu-widget').everyTime '60s', __call_update
 
   update:		() ->
-    $.ajax
-      dataType:	'json'
-      type:		'POST'
-      url:		'/pull_notify'
-      success:	(data) ->
-        window.settlers.hide_menu_alert 'menu_chat'
-        window.settlers.hide_menu_alert 'menu_home'
+    new window.hlib.Ajax
+      url:			'/pull_notify/'
+      handlers:
+        h200:			(response, ajax) ->
+          # Reset all widgets
+          window.hlib.setTitle 'Osadnici'
+          window.settlers.hide_menu_alert 'menu_chat'
+          window.settlers.hide_menu_alert 'menu_home'
+          $('#trumpet_board').hide()
 
-        if data.status != 200
-          return
+          to_title = 0
 
-        if data.events.chat != false
-          $('#menu_chat .menu-alert').html data.events.chat
-          window.settlers.show_menu_alert 'menu_chat'
+          if response.events.chat != false
+            to_title += response.events.chat
+            $('#menu_chat .menu-alert').html response.events.chat
+            window.settlers.show_menu_alert 'menu_chat'
 
-        if data.events.on_turn != false
-          $('#menu_home .menu-alert').html data.events.on_turn
-          window.settlers.show_menu_alert 'menu_home'
+          if response.events.on_turn != false
+            to_title += response.events.on_turn
+            $('#menu_home .menu-alert').html response.events.on_turn
+            window.settlers.show_menu_alert 'menu_home'
 
-#
-# Events
-#
-window.settlers.events['game.GameCreated']		= (e) ->
-  window.hlib._g 'Game has been created'
+          if to_title > 0
+            window.hlib.setTitle 'Osadnici (' + to_title + ')'
 
-window.settlers.events['game.GameFinished']		= (e) ->
-  window.hlib._g 'Game has been finished'
+          if response.events.trumpet != false
+            $('#trumpet_board div').html response.events.trumpet
+            $('#trumpet_board').show()
 
-window.settlers.events['game.GameCanceled']		= (e) ->
-  if e.reason == 1
-    return window.hlib._g 'Game has been canceled due to massive timeouts'
-
-  if e.reason == 2
-    return (window.hlib._g 'Game has been canceled due to missing player {0}').format e.user.name
-
-  if e.reason == 3
-    return window.hlib._g 'Game has been canceled due to lack of interest'
-
-  return ''
-
-window.settlers.events['game.GameStarted']		= (e) ->
-  return window.hlib._g 'Game has started'
-
-window.settlers.events['game.PlayerJoined']		= (e) ->
-  return (window.hlib._g 'Player {0} joined game').format e.user.name
-
-window.settlers.events['game.ChatPost']			= (e) ->
-  return (window.hlib._g 'Player {0} post new message on chat').format e.user.name
-
-window.settlers.events['game.PlayerMissed']		= (e) ->
-  return (window.hlib._g 'Player {0} missed his turn').format e.user.name
-
-window.settlers.events['game.Pass']			= (e) ->
-  return (window.hlib._g 'Player {0} passed turn, next player is {1}').format e.prev.name, e.next.name
-
-window.settlers.events['game.PlayerInvited']		= (e) ->
-  return (window.hlib._g 'Player {0} has been invited to game').format e.user.name
-
-window.settlers.events['game.CardUsed']			= (e) ->
-  return (window.hlib._g 'Player {0} used card {1} from round {2}').format e.user.name, card = _(games.settlers.Card.map_card2str[e.card.type].capitalize()), e.round
-
-window.settlers.events['game.CardBought']		= (e) ->
-  return ''
+          window.hlib.INFO._hide()
 
 #
 # Methods

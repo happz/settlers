@@ -1,5 +1,6 @@
 SCRIPTS = hlib.js settlers.js \
-          pages/home.js pages/login.js pages/page.js pages/chat.js pages/settings.js pages/admin.js pages/monitor.js \
+          pages/game.js \
+          pages/home.js pages/login.js pages/page.js pages/chat.js pages/settings.js pages/admin.js pages/monitor.js pages/loginas.js \
           games/settlers/settlers.js games/settlers/settlers-board.js
 
 all: $(SCRIPTS)

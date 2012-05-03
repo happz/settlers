@@ -1,3 +1,5 @@
+import re
+
 import games
 import handlers
 import handlers.admin
@@ -13,13 +15,14 @@ import handlers.settings
 import handlers.stats
 import handlers.tour
 import handlers.vacation
+import lib.trumpet
+
 import hlib
 import hlib.auth
 import hlib.error
 import hlib.http
 import hlib.stats
 import lib.chat
-import re
 
 import hlib.handlers.root
 
@@ -35,10 +38,11 @@ import hruntime
 
 class PullNotify(ApiJSON):
   def __init__(self):
-    super(PullNotify, self).__init__(['chat', 'on_turn'])
+    super(PullNotify, self).__init__(['chat', 'on_turn', 'trumpet'])
 
     self.chat           = False
     self.on_turn	= False
+    self.trumpet	= False
 
 class Handler(hlib.handlers.root.Handler):
   admin		= handlers.admin.Handler()
@@ -71,9 +75,11 @@ class Handler(hlib.handlers.root.Handler):
     # pylint: disable-msg=R0201
     hlib.auth.logout()
 
+  @validate_by(schema = handlers.admin.ValidateLangSchema)
   @page
-  def i18n(self):
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'i18n', self.generate, 'i18n.mako')
+  def i18n(self, lang = None):
+    hruntime.response.headers['Content-Type'] = 'text/javascript'
+    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'i18n', self.generate, 'i18n.mako', params = {'lang': hruntime.dbroot.localization.languages[lang]})
 
   class ValidateUsersByName(SchemaValidator):
     term = Username()
@@ -94,16 +100,17 @@ class Handler(hlib.handlers.root.Handler):
   def pull_notify(self):
     r = PullNotify()
 
-    games_with_chat = []
+    txt = lib.trumpet.Board().text
+    if len(txt) > 0:
+      r.trumpet = txt
 
     # Do I have unread posts on global chat?
     cnt = lib.chat.ChatPagerGlobal().unread
     if cnt > 0:
       r.chat = cnt
 
-    cnt = 0
-
     # Am I on turn in any game?
+    cnt = 0
     for k in games.GAME_KINDS:
       cnt += len(games.game_module(k, submodule = 'handler').GameOnTurnChecker.check())
 

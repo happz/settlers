@@ -19,14 +19,14 @@ ValidateLang	= hlib.input.validator_factory(hlib.input.CommonString())
 ValidateName	= hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(256))
 ValidateValue	= hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(256))
 
+class ValidateLangSchema(hlib.input.SchemaValidator):
+  lang = ValidateLang()
+
 class ApiTokens(hlib.api.ApiJSON):
-  def __init__(self, lang):
+  def __init__(self, names):
     super(ApiTokens, self).__init__(['tokens'])
 
-    self.tokens = []
-
-    for key in lang.tokens.iterkeys():
-      self.tokens.append({'name': key})
+    self.tokens = [{'name': name} for name in names]
 
 class ApiToken(hlib.api.ApiJSON):
   def __init__(self, value):
@@ -81,18 +81,14 @@ class TrumpetHandler(handlers.GenericHandler):
     return hlib.api.ApiReply(200, updated_fields = {'text': self.board.text})
 
 class I18NHandler(handlers.GenericHandler):
-  class ValidateTokens(hlib.input.SchemaValidator):
-    lang = ValidateLang()
-
   @require_admin
   @require_login
-  @validate_by(schema = ValidateTokens)
+  @validate_by(schema = ValidateLangSchema)
   @api
   def tokens(self, lang = None, name = None):
-    return ApiTokens(hruntime.dbroot.localization.languages[lang])
+    return ApiTokens(hruntime.dbroot.localization.languages[lang].tokens.keys())
 
-  class ValidateToken(hlib.input.SchemaValidator):
-    lang = ValidateLang()
+  class ValidateToken(ValidateLangSchema):
     name = ValidateName()
 
   @require_admin
@@ -100,10 +96,9 @@ class I18NHandler(handlers.GenericHandler):
   @validate_by(schema = ValidateToken)
   @api
   def token(self, lang = None, name = None):
-    return ApiToken(hruntime.dbroot.localization.languages[lang].tokens[name])
+    return ApiToken(hruntime.dbroot.localization.languages[lang][name])
 
-  class ValidateAdd(hlib.input.SchemaValidator):
-    lang = ValidateLang()
+  class ValidateAdd(ValidateLangSchema):
     name = ValidateName()
     value = ValidateValue()
 
@@ -113,10 +108,9 @@ class I18NHandler(handlers.GenericHandler):
   @validate_by(schema = ValidateAdd)
   @api
   def add(self, lang = None, name = None, value = None):
-    hruntime.dbroot.localization.languages[lang].tokens[name] = value
+    hruntime.dbroot.localization.languages[lang][name] = value
 
-  class ValidateRemove(hlib.input.SchemaValidator):
-    lang = ValidateLang()
+  class ValidateRemove(ValidateLangSchema):
     name = ValidateName()
 
   @require_write
@@ -125,7 +119,31 @@ class I18NHandler(handlers.GenericHandler):
   @validate_by(schema = ValidateRemove)
   @api
   def remove(self, lang = None, name = None):
-    del hruntime.dbroot.localization.languages[lang].tokens[name]
+    del hruntime.dbroot.localization.languages[lang][name]
+
+  @require_admin
+  @require_login
+  @validate_by(schema = ValidateLangSchema)
+  @api
+  def unused(self, lang = None):
+    lang = hruntime.dbroot.localization.languages[lang]
+
+    if lang.coverage:
+      coverage = lang.coverage.coverage(lang)
+
+    return ApiTokens(coverage[2].keys())
+
+  @require_admin
+  @require_login
+  @validate_by(schema = ValidateLangSchema)
+  @api
+  def missing(self, lang = None):
+    lang = hruntime.dbroot.localization.languages[lang]
+
+    if lang.coverage:
+      coverage = lang.coverage.coverage(lang)
+
+    return ApiTokens(coverage[1].keys())
 
 class Handler(handlers.GenericHandler):
   i18n		= I18NHandler()

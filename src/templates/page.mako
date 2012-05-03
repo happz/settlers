@@ -36,13 +36,13 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 
-  ${parent.script_file('jquery.form', 'js')}
-  ${parent.script_file('jquery.timers', 'js')}
-  ${parent.script_file('mustache', 'js')}
+  <script type="text/javascript" src="/static/script/jquery.form.js"></script>
+  <script type="text/javascript" src="/static/script/jquery.timers.js"></script>
+  <script type="text/javascript" src="/static/script/mustache.js"></script>
 
-  ${parent.script_file('hlib', 'js')}
-  ${parent.script_file('settlers', 'js')}
-  ${parent.script_file('pages/page', 'js')}
+  <script type="text/javascript" src="/static/script/hlib.js"></script>
+  <script type="text/javascript" src="/static/script/settlers.js"></script>
+  <script type="text/javascript" src="/static/script/pages/page.js"></script>
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
@@ -56,8 +56,9 @@
     <link rel="stylesheet" href="/static/css/games/${kind}/${kind}-board.css" type="text/css" />
     <link rel="stylesheet" href="/static/css/games/${kind}/${kind}-icons.css" type="text/css" />
 
-    ${parent.script_file('games/settlers/' + kind, 'js')}
-    ${parent.script_file('games/settlers/' + kind + '-board', 'js')}
+    <script type="text/javascript" src="/static/script/pages/game.js"></script>
+    <script type="text/javascript" src="/static/script/games/${kind}/${kind}.js"></script>
+    <script type="text/javascript" src="/static/script/games/${kind}/${kind}-board.js"></script>
   % endif
 
   <%
@@ -72,10 +73,10 @@
   % endif
 
   % if os.path.exists(page_script_file):
-    ${parent.script_file('pages/' + current_page_name, 'js')}
+    <script type="text/javascript" src="/static/script/pages/${current_page_name}.js"></script>
   % endif
 
-  <!-- <script src="/i18n" type="text/javascript"></script> -->
+<!--  <script src="/i18n?lang=${hruntime.i18n.name}" type="text/javascript"></script> -->
 
   ${parent.page_header()}
 </%def>
@@ -103,7 +104,7 @@
 
 <%def name="page_footer_public()">
   <div class="prepend-3 span-8 append-3 last" style="text-align: center">
-    <a href="/login/">${_('Log in')}</a> | <a href="/registration/">${_('Registration')}</a> | <a href="/registration/recovery/">${_('Forgot password?')}</a> | <a href="/cpstats">${_('Status')}</a> | <a href="/loginas/">${_('Admin login')}</a>
+    <a href="/login/">${_('Log in')}</a> | <a href="/registration/">${_('Registration')}</a> | <a href="/registration/recovery/">${_('Forgot password?')}</a> | <a href="/loginas/">${_('Admin login')}</a>
   </div>
 
 % if True:
@@ -125,7 +126,7 @@
     ${page_header_public()}
   % endif
 
-  <div id="trumpet_board" class="prepend-3 span-8 append-3 last hidden">
+  <div id="trumpet_board" class="prepend-top prepend-3 span-8 append-3 last hidden">
     <div class="formee-msg-info"></div>
   </div>
 

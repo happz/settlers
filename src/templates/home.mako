@@ -7,7 +7,7 @@
   ${parent.page_header()}
 
   <link rel="stylesheet" href="/static/css/jquery.qtip.css" type="text/css" />
-  ${parent.script_file('jquery.qtip', 'js')}
+  <script type="text/javascript" src="/static/script/jquery.qtip.js"></script>
 </%def>
 
 <%inherit file="page.mako" />

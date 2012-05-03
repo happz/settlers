@@ -29,6 +29,13 @@ ${w_form_start('/admin/i18n/add', 'Add token', 'i18n_add')}
       ${w_option(key, False, key)}
     % endfor
   </select></div>
+
+  <div class="grid-12-12 hidden" id="i18n_missing_tokens">
+    <label>${_('Missing tokens')}</label>
+    <div id="i18n_missing_tokens_list" class="i18n-missing-tokens">
+    </div>
+  </div>
+
   ${w_form_input('name', 'text', label = 'Name')}
   ${w_form_input('value', 'text', label = 'Value')}
   ${w_submit_row('Add')}
@@ -40,6 +47,12 @@ ${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
       ${w_option(key, False, key)}
     % endfor
   </select></div>
+
+  <div class="grid-12-12 hidden" id="i18n_unused_tokens">
+    <label>${_('Unused tokens')}</label>
+    <div id="i18n_unused_tokens_list" class="i18n-unused-tokens">
+    </div>
+  </div>
 
   ${w_form_select('token')}
     % for key in hruntime.i18n.tokens.iterkeys():

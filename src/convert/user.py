@@ -20,7 +20,7 @@ class Convertor(convert.Convertor):
     u.after_pass_turn	= int(record.after_pass_turn)
     u.date_format	= unicode(record.date_format)
     u.atime		= int(record.atime)
-    u.last_board	= int(record.last_board)
+    u.last_board	= 0
     u.admin		= (record.admin == 'true')
     u.table_length	= int(record.tablesort_length)
     u.board_skin	= unicode(record.board_skin)

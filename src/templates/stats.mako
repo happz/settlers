@@ -4,13 +4,6 @@
 
 <%inherit file="page.mako" />
 
-<%def name="page_header()">
-  ${parent.page_header()}
-
-  ${parent.script_file('jquery.dataTables', 'js')}
-  ${parent.script_file('jquery.dataTables-fnStandingRedraw', 'js')}
-</%def>
-
 <%def name="page_script()">
   ${parent.page_script()}
 

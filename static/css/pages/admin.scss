@@ -1,0 +1,15 @@
+@import "lib.scss";
+
+.icon-i18n-remove-token {
+    background:			url(/static/images/icons/Delete32.png);
+}
+
+.i18n-unused-tokens {
+    height:			10em;
+    overflow:			scroll;
+}
+
+.i18n-missing-tokens {
+    height:			10em;
+    overflow:			scroll;
+}

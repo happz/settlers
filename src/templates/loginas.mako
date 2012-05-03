@@ -1,23 +1,3 @@
-<%!
-  import hlib
-%>
-
-<%def name="page_script()">
-  ${parent.page_script()}
-
-window.settlers.setup_page = () ->
-  new window.hlib.Form
-    fid:			'loginas'
-    focus:			'username'
-    dont_clean:			true
-    handlers:
-      s200:	() ->
-        window.hlib.redirect "${hlib.url(path = '/home/')}"
-
-      s403:	() ->
-        window.hlib.redirect "${hlib.url(path = '/vacation/')}"
-</%def>
-
 <%inherit file="page.mako" />
 
 <%namespace file="hlib_widgets.mako"  import="*"/>

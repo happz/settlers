@@ -24,6 +24,8 @@ import hlib.event
 import hlib.i18n
 import hlib.log.channels.sysloger
 import hlib.server
+import hlib.log.channels.stderr
+import hlib.log.channels.file
 
 import handlers.root
 import lib.datalayer
@@ -40,12 +42,10 @@ cmd_options = {
 }
 
 def __on_request_started(e):
-  hruntime.localization = hruntime.dbroot.localization.languages['cz']
+  hruntime.i18n = hruntime.dbroot.localization.languages['cz']
 
-  if hruntime.user:
-    if hruntime.user.is_on_vacation:
-      if hruntime.request.config.get('survive_vacation', None) != True:
-        raise hlib.server.HTTPRedirect('/vacation/')
+  if hruntime.user and hruntime.user.is_on_vacation and hruntime.request.config.get('survive_vacation', None) != True:
+    raise hlib.server.HTTPRedirect('/vacation/')
 
 hlib.event.Hook('engine.RequestStarted', 'settlers_generic', __on_request_started)
 
@@ -57,16 +57,11 @@ def main():
   config = ConfigParser.ConfigParser()
   config.read(cmd_options['config_file'])
 
-  # logs
-  import hlib.log.channels.stderr, hlib.log.channels.file
-
   stderr = hlib.log.channels.stderr.Channel()
   access = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'access.log'))
   error  = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'error.log'))
 
   hlib.config['log.channels.error'] = stderr
-
-  formencode.api.set_stdtranslation(domain = 'FormEncode', languages = ['cs'])
 
   db_address = hlib.database.DBAddress(config.get('database', 'address'))
   db = hlib.database.DB(db_address)
