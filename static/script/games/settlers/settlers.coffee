@@ -18,10 +18,8 @@ window.settlers.events['game.settlers.VillageBuilt']			= (e) ->
   return ''
 window.settlers.events['game.settlers.TownBuild']			= (e) ->
   return ''
-
 window.settlers.events['game.settlers.ResourcesReceived']		= (e) ->
   return (window.hlib._g 'Player {0} received these resources: {1}').format e.user.name, (window.settlers.format_event_resources e.resources)
-
 window.settlers.events['game.settlers.ResourcesExchanged']		= (e) ->
   return ''
 window.settlers.events['game.settlers.Monopoly']			= (e) ->
@@ -83,7 +81,7 @@ class window.settlers.GameObject
         return
 
       if i == index
-        ret = G.board.paths[pid]
+        ret = G.board.paths[pid - 1]
         return
 
       i += 1
@@ -217,7 +215,7 @@ class window.settlers.GameObject
         if sibling2 and not sibling1 and node2.type != 1
           return
 
-        m['p' + path.id] = (sibling1 or sibling2)
+        m['p' + path.id] = (sibling1 != null or sibling2 != null)
 
       __per_path path for path in G.board.paths
       return m
@@ -225,7 +223,13 @@ class window.settlers.GameObject
     return window.settlers.board_defs.active_paths_map_negative
 
   render_events:	(event_formatters, list_template) ->
-    e.message = event_formatters[e.ename](e) for e in @events
+    __per_event = (e) ->
+      d = new Date (e.stamp * 1000)
+      e.stamp_formatted = d.strftime '%d/%m %H:%M'
+      e.message = event_formatters[e.ename] e
+
+    __per_event e for e in @events
+    @events.reverse()
     return window.hlib.render list_template, @
 
   resources_values:	(rs) ->
@@ -256,7 +260,7 @@ class window.settlers.GameObject
     if not @can_exchange_common()
       return false
 
-    return Math.max(@resources_values(@my_player.resources)) >= 4
+    return (Math.max.apply Math, (@resources_values @my_player.resources)) >= 4
 
   can_exchange_three:	() ->
     if not @can_exchange_common()
@@ -356,12 +360,25 @@ window.settlers.templates.game.events = '
   {{#events}}
     {{^hidden}}
       <tr>
-        <td class="event-stamp">{{stamp}}</td>
-        <td class="event-round">{{round}}</td>
+        <td class="event-stamp">{{stamp_formatted}}</td>
+        <td class="event-round">{{round}}.</td>
         <td class="event-message">{{message}}</td>
       </tr>
     {{/hidden}}
   {{/events}}
+'
+window.settlers.templates.game.exchange = window.settlers.templates.game.exchange or {}
+window.settlers.templates.game.exchange.amount = '
+  <option value="" selected="selected"># of pieces...</option>
+  {{#amounts}}
+    <option value="{{amount}}">{{amount}}</option>
+  {{/amounts}}
+'
+window.settlers.templates.game.exchange.resources = '
+  <option value="" selected="selected">{{hint}}</option>
+  {{#resources}}
+    <option value="{{resource}}">{{resource_label}}</option>
+  {{/resources}}
 '
 
 window.settlers.update_game_state = () ->
@@ -377,44 +394,73 @@ window.settlers.update_game_state = () ->
         window.settlers.update_game_ui()
         window.hlib.INFO._hide()
 
-window.settlers.player_resources_max = (p) ->
-  return Math.max [p.resources.wood, p.resources.clay, p.resources.sheep, p.resources.grain, p.resources.rock]
-
 window.settlers.__refresh_game_ui_exchange = (i) ->
-  eid = '#exchange_' + i
+  eid_prefix = '#exchange_' + i
 
-  $(eid).hide()
+  $(eid_prefix).hide()
 
-  my_player = window.settlers.game.players.my_player
+  G = window.settlers.game
+  my_player = G.my_player
 
-  if window.settlers.player_resources_max my_player < 4
-    return
+  if i == 4
+    if G.can_exchange_four() != true
+      return
+  else if i == 3
+    if G.can_exchange_three() != true
+      return
+  else if i == 2
+    if G.can_exchange_two() != true
+      return
 
-  $(eid).show()
+  __mk_resource_option = (j) ->
+    return { resource: j, resource_label: window.hlib._g G.resource_id_to_name[j] }
 
-  $(eid + '_amount').empty()
-  $(eid + '_amount').append '<option value="-1" selected="selected">Choose...</option>'
-  $(eid + '_amount').append '<option value="' + j + '">' + j + '</option>' for j in [i..(window.settlers.player_resources_max - (window.settlers.player_resources_max(my_player) % i))] by i
+  amounts =
+    amounts:	[]
 
-  $(eid + '_src').empty()
-  $(eid + '_src').append '<option value="-1" selected="selected">Choose...</option>'
+  amounts.amounts.push { amount: n } for n in [i..Math.max.apply Math, (G.resources_values G.my_player.resources)] by i
 
-  if my_player.resources.wood >= i
-    $(eid + '_src').append '<option value="wood">Wood</option>'
-  if my_player.resources.clay >= i
-    $(eid + '_src').append '<option value="wood">Clay</option>'
-  if my_player.resources.sheep >= i
-    $(eid + '_src').append '<option value="wood">Sheep</option>'
-  if my_player.resources.grain >= i
-    $(eid + '_src').append '<option value="wood">Grain</option>'
-  if my_player.resources.rock >= i
-    $(eid + '_src').append '<option value="wood">Rock</option>'
-  
-window.settlers.refresh_game_ui_exchange = () ->
+  dst_resources =
+    hint:		'To...'
+    resources:		[
+      __mk_resource_option 0
+      __mk_resource_option 1
+      __mk_resource_option 2
+      __mk_resource_option 3
+      __mk_resource_option 4
+    ]
+
+  src_resources =
+    hint:		'From...'
+    resources:		[
+    ]
+
+  if my_player.resources.sheep >= 4
+    src_resources.resources.push __mk_resource_option 0
+  if my_player.resources.wood >= 4
+    src_resources.resources.push __mk_resource_option 1
+  if my_player.resources.rock >= 4
+    src_resources.resources.push __mk_resource_option 2
+  if my_player.resources.grain >= 4
+    src_resources.resources.push __mk_resource_option 3
+  if my_player.resources.clay >= 4
+    src_resources.resources.push __mk_resource_option 4
+
+  $(eid_prefix + '_gid').val G.gid
+  $(eid_prefix + '_ratio').val i
+  $(eid_prefix + '_amount').html window.hlib.render window.settlers.templates.game.exchange.amount, amounts
+  $(eid_prefix + '_src').html window.hlib.render window.settlers.templates.game.exchange.resources, src_resources
+  $(eid_prefix + '_dst').html window.hlib.render window.settlers.templates.game.exchange.resources, dst_resources
+
+  $(eid_prefix).show()
+
+window.settlers.update_game_ui_exchange = () ->
   window.settlers.__refresh_game_ui_exchange i for i in [2, 3, 4]
 
-window.settlers.update_game_ui_reset = () ->
-  return false
+  if window.settlers.game.can_exchange() == true
+    $('#exchange_no').hide()
+  else
+    $('#exchange_no').show()
 
 window.settlers.update_game_ui_info = () ->
   $('.settlers-last-numbers').hide()
@@ -481,7 +527,7 @@ window.settlers.update_game_ui_board = () ->
       attrs.title = owner.user.name
 
     if G.current_active_paths_map['p' + p.id] == true
-      attrs.class += ' settlers-board-path-active settlers-board-path-' + map_pathid_to_position[p.id] + '-active'
+      attrs.class += ' settlers-board-path-active settlers-board-path-' + bs + '-free-' + map_pathid_to_position[p.id] + '-active'
 
     s = '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
     $(eid).append(s)
@@ -657,7 +703,6 @@ window.settlers.update_game_ui_board = () ->
     s = '<span class="' + classes + '"></span>'
     $(eid).append(s)
 
-
   __add_field f for f in G.board.fields
   __add_number f for f in G.board.fields
   __add_node n for n in G.board.nodes
@@ -700,7 +745,7 @@ window.settlers.update_game_ui_status = () ->
     __set_status 'Place your second free road'
 
   else if G.state == 10
-    __set_status 'Place your first village and road'
+    __set_status 'Place your first village, first road and press "Pass turn" button'
 
   else if G.state == 11
     __set_status 'Place your second village and road'
@@ -769,16 +814,23 @@ window.settlers.update_game_ui_buttons = () ->
     window.hlib.enableIcon '#roll_dice', window.settlers.roll_dice
 
 window.settlers.update_game_ui = () ->
-  window.settlers.update_game_ui_reset()
   window.settlers.update_game_ui_info()
   window.settlers.update_game_ui_players()
   window.settlers.update_game_ui_board()
   window.settlers.update_game_ui_status()
   window.settlers.update_game_ui_cards()
   window.settlers.update_game_ui_history()
+  window.settlers.update_game_ui_exchange()
   window.settlers.update_game_ui_buttons()
 
 window.settlers.setup_page = () ->
+  new window.hlib.Form
+    fid:		'exchange_4'
+    handlers:
+      s200:		(response, form) ->
+        form.info.success 'Exchanged'
+        window.settlers.update_game_state()
+
   show_chat = () ->
     $('#views').tabs 'select', 1
     window.location.hash = '#chat'
@@ -815,11 +867,11 @@ window.settlers.setup_page = () ->
 
           if pt.after == 'games'
             window.hlib.INFO.success 'Passed. Redirecting to home page'
-            window.hlib.redirect "${hlib.url(path = '/home/')}"
+            window.hlib.redirect '/home'
 
           if pt.after == 'next'
             window.hlib.INFO.success 'Passed. Redirecting to next game'
-            window.hlib.redirect "${hlib.url(path = '/game/')}?gid=" + pt.gid
+            window.hlib.redirect '/game?gid=' + pt.gid
 
           window.settlers.update_game_state()
 
@@ -898,6 +950,12 @@ window.settlers.setup_page = () ->
 
   else if window.location.hash == '#cards'
     show_cards()
+
+  else if window.location.hash == '#history'
+    show_history()
+
+  else if window.location.hash == '#exchange'
+    show_exchange()
 
   else
     show_board()

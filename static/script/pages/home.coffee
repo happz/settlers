@@ -35,7 +35,7 @@ window.settlers.templates.recent_events.games = '
     Free games ({{free_games.length}} games)
     <span class="right icon icon-medium icon-roll-open"></span>
   </li>
-  <div class="hidden">
+  <div class="hide">
   {{#free_games}}
     <li id="game_{{id}}" class="info info-with-menu">
       <span class="game-name">{{name}}</span>
@@ -50,7 +50,7 @@ window.settlers.templates.recent_events.games = '
     Finished games ({{finished_games.length}} games)
     <span class="right icon icon-medium icon-roll-open"></span>
   </li>
-  <div class="hidden">
+  <div class="hide">
   {{#finished_games}}
     <li id="game_{{id}}" class="info info-with-menu">
       <span class="game-name">{{name}}</span>
@@ -139,7 +139,7 @@ window.settlers.setup_fetch = () ->
             return false
 
           $('#finished_games_header').click () ->
-            $('#finished_games_list + div').toggle()
+            $('#finished_games_header + div').toggle()
             $('#finished_games_header > span').toggleClass 'icon-roll-open'
             $('#finished_games_header > span').toggleClass 'icon-roll-close'
             return false
@@ -183,7 +183,7 @@ window.settlers.setup_fetch = () ->
                 fixed:			true
               style:
                 def:			false
-                classes:		'game-preview span-4 corners-top corners-bottom'
+                classes:		'game-preview corners-top corners-bottom'
 
             $('#game_join_' + g.id).click () ->
               new window.hlib.Ajax

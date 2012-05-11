@@ -87,7 +87,7 @@ window.settlers.startup = () ->
     info_dialog:
       eid:                    '.info-dialog'
 
-  window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
+#  window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
 
   window.settlers.setup_settlers()
   window.settlers.setup_page()

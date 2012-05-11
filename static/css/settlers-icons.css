@@ -2,6 +2,7 @@ span.icon {
   display:                      inline-block;
   cursor:                       pointer;
   background-repeat:		no-repeat;
+  vertical-align:		middle;
 }
 
 span.icon-disabled {
@@ -76,13 +77,14 @@ span.icon-game-refresh {
   background-image:             url(/static/images/icons/Refresh32.png);
 }
 
-span.icon-game-cards {
-  background-image:		url(/static/images/icons/File32.png);
-}
-
 span.icon-game-history {
   background-image:             url(/static/images/icons/GameHistory32.gif);
   height:			18px;
+}
+
+span.icon-game-cards {
+    background-image:		url(/static/images/icons/Cards32.png);
+    height:			24px;
 }
 
 span.icon-game-chat {

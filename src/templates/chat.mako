@@ -3,13 +3,14 @@
 
 <%inherit file="page.mako" />
 
-${page_content_start()}
-
-${chat_new_post('/chat')}
-
+<div class="row">
+  <div class="prepend-3 span-6 last">
+    ${chat_new_post('/chat')}
+  </div>
 </div>
-<div class="span-14">
 
-${chat_table(14, prepend = 2)}
-
-${page_content_end()}
+<div class="row">
+  <div class="span-12">
+    ${chat_table(12, prepend = 1)}
+  </div>
+</div>

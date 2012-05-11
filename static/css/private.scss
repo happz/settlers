@@ -54,21 +54,16 @@
 .menu-widget {
     position:				fixed;
     right:				5px;
-    top:				20%;
+    top:				10%;
     margin-top:				-2.5em;
     list-style-type:			none;
     padding-left:			10px;
     padding-right:			10px;
-}
+    z-index:				1000;
 
-.menu-widget {
     div {
         position:			relative;
-    }
-}
 
-.menu-widget {
-    div {
         a {
             img {
                 width:			48px;
@@ -111,4 +106,43 @@
 
 .user-onturn {
     color:				$color_user_onturn;
+}
+
+@media only screen and (max-width: 1285px) {
+    .menu-widget {
+        position:			absolute;
+        top:				10px;
+        margin-top:                     10px;
+        padding: {
+            left:			10px;
+            right:			10px;
+        }
+
+        text-align:			center;
+
+        hr {
+            display:			none;
+        }
+
+    	div {
+    	    display:			inline;
+    	    float:			none;
+    	}
+    }
+
+    .container {
+        margin-top:			90px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .menu-widget {
+        width:				90%;
+        margin:				0px auto;
+        position:			static;
+    }
+
+    .container {
+        margin-top:			5px;
+    }
 }

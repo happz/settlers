@@ -6,12 +6,12 @@
 
 <%namespace file="hlib_widgets.mako" import="*" />
 
-<%def name="page_content_start()">
-  <div class="prepend-top prepend-3 span-8 append-3 last">
+<%def name="row_start(width = 6)">
+  <div class="row"><div class="prepend-${(12 - width) / 2} span-${width} last">
 </%def>
 
-<%def name="page_content_end()">
-  </div>
+<%def name="row_end()">
+  </div></div>
 </%def>
 
 <%def name="stamp_to_days_hours(s)">
@@ -58,7 +58,7 @@ window.settlers.templates.chat_post = '
 <%def name="chat_table(width, prepend = None)">
   <%
     if prepend != None:
-      classes = 'prepend-%i span-%i append-%i' % (prepend, width - 2 * prepend, prepend)
+      classes = 'prepend-%i span-%i last' % (prepend, width - 2 * prepend)
     else:
       classes = 'span-' + str(width)
   %>

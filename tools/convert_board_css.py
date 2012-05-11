@@ -24,7 +24,7 @@ s = """
   top:		%ipx;
 }"""
 for k, v in B.COORS['field'].iteritems():
-  print s % (k, v[0] + 59 + 29, v[1] + 102)
+  print s % (k, l + offset[0], v[1] + offset[1])
 
 s = """
 .settlers-board-thief-{number} {po}

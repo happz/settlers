@@ -5,79 +5,24 @@
 <%namespace file="lib.mako" import="*" />
 <%namespace file="hlib_widgets.mako"  import="*"/>
 
-<%def name="page_script()">
-  ${parent.page_script()}
-
-window.settlers.setup_forms = () ->
-  autocomplete_options =
-    source:		'/users_by_name'
-    minLength:		2
-
-  $('#new_game_opponent1').autocomplete autocomplete_options
-  $('#new_game_opponent2').autocomplete autocomplete_options
-  $('#new_game_opponent3').autocomplete autocomplete_options
-
-  new window.hlib.Form
-    fid:		'new_game'
-    dont_clean:		true
-    refill:		true
-    handlers:
-      s200:	(response, form) ->
-        form.info.success 'Successfuly created'
-      s400:	(response, form) ->
-        window.hlib.form_default_handlers.s400 response, form
-        $(form.field_id 'limit').val ''
-
-  new window.hlib.Form
-    fid:                'new_tournament'
-    dont_clean:		true
-    refill:		true
-    handlers:
-      s200:	(response, form) ->
-        form.info.success 'Successfuly created'
-      s400:	(response, form) ->
-        window.hlib.form_default_handlers.s400 response, form
-        $(form.field_id 'limit').val ''
-
-window.settlers.setup_views = () ->
-  $('#show_game').click () ->
-    $('#views').tabs 'select', 0
-    $('#show_game').hide()
-    $('#show_tournament').show()
-
-  $('#show_tournament').click () ->
-    $('#views').tabs 'select', 1
-    $('#show_tournament').hide()
-    $('#show_game').show()
-
-  $('#views').tabs()
-
-  $('#views').tabs 'select', 0
-  $('#show_game').hide()
-  $('#show_tournament').show()
-
-window.settlers.setup_page = () ->
-  window.settlers.setup_forms()
-  window.settlers.setup_views()
-
-</%def>
-
 <%inherit file="page.mako" />
 
 <div id="views">
 
-  <ul class="hidden">
+  <ul class="hide">
     <li><a href="#view_game">Games</a></li>
     <li><a href="#view_tournament">Tournament</a></li>
   </ul>
 
-  <div class="prepend-10 span-1 append-3 last right">
-    <input type="button" id="show_game" class="formee-button hidden" value="Add game" />
-    <input type="button" id="show_tournament" class="formee-button" value="Add tournament" />
+  <div class="row">
+    <div class="prepend-3 span-6 last right">
+      <input type="button" id="show_game" class="formee-button hide" value="Add game" />
+      <input type="button" id="show_tournament" class="formee-button" value="Add tournament" />
+    </div>
   </div>
 
-  <div id="view_game" class="span-14">
-    <div class="prepend-3 span-8 append-3 last">
+  <div id="view_game">
+    ${row_start()}
 
     ${w_form_start('/game/new', 'New game', 'new_game')}
       ${w_form_select('kind', label = 'Game kind', required = True)}
@@ -97,8 +42,8 @@ window.settlers.setup_page = () ->
       ${w_form_input('desc', 'text', label = 'Game description')}
 
       ${w_submit_row('Create')}
-
     </fieldset>
+
     <fieldset>
       <legend>Access control</legend>
 
@@ -132,11 +77,11 @@ window.settlers.setup_page = () ->
 
     ${w_form_end()}
 
-    </div>
+    ${row_end()}
   </div>
 
-  <div id="view_tournament" class="span-14">
-    <div class="prepend-3 span-8 append-3 last">
+  <div id="view_tournament">
+    ${row_start()}
 
     ${w_form_start('/tournament/new', 'New tournament', 'new_tournament')}
       ${w_form_select('kind', label = 'Game kind', required = True)}
@@ -188,7 +133,7 @@ window.settlers.setup_page = () ->
       </select></div>
 
     ${w_form_end()}
-
-    </div>
+    ${row_end()}
   </div>
+
 </div>

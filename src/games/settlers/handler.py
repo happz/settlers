@@ -2,6 +2,8 @@ import games.settlers
 import handlers
 import hlib
 import lib.chat
+
+import hlib.api
 import hlib.error
 import hlib.log
 
@@ -61,13 +63,22 @@ class Handler(handlers.GenericHandler):
 
     return hruntime.dbroot.games[gid].number_clicked(nid)
 
+  class ValidateExchange(GenericValidateGID):
+    ratio = validator_factory(NotEmpty, Int, OneOf([2, 3, 4]))
+    amount = validator_factory(NotEmpty, Int)
+    src = validator_factory(NotEmpty, Int, OneOf([0, 1, 2, 3, 4]))
+    dst = validator_factory(NotEmpty, Int, OneOf([0, 1, 2, 3, 4]))
+
   @require_write
   @require_login
+  @validate_by(schema = ValidateExchange)
   @api
   def exchange(self, gid = None, ratio = None, amount = None, src = None, dst = None):
     require_on_game(gid)
 
-    return hruntime.dbroot.games[gid].my_player.exchange_resources(ratio, src, dst, amount)
+    hruntime.dbroot.games[gid].my_player.exchange_resources(ratio, src, dst, amount)
+
+    return hlib.api.ApiReply(200)
 
   @require_write
   @require_login

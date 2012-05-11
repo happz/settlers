@@ -12,7 +12,9 @@
 
 <%inherit file="page.mako" />
 
-<div class="prepend-top span-14">
-  <ul id="recent_events" class="recent-events">
-  </ul>
+<div class="row">
+  <div class="prepend-top span-12 last">
+    <ul id="recent_events" class="recent-events">
+    </ul>
+  </div>
 </div>

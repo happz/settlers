@@ -55,24 +55,19 @@ window.settlers.refresh_present_list = () ->
 window.settlers.setup_forms = () ->
   new window.hlib.Form
     fid:                'board'
-    dont_clean:		true
 
   new window.hlib.Form
     fid:                'password_recovery_mail'
-    dont_clean:		true
 
   i18n_edit = new window.hlib.Form
     fid:		'i18n_edit'
-    dont_clean:		true
+    clear_fields:	['token', 'value']
 
   new window.hlib.Form
     fid:		'i18n_add'
-    dont_clean:		true
+    clear_fields:	['name', 'value']
     handlers:
       s200:	(response, form) ->
-        $('#i18n_add_name').val ''
-        $('#i18n_add_value').val ''
-
         form.info.success 'Added'
 
         window.settlers.refresh_missed_list()

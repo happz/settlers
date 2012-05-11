@@ -19,15 +19,16 @@
 
 <%inherit file="page.mako" />
 
-${page_content_start()}
-
+  ${row_start()}
   ${w_form_start('/settings/password', 'Change password', 'password')}
     ${w_form_input('password1', 'password', label = 'Password')}
     ${w_form_input('password2', 'password', label = 'Password verification')}
 
     ${w_submit_row('Set')}
   ${w_form_end()}
+  ${row_end()}
 
+  ${row_start()}
   ${w_form_start('/settings/after_pass_turn', 'After pass turn do what?', 'after_pass_turn')}
     ${w_form_select('action', default = False)}
       ${w_option(lib.datalayer.User.AFTER_PASS_TURN_STAY, hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_STAY, _('Stay on current game'))}
@@ -37,7 +38,9 @@ ${page_content_start()}
 
     ${w_submit_row('Set')}
   ${w_form_end()}
+  ${row_end()}
 
+  ${row_start()}
   ${w_form_start('/settings/color', 'Favourite color', 'color')}
     ${w_form_select('color')}
       % for color_name in games.settlers.COLOR_SPACE.unused_colors(user):
@@ -50,7 +53,9 @@ ${page_content_start()}
 
     ${w_submit_row('Set')}
   ${w_form_end()}
+  ${row_end()}
 
+  ${row_start()}
   ${w_form_start('/settings/opponents/add', 'Colors for opponents', 'opponent_colors')}
     % if len(games.settlers.COLOR_SPACE.unused_colors(user)) > 3:
       <div class="grid-4-12">
@@ -89,7 +94,9 @@ ${page_content_start()}
     % endif
     </div>
   ${w_form_end()}
+  ${row_end()}
 
+  ${row_start()}
   ${w_form_start('/settings/table_length', 'Games per page of game table', 'table_length')}
     ${w_form_select('per_page', default = False)}
       % for cnt in handlers.settings.TABLE_ROW_COUNTS:
@@ -99,7 +106,9 @@ ${page_content_start()}
 
     ${w_submit_row('Set')}
   ${w_form_end()}
+  ${row_end()}
 
+  ${row_start()}
   ${w_form_start('/settings/board_skin', 'Game board skin', 'board_skin')}
     ${w_form_select('skin', default = False)}
       ${w_option('real', user.board_skin == 'real', _('Realistic'))}
@@ -108,7 +117,9 @@ ${page_content_start()}
 
     ${w_submit_row('Set')}
   ${w_form_end()}
+  ${row_end()}
 
+  ${row_start()}
   ${w_form_start('/settings/vacation/start', 'Vacation', 'vacation')}
     <div class="grid-12-12">
       <div class="form-msg-info">
@@ -178,7 +189,9 @@ ${page_content_start()}
     </div>
     ${w_submit_row('Set')}
   ${w_form_end()}
+  ${row_end()}
 
+  ${row_start()}
   ${w_form_start('/settings/sound', 'Sound notification', 'sound')} 
     ${w_form_select('sound', label = 'Play sound when player is on turn', default = False)}
       ${w_option('0', hruntime.user.sound == False, _('No'))}
@@ -187,5 +200,4 @@ ${page_content_start()}
 
     ${w_submit_row('Set')}
   ${w_form_end()}
-
-${page_content_end()}
+  ${row_end()}

@@ -82,7 +82,7 @@ class ApiGameState(hlib.api.ApiJSON):
     self.render_info	= ApiRenderInfo(g.my_player.user)
     self.can_pass	= g.my_player.can_pass
 
-    self.events		= [e.to_api() for e in g.events.itervalues()]
+    self.events		= [e.to_api() for e in g.events.itervalues() if e.hidden != True]
 
 class ChatHandler(handlers.GenericHandler):
   class ValidateAdd(GenericValidateGID):

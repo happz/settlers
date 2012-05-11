@@ -125,7 +125,7 @@ class Player(games.Player):
           p += 1
 
         else:
-          p +=  2 
+          p += 2
 
       for c in self.cards.values():
         if c.type == Card.TYPE_POINT and c.is_used:
@@ -401,6 +401,11 @@ class BoardPath(games.OwnerableDBObject):
 
     self._v_mark	= False
 
+  def __getattr__(self, name):
+    if name == '_v_mark':
+      setattr(self, '_v_mark', False)
+      return False
+
 class BoardNode(games.OwnerableDBObject):
   TYPE_FREE    = 1
   TYPE_VILLAGE = 2
@@ -557,7 +562,7 @@ class Board(games.Board):
     numbers = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12]
 
     random.shuffle(resources)
-    random.shuffle(numbers)  
+    random.shuffle(numbers)
 
     for i in range(1, 20):
       if self.game.flags.floating_desert != True:
@@ -1004,7 +1009,7 @@ class Game(games.Game):
 
       self.dice_rolls.append(n)
       break
-  
+
     return n
 
   def check_game_finalization(self):
@@ -1108,7 +1113,7 @@ class Game(games.Game):
 
     self.board.fields[nid].thief = True
 
-    hlib.event.trigger('game.settlers.ThiefPlaced', self, game = self, user = self.my_player.user, field = self.board.fields[nid].id)
+    hlib.event.trigger('game.settlers.ThiefPlaced', self, game = self, user = self.my_player.user, field = self.board.fields[nid])
 
     self.pass_turn(check = False)
 
@@ -1128,7 +1133,7 @@ class Game(games.Game):
 
     if self.type == Game.TYPE_FREE_PATHS_FIRST:
       self.build_object(path, self.my_player, BoardPath.TYPE_OWNED)
-      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, id = pid)
+      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
 
       if not self.my_player.has_free_path:
         self.type = Game.TYPE_GAME
@@ -1140,7 +1145,7 @@ class Game(games.Game):
 
     if self.type == Game.TYPE_FREE_PATHS_SECOND:
       self.build_object(path, self.my_player, BoardPath.TYPE_OWNED)
-      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, id = pid)
+      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
       self.type = Game.TYPE_GAME
       self.check_longest_path()
       return
@@ -1150,7 +1155,7 @@ class Game(games.Game):
         raise TooManyPathsError()
 
       self.build_object(path, self.my_player, BoardPath.TYPE_OWNED, 'path')
-      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, id = pid)
+      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
       self.check_longest_path()
 
   def node_clicked(self, nid):
@@ -1185,7 +1190,7 @@ class Game(games.Game):
           raise TooManyVillagesError()
 
         self.build_object(node, self.my_player, BoardNode.TYPE_VILLAGE, 'village')
-        hlib.event.trigger('game.settlers.VillageBuilt', self, hidden = True, game = self, user = self.my_player.user, node = nid)
+        hlib.event.trigger('game.settlers.VillageBuilt', self, hidden = True, game = self, user = self.my_player.user, node = node)
         self.check_longest_path()
 
       elif node.type == BoardNode.TYPE_VILLAGE:
@@ -1193,7 +1198,7 @@ class Game(games.Game):
           TooManyTownsError()
 
         self.build_object(node, self.my_player, BoardNode.TYPE_TOWN, 'town')
-        hlib.event.trigger('game.settlers.TownBuilt', self, hidden = True, game = self, user = self.my_player.user, node = nid)
+        hlib.event.trigger('game.settlers.TownBuilt', self, hidden = True, game = self, user = self.my_player.user, node = node)
         self.check_game_finalization()
 
   def buy_card(self):

@@ -1,50 +1,156 @@
 @import "lib.scss";
 
 /*
- * ----- ----- Reset of Blueprint' reset
- */
-tbody {
-    tr:nth-child(even) {
-        td {
-            background:			$color_background;
-        }
-    }
-    tr.even {
-        td {
-            background:			$color_background;
-        }
-    }
-}
-
-
-/*
  * ----- ----- Our defaults
  */
+html {
+    font-size:				100.01%;
+}
+
+body {
+    font: {
+      size:				75%;
+      family:				"Helvetica Neue", Arial, Helvetica, sans-serif;
+    }
+
+    color:				$color_block_text;
+    background:				$color_background;
+}
+
 div {
     text-align:				justify;
 }
 
-li {
-    list-style:				none outside none;
+/*
+ * ----- ----- Layout
+ *
+ * based on "The 1140px Grid V2 by Andy Taylor" (http://cssgrid.net)
+ */
+div.prepend-top, .prepend-top {
+    margin-top:				$margin_default;
+}
+
+div.append-bottom, .append-bottom {
+    margin-bottom:			$margin_default;
+}
+
+.container {
+    padding: {
+        left:				20px;
+        right:				20px;
+    }
+}
+
+.row {
+    width:				100%;
+    max-width:				1140px;
+    min-width:				755px;
+    margin:				0 auto;
+    overflow:				hidden;
+}
+
+.span-1, .span-2, .span-3, .span-4, .span-5, .span-6, .span-7, .span-8, .span-9, .span-10, .span-11 {
+    margin-right:			3.8%;
+    float:				left;
+    min-height:				1px;
+}
+
+.prepend-1  { padding-left:		8.65%;  }
+.prepend-2  { padding-left:		17.25%; }
+.prepend-3  { padding-left:		25.85%; }
+.prepend-4  { padding-left:		34.55%; }
+.prepend-5  { padding-left:		43.25%; }
+.prepend-6  { padding-left:		51.8%;  }
+.prepend-7  { padding-left:		60.55%; }
+.prepend-8  { padding-left:		69.2%;  }
+.prepend-9  { padding-left:		77.85%; }
+.prepend-10 { padding-left:		86.5%;  }
+.prepend-11 { padding-left:		95.15%; }
+
+.row .span-1 { width:			4.85%; }
+
+.row .span-2 {
+width: 13.45%;
+}
+
+.row .span-3 {
+width: 22.05%;
+}
+
+.row .span-4 {
+width: 30.75%;
+}
+
+.row .span-5 {
+width: 39.45%;
+}
+
+.row .span-6 {
+width: 48%;
+}
+
+.row .span-7 {
+width: 56.75%;
+}
+
+.row .span-8 {
+width: 65.4%;
+}
+
+.row .span-9 {
+width: 74.05%;
+}
+
+.row .span-10 {
+width: 82.7%;
+}
+
+.row .span-11 {
+width: 91.35%;
+}
+
+.row .span-12 {
+    width:				100%;
+    float:				left;
+}
+
+.last {
+    margin-right:			0px;
+}
+
+img, object, embed {
+    max-width:				100%;
+}
+
+img {
+	height: auto;
 }
 
 /*
  * ----- ----- Basic UI bits
  */
+.left {
+    float:				left !important;
+}
+
+.right {
+    float:				right !important;
+}
+
 .corners-top {
-  @include corners-top();
+    @include corners-top();
 }
 
 .corners-bottom {
-  @include corners-bottom();
+    @include corners-bottom();
+}
+
+.hide {
+    display:				none;
 }
 
 .centered {
   text-align:				center;
-}
-
-.hidden {
-  display:				none;
 }
 
 label, .label {
@@ -52,6 +158,13 @@ label, .label {
     font-size:				$font_size_text;
     line-height:			$font_size_text;
     vertical-align:			middle;
+}
+
+.info-dialog {
+    position:				absolute;
+    top:				35%;
+    margin:				0px auto;
+    z-index:				1020;
 }
 
 /*
@@ -66,4 +179,47 @@ img.ajax_spinner {
 
 .ui-icon-closethick {
   display:		none;
+}
+
+/*
+ * ----- ----- Mobile and low-res media queries
+ */
+@media only screen and (max-width: 1023px) {
+    body {
+        font-size:			0.8em;
+        line-height:			1.5em;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    body {
+        font-size:			16px;
+        -webkit-text-size-adjust:	none;
+    }
+
+    .row, body, .container {
+        width:				100%;
+        min-width:			0;
+        margin: {
+            left:			0px;
+            right:			0px;
+        }
+        padding: {
+            left:			0px;
+            right:			0px;
+        }
+    }
+
+    .row .span-1, .row .span-2, .row .span-3, .row .span-4, .row .span-5, .row .span-6, .row .span-7, .row .span-8, .row .span-9, .row .span-10, .row .span-11, .row .span-12 {
+        width:				auto;
+        float:				none;
+        margin: {
+            left:			0px;
+            right:			0px;
+        }
+        padding: {
+            left:			0px;
+            right:			0px;
+        }
+    }
 }

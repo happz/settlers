@@ -19,6 +19,7 @@
     border-width:                       0;
     padding:                            1em 1.4em;
     background:                         none;
+    overflow:				visible;
 }
 
 .ui-tabs .ui-tabs-hide {
@@ -56,8 +57,25 @@
 .game-cards {
 }
 
+.game-board {
+  position:				relative;
+  height:				816px;
+  width:				645px;
+  margin:				0px auto;
+  padding:				0px;
+}
+
 .game-cards {
     li:hover {
         background:			$color_background none;
     }
+}
+
+table {
+    width:                      100%;
+}
+
+#right_column {
+  widht: 95%;
+  margin: 0px auto;
 }

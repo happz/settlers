@@ -1978,18 +1978,6 @@
   background-image:             url(/static/images/games/settlers/board/real/players/red/path/rt.gif);
 }
 
-.settlers-board-path-t-active {
-  background-image:             url(/static/images/games/settlers/board/simple/players/free/path/t_active.gif);
-}
-
-.settlers-board-path-lt-active {
-  background-image:             url(/static/images/games/settlers/board/simple/players/free/path/lt_active.gif);
-}
-
-.settlers-board-path-rt-active {
-  background-image:             url(/static/images/games/settlers/board/simple/players/free/path/rt_active.gif);
-}
-
 .settlers-board-path-1 {
   left:				91px;
   top:				214px;

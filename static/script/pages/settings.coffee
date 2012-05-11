@@ -26,45 +26,39 @@ window.settlers.setup_autocomplete = () ->
 
 window.settlers.setup_forms = () ->
   new window.hlib.Form
-    fid:        'password'
+    fid:			'password'
+    clear_fields:		['password1', 'password2']
     handlers:
-      s200:     (response, form) ->
+      s200:			(response, form) ->
         form.info.success 'Password successfuly changed'
 
   new window.hlib.Form
-    fid:        'after_pass_turn'
-    dont_clean: true
+    fid:			'after_pass_turn'
 
   new window.hlib.Form
     fid:                'color'
-    dont_clean:         true
+    clear_fields:	['color']
     handlers:
       s200:     (response, form) ->
         form.info.success 'Successfuly changed'
-        $(form.field_id 'color').val ''
 
       s400:     (response, form) ->
         window.hlib.form_default_handlers.s400 response, form
-        $(form.field_id 'color').val ''
 
   new window.hlib.Form
     fid:                'opponent_colors'
     handlers:
       s200:     (response, form) ->
         form.info.success 'Successfuly changed'
-        
 
   new window.hlib.Form
     fid:                'table_length'
-    dont_clean:         true
 
   new window.hlib.Form
     fid:                'board_skin'
-    dont_clean:         true
 
   new window.hlib.Form
     fid:                'sound'
-    dont_clean:         true
 
 window.settlers.setup_page = () ->
   window.settlers.setup_datepickers()

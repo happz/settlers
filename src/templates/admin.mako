@@ -10,19 +10,22 @@
 
 <%inherit file="page.mako" />
 
-${page_content_start()}
-
+${row_start()}
 ${w_form_start('/admin/trumpet/change_board', 'Change board', 'board')}
   ${w_form_text('text', label = 'Text', default = lib.trumpet.Board().text)}
   ${w_submit_row('Set')}
 ${w_form_end()}
+${row_end()}
 
+${row_start()}
 ${w_form_start('/admin/trumpet/change_password_recovery_mail', 'Change "Password recovery" mail', 'password_recovery_mail')}
   ${w_form_input('subject', 'text', label = 'Subject', default = lib.trumpet.PasswordRecoveryMail().subject)}
   ${w_form_text('text', label = 'Text', default = lib.trumpet.PasswordRecoveryMail().text)}
   ${w_submit_row('Set')}
 ${w_form_end()}
+${row_end()}
 
+${row_start()}
 ${w_form_start('/admin/i18n/add', 'Add token', 'i18n_add')}
   ${w_form_select('lang', label = 'Language')}
     % for key in hruntime.dbroot.localization.languages.iterkeys():
@@ -30,7 +33,7 @@ ${w_form_start('/admin/i18n/add', 'Add token', 'i18n_add')}
     % endfor
   </select></div>
 
-  <div class="grid-12-12 hidden" id="i18n_missing_tokens">
+  <div class="grid-12-12 hide" id="i18n_missing_tokens">
     <label>${_('Missing tokens')}</label>
     <div id="i18n_missing_tokens_list" class="i18n-missing-tokens">
     </div>
@@ -40,7 +43,9 @@ ${w_form_start('/admin/i18n/add', 'Add token', 'i18n_add')}
   ${w_form_input('value', 'text', label = 'Value')}
   ${w_submit_row('Add')}
 ${w_form_end()}
+${row_end()}
 
+${row_start()}
 ${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
   ${w_form_select('lang', label = 'Language')}
     % for key in hruntime.dbroot.localization.languages.iterkeys():
@@ -48,7 +53,7 @@ ${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
     % endfor
   </select></div>
 
-  <div class="grid-12-12 hidden" id="i18n_unused_tokens">
+  <div class="grid-12-12 hide" id="i18n_unused_tokens">
     <label>${_('Unused tokens')}</label>
     <div id="i18n_unused_tokens_list" class="i18n-unused-tokens">
     </div>
@@ -56,11 +61,11 @@ ${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
 
   ${w_form_select('token')}
     % for key in hruntime.i18n.tokens.iterkeys():
-      ${w_option(key, False, key)}
+      ${w_option(key.replace('"', r'\"'), False, key)}
     % endfor
   </select></div>
 
-  <div id="i18n_edit" class="hidden">
+  <div id="i18n_edit" class="hide">
     <div class="grid-11-12">
       ${w_form_text('value', struct = False)}
     </div>
@@ -70,5 +75,4 @@ ${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
     ${w_submit_row('Change')}
   </div>
 ${w_form_end()}
-
-${page_content_end()}
+${row_end()}
