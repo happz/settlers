@@ -41,7 +41,7 @@ class UserEvent(Event):
   def to_api(self):
     d = Event.to_api(self)
 
-    d['user'] = hlib.api.ApiUserInfo(self.user)
+    d['user'] = hlib.api.User(self.user)
 
     return d
 
@@ -53,6 +53,13 @@ class CardEvent(UserEvent):
 
   def to_api(self):
     d = UserEvent.to_api(self)
+
+    d['card'] = {
+      'type':		self.card.type,
+      'bought':		self.card.bought,
+      'used':		self.card.used
+    }
+
     return d
 
 #
@@ -107,8 +114,8 @@ class Pass(Event):
   def to_api(self):
     d = Event.to_api(self)
 
-    d['prev'] = hlib.api.ApiUserInfo(self.prev)
-    d['next'] = hlib.api.ApiUserInfo(self.next)
+    d['prev'] = hlib.api.User(self.prev)
+    d['next'] = hlib.api.User(self.next)
 
     return d
 

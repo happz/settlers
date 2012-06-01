@@ -1,60 +1,58 @@
+__author__			= 'Milos Prchlik'
+__copyright__			= 'Copyright 2010 - 2012, Milos Prchlik'
+__contact__			= 'happz@happz.cz'
+__license__			= 'http://www.php-suit.com/dpl'
+
 import handlers
-import hlib
 import lib.trumpet
 
+import hlib
 import hlib.api
-
-# Handlers
-from hlib.api import api
-from handlers import page, require_login, require_admin, require_write
-
-# Validators
 import hlib.input
-from hlib.input import validate_by
+
+# Shortcuts
+from handlers import page, require_admin, require_login, require_write
+from hlib.api import api
+from hlib.input import validator_factory, validate_by
 
 # pylint: disable-msg=F0401
 import hruntime
 
-ValidateLang	= hlib.input.validator_factory(hlib.input.CommonString())
-ValidateName	= hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(256))
-ValidateValue	= hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(256))
+ValidateLang	= validator_factory(hlib.input.CommonString())
+ValidateName	= validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(256))
+ValidateValue	= validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(256))
 
 class ValidateLangSchema(hlib.input.SchemaValidator):
   lang = ValidateLang()
 
-class ApiTokens(hlib.api.ApiJSON):
+class Tokens(hlib.api.ApiJSON):
   def __init__(self, names):
-    super(ApiTokens, self).__init__(['tokens'])
+    super(Tokens, self).__init__(['tokens'])
 
     self.tokens = [{'name': name} for name in names]
 
-class ApiToken(hlib.api.ApiJSON):
+class Token(hlib.api.ApiJSON):
   def __init__(self, value):
-    super(ApiToken, self).__init__(['value'])
+    super(Token, self).__init__(['value'])
 
     self.value = value
 
-class AdminStatsHandler(handlers.GenericHandler):
-  @handlers.require_admin
-  @handlers.require_login
-  @page
-  def index(self):
-    return self.generate('admin_stats.mako')
+def require_lang(lang):
+  if lang not in hruntime.dbroot.localization.languages:
+    raise hlib.error.InvalidInputError(invalid_field = 'lang')
 
-class AdminEventsHandler(handlers.GenericHandler):
-  @require_admin
-  @require_login
-  @page
-  def index(self):
-    return self.generate('admin_events.mako')
+  return hruntime.dbroot.localization.languages[lang]
 
 class TrumpetHandler(handlers.GenericHandler):
-  password_recovery_mail = lib.trumpet.PasswordRecoveryMail()
-  board                = lib.trumpet.Board()
+  password_recovery_mail	= lib.trumpet.PasswordRecoveryMail()
+  board				= lib.trumpet.Board()
 
+  #
+  # Change Password Recovery Mail
+  #
   class ValidateChangePasswordRecoveryMail(hlib.input.SchemaValidator):
-    subject = hlib.input.validator_factory(hlib.input.CommonString())
-    text = hlib.input.validator_factory(hlib.input.CommonString())
+    subject			= hlib.input.validator_factory(hlib.input.CommonString())
+    text			= hlib.input.validator_factory(hlib.input.CommonString())
 
   @require_write
   @require_admin
@@ -65,10 +63,13 @@ class TrumpetHandler(handlers.GenericHandler):
     self.password_recovery_mail.subject = subject
     self.password_recovery_mail.text = text
 
-    return hlib.api.ApiReply(200, updated_fields = {'subject': self.password_recovery_mail.subject, 'text': self.password_recovery_mail.text})
+    return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'subject': self.password_recovery_mail.subject, 'text': self.password_recovery_mail.text}))
 
+  #
+  # Change Board
+  #
   class ValidateChangeBoard(hlib.input.SchemaValidator):
-    text = hlib.input.validator_factory(hlib.input.CommonString())
+    text = hlib.input.validator_factory(hlib.input.UnicodeString())
 
   @require_write
   @require_admin
@@ -78,16 +79,24 @@ class TrumpetHandler(handlers.GenericHandler):
   def change_board(self, text = None):
     self.board.text = text
 
-    return hlib.api.ApiReply(200, updated_fields = {'text': self.board.text})
+    return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'text': self.board.text}))
 
 class I18NHandler(handlers.GenericHandler):
+  #
+  # Tokens
+  #
   @require_admin
   @require_login
   @validate_by(schema = ValidateLangSchema)
   @api
-  def tokens(self, lang = None, name = None):
-    return ApiTokens(hruntime.dbroot.localization.languages[lang].tokens.keys())
+  def tokens(self, lang = None):
+    lang = require_lang(lang)
 
+    return Tokens(lang.tokens.keys())
+
+  #
+  # Token
+  #
   class ValidateToken(ValidateLangSchema):
     name = ValidateName()
 
@@ -96,60 +105,76 @@ class I18NHandler(handlers.GenericHandler):
   @validate_by(schema = ValidateToken)
   @api
   def token(self, lang = None, name = None):
-    return ApiToken(hruntime.dbroot.localization.languages[lang][name])
+    lang = require_lang(lang)
 
+    return Token(lang[name])
+
+  #
+  # Add
+  #
   class ValidateAdd(ValidateLangSchema):
     name = ValidateName()
     value = ValidateValue()
 
-  @require_write
-  @require_admin
-  @require_login
-  @validate_by(schema = ValidateAdd)
-  @api
+  @handlers.require_write
+  @handlers.require_admin
+  @handlers.require_login
+  @hlib.input.validate_by(schema = ValidateAdd)
+  @hlib.api.api
   def add(self, lang = None, name = None, value = None):
-    hruntime.dbroot.localization.languages[lang][name] = value
+    lang = require_lang(lang)
 
+    lang[name] = value
+
+  #
+  # Remove
+  #
   class ValidateRemove(ValidateLangSchema):
     name = ValidateName()
 
-  @require_write
-  @require_admin
-  @require_login
-  @validate_by(schema = ValidateRemove)
-  @api
+  @handlers.require_write
+  @handlers.require_admin
+  @handlers.require_login
+  @hlib.input.validate_by(schema = ValidateRemove)
+  @hlib.api.api
   def remove(self, lang = None, name = None):
-    del hruntime.dbroot.localization.languages[lang][name]
+    lang = require_lang(lang)
 
+    del lang[name]
+
+  #
+  # Unused
+  #
   @require_admin
   @require_login
   @validate_by(schema = ValidateLangSchema)
   @api
   def unused(self, lang = None):
-    lang = hruntime.dbroot.localization.languages[lang]
+    lang = require_lang(lang)
 
     if lang.coverage:
       coverage = lang.coverage.coverage(lang)
 
-    return ApiTokens(coverage[2].keys())
+    return Tokens(coverage[2].keys())
 
+  #
+  # Missing
+  #
   @require_admin
   @require_login
   @validate_by(schema = ValidateLangSchema)
   @api
   def missing(self, lang = None):
-    lang = hruntime.dbroot.localization.languages[lang]
+    lang = require_lang(lang)
 
     if lang.coverage:
       coverage = lang.coverage.coverage(lang)
 
-    return ApiTokens(coverage[1].keys())
+    return Tokens(coverage[1].keys())
 
 class Handler(handlers.GenericHandler):
   i18n		= I18NHandler()
   trumpet	= TrumpetHandler()
-  events    = AdminEventsHandler()
-  stats     = AdminStatsHandler()
 
   @require_admin
   @require_login

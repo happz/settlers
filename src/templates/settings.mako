@@ -42,15 +42,23 @@
 
   ${row_start()}
   ${w_form_start('/settings/color', 'Favourite color', 'color')}
-    ${w_form_select('color')}
-      % for color_name in games.settlers.COLOR_SPACE.unused_colors(user):
-        <%
-          color = games.settlers.COLOR_SPACE.colors[color_name]
-        %>
-        ${w_option(color.name, False, _(color.label), classes = ['colors'], style = ['background-image: url(/static/images/games/settlers/board/real/players/' + color.name + '/node/village.gif)'])}
-      % endfor
-    </select></div>
-
+    <div class="grid-6-12">
+      ${w_form_select('kind', label = 'Game', struct = False)}
+        % for kind in games.GAME_KINDS:
+          ${w_option(kind, False, _(kind))}
+        % endfor
+      </select>
+    </div>
+    <div class="grid-6-12 omega">
+      ${w_form_select('color')}
+        % for color_name in games.settlers.COLOR_SPACE.unused_colors(user):
+          <%
+            color = games.settlers.COLOR_SPACE.colors[color_name]
+          %>
+          ${w_option(color.name, False, _(color.label), classes = ['colors'], style = ['background-image: url(/static/images/games/settlers/board/real/players/' + color.name + '/node/village.gif)'])}
+        % endfor
+      </select>
+    </div>
     ${w_submit_row('Set')}
   ${w_form_end()}
   ${row_end()}
@@ -97,7 +105,7 @@
   ${row_end()}
 
   ${row_start()}
-  ${w_form_start('/settings/table_length', 'Games per page of game table', 'table_length')}
+  ${w_form_start('/settings/per_page', 'Items per page of table', 'per_page')}
     ${w_form_select('per_page', default = False)}
       % for cnt in handlers.settings.TABLE_ROW_COUNTS:
         ${w_option(cnt, user.table_length == cnt, cnt)}

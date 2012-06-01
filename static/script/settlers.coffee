@@ -51,6 +51,9 @@ class window.settlers.PullNotify
 #
 # Methods
 #
+window.settlers.render_board_piece = (attrs) ->
+  return '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
+
 window.settlers.show_menu_alert = (item) ->
   eid = '#' + item + ' .menu-alert'
 
@@ -87,7 +90,7 @@ window.settlers.startup = () ->
     info_dialog:
       eid:                    '.info-dialog'
 
-#  window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
+  window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
 
   window.settlers.setup_settlers()
   window.settlers.setup_page()

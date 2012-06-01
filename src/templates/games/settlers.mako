@@ -104,8 +104,9 @@
     </div>
 
     <div id="cards" class="hide">
-      ${w_form_start('/game/settlers/cards/new', 'Buy new action card', 'new_card')}
-        ${w_submit_button('Buy')}
+      ${w_form_start('/game/buy_card', 'Buy new action card', 'new_card')}
+        ${w_form_input('gid', 'hidden', struct = False)}
+        ${w_submit_row('Buy')}
       ${w_form_end()}
 
       <div id="cards_list"></div>
@@ -136,7 +137,9 @@
             ${w_form_select('dst', struct = False, default = False)}
             </select>
           </div>
-          ${w_submit_row('Exchange')}
+          <div class="grid-12-12">
+            ${w_submit_button('Exchange')}
+          </div>
         ${w_form_end()}
       </div>
 

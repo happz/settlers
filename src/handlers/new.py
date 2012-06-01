@@ -1,18 +1,16 @@
 import handlers
 import lib.datalayer
 
-# Handlers
-from hlib.api import api, ApiRaw
+# Shortcuts
 from handlers import page, require_login, require_write
-
-# Validators
-from hlib.input import validator_factory, validate_by, CommonString, MaxLength, SchemaValidator
-from lib.chat import ValidateChatPost
 
 # pylint: disable-msg=F0401
 import hruntime
 
 class Handler(handlers.GenericHandler):
+  #
+  # Index
+  #
   @require_login
   @page
   def index(self):

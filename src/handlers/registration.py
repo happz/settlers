@@ -1,16 +1,18 @@
 import random
+
 import handlers
+import lib
 import lib.datalayer
+
+import hlib.api
+import hlib.error
+import hlib.input
 import hlib.mail
 
-import lib
-
-# Handlers
-from hlib.api import api, ApiReply
+# Shortcuts
+from hlib.api import api
 from handlers import page, require_write
-
-# Validators
-from hlib.input import validate_by, Username, Password, Email, FieldsMatch, SchemaValidator
+from hlib.input import validate_by
 
 # pylint: disable-msg=F0401
 import hruntime
@@ -20,9 +22,9 @@ class RecoveryHandler(handlers.GenericHandler):
   def index(self):
     return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'password_recovery', self.generate, 'password_recovery.mako')
 
-  class ValidatePasswordRecovery(SchemaValidator):
-    username = Username()
-    email = Email()
+  class ValidatePasswordRecovery(hlib.input.SchemaValidator):
+    username = hlib.input.Username()
+    email = hlib.input.Email()
 
   @require_write
   @validate_by(schema = ValidatePasswordRecovery)
@@ -49,17 +51,29 @@ class RecoveryHandler(handlers.GenericHandler):
 class Handler(handlers.GenericHandler):
   recovery = RecoveryHandler()
 
+  #
+  # Index
+  #
   @page
   def index(self):
     return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'registration', self.generate, 'registration.mako')
 
-  class ValidateRegistration(SchemaValidator):
-    username = Username()
-    password1 = Password()
-    password2 = Password()
-    email = Email()
+  #
+  # Checkin
+  #
+  class UserExistsError(hlib.error.BaseError):
+    def __init__(self, **kwargs):
+      kwargs['reply_status']	= 403
 
-    chained_validators = [FieldsMatch('password1', 'password2')]
+      super(UserExistsError, self).__init__(**kwargs)
+
+  class ValidateRegistration(hlib.input.SchemaValidator):
+    username			= hlib.input.Username()
+    password1			= hlib.input.Password()
+    password2			= hlib.input.Password()
+    email			= hlib.input.Email()
+
+    chained_validators = [hlib.input.FieldsMatch('password1', 'password2')]
 
   @require_write
   @validate_by(schema = ValidateRegistration)
@@ -67,7 +81,7 @@ class Handler(handlers.GenericHandler):
   def checkin(self, username = None, password1 = None, password2 = None, email = None):
     # pylint: disable-msg=R0201
     if username in hruntime.dbroot.users:
-      return reply(403, message = 'User name already used', orig_fields = True, invalid_field = 'username')
+      raise UserExistsError(orig_fields = True, invalid_field = 'username')
 
     u = lib.datalayer.User(username, lib.pwcrypt(password1), email)
     hruntime.dbroot.users[u.name] = u

@@ -6,7 +6,7 @@ import lib.datalayer
 import lib.lister
 
 from handlers import page, require_login
-from hlib.api import api, ApiJSON, ApiRaw, ApiReply
+from hlib.api import api, ApiJSON, Raw, Reply
 
 # pylint: disable-msg=F0401
 import hruntime
@@ -50,4 +50,4 @@ class StatsHandler(handlers.GenericHandler):
     for r in rs:
       reply.records.append(['', unicode(r.user.name), int(r.games), int(r.wons), int(r.points), float(r.points_per_game)])
 
-    return ApiRaw(reply)
+    return Raw(reply)

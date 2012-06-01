@@ -1,4 +1,10 @@
+_log_enabled = false
+_log = (args...) ->
+  if window.settlers._log_enabled == true
+    console.log args
+
 window.settlers = window.settlers or {}
+window.settlers._log_enabled = false
 
 window.settlers.format_event_resources = (rs) ->
   return (window.hlib._g '{0} wood, {1} clay, {2} sheep, {3} grain, {4} rock').format rs.wood, rs.clay, rs.sheep, rs.grain, rs.rock
@@ -8,10 +14,27 @@ window.settlers.events['game.settlers.LongestPathBonusEarned']		= (e) ->
   return ''
 window.settlers.events['game.settlers.MightestChilvaryBonusEarned']	= (e) ->
   return ''
+
 window.settlers.events['game.settlers.ResourceStolen']			= (e) ->
-  return ''
+  if e.am_i_thief == true
+    return (window.hlib._g 'You stole 1 piece of {0} from {1}').format e.resource, e.victim.name
+
+  if e.am_i_victim == true
+    return (window.hlib._g '{0} stole 1 piece of {1} from you').format e.thief.name, e.resource
+
+  return (window.hlib._g '{0} stole 1 piece of resources from {1}').format e.thief.name, e.victim.name
+
 window.settlers.events['game.settlers.ResourcesStolen']			= (e) ->
+  if e.am_i_thief != true
+    if e.am_i_victim
+      return (window.hlib._g 'Thief stole you resources: {0}').format window.settlers.format_event_resources e.resources
+
+    else
+      rs = e.resources
+      return (window.hlib._g 'Thief stole {0} {1} resources').format e.victim.name, (rs.wood + rs.clay + rs.sheep + rs.grain + rs.rock)
+
   return ''
+
 window.settlers.events['game.settlers.DiceRolled']			= (e) ->
   return ''
 window.settlers.events['game.settlers.VillageBuilt']			= (e) ->
@@ -19,13 +42,14 @@ window.settlers.events['game.settlers.VillageBuilt']			= (e) ->
 window.settlers.events['game.settlers.TownBuild']			= (e) ->
   return ''
 window.settlers.events['game.settlers.ResourcesReceived']		= (e) ->
-  return (window.hlib._g 'Player {0} received these resources: {1}').format e.user.name, (window.settlers.format_event_resources e.resources)
+  return (window.hlib._g '{0} received these resources: {1}').format e.user.name, (window.settlers.format_event_resources e.resources)
 window.settlers.events['game.settlers.ResourcesExchanged']		= (e) ->
   return ''
 window.settlers.events['game.settlers.Monopoly']			= (e) ->
   return ''
+
 window.settlers.events['game.settlers.ThiefPlaced']			= (e) ->
-  return ''
+  return (window.hlib._g '{0} moved thief').format e.user.name
 
 class window.settlers.GameObject
   resource_id_to_name:		['sheep', 'wood', 'rock', 'grain', 'clay']
@@ -54,16 +78,17 @@ class window.settlers.GameObject
     @current_active_paths_map = null
 
   get_thief_field:	() ->
-    return @board.fields.filter (f) -> f.thief == true
+    fields = @board.fields.filter (f) -> f.thief == true
+    return fields[0]
 
   get_nodes_by_field:	(field) ->
     nodes = []
 
-    __check_node = (node) ->
-      if field.id in window.settlers.board_defs.nodes['n' + node.id].fields
+    __per_node = (node) ->
+      if field.id in window.settlers.board_defs.nodes[node.id].fields
         nodes.push n
 
-    __check_node n for n in @board.nodes
+    __per_node n for n in @board.nodes
     return nodes
 
   get_path_sibling_by_node:	(path, node, index) ->
@@ -86,14 +111,14 @@ class window.settlers.GameObject
 
       i += 1
 
-    __per_path pid for pid in window.settlers.board_defs.nodes['n' + node.id].paths
+    __per_path pid for pid in window.settlers.board_defs.nodes[node.id].paths
     return ret
 
   get_free_paths_map_by_node:		(node) ->
     G = @
     m = jQuery.extend {}, window.settlers.board_defs.active_paths_map_positive
 
-    m['p' + pid] = (G.board.paths[pid - 1].type == 1) for pid in window.settlers.board_defs.nodes['n' + node.id].paths
+    m[pid] = (G.board.paths[pid - 1].type == 1) for pid in window.settlers.board_defs.nodes[node.id].paths
 
     return m
 
@@ -110,8 +135,8 @@ class window.settlers.GameObject
         if node.type == 1
           return
 
-        m['n' + node.id] = false
-        m['n' + neighbour_id] = false for neighbour_id in window.settlers.board_defs.nodes['n' + node.id].neighbours
+        m[node.id] = false
+        m[neighbour_id] = false for neighbour_id in window.settlers.board_defs.nodes[ node.id].neighbours
 
       __per_node node for node in @board.nodes
       return m
@@ -124,7 +149,7 @@ class window.settlers.GameObject
 
       __per_node = (node) ->
         if node.type != 1 and node.owner != P.id
-          m['n' + node.id] = true
+          m[node.id] = true
 
       __per_node node for node in nodes
 
@@ -135,14 +160,14 @@ class window.settlers.GameObject
       m = jQuery.extend {}, window.settlers.board_defs.active_nodes_map_positive
 
       __per_node = (node) ->
-        if m['n' + node.id] == false
+        if m[node.id] == false
           return
 
         if node.type != 1
-          m['n' + neighbour_id] = false for neighbour_id in window.settlers.board_defs.nodes['n' + node.id].neighbours
+          m[neighbour_id] = false for neighbour_id in window.settlers.board_defs.nodes[node.id].neighbours
 
           if node.type != 2 or node.owner != P.id
-            m['n' + node.id] = false
+            m[node.id] = false
 
           return
 
@@ -151,9 +176,9 @@ class window.settlers.GameObject
           if G.board.paths[pid - 1].owner == P.id
             found = true
 
-        __per_path pid for pid in window.settlers.board_defs.nodes['n' + node.id].paths
+        __per_path pid for pid in window.settlers.board_defs.nodes[node.id].paths
 
-        m['n' + node.id] = found
+        m[node.id] = found
 
       __per_node node for node in @board.nodes
       return m
@@ -186,28 +211,41 @@ class window.settlers.GameObject
         if path.type != 1
           return
 
-        node1 = G.board.nodes[window.settlers.board_defs.paths['p' + path.id].nodes[0] - 1]
-        node2 = G.board.nodes[window.settlers.board_defs.paths['p' + path.id].nodes[1] - 1]
+        node1 = G.board.nodes[window.settlers.board_defs.paths[path.id].nodes[0] - 1]
+        node2 = G.board.nodes[window.settlers.board_defs.paths[path.id].nodes[1] - 1]
+
+        _log 'nodes:', node1, node2
 
         if node1.owner == P.id or node2.owner == P.id
-          m['p' + path.id] = true
+          m[path.id] = true
           return
 
+        sibling1 = null
+        sibling2 = null
+
         sibling1 = G.get_path_sibling_by_node path, node1, 0
+        _log 's1', sibling1
         if sibling1 and (sibling1.type != 2 or sibling1.owner != G.my_player.id)
           sibling1 = null
 
-        sibling1 = G.get_path_sibling_by_node path, node1, 1
-        if sibling1 and (sibling1.type != 2 or sibling1.owner != G.my_player.id)
-          sibling1 = null
+        if not sibling1
+          sibling1 = G.get_path_sibling_by_node path, node1, 1
+          _log 's1', sibling1
+          if sibling1 and (sibling1.type != 2 or sibling1.owner != G.my_player.id)
+            sibling1 = null
 
         sibling2 = G.get_path_sibling_by_node path, node2, 0
+        _log 's2', sibling2
         if sibling2 and (sibling2.type != 2 or sibling2.owner != G.my_player.id)
           sibling2 = null
 
-        sibling2 = G.get_path_sibling_by_node path, node2, 1
-        if sibling2 and (sibling2.type != 2 or sibling2.owner != G.my_player.id)
-          sibling2 = null
+        if not sibling2
+          sibling2 = G.get_path_sibling_by_node path, node2, 1
+          _log 's2', sibling2
+          if sibling2 and (sibling2.type != 2 or sibling2.owner != G.my_player.id)
+            sibling2 = null
+
+        _log 'siblings', sibling1, sibling2
 
         if sibling1 and not sibling2 and node1.type != 1
           return
@@ -215,7 +253,7 @@ class window.settlers.GameObject
         if sibling2 and not sibling1 and node2.type != 1
           return
 
-        m['p' + path.id] = (sibling1 != null or sibling2 != null)
+        m[path.id] = (sibling1 != null or sibling2 != null)
 
       __per_path path for path in G.board.paths
       return m
@@ -253,6 +291,8 @@ class window.settlers.GameObject
 
     __per_port p for p in @board.ports
 
+    return ret
+
   can_exchange_common:	() ->
     return @state == 1
 
@@ -277,10 +317,12 @@ class window.settlers.GameObject
     ret = false
 
     __per_resource = (resource) ->
-      if G.my_player.resources[G.resource_id_to_name[resource]] >= 2 and (G.get_used_ports G.my_player, resource) > 0
+      if G.my_player.resources[G.resource_id_to_name[resource]] >= 2 and (G.get_used_ports G.my_player, resource).length > 0
         ret = true
 
     __per_resource r for r in [0, 1, 2, 3, 4]
+
+    return ret
 
   can_exchange:		() ->
     return @can_exchange_four() or @can_exchange_three() or @can_exchange_two()
@@ -343,15 +385,11 @@ window.settlers.templates.game.cards = '
     {{#cards}}
       <li id="card_{{id}}" class="info info-with-menu">
         <span class="card-type">{{type_name}}</span>
-        {{#used}}
-          <span class="card-info right">Bought in {{bought}}, used in {{used}}</span>
-        {{/used}}
-        {{^used}}
+        {{#can_be_used}}
           <span class="card-menu right">
-            Bought in {{bought}}
-            <image id="card_use_{{id}}" src="/static/images/icons/Accept32.png" />
+            <span id="card_use_{{id}}" class="icon icon-medium icon-card-use"></span>
           </span>
-        {{/used}}
+        {{/can_be_used}}
       </li>
     {{/cards}}
   </ul>
@@ -501,16 +539,44 @@ window.settlers.update_game_ui_board = () ->
   $(eid).html ''
 
   __add_field = (f) ->
-    s = '<span id="settlers_board_field_' + f.id + '" class="settlers-board-piece settlers-board-field settlers-board-field-' + f.id + ' settlers-board-field-' + bs + '-' + map_resource_to_str[f.resource + 2] + '"></span>'
-    $(eid).append s
+    attrs =
+      id:		'settlers_board_field_' + f.id
+      class:		'settlers-board-piece settlers-board-field settlers-board-field-' + f.id + ' settlers-board-field-' + bs + '-' + map_resource_to_str[f.resource + 2]
+
+    $(eid).append window.settlers.render_board_piece attrs
 
     if f.thief == true
-      s = '<span class="settlers-board-piece settlers-board-thief settlers-board-thief-' + bs + ' settlers-board-thief-' + f.id + '"></span>'
-      $(eid).append s
+      attrs =
+        class:		'settlers-board-piece settlers-board-thief settlers-board-thief-' + bs + ' settlers-board-thief-' + f.id
+
+      $(eid).append window.settlers.render_board_piece attrs
 
   __add_number = (f) ->
-    s = '<span id="settlers_board_number_' + f.id + '" class="settlers-board-piece settlers-board-number settlers-board-number-field-' + f.id + ' settlers-board-number-' + f.number + '"></span>'
-    $(eid).append s
+    attrs =
+      id:		'settlers_board_number_' + f.id
+      class:		'settlers-board-piece settlers-board-number settlers-board-number-field-' + f.id + ' settlers-board-number-' + f.number
+
+    if (G.state == 13 or G.state == 15 or G.state == 19) and f.thief != true
+      attrs.class += ' settlers-board-number-active'
+
+    $(eid).append window.settlers.render_board_piece attrs
+
+    if (G.state == 13 or G.state == 15 or G.state == 19) and f.thief != true
+      $('#' + attrs.id).click () ->
+        window.hlib.INFO.working()
+
+        window.hlib.Ajax
+          url:			'/game/settlers/number_click'
+          data:
+            gid:		G.gid
+            nid:		f.id
+          handlers:
+            h200:     (response, ajax) ->
+              window.settlers.update_game_state()
+            h403:	(response, ajax) ->
+              window.hlib.INFO.error window.hlib._g response.error.message
+
+        return false
 
   __add_path = (p) ->
     attrs =
@@ -526,13 +592,12 @@ window.settlers.update_game_ui_board = () ->
       attrs.class += 'settlers-board-path-' + bs + '-' + owner.color.name + '-' + map_pathid_to_position[p.id]
       attrs.title = owner.user.name
 
-    if G.current_active_paths_map['p' + p.id] == true
+    if G.current_active_paths_map[p.id] == true
       attrs.class += ' settlers-board-path-active settlers-board-path-' + bs + '-free-' + map_pathid_to_position[p.id] + '-active'
 
-    s = '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
-    $(eid).append(s)
+    $(eid).append window.settlers.render_board_piece attrs
 
-    if G.current_active_paths_map['p' + p.id] == true
+    if G.current_active_paths_map[p.id] == true
       if G.state == 1
         $('#' + attrs.id).click () ->
           window.hlib.INFO.working()
@@ -546,7 +611,7 @@ window.settlers.update_game_ui_board = () ->
               h200:     (response, ajax) ->
                 window.settlers.update_game_state()
               h403:	(response, ajax) ->
-                window.hlib.INFO.error window.hlib._g response.message
+                window.hlib.INFO.error window.hlib._g response.error.message
 
           return false
 
@@ -579,7 +644,7 @@ window.settlers.update_game_ui_board = () ->
       color = 'free'
       attrs.class += 'settlers-board-node-free settlers-board-node-' + bs + '-free settlers-board-node-free-' + n.id
 
-      if G.current_active_nodes_map['n' + n.id] == true
+      if G.current_active_nodes_map[n.id] == true
         attrs.class += ' settlers-board-node-' + bs + '-free-active settlers-board-node-active'
 
     else
@@ -588,13 +653,13 @@ window.settlers.update_game_ui_board = () ->
       attrs.class += 'settlers-board-node-owned settlers-board-node-owned-' + n.id + ' settlers-board-node-' + bs + '-' + map_nodetype_to_str[n.type] + '-' + owner.color.name
       attrs.title = owner.user.name
 
-      if G.current_active_nodes_map['n' + n.id] == true
+      if G.current_active_nodes_map[n.id] == true
         attrs.class += '-active settlers-board-node-active'
 
     s = '<span ' +  ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
     $(eid).append(s)
 
-    if G.current_active_nodes_map['n' + n.id] == true
+    if G.current_active_nodes_map[n.id] == true
       if G.state == 1
         $('#' + attrs.id).click () ->
           window.hlib.INFO.working()
@@ -608,7 +673,7 @@ window.settlers.update_game_ui_board = () ->
               h200:     (response, ajax) ->
                 window.settlers.update_game_state()
               h403:	(response, ajax) ->
-                window.hlib.INFO.error window.hlib._g response.message
+                window.hlib.INFO.error window.hlib._g response.error.message
 
           return false
 
@@ -779,14 +844,19 @@ window.settlers.update_game_ui_cards = () ->
   map_type_to_name = ['undefined', 'Rytir', 'Monopol', 'Cesty', 'Pokrok', 'Bod']
   c.type_name = map_type_to_name[c.type] for c in G.my_player.cards
 
-  rendered = window.hlib.render window.settlers.templates.game.cards, G.my_player
-  $('#cards_list').html rendered
-
-  $('#cards_list div:last').addClass 'corners-bottom'
+  $('#cards_list').html window.hlib.render window.settlers.templates.game.cards, G.my_player
 
   decorate_card = (c) ->
     $('#card_use_' + c.id).click () ->
-      alert 'baf'
+      window.hlib.Ajax
+        url:			'/game/card_click'
+        data:
+          gid:			G.gid
+          cid:			c.id
+        handlers:
+          h200:			(response, ajax) ->
+            window.settlers.update_game_state()
+            window.settlers.show_board()
       return false
 
   decorate_card c for c in G.my_player.cards
@@ -823,6 +893,10 @@ window.settlers.update_game_ui = () ->
   window.settlers.update_game_ui_exchange()
   window.settlers.update_game_ui_buttons()
 
+window.settlers.show_board = () ->
+  $('#views').tabs 'select', 3
+  window.location.hash = '#board'
+
 window.settlers.setup_page = () ->
   new window.hlib.Form
     fid:		'exchange_4'
@@ -831,13 +905,26 @@ window.settlers.setup_page = () ->
         form.info.success 'Exchanged'
         window.settlers.update_game_state()
 
+  new window.hlib.Form
+    fid:		'exchange_2'
+    handlers:
+      s200:		(response, form) ->
+        form.info.success 'Exchanged'
+        window.settlers.update_game_state()
+
+  new window.hlib.Form
+    fid:		'new_card'
+    handlers:
+      s200:		(response, form) ->
+        form.info.success 'Bought'
+        window.settlers.update_game_state()
+        show_cards()
+
+  $('#new_card_gid').val window.settlers.game.gid
+
   show_chat = () ->
     $('#views').tabs 'select', 1
     window.location.hash = '#chat'
-
-  show_board = () ->
-    $('#views').tabs 'select', 3
-    window.location.hash = '#board'
 
   show_cards = () ->
     $('#views').tabs 'select', 4
@@ -861,18 +948,6 @@ window.settlers.setup_page = () ->
 
       handlers:
         h200:		(response, ajax) ->
-          pt = response.pass_turn
-
-          window.hlib.INFO._hide()
-
-          if pt.after == 'games'
-            window.hlib.INFO.success 'Passed. Redirecting to home page'
-            window.hlib.redirect '/home'
-
-          if pt.after == 'next'
-            window.hlib.INFO.success 'Passed. Redirecting to next game'
-            window.hlib.redirect '/game?gid=' + pt.gid
-
           window.settlers.update_game_state()
 
     if G.state == 10
@@ -889,8 +964,6 @@ window.settlers.setup_page = () ->
       config.url = '/game/pass_turn'
 
     new window.hlib.Ajax config
-
-    return false
 
   window.settlers.roll_dice = () ->
     new window.hlib.Ajax
@@ -923,7 +996,7 @@ window.settlers.setup_page = () ->
     return false
 
   $('#show_board').click () ->
-    show_board()
+    window.settlers.show_board()
     return false
 
   $('#show_cards').click () ->
@@ -946,7 +1019,7 @@ window.settlers.setup_page = () ->
     show_chat()
 
   else if window.location.hash == '#board'
-    show_board()
+    window.settlers.show_board()
 
   else if window.location.hash == '#cards'
     show_cards()
@@ -958,7 +1031,7 @@ window.settlers.setup_page = () ->
     show_exchange()
 
   else
-    show_board()
+    window.settlers.show_board()
 
 window.settlers.templates.chat_post = '
   <fieldset class="chat-post">

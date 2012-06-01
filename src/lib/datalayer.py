@@ -160,14 +160,14 @@ class User(hlib.datalayer.User):
 
   def vacation_prepare(self, start, end):
     if end <= start:
-      raise hlib.error.Error('You can not finish vacation before it begin')
+      raise hlib.error.BaseError('You can not finish vacation before it begin')
 
     if start < hruntime.time:
-      raise hlib.error.Error('Start time can not be in past')
+      raise hlib.error.BaseError('Start time can not be in past')
 
     length = end - start
     if self.vacation < length:
-      raise hlib.error.Error('You do not have enough vacation available')
+      raise hlib.error.BaseError('You do not have enough vacation available')
 
     self.vacation -= length
 

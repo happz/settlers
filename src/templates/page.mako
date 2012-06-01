@@ -33,7 +33,7 @@
   <!-- Scripts -->
   <script src="https://www.google.com/jsapi?key=ABQIAAAAnT7bvt5eCgJnKE_9xHtWrRQL0gKz-n891IYmna21nNIOzPZZixRfXXTxioGg6bd4WAedyIJq9y470A" type="text/javascript"></script>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js" type="text/javascript"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 
   <script type="text/javascript" src="/static/script/jquery.form.js"></script>
@@ -85,6 +85,10 @@
 
 <%def name="page_title()">
   ${_(hruntime.app.config['title'])}
+
+  % if hruntime.user != None:
+    - ${hruntime.user.name}
+  % endif
 </%def>
 
 ##
@@ -123,6 +127,12 @@
 </%def>
 
 <%def name="page_footer_public()">
+  <%
+    current_page_name = next.name.split(':')[1].split('.')[0]
+    if current_page_name == 'maintenance':
+      return ''
+  %>
+
   <div class="row">
     <div class="prepend-3 span-6 last" style="text-align: center">
       <a href="/login/">${_('Log in')}</a> | <a href="/registration/">${_('Registration')}</a> | <a href="/registration/recovery/">${_('Forgot password?')}</a> | <a href="/loginas/">${_('Admin login')}</a>

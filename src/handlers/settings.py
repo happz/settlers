@@ -11,7 +11,7 @@ import lib.datalayer
 
 # Handlers
 from handlers import require_login, require_write, page
-from hlib.api import api, ApiReply
+from hlib.api import api
 from hlib.input import Username, Password, CommonString, OneOf, SchemaValidator, NotEmpty, Int, FieldsMatch, validator_factory, validate_by
 from games import ValidateKind
 
@@ -28,25 +28,25 @@ class OpponentsHandler(handlers.GenericHandler):
   @api
   def add(self, username = None, kind = None, color = None):
     if username not in hruntime.dbroot.users:
-      raise hlib.error.Error('No such player', invalid_field = 'username')
+      raise hlib.error.NoSuchUserError(params = {'username': username}, invalid_field = 'username')
 
     opponent = hruntime.dbroot.users[username]
 
     gm = games.game_module(kind)
 
     if color not in gm.COLOR_SPACE.colors:
-      hlib.error.Error('No such color')
+      raise hlib.error.InconsistencyError(msg = 'No such color')
 
     color = gm.COLOR_SPACE.colors[color]
 
     if opponent == hruntime.user:
-      raise hlib.error.Error('You can not set color for yourself')
+      raise hlib.error.InconsistencyError(msg = 'You can not set color for yourself')
 
     if color.name not in gm.COLOR_SPACE.unused_colors(hruntime.user):
-      raise hlib.error.Error('You can not use this color')
+      raise hlib.error.InconsistencyError(msg = 'You can not use this color')
 
     if len(gm.COLOR_SPACE.unused_colors(hruntime.user)) <= 3:
-      raise hlib.error.Error('You have no free colors to use')
+      raise hlib.error.InconsistencyError(msg = 'You have no free colors to use')
 
     hruntime.user.colors[kind][opponent.name] = color.name
 
@@ -55,9 +55,9 @@ class OpponentsHandler(handlers.GenericHandler):
   @api
   def remove(self, kind = None, username = None):
     if kind not in hruntime.user.colors or username not in hruntime.user.colors[kind]:
-      raise hlib.error.Error(msg = 'There is no such colorized opponent')
+      raise hlib.error.InconsistencyError(msg = 'There is no such colorized opponent')
 
-    del hruntime.user[kind][username]
+    del hruntime.user.colors[kind][username]
 
 class VacationHandler(handlers.GenericHandler):
   @require_write
@@ -86,18 +86,33 @@ class Handler(handlers.GenericHandler):
   vacation      = VacationHandler()
   opponents     = OpponentsHandler()
 
-  class ValidateTableLength(SchemaValidator):
+  @require_login
+  @page
+  def index(self):
+    return self.generate('settings.mako')
+
+  #
+  # Items per page
+  #
+  # Used for all tables - games, statistics, ... - if there are any tables at all...
+  #
+  class ValidatePerPage(SchemaValidator):
     per_page = validator_factory(NotEmpty(), Int(), OneOf(TABLE_ROW_COUNTS))
 
   @require_write
   @require_login
-  @validate_by(schema = ValidateTableLength)
+  @validate_by(schema = ValidatePerPage)
   @api
-  def table_length(self, per_page = None):
+  def per_page(self, per_page = None):
     hruntime.user.table_length = per_page
 
-    return ApiReply(200, updated_fields = {'per_page': hruntime.user.table_length})
+    return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'per_page': hruntime.user.table_length}))
 
+  #
+  # Board skin
+  #
+  # Select which skin user'd like to use in his games
+  #
   class ValidateBoardSkin(SchemaValidator):
     skin = validator_factory(CommonString(), OneOf(['real', 'simple']))
 
@@ -108,8 +123,13 @@ class Handler(handlers.GenericHandler):
   def board_skin(self, skin = None):
     hruntime.user.board_skin = skin
 
-    return ApiReply(200, updated_fields = {'skin': hruntime.user.board_skin})
+    return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'skin': hruntime.user.board_skin}))
 
+  #
+  # Password
+  #
+  # Change password
+  #
   class ValidatePassword(SchemaValidator):
     password1 = Password()
     password2 = Password()
@@ -123,21 +143,35 @@ class Handler(handlers.GenericHandler):
   def password(self, password1 = None, password2 = None):
     hruntime.user.password = lib.pwcrypt(password1)
 
+  #
+  # Color
+  #
+  # Change user's color
+  #
   class ValidateMyColor(SchemaValidator):
+    kind = ValidateKind()
     color = ValidateColor()
 
   @require_write
   @require_login
   @validate_by(schema = ValidateMyColor)
   @api
-  def color(self, color = None):
+  def color(self, kind = None, color = None):
+    if color not in gm.COLOR_SPACE.colors:
+      raise NoSuchColorError(color)
+
     color = games.settlers.COLOR_SPACE.colors[color]
 
     if color.name not in games.settlers.COLOR_SPACE.unused_colors(hruntime.user):
-      raise hlib.error.Error('You can not use this color')
+      raise hlib.error.InconsistencyError(msg = 'You can not use this color')
 
     hruntime.user.color(games.settlers.COLOR_SPACE, new_color = color)
 
+  #
+  # After "Pass turn"
+  #
+  # What to do after player passes his turn.
+  #
   class ValidateAfterPassTurn(SchemaValidator):
     action = validator_factory(NotEmpty(), Int(), OneOf([lib.datalayer.User.AFTER_PASS_TURN_STAY, lib.datalayer.User.AFTER_PASS_TURN_NEXT, lib.datalayer.User.AFTER_PASS_TURN_CURR]))()
 
@@ -148,8 +182,13 @@ class Handler(handlers.GenericHandler):
   def after_pass_turn(self, action = None):
     hruntime.user.after_pass_turn = action
 
-    return ApiReply(200, updated_fields = {'action': hruntime.user.after_pass_turn})
+    return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'action': hruntime.user.after_pass_turn}))
 
+  #
+  # Sound
+  #
+  # Ring a bell when player is on turn
+  #
   class ValidateSound(SchemaValidator):
     sound = validator_factory(NotEmpty(), Int(), OneOf([0, 1]))
 
@@ -160,9 +199,4 @@ class Handler(handlers.GenericHandler):
   def sound(self, sound = None):
     hruntime.user.sound = (sound == 1)
 
-    return ApiReply(200, updated_fields = {'sound': hruntime.user.sound == True and 1 or 0})
-
-  @require_login
-  @page
-  def index(self):
-    return self.generate('settings.mako')
+    return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'sound': hruntime.user.sound == True and 1 or 0}))

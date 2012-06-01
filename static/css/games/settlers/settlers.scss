@@ -1,0 +1,268 @@
+@import "lib.scss";
+
+.settlers-last-numbers {
+  padding-bottom:		0.4em;
+}
+
+.settlers-game-status {
+  color:			green;
+}
+
+.settlers-game-player-header-red {
+  background:			red !important;
+}
+
+.settlers-game-player-header-orange {
+  background:			orange !important;
+}
+
+.settlers-game-player-header-pink {
+  background:			pink !important;
+}
+
+.settlers-game-player-header-green {
+  background:			green !important;
+}
+
+.settlers-game-player-header-black {
+  background:			black !important;
+}
+
+.settlers-game-player-header-purple {
+  background:			purple !important;
+  color:			#fafafa !important;
+}
+
+.settlers-game-player-header-light_blue {
+  background:			#00CCCC !important;
+}
+
+.settlers-game-player-header-dark_blue {
+  background:			#000099 !important;
+  color:			#fafafa !important;
+}
+
+.settlers-game-player-header-brown {
+  background:			#663300 !important;
+  color:			#fafafa !important;
+}
+
+.settlers-game-player-header-dark_green {
+  background:			#347235 !important;
+  color:			#fafafa !important;
+}
+
+.settlers-player-title-icon {
+  width:			15px;
+  height:			15px;
+}
+
+.settlers-icon-chilvary-on {
+  background-image:		url(/static/images/games/settlers/knights/on.gif);
+}
+
+.settlers-icon-chilvary-off {
+  background-image:		url(/static/images/games/settlers/knights/off.gif);
+}
+
+.settlers-icon-path-on {
+  background-image:		url(/static/images/games/settlers/path/on.gif);
+}
+
+.settlers-icon-path-off {
+  background-image:		url(/static/images/games/settlers/path/off.gif);
+}
+
+.settlers-player-title-chilvary {
+  position:			absolute;
+  right:			-2px;
+  top:				30px;
+  z-index:			20;
+}
+
+.settlers-player-title-longest-path {
+  position:			absolute;
+  right:			-2px;
+  top:				49px;
+  z-index:			20;
+}
+
+ul.game-cards {
+    list-style-type:			none;
+}
+
+ul.game-cards > li:first-child {
+    @include corners-top();
+    border-top-width:                     1px !important;
+}
+
+ul.game-cards > li:last-child {
+    @include corners-bottom();
+    border-bottom-width:                  1px !important;
+}
+
+/*
+ * Common setup for all board pieces
+ */
+.settlers-board-piece {
+    position:				absolute;
+    background-color:			transparent;
+    background-attachment:		scroll;
+    background-position:		left top;
+    background-repeat:			no-repeat;
+}
+
+/*
+ * Nodes
+ */
+.settlers-board-node {
+  z-index:			20;
+}
+
+.settlers-board-node-free {
+  width:			12px;
+  height:			12px;
+}
+
+.settlers-board-node-owned {
+  width:			21px;
+  height:			21px;
+}
+
+.settlers-board-node-active {
+  cursor:			pointer;
+}
+
+/* Positions and 'board'x'type'x'color' combinations are in settlers-board.css */
+
+/*
+ * Fields
+ */
+.settlers-board-field {
+  z-index:			10;
+  width:			118px;
+  height:			102px;
+}
+
+/* Positions 'board'x'resource' combinations are in settlers-board.css */
+
+/*
+ * Thief
+ */
+.settlers-board-thief {
+  z-index:			30;
+  width:			66px;
+  height:			66px;
+}
+
+.settlers-board-thief-real {
+  background-image:		url(/static/images/games/settlers/board/real/thief.gif);
+}
+
+.settlers-board-thief-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/thief.gif);
+}
+
+/*
+ * Numbers
+ */
+.settlers-board-number {
+  z-index:			20;
+  width:			36px;
+  height:			36px;
+}
+
+.settlers-board-number-active {
+    cursor:			pointer;
+}
+
+/*
+ * Sea
+ */
+.settlers-board-sea {
+  z-index:			10;
+  width:			118px;
+  height:			102px;
+}
+
+.settlers-board-sea-real {
+  background-image:		url(/static/images/games/settlers/board/real/field/sea.gif);
+}
+
+.settlers-board-sea-simple {
+  background-image:		url(/static/images/games/settlers/board/simple/field/sea.gif);
+}
+
+/*
+ * Paths
+ */
+.settlers-board-path {
+  z-index:			20;
+}
+
+.settlers-board-path-lt {
+  width:			24px;
+  height:			34px;
+}
+
+.settlers-board-path-rt {
+  width:			24px;
+  height:			34px;
+}
+
+.settlers-board-path-t {
+  width:			35px;
+  height:			7px;
+}
+
+.settlers-board-path-active {
+  cursor:                       pointer;
+}
+
+.settlers-board-path-simple-free-lt {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/path/lt.gif);
+}
+
+.settlers-board-path-simple-free-rt {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/path/rt.gif);
+}
+
+.settlers-board-path-simple-free-t {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/path/t.gif);
+}
+
+.settlers-board-path-real-free-lt {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/path/lt.gif);
+}
+
+.settlers-board-path-real-free-rt {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/path/rt.gif);
+}
+
+.settlers-board-path-real-free-t {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/path/t.gif);
+}
+
+.settlers-board-path-simple-free-lt-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/path/lt_active.gif);
+}
+
+.settlers-board-path-simple-free-rt-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/path/rt_active.gif);
+}
+
+.settlers-board-path-simple-free-t-active {
+  background-image:		url(/static/images/games/settlers/board/simple/players/free/path/t_active.gif);
+}
+
+.settlers-board-path-real-free-lt-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/path/lt_active.gif);
+}
+
+.settlers-board-path-real-free-rt-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/path/rt_active.gif);
+}
+
+.settlers-board-path-real-free-t-active {
+  background-image:		url(/static/images/games/settlers/board/real/players/free/path/t_active.gif);
+}

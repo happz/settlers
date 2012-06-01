@@ -8,6 +8,7 @@ import handlers.chat
 import handlers.game
 import handlers.login
 import handlers.maint
+import handlers.maintenance
 import handlers.new
 import handlers.profile
 import handlers.registration
@@ -18,6 +19,7 @@ import handlers.vacation
 import lib.trumpet
 
 import hlib
+import hlib.api
 import hlib.auth
 import hlib.error
 import hlib.http
@@ -26,17 +28,15 @@ import lib.chat
 
 import hlib.handlers.root
 
-# Handlers
-from hlib.api import api, ApiJSON, ApiReply
+# Shortcuts
+from hlib.api import api
 from handlers import page, require_login, survive_vacation, require_write
-
-# Validators
-from hlib.input import validate_by, SchemaValidator, Username
+from hlib.input import validate_by
 
 # pylint: disable-msg=F0401
 import hruntime
 
-class PullNotify(ApiJSON):
+class PullNotify(hlib.api.ApiJSON):
   def __init__(self):
     super(PullNotify, self).__init__(['chat', 'on_turn', 'trumpet'])
 
@@ -47,12 +47,13 @@ class PullNotify(ApiJSON):
 class Handler(hlib.handlers.root.Handler):
   admin		= handlers.admin.Handler()
   home		= handlers.home.Handler()
+  maintenance	= handlers.maintenance.Handler()
   new		= handlers.new.Handler()
 
   login        = handlers.login.LoginHandler()
   loginas      = handlers.login.LoginAsHandler()
   settings     = handlers.settings.Handler()
-  chat         = handlers.chat.ChatHandler(lib.chat.ChatPagerGlobal())
+  chat         = handlers.chat.Handler(lib.chat.ChatPagerGlobal())
   registration = handlers.registration.Handler()
   stats        = handlers.stats.StatsHandler()
   vacation     = handlers.vacation.VacationHandler()
@@ -81,8 +82,8 @@ class Handler(hlib.handlers.root.Handler):
     hruntime.response.headers['Content-Type'] = 'text/javascript'
     return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'i18n', self.generate, 'i18n.mako', params = {'lang': hruntime.dbroot.localization.languages[lang]})
 
-  class ValidateUsersByName(SchemaValidator):
-    term = Username()
+  class ValidateUsersByName(hlib.input.SchemaValidator):
+    term = hlib.input.Username()
 
   @require_login
   @validate_by(schema = ValidateUsersByName)
@@ -129,4 +130,4 @@ class Handler(hlib.handlers.root.Handler):
     if cnt > 0:
       r.on_turn = cnt
 
-    return ApiReply(200, events = r)
+    return hlib.api.Reply(200, events = r)

@@ -4,10 +4,8 @@ window.settlers.setup_menu = () ->
   $('#menu_logout').click () ->
     new window.hlib.Ajax
       url:              '/logout/'
-      handlers:
-        h200:           (response, ajax) ->
-          window.hlib.redirect '/login/'
-          return false
+
+    return false
 
 window.settlers.setup_settlers = () ->
   if window.settlers.setup_menu

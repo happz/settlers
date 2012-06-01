@@ -1,18 +1,23 @@
+__author__			= 'Milos Prchlik'
+__copyright__			= 'Copyright 2010 - 2012, Milos Prchlik'
+__contact__			= 'happz@happz.cz'
+__license__			= 'http://www.php-suit.com/dpl'
+
 import games
 import handlers
-
-import hlib.pageable
-import hlib.ui.templates
-import hlib.ui.templates.Mako
-
 import lib.datalayer
 
-from handlers import require_login, require_write, page
-from games import GenericValidateGID, ValidateCardID, ValidateKind
-from hlib.input import validate_by, validator_factory, validator_optional, CommonString, Password, MinLength, MaxLength, NotEmpty, Int, OneOf, Username, SchemaValidator
-from hlib.api import api, ApiRaw, ApiReply
-from lib.chat import ValidateChatPost
 import hlib.api
+import hlib.error
+import hlib.pageable
+
+# Shortcuts
+from handlers import page, require_admin, require_login, require_write
+from hlib.api import api
+from hlib.input import validator_factory, validate_by, validator_optional
+
+from games import GenericValidateGID, ValidateCardID, ValidateKind
+from lib.chat import ValidateChatPost
 
 # pylint: disable-msg=F0401
 import hruntime
@@ -47,12 +52,6 @@ def require_on_game(gid):
 
   return g
 
-class ApiPassTurn(hlib.api.ApiJSON):
-  def __init__(self):
-    super(ApiPassTurn, self).__init__(['after', 'gid'])
-
-    self.after		= 'stay'
-
 class ApiRenderInfo(hlib.api.ApiJSON):
   def __init__(self, u):
     super(ApiRenderInfo, self).__init__(['board_skin'])
@@ -64,12 +63,12 @@ class ApiPlayerState(hlib.api.ApiJSON):
     super(ApiPlayerState, self).__init__(['id', 'user', 'my_player', 'points', 'color'])
 
     self.id		= p.id
-    self.user		= hlib.api.ApiUserInfo(p.user)
+    self.user		= hlib.api.User(p.user)
     self.my_player	= p.id == p.game.my_player.id
     self.points		= p.points
 
-    m = games.game_module(p.game.kind)
-    self.color = m.COLOR_SPACE.colorize_player(p, p.game.my_player).to_api()
+    gm = games.game_module(p.game.kind)
+    self.color = gm.COLOR_SPACE.colorize_player(p, p.game.my_player).to_api()
 
 class ApiGameState(hlib.api.ApiJSON):
   def __init__(self, g):
@@ -85,6 +84,9 @@ class ApiGameState(hlib.api.ApiJSON):
     self.events		= [e.to_api() for e in g.events.itervalues() if e.hidden != True]
 
 class ChatHandler(handlers.GenericHandler):
+  #
+  # Add
+  #
   class ValidateAdd(GenericValidateGID):
     text = ValidateChatPost
 
@@ -97,6 +99,9 @@ class ChatHandler(handlers.GenericHandler):
 
     g.chat.add(text = text)
 
+  #
+  # Page
+  #
   class ValidatePage(hlib.pageable.ValidatePage):
     gid = games.ValidateGID()
 
@@ -117,8 +122,25 @@ class Handler(handlers.GenericHandler):
     import games.settlers.handler
     self.settlers = games.settlers.handler.Handler()
 
+  #
+  # Index
+  #
+  class ValidateIndex(GenericValidateGID):
+    _view = validator_optional(hlib.input.CommonString())
+
+  @require_login
+  @validate_by(schema = ValidateIndex)
+  @page
+  def index(self, gid = None, _view = None):
+    g = require_presence_in_game(gid)
+
+    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'game-%s' % g.id, self.generate, 'games/' + g.kind + '.mako', params = {'game': g})
+
+  #
+  # Join
+  #
   class ValidateJoin(GenericValidateGID):
-    password = validator_optional(Password())
+    password = validator_optional(hlib.input.Password())
 
   @require_write
   @require_login
@@ -128,36 +150,30 @@ class Handler(handlers.GenericHandler):
     g = hruntime.dbroot.games[gid]
     g.join_player(hruntime.user, password)
 
+  #
+  # Pass turn
+  #
   def do_pass_turn(self, gid, **kwargs):
     # pylint: disable-msg=E1101
     g = require_on_turn(gid)
 
     g.pass_turn(**kwargs)
 
-    reply = hlib.api.ApiReply(200, pass_turn = ApiPassTurn())
-
     if hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_STAY:
-      pass
+      return
 
-    elif hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_NEXT:
+    if hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_NEXT:
       for kind in games.GAME_KINDS:
         check_result = games.game_module(kind, submodule = 'handler').GameOnTurnChecker.check()
         if len(check_result) <= 0:
           continue
 
-        # pylint: disable-msg=E1101
-        reply.pass_turn.after = 'next'
-        reply.pass_turn.gid = check_result[0].id
-        break
+        raise hlib.http.Redirect('/game?gid=' + str(check_result[0].id))
 
       else:
-        reply.pass_turn.after = 'games'
+        raise hlib.http.Redirect('/home/')
 
-    else:
-      # pylint: disable-msg=E1101
-      reply.pass_turn.after = 'games'
-
-    return reply
+    raise hlib.http.Redirect('/home/')
 
   @require_write
   @require_login
@@ -166,6 +182,9 @@ class Handler(handlers.GenericHandler):
   def pass_turn(self, gid = None):
     return self.do_pass_turn(gid)
 
+  #
+  # Buy card
+  #
   @require_write
   @require_login
   @validate_by(schema = GenericValidateGID)
@@ -173,8 +192,11 @@ class Handler(handlers.GenericHandler):
   def buy_card(self, gid = None):
     g = require_on_game(gid)
 
-    return g.buy_card()
+    g.buy_card()
 
+  #
+  # Card click
+  #
   class ValidateCardClick(GenericValidateGID):
     cid = ValidateCardID()
 
@@ -185,8 +207,11 @@ class Handler(handlers.GenericHandler):
   def card_click(self, gid = None, cid = None):
     g = require_on_turn(gid)
 
-    return g.card_clicked(cid)
+    g.card_clicked(cid)
 
+  #
+  # State
+  #
   @require_login
   @validate_by(schema = GenericValidateGID)
   @api
@@ -203,44 +228,35 @@ class Handler(handlers.GenericHandler):
 
     g.update_state(g_state)
 
-    return hlib.api.ApiReply(200, game = g_state)
+    return hlib.api.Reply(200, game = g_state)
 
-  class ValidateIndex(GenericValidateGID):
-    _view = validator_optional(CommonString())
+  #
+  # New
+  #
+  class ValidateNew(hlib.input.SchemaValidator):
+    name			= validator_factory(hlib.input.CommonString(), hlib.input.MinLength(2), hlib.input.MaxLength(64))
+    limit			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([3, 4]))
+    turn_limit			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
+    kind			= ValidateKind()
 
-  @require_login
-  @validate_by(schema = ValidateIndex)
-  @page
-  def index(self, gid = None, _view = None):
-    g = require_presence_in_game(gid)
+    password			= validator_optional(hlib.input.Username())
+    desc			= validator_optional(validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(64)))
 
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'game-%s' % g.id, self.generate, 'games/' + g.kind + '.mako', params = {'game': g})
+    opponent1			= validator_optional(hlib.input.Username())
+    opponent2			= validator_optional(hlib.input.Username())
+    opponent3			= validator_optional(hlib.input.Username())
 
-  class ValidateNew(SchemaValidator):
-    name = validator_factory(CommonString(), MinLength(2), MaxLength(64))
-    limit = validator_factory(NotEmpty(), Int(), OneOf([3, 4]))
-    turn_limit = validator_factory(NotEmpty(), Int(), OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
-    kind = ValidateKind()
-
-    password = validator_optional(Username())
-    desc = validator_optional(validator_factory(CommonString(), MaxLength(64)))
-
-    opponent1 = validator_optional(Username())
-    opponent2 = validator_optional(Username())
-    opponent3 = validator_optional(Username())
-
-    allow_extra_fields = True
-    if_key_missing = None
+    allow_extra_fields		= True
+    if_key_missing		= None
 
   @require_login
   @require_write
   @validate_by(schema = ValidateNew)
   @api
   def new(self, **kwargs):
-    game_module = games.game_module(kwargs['kind'])
+    gm = games.game_module(kwargs['kind'])
 
-    creation_flags = game_module.GameCreationFlags(kwargs)
+    creation_flags = gm.GameCreationFlags(kwargs)
     creation_flags.owner = hruntime.user
 
-    game_module.Game.create_game(creation_flags)
-    return None
+    gm.Game.create_game(creation_flags)

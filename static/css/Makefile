@@ -1,6 +1,7 @@
 STYLES = reset.css settlers.css public.css private.css \
          settlers.css public.css private.css \
-         pages/home.css pages/chat.css pages/new.css pages/settings.css pages/chat.css pages/game.css pages/admin.css
+         pages/home.css pages/chat.css pages/new.css pages/settings.css pages/chat.css pages/game.css pages/admin.css pages/maintenance.css \
+         games/settlers/settlers.css
 
 all: $(STYLES)
 

@@ -76,3 +76,25 @@ ${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
   </div>
 ${w_form_end()}
 ${row_end()}
+
+${row_start()}
+  ${w_form_start('/maintenance/mode', 'Maintenance mode', 'maintenance_mode')}
+    ${w_form_select('mode', label = 'Maintenance mode is', default = False)}
+      ${w_option('1', hruntime.dbroot.server.maintenance_mode == True, 'Enabled')}
+      ${w_option('0', hruntime.dbroot.server.maintenance_mode != True, 'Disabled')}
+    </select></div>
+    ${w_submit_row('Set')}
+  ${w_form_end()}
+${row_end()}
+
+${row_start()}
+  ${w_form_start('/maintenance/grant', 'Grant maintenance access', 'maintenance_access')}
+    ${w_form_input('username', 'text', label = 'Username')}
+    ${w_submit_row('Grant')}
+  ${w_form_end()}
+${row_end()}
+
+${row_start()}
+<div class="grid-12-12" id="maintenance_access_list">
+</div>
+${row_end()}

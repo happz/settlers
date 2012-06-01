@@ -171,7 +171,8 @@ class Card(hlib.database.DBObject):
       'id':		self.id,
       'type':		self.type,
       'bought':		self.bought,
-      'used':		self.used
+      'used':		self.used,
+      'can_be_used':	self.can_be_used
     }
 
 class Player(hlib.database.DBObject):
@@ -587,7 +588,7 @@ class Game(hlib.database.DBObject):
     return g
 
 # --- Classes --------------------------------------------------------
-class GameError(hlib.error.Error):
+class GameError(hlib.error.BaseError):
   pass
 
 WrongPasswordError		= lambda: GameError(msg = 'Wrong password', reply_status = 401, no_code = True)

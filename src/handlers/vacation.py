@@ -1,6 +1,6 @@
 import handlers
 
-# Handlers
+# Shortcuts
 from handlers import page, require_login, require_write, survive_vacation
 from hlib.api import api
 

@@ -66,11 +66,13 @@ span.icon-game-board {
 }
 
 span.icon-game-pass-turn {
-  background-image:		url(/static/images/icons/File32.png);
+  background-image:		url(/static/images/icons/Pass32.png);
+  height:			24px;
 }
 
 span.icon-game-roll-dice {
-  background-image:             url(/static/images/icons/File32.png);
+  background-image:		url(/static/images/icons/RollDice32.png);
+  height:			26px;
 }
 
 span.icon-game-refresh {
@@ -101,4 +103,8 @@ span.icon-roll-open {
 
 span.icon-roll-close {
   background-image:             url(/static/images/icons/Delete32.png);
+}
+
+span.icon-card-use {
+    background-image:		url(/static/images/icons/Accept32.png);
 }

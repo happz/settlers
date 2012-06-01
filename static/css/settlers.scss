@@ -160,6 +160,17 @@ label, .label {
     vertical-align:			middle;
 }
 
+p {
+    display:				block;
+    height:				auto;
+    margin:				0.2em 0 0.5em;
+
+    color:				$color_control_text;
+    font-size:				$font_size_text;
+    line-height:			$font_size_text;
+    vertical-align:			middle;
+}
+
 .info-dialog {
     position:				absolute;
     top:				35%;
@@ -222,4 +233,8 @@ img.ajax_spinner {
             right:			0px;
         }
     }
+}
+
+.ui-autocomplete {
+    background-color: red;
 }

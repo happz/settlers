@@ -641,3 +641,16 @@ yacc
     filter call_regexp_common C
     extension y
     3rd_gen_scale 1.51
+
+SCSS
+    filter call_regexp_common C
+    extension scss
+    3rd_gen_scale 1.00
+Coffee
+    filter remove_matches ^\s*#
+    filter docstring_to_C
+    filter call_regexp_common C
+    filter remove_inline #.*$
+    extension coffee
+    3rd_gen_scale 4.20
+    end_of_line_continuation \\$

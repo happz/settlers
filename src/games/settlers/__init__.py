@@ -436,6 +436,9 @@ class Card(games.Card):
       if not self.player.is_on_turn:
         return False
 
+      # FIXME
+      self.type = int(self.type)
+
       if not self.player.is_on_game and self.type != Card.TYPE_KNIGHT:
         return False
 
@@ -445,7 +448,7 @@ class Card(games.Card):
       if self.game.round == self.bought:
         return False
 
-      for card in self.player.cards:
+      for card in self.player.cards.itervalues():
         if card.used == self.game.round:
           return False
 
@@ -465,8 +468,6 @@ COLOR_SPACE = games.color.ColorSpace('settlers', colors = {
   'brown':		games.color.Color('brown', 'Brown', '#663300'),
   'dark_green':		games.color.Color('dark_green', 'Dark green', '#347235')
 })
-
-
 
 class Board(games.Board):
   # pylint: disable-msg=R0904
@@ -1073,7 +1074,6 @@ class Game(games.Game):
       raise games.InactiveCardError()
 
     card.used = self.round
-    hlib.event.trigger('game.CardUsed', self, game = self, user = self.my_player.user, card = card)
 
     if card.type == Card.TYPE_KNIGHT:
       if self.type == Game.TYPE_PREPARE_KNIGHT:
@@ -1097,6 +1097,8 @@ class Game(games.Game):
 
     elif card.type == Card.TYPE_INVENTION:
       self.type = Game.TYPE_FREE_RESOURCES
+
+    hlib.event.trigger('game.CardUsed', self, game = self, user = self.my_player.user, card = card)
 
   def number_clicked(self, nid):
     if not self.my_player.is_on_turn:
@@ -1215,8 +1217,8 @@ class Game(games.Game):
 
     self.my_player.spend_resources_for(Game.RESOURCE_DESCS['card'])
 
-    c = Card(self, self.my_player, self.card_line[self.card_index], self.round)
-    self.my_player.cards.append(c)
+    c = Card(self, self.my_player, int(self.card_line[self.card_index]), self.round)
+    self.my_player.cards.push(c)
     self.card_index += 1
 
     hlib.event.trigger('game.CardBought', self, game = self, user = self.my_player.user, card = c)
@@ -1419,6 +1421,7 @@ class Game(games.Game):
 
     for player in self.players.itervalues():
       cards = [c for c in player.cards.itervalues() if c.type == Card.TYPE_KNIGHT and c.is_used]
+      print player.user.name, cards
 
       if len(cards) > max_count:
         max_count = len(cards)

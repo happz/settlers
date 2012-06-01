@@ -75,7 +75,7 @@ class ApiChatPost(hlib.api.ApiJSON):
     super(ApiChatPost, self).__init__(['id', 'user', 'stamp', 'time', 'message'])
 
     self.id		= cp.id
-    self.user		= hlib.api.ApiUserInfo(cp.user)
+    self.user		= hlib.api.User(cp.user)
     self.stamp		= cp.stamp
     self.time		= time.strftime(cp.user.date_format, time.localtime(cp.stamp))
     self.message	= cp.formatted

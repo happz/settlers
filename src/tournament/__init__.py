@@ -236,10 +236,10 @@ class Tournament(hlib.database.DBObject):
     assert user.id not in self.players, 'Already joined!'
 
     if len(self.players) >= self.num_players:
-      raise hlib.error.Error(msg = 'Tournament started already')
+      raise hlib.error.BaseError(msg = 'Tournament started already')
 
     if self.has_password and password != self.password:
-      raise hlib.error.Error(msg = 'Wrong password')
+      raise hlib.error.BaseError(msg = 'Wrong password')
 
     p = TournamentPlayer(t, user)
 

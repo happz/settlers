@@ -1,4 +1,5 @@
 from events.game import Event, UserEvent
+import hlib.api
 
 # pylint: disable-msg=F0401
 import hruntime
@@ -16,12 +17,23 @@ class ThiefEvent(Event):
 
   def __getattr__(self, name):
     if name == 'am_i_thief':
-      return self.thief and self.thief.name == hruntime.user.name
+      return self.thief != None and self.thief.name == hruntime.user.name
 
     if name == 'am_i_victim':
-      return self.victim and self.victim.name == hruntime.user.name
+      return self.victim != None and self.victim.name == hruntime.user.name
 
     return Event.__getattr__(self, name)
+
+  def to_api(self):
+    d = Event.to_api(self);
+
+    d['thief'] = hlib.api.User(self.thief) if self.thief != None else None
+    d['victim'] = hlib.api.User(self.victim) if self.victim != None else None
+
+    d['am_i_thief'] = self.am_i_thief
+    d['am_i_victim'] = self.am_i_victim
+
+    return d
 
 def resources_to_api(rs):
   d = {}
@@ -47,11 +59,25 @@ class ResourceStolen(ThiefEvent):
 
     self.resource = resource
 
+  def to_api(self):
+    d = ThiefEvent.to_api(self)
+
+    d['resource'] = self.resource
+
+    return d
+
 class ResourcesStolen(ThiefEvent):
   def __init__(self, resources = None, **kwargs):
     ThiefEvent.__init__(self, **kwargs)
 
     self.resources		= resources
+
+  def to_api(self):
+    d = ThiefEvent.to_api(self)
+
+    d['resources'] = resources_to_api(self.resources)
+
+    return d
 
 class DiceRolled(UserEvent):
   def __init__(self, dice = None, **kwargs):
