@@ -50,7 +50,7 @@
       </select>
     </div>
     <div class="grid-6-12 omega">
-      ${w_form_select('color')}
+      ${w_form_select('color', label = 'Color', struct = False)}
         % for color_name in games.settlers.COLOR_SPACE.unused_colors(user):
           <%
             color = games.settlers.COLOR_SPACE.colors[color_name]
@@ -65,43 +65,30 @@
 
   ${row_start()}
   ${w_form_start('/settings/opponents/add', 'Colors for opponents', 'opponent_colors')}
-    % if len(games.settlers.COLOR_SPACE.unused_colors(user)) > 3:
-      <div class="grid-4-12">
-        ${w_form_input('username', 'text', label = 'Player', struct = False)}
-      </div>
-      <div class="grid-4-12">
-        ${w_form_select('kind', label = 'Game', struct = False)}
-          % for kind in games.GAME_KINDS:
-            ${w_option(kind, False, _(kind))}
-          % endfor
-        </select>
-      </div>
-      <div class="grid-4-12">
-        ${w_form_select('color', label = 'Color', struct = False)}
-          % for color_name in games.settlers.COLOR_SPACE.unused_colors(user):
-            <%
-              color = games.settlers.COLOR_SPACE.colors[color_name]
-            %>
-            ${w_option(color.name, False, _(color.label), classes = ['colors'], style = ['background-image: url(/static/images/games/settlers/board/real/players/' + color.name + '/node/village.gif);'])}
-          % endfor
-        </select>
-      </div>
-      ${w_submit_row('Set')}
-    % endif
-
-    <div id="opponent_colors_list">
-    % if max([0] + [len(v) for v in hruntime.user.colors.values()]) > 1:
-      <hr />
-      <ul>
-        % for k1, v1 in hruntime.user.colors:
-          % for k2, v2 in v1:
-            <li>${k1} - ${k2} - ${v2}</li>
-          % endfor
-        % endfor
-      </ul>
-    % endif
+    <div class="grid-4-12">
+      ${w_form_input('username', 'text', label = 'Player', struct = False)}
     </div>
+
+    <div class="grid-4-12">
+      ${w_form_select('kind', label = 'Game', struct = False)}
+        % for kind in games.GAME_KINDS:
+          ${w_option(kind, False, _(kind))}
+        % endfor
+      </select>
+    </div>
+
+    <div class="grid-4-12 omega">
+      ${w_form_select('color', label = 'Color', struct = False, default = False)}
+        <option value="">${_('Choose kind first')}</option>
+      </select>
+    </div>
+    ${w_submit_row('Set')}
   ${w_form_end()}
+  ${row_end()}
+
+  ${row_start()}
+    <div class="grid-12-12" id="opponent_colors_list">
+    </div>
   ${row_end()}
 
   ${row_start()}
@@ -128,7 +115,7 @@
   ${row_end()}
 
   ${row_start()}
-  ${w_form_start('/settings/vacation/start', 'Vacation', 'vacation')}
+  ${w_form_start('/settings/vacation/start', 'Vacation', 'vacation', not_working = True)}
     <div class="grid-12-12">
       <div class="form-msg-info">
         <h3>${_('Vacation left')}: ${stamp_to_days_hours(user.vacation)}</h3>

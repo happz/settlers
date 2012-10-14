@@ -102,11 +102,11 @@ def sort_players(prs):
 
 def rate_game(g):
   ret = {}
-  for p in g.players.itervalues():
+  for p in g.players.values():
     ret[p.user.id] = PlayerRanking(p.user, None)
 
   ## winning points
-  players = sorted([p for p in g.players.itervalues() if p != g.forhont_player], key = lambda x: x.points)
+  players = sorted([p for p in g.players.values() if p != g.forhont_player], key = lambda x: x.points)
   points = [p.points for p in players]
 
   ret[g.forhont_player.user.id].winning_points = 4.0
@@ -148,16 +148,16 @@ def rate_game(g):
       ret[players[2].user.id].winning_points = 2.0
 
   ## success rate
-  sum_points = float(sum([p.points for p in g.players.itervalues()]))
-  for p in g.players.itervalues():
+  sum_points = float(sum([p.points for p in g.players.values()]))
+  for p in g.players.values():
     ret[p.user.id].success = float(p.points) / sum_points
 
   ## points
-  for p in g.players.itervalues():
+  for p in g.players.values():
     ret[p.user.id].points = p.points
 
   ## places
-  players = [g.forhont_player] + sorted([p for p in g.players.itervalues() if p != g.forhont_player], key = lambda x: x.points)
+  players = [g.forhont_player] + sorted([p for p in g.players.values() if p != g.forhont_player], key = lambda x: x.points)
   ret[players[0].user.id].place_1 = 1
   ret[players[1].user.id].place_2 = 1
   ret[players[2].user.id].place_3 = 1
@@ -169,7 +169,7 @@ def rate_round(gs):
 
   for g in gs:
     gr = rate_game(g)
-    for uid, data in gr.iteritems():
+    for uid, data in gr.items():
       if uid in players:
         players[uid] += data
 
@@ -181,7 +181,7 @@ def rate_round(gs):
 def load_player_rankings(players):
   ret = []
 
-  for p in players.itervalues():
+  for p in players.values():
     pr = PlayerRanking(p.user)
     dr = PlayerRankingRecord.load_from_db(p.id)
 
@@ -193,13 +193,13 @@ def load_player_rankings(players):
 
 class SwissTournamentEngine(tournament.engines.TournamentEngine):
   def prebegin(self):
-    for p in self.tournament.players.itervalues():
+    for p in self.tournament.players.values():
       PlayerRankingRecord.create_in_db(data = {'player': p.id})
 
   def create_games(self):
     if self.tournament.round == 1:
       # first round, randomize
-      prs = sort_players([PlayerRanking(p.user, None) for p in self.tournament.players.itervalues()])
+      prs = sort_players([PlayerRanking(p.user, None) for p in self.tournament.players.values()])
 
     else:
       # next rounds, load ranking from db

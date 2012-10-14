@@ -1,12 +1,10 @@
 import threading
-import hlib.error
 
-class GamesStats(object):
-  @staticmethod
-  def items(key = None, reverse = False, window = None):
-    # pylint: disable-msg=W0613
-    raise hlib.error.UnimplementedError(obj = GamesStats)
+import hlib.pageable
 
-  @staticmethod
-  def refresh_stats():
-    raise hlib.error.UnimplementedError(obj = GamesStats)
+class Stats(hlib.pageable.Pageable):
+  def __init__(self, *args, **kwargs):
+    super(Stats, self).__init__(*args, **kwargs)
+
+    self.lock		= threading.RLock()
+    self.stats		= None

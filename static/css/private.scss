@@ -1,54 +1,6 @@
 @import "lib.scss";
 
 /*
- * ----- ----- Basic UI bits
- */
-.framed {
-    @include block();
-    @include corners-top();
-    @include corners-bottom();
-
-    margin-bottom:                      5px;
-    padding:                            5px;
-}
-
-.header, .ui-datepicker-header {
-    @include control();
-
-    cursor:                             pointer;
-    padding:                            0.3em;
-}
-
-.info {
-    @include block();
-
-    display:                            block;
-    padding:                            0.5em;
-    margin:                             0px;  
-    overflow:                           hidden;
-    position:                           relative;
-    text-align:                         left;
-    height:                             1em; 
-    cursor:                             default;
-
-    border-top-width:                   0px;
-    border-bottom-width:                0px;
-}
-
-.info-with-menu {
-    height:                             32px;
-    border-width:                       1px; 
-
-    &:hover {
-        background:                     $color_background none;
-    }
-}
-
-.important-info {
-    font-size:                            1.5em;
-}                                
-
-/*
  * ----- ----- Menu
  */
 .menu-widget {
@@ -56,7 +8,6 @@
     right:				5px;
     top:				10%;
     margin-top:				-2.5em;
-    list-style-type:			none;
     padding-left:			10px;
     padding-right:			10px;
     z-index:				1000;

@@ -1,0 +1,54 @@
+*** CoffeeScript
+	http://coffeescript.org/extras/coffee-script.js
+
+*** Formee
+	http://www.formee.org/
+
+	ln -sr formee-3.1/css/formee-style.css ../static/css/formee-style.css
+	ln -sr formee-3.1/css/formee-structure.css ../static/css/formee-structure.css
+
+*** hlib.coffee
+	https://github.com/happz/hlib/blob/master/static/script/hlib.coffee
+
+	ln -sr hlib.coffee ../static/script/hlib.coffee
+
+*** jQuery Form
+	http://www.malsup.com/jquery/form/
+
+	ln -sr jquery.form.min.js ../static/script/jquery.form.js
+
+***jQuery qTip
+	http://craigsworks.com/projects/qtip/docs/
+
+	ln -sr jquery.qtip.min.js ../static/script/jquery.qtip.js
+	ln -sr jquery.qtip.css ../static/css/jquery.qtip.min.css
+
+*** jQuery Sound
+	http://code.google.com/p/wixet/source/browse/trunk/web/js/jquery-sound.js?spec=svn292&r=292
+
+	ln -sr jquery.sound.js ../static/script/jquery.sound.js
+
+*** jQuery StickyTableHeaders
+	https://github.com/jmosbech/StickyTableHeaders
+
+	ln -s jquery.stickytableheaders.js ../static/script/jquery.stickytableheaders.js
+
+*** jQuery Timers
+	http://archive.plugins.jquery.com/project/timers
+
+	ln -sr jquery.timers.min.js ../static/script/jquery.timers.js
+
+*** Mustache
+	http://mustache.github.com/
+
+	ln -sr mustache.min.js ../static/script/mustache.js
+
+*** Stacktrace
+	https://github.com/eriwen/javascript-stacktrace
+
+	ln -sr stacktrace.js ../static/script/stacktrace.js
+
+*** strftime
+	http://code.google.com/p/strftime-js/
+
+	ln -sr strftime-min.js ../static/script/strftime.js

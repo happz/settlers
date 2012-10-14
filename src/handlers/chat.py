@@ -49,4 +49,4 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = hlib.pageable.ValidatePage)
   @api
   def page(self, start = None, length = None):
-    return self.chat.get_page(start = start, length = length)
+    return hlib.api.Reply(200, page = self.chat.get_page(start = start, length = length))

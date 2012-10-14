@@ -1,8 +1,12 @@
 import calendar
 import time
+import pprint
 
 import hlib
+import hlib.api
+import hlib.database
 import hlib.error
+import hlib.input
 
 import games
 import handlers
@@ -13,7 +17,7 @@ import lib.datalayer
 from handlers import require_login, require_write, page
 from hlib.api import api
 from hlib.input import Username, Password, CommonString, OneOf, SchemaValidator, NotEmpty, Int, FieldsMatch, validator_factory, validate_by
-from games import ValidateKind
+from games import ValidateKind, GenericValidateKind
 
 # pylint: disable-msg=F0401
 import hruntime
@@ -22,13 +26,47 @@ TABLE_ROW_COUNTS = range(10, 61, 10)
 
 ValidateColor = validator_factory(CommonString(), OneOf(games.settlers.COLOR_SPACE.colors.keys()))
 
+class OpponentColor(hlib.api.ApiJSON):
+  def __init__(self, user, color):
+    super(OpponentColor, self).__init__(['user', 'color'])
+
+    self.user = hlib.api.User(user)
+    self.color = color.to_api()
+
 class OpponentsHandler(handlers.GenericHandler):
+  @require_login
+  @validate_by(schema = GenericValidateKind)
+  @api
+  def colors(self, kind = None):
+    gm = games.game_module(kind)
+
+    return hlib.api.Reply(200, colors = [gm.COLOR_SPACE.colors[cn].to_api() for cn in gm.COLOR_SPACE.unused_colors(hruntime.user)])
+
+  @require_login
+  @validate_by(schema = GenericValidateKind)
+  @api
+  def opponents(self, kind = None):
+    gm = games.game_module(kind)
+
+    if kind not in hruntime.user.colors:
+      return hlib.api.Reply(200, users = [])
+
+    for k, v in hruntime.user.colors[kind].items():
+      print k, v
+
+    return hlib.api.Reply(200, users = [OpponentColor(hruntime.dbroot.users[username], gm.COLOR_SPACE.colors[hruntime.user.colors[kind][username]]) for username in hruntime.user.colors[kind].keys() if username != hruntime.user.name])
+
+  class ValidateAdd(GenericValidateKind):
+    username = hlib.input.Username()
+    color = validator_factory(hlib.input.CommonString())
+    
   @require_write
   @require_login
+  @validate_by(schema = ValidateAdd)
   @api
   def add(self, username = None, kind = None, color = None):
     if username not in hruntime.dbroot.users:
-      raise hlib.error.NoSuchUserError(params = {'username': username}, invalid_field = 'username')
+      raise hlib.error.NoSuchUserError(username, invalid_field = 'username')
 
     opponent = hruntime.dbroot.users[username]
 
@@ -39,7 +77,7 @@ class OpponentsHandler(handlers.GenericHandler):
 
     color = gm.COLOR_SPACE.colors[color]
 
-    if opponent == hruntime.user:
+    if opponent.name == hruntime.user.name:
       raise hlib.error.InconsistencyError(msg = 'You can not set color for yourself')
 
     if color.name not in gm.COLOR_SPACE.unused_colors(hruntime.user):
@@ -48,16 +86,25 @@ class OpponentsHandler(handlers.GenericHandler):
     if len(gm.COLOR_SPACE.unused_colors(hruntime.user)) <= 3:
       raise hlib.error.InconsistencyError(msg = 'You have no free colors to use')
 
+    if kind not in hruntime.user.colors:
+      hruntime.user.colors[kind] = hlib.database.StringMapping()
+
     hruntime.user.colors[kind][opponent.name] = color.name
+    hruntime.user._v_used_colors = None
+
+  class ValidateRemove(GenericValidateKind):
+    username = hlib.input.Username()
 
   @require_write
   @require_login
+  @validate_by(schema = ValidateRemove)
   @api
   def remove(self, kind = None, username = None):
     if kind not in hruntime.user.colors or username not in hruntime.user.colors[kind]:
       raise hlib.error.InconsistencyError(msg = 'There is no such colorized opponent')
 
     del hruntime.user.colors[kind][username]
+    hruntime.user._v_used_colors = None
 
 class VacationHandler(handlers.GenericHandler):
   @require_write
@@ -157,15 +204,17 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidateMyColor)
   @api
   def color(self, kind = None, color = None):
+    gm = games.settlers
+
     if color not in gm.COLOR_SPACE.colors:
       raise NoSuchColorError(color)
 
-    color = games.settlers.COLOR_SPACE.colors[color]
+    color = gm.COLOR_SPACE.colors[color]
 
-    if color.name not in games.settlers.COLOR_SPACE.unused_colors(hruntime.user):
+    if color.name not in gm.COLOR_SPACE.unused_colors(hruntime.user):
       raise hlib.error.InconsistencyError(msg = 'You can not use this color')
 
-    hruntime.user.color(games.settlers.COLOR_SPACE, new_color = color)
+    hruntime.user.color(gm.COLOR_SPACE, new_color = color)
 
   #
   # After "Pass turn"

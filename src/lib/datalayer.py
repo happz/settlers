@@ -61,14 +61,6 @@ class Root(hlib.datalayer.Root):
 
     self.dummy_owner = None
 
-class TableLayout(hlib.database.DBObject):
-  def __init__(self, table):
-    hlib.datalayer.DBObject.__init__(self)
-
-    self.table		= table
-    self.fields		= ['id', 'name', 'numplayers']
-    self.row_number	= False
-
 class Vacation(hlib.database.DBObject):
   def __init__(self):
     hlib.datalayer.DBObject.__init__(self)

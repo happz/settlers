@@ -1,53 +1,82 @@
 <%!
+  import sys
   import types
+
   import hlib.stats
 %>
 
+<%namespace file="lib.mako" import="*" />
 <%inherit file="page.mako" />
 
-<div class="prepend-top span-14">
-  % for namespace_name, namespace in stats.iteritems():
-    <%
-      collections = []
-    %>
-    <div class="span-8 last">
-      <h3>${namespace_name}</h3>
+<%def name="fmt(n, precision = 2)">
+  <%
+    if type(n) in types.StringTypes:
+      return n
 
-      <table>
-        % for record_name, record_value in namespace.iteritems():
-          % if type(record_value) not in [types.DictType, types.ListType]:
-            <tr>
-              <td>${record_name}</td>
-              <td>${record_value}</td>
-            </tr>
-          % else:
+    suffixes = ['','K','M','G','T']
+    si = 0
+
+    while n > 1000:
+      si += 1
+      n /= 1000
+
+    return '%.*f %s' % (precision, n, suffixes[si])
+  %>
+</%def>
+
+% for namespace_name, namespace in stats.items():
+  <%
+    collections = []
+
+    ns_fmt = hlib.stats.stats_fmt.get(namespace_name, {})
+  %>
+
+  ${row_start(width = 10)}
+    <ul class="monitor-namespace">
+      <li class="header">${namespace_name}</li>
+
+      % for record_name, record_value in namespace.items():
+        % if type(record_value) not in [types.DictType, types.ListType]:
+          <li class="info info-with-border">
+            <span class="monitor-record-name">${record_name}</span>
             <%
-              collections.append(record_name)
-            %>
-          % endif
-        % endfor
-      </table>
-    </div>
+              if record_name in ns_fmt:
+                record_value = ns_fmt[record_name] % record_value
+              else:
+                record_value = fmt(record_value)
+            %>            
+            <span class="monitor-record-value right">${record_value}</span>
+          </li>
+        % else:
+          <%
+            collections.append(record_name)
+          %>
+        % endif
+      % endfor
+    </ul>
+  ${row_end()}
 
-    % for collection_name in collections:
-      <%
-        collection = namespace[collection_name]
-      %>
-      <div class="prepend-1 span-13 last">
-        <h4>${collection_name}</h4>
-        <table>
-          % if len(collection) > 0:
+  % for collection_name in collections:
+    <%
+      collection = namespace[collection_name]
+    %>
+
+    % if len(collection) > 0:
+    ${row_start(width = 10, offset = 1)}
+      <table class="content-table">
+        <caption>${collection_name}</caption>
+        % if len(collection) > 0:
+          <thead>
             <tr>
               <%
-                if type(collection) == types.DictType:
-                  keys = collection.values()[0].keys()
-                else:
-                  keys = ['ID'] + collection[0].keys()
+                keys = ['ID'] + collection.values()[0].keys()
               %>
               % for key in keys:
                 <th>${key}</th>
               % endfor
             </tr>
+          </thead>
+          <tbody>
             % for record in hlib.stats.iter_collection(collection):
               <tr>
                 % for k in keys:
@@ -55,10 +84,10 @@
                 % endfor
               </tr>
             % endfor
-          % endif
-        </table>
-      </div>
-    % endfor
-    <hr />
+          </tbody>
+        % endif
+      </table>
+    ${row_end()}
+    % endif
   % endfor
-</div>
+% endfor

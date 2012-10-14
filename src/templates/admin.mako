@@ -28,15 +28,12 @@ ${row_end()}
 ${row_start()}
 ${w_form_start('/admin/i18n/add', 'Add token', 'i18n_add')}
   ${w_form_select('lang', label = 'Language')}
-    % for key in hruntime.dbroot.localization.languages.iterkeys():
+    % for key in hruntime.dbroot.localization.languages.keys():
       ${w_option(key, False, key)}
     % endfor
   </select></div>
 
-  <div class="grid-12-12 hide" id="i18n_missing_tokens">
-    <label>${_('Missing tokens')}</label>
-    <div id="i18n_missing_tokens_list" class="i18n-missing-tokens">
-    </div>
+  <div class="grid-12-12 hide" id="i18n_add_missing">
   </div>
 
   ${w_form_input('name', 'text', label = 'Name')}
@@ -48,29 +45,23 @@ ${row_end()}
 ${row_start()}
 ${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
   ${w_form_select('lang', label = 'Language')}
-    % for key in hruntime.dbroot.localization.languages.iterkeys():
+    % for key in hruntime.dbroot.localization.languages.keys():
       ${w_option(key, False, key)}
     % endfor
   </select></div>
 
-  <div class="grid-12-12 hide" id="i18n_unused_tokens">
-    <label>${_('Unused tokens')}</label>
-    <div id="i18n_unused_tokens_list" class="i18n-unused-tokens">
-    </div>
+  <div class="grid-12-12 hide" id="i18n_edit_unused">
   </div>
 
   ${w_form_select('token')}
-    % for key in hruntime.i18n.tokens.iterkeys():
-      ${w_option(key.replace('"', r'\"'), False, key)}
-    % endfor
   </select></div>
 
-  <div id="i18n_edit" class="hide">
+  <div id="i18n_edit_edit" class="hide">
     <div class="grid-11-12">
       ${w_form_text('value', struct = False)}
     </div>
     <div class="grid-1-12">
-      <span class="icon icon-medium icon-i18n-remove-token" title="${_('Remove token')}" id="i18n_remove"></span>
+      <span class="icon icon-medium icon-i18n-remove-token" title="${_('Remove token')}" id="i18n_edit_remove"></span>
     </div>
     ${w_submit_row('Change')}
   </div>

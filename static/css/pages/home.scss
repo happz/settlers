@@ -21,3 +21,15 @@ ul.recent-events > li:last-child {
 .game-preview {
     width:		200px;
 }
+
+span.icon-game-board {
+    background-image:                   url(/static/images/icons/Board32.png);
+}
+
+span.icon-game-history {
+    background-image:                   url(/static/images/icons/History32.png);
+}
+
+span.icon-game-chat {
+    background-image:                   url(/static/images/icons/Chat32.png);
+}

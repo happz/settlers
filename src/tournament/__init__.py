@@ -10,10 +10,10 @@ import lib.chat
 
 import hruntime
 
-f_free		= lambda _u: [t for t in hruntime.dbroot.tournaments.itervalues() if t.stage == Tournament.STAGE_FREE]
-f_current	= lambda _u: [t for t in hruntime.dbroot.tournaments.itervalues() if t.stage == Tournament.STAGE_RUNNING  and t.has_player(hruntime.user)]
-f_finished	= lambda _u: [t for t in hruntime.dbroot.tournaments.itervalues() if t.stage == Tournament.STAGE_FINISHED and t.has_player(hruntime.user)]
-f_canceled	= lambda _u: [t for t in hruntime.dbroot.tournaments.itervalues() if t.stage == Tournament.STAGE_CANCELED and t.has_player(hruntime.user)]
+f_free		= lambda _u: [t for t in hruntime.dbroot.tournaments.values() if t.stage == Tournament.STAGE_FREE]
+f_current	= lambda _u: [t for t in hruntime.dbroot.tournaments.values() if t.stage == Tournament.STAGE_RUNNING  and t.has_player(hruntime.user)]
+f_finished	= lambda _u: [t for t in hruntime.dbroot.tournaments.values() if t.stage == Tournament.STAGE_FINISHED and t.has_player(hruntime.user)]
+f_canceled	= lambda _u: [t for t in hruntime.dbroot.tournaments.values() if t.stage == Tournament.STAGE_CANCELED and t.has_player(hruntime.user)]
 
 ValidateTID = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
 
@@ -94,7 +94,7 @@ class TournamentRoundGroup(object):
       if self._players == None:
         self._players = {}
 
-        for p in self.games[0].players.itervalues():
+        for p in self.games[0].players.values():
           self.players[p.user.id] = self.tournament.players[p.user.id]
 
       return self._players
@@ -145,7 +145,7 @@ class Tournament(hlib.database.DBObject):
     ret = collections.OrderedDict()
     round = round or self.round
 
-    for p in self.players.itervalues():
+    for p in self.players.values():
       if p.active <= round:
         continue
 
@@ -164,11 +164,11 @@ class Tournament(hlib.database.DBObject):
 
       groups[game.tournament_group] = TournamentRoundGroup(self, round or self.round, game.tournament_group)
 
-      for p in groups[game.tournament_group].players.itervalues():
+      for p in groups[game.tournament_group].players.values():
         seen_players.append(p.user.id)
 
     byes = []
-    for p in self.get_active_players(round = round).itervalues():
+    for p in self.get_active_players(round = round).values():
       if p.user.id in seen_players:
         continue
 
@@ -179,12 +179,12 @@ class Tournament(hlib.database.DBObject):
   def get_games(self, round = None, group = None):
     round = round or self.round
 
-    return [g for g in hruntime.dbroot.games.itervalues() if g.tournament == self.id and g.tournament_round == round and ((group and g.tournament_group == group) or (True))]
+    return [g for g in hruntime.dbroot.games.values() if g.tournament == self.id and g.tournament_round == round and ((group and g.tournament_group == group) or (True))]
 
   def get_has_closed_all_games(self, round = None):
     round = round or self.round
 
-    for g in self.get_groups(round = round)[0].itervalues():
+    for g in self.get_groups(round = round)[0].values():
       if len(g.closed_games) != self.rules.limit:
         return False
 

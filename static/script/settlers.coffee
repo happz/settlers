@@ -19,6 +19,7 @@ class window.settlers.PullNotify
   update:		() ->
     new window.hlib.Ajax
       url:			'/pull_notify/'
+      keep_focus:		true
       handlers:
         h200:			(response, ajax) ->
           # Reset all widgets
@@ -40,7 +41,7 @@ class window.settlers.PullNotify
             window.settlers.show_menu_alert 'menu_home'
 
           if to_title > 0
-            window.hlib.setTitle 'Osadnici (' + to_title + ')'
+            window.hlib.setTitle window.settlers.title + ' (' + to_title + ')'
 
           if response.events.trumpet != false
             $('#trumpet_board div').html response.events.trumpet
@@ -66,7 +67,8 @@ window.settlers.hide_menu_alert = (item) ->
 
 window.settlers.setup_chat_form = (opts) ->
   new window.hlib.Form
-    fid:              'chat_post'
+    fid:			'chat_post'
+    clear_fields:		['text']
     handlers:
       s200:   (response, form) ->
         form.info.success 'Posted'
@@ -74,6 +76,7 @@ window.settlers.setup_chat_form = (opts) ->
 
 window.settlers.setup_chat = (opts) ->
   pager = new window.hlib.Pager
+    id_prefix:		opts.id_prefix
     url:		opts.url
     data:		opts.data
     template:		window.settlers.templates.chat_post
@@ -94,6 +97,9 @@ window.settlers.startup = () ->
 
   window.settlers.setup_settlers()
   window.settlers.setup_page()
+
+  if window.settlers.user
+    window.settlers.PULL_NOTIFY.update()
 
 #
 # Bind startup event

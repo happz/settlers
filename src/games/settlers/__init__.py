@@ -30,7 +30,7 @@ class ApiBoard(hlib.api.ApiJSON):
   def __init__(self, b):
     super(ApiBoard, self).__init__(['fields', 'nodes', 'paths', 'ports'])
 
-    f = lambda n: [_x.to_api() for _x in getattr(b, n).itervalues()]
+    f = lambda n: [_x.to_api() for _x in getattr(b, n).values()]
 
     self.fields = f('fields')
     self.nodes  = f('nodes')
@@ -186,20 +186,20 @@ class Player(games.Player):
     state.points		= self.points
     state.has_longest_path	= self.longest_path
     state.has_mightest_chilvary	= self.mightest_chilvary
-    state.knights		= len([c for c in self.cards.itervalues() if c.type == Card.TYPE_KNIGHT and c.is_used == True])
+    state.knights		= len([c for c in self.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used == True])
     state.can_roll_dice		= self.can_roll_dice
 
     state.resources = {'total': sum(self.resources.values())}
 
     if self.id == self.game.my_player.id:
       state.cards = []
-      for c in self.cards.itervalues():
+      for c in self.cards.values():
         state.cards.append(c.to_api())
 
       for k in self.resources.keys():
         state.resources[k] = self.resources[k]
     else:
-      state.cards = len([c for c in self.cards.itervalues() if c.is_used != True])
+      state.cards = len([c for c in self.cards.values() if c.is_used != True])
 
     state.first_village		= self.first_village and self.first_village.id or None
     state.second_village	= self.second_village and self.second_village.id or None
@@ -448,7 +448,7 @@ class Card(games.Card):
       if self.game.round == self.bought:
         return False
 
-      for card in self.player.cards.itervalues():
+      for card in self.player.cards.values():
         if card.used == self.game.round:
           return False
 
@@ -589,14 +589,14 @@ class Board(games.Board):
 
   def __getattr__(self, name):
     if name == 'thief_field':
-      for f in self.fields.itervalues():
+      for f in self.fields.values():
         if f.thief:
           return f
 
       raise games.GameError(msg = 'This game has no thief?')
 
     if name == 'free_numbers_map':
-      return dict([(f.id, f.thief != True) for f in self.fields.itervalues()])
+      return dict([(f.id, f.thief != True) for f in self.fields.values()])
 
     return games.Board.__getattr__(self, name)
 
@@ -615,7 +615,7 @@ class Board(games.Board):
     if self.game.type in [Game.TYPE_PLACE_FIRST, Game.TYPE_PLACE_SECOND]:
       m = active_nodes_map_positive.copy()
 
-      for nid, node in self.nodes.iteritems():
+      for nid, node in self.nodes.items():
         if node.type == BoardNode.TYPE_FREE:
           continue
 
@@ -639,7 +639,7 @@ class Board(games.Board):
     if self.game.type == Game.TYPE_GAME:
       m = active_nodes_map_positive.copy()
 
-      for nid, node in self.nodes.iteritems():
+      for nid, node in self.nodes.items():
         if m[nid] == False:
           continue
 
@@ -690,7 +690,7 @@ class Board(games.Board):
 
     if self.game.type in [Game.TYPE_GAME, Game.TYPE_FREE_PATHS_FIRST, Game.TYPE_FREE_PATHS_SECOND]:
       m = active_paths_map_negative.copy()
-      for path in self.paths.itervalues():
+      for path in self.paths.values():
         if path.type != BoardPath.TYPE_FREE:
           continue
 
@@ -730,15 +730,15 @@ class Board(games.Board):
     return {}
 
   def get_used_paths(self, player = None):
-    return [p for p in self.paths.itervalues() if (not player and p.type != BoardPath.TYPE_FREE) or (player and p.type != BoardPath.TYPE_FREE and p.is_owner(player))]
+    return [p for p in self.paths.values() if (not player and p.type != BoardPath.TYPE_FREE) or (player and p.type != BoardPath.TYPE_FREE and p.is_owner(player))]
 
   def get_used_nodes(self, player = None):
-    return [n for n in self.nodes.itervalues() if (not player and n.type != BoardNode.TYPE_FREE) or (player and n.type != BoardNode.TYPE_FREE and n.is_owner(player))]
+    return [n for n in self.nodes.values() if (not player and n.type != BoardNode.TYPE_FREE) or (player and n.type != BoardNode.TYPE_FREE and n.is_owner(player))]
 
   def get_used_ports(self, player, resource):
     r = []
 
-    for p in self.ports.itervalues():
+    for p in self.ports.values():
       if p.resource != resource:
         continue
 
@@ -750,16 +750,16 @@ class Board(games.Board):
     return r
 
   def get_nodes_by_field(self, field):
-    return [n for n in self.nodes.itervalues() if field.id in games.settlers.board_def.NODE_DESCS[n.id]['fields']]
+    return [n for n in self.nodes.values() if field.id in games.settlers.board_def.NODE_DESCS[n.id]['fields']]
 
   def get_fields_by_node(self, n):
     return [self.fields[i] for i in games.settlers.board_def.NODE_DESCS[n.id]['fields']]
 
   def get_fields_by_number(self, n):
-    return [f for f in self.fields.itervalues() if f.number == n]
+    return [f for f in self.fields.values() if f.number == n]
 
   def get_free_paths_map_by_node(self, node):
-    return dict([(p.id, node.id in games.settlers.board_def.PATH_DESCS[p.id]['nodes'] and p.type == BoardPath.TYPE_FREE) for p in self.paths.itervalues()])
+    return dict([(p.id, node.id in games.settlers.board_def.PATH_DESCS[p.id]['nodes'] and p.type == BoardPath.TYPE_FREE) for p in self.paths.values()])
 
   def get_node_by_path(self, path, index):
     return self.nodes[games.settlers.board_def.PATH_DESCS[path.id]['nodes'][index]]
@@ -839,7 +839,7 @@ class Board(games.Board):
   def lps_search(self):
     self.lps_init()
 
-    for path in self.paths.itervalues():
+    for path in self.paths.values():
       if path.type != BoardPath.TYPE_OWNED:
         continue
 
@@ -994,7 +994,7 @@ class Game(games.Game):
       random.shuffle(order)
 
       new_players = hlib.database.IndexedMapping()
-      tmp_players = [p for p in self.players.itervalues()]
+      tmp_players = [p for p in self.players.values()]
       for i in order:
         new_players.push(tmp_players[i])
 
@@ -1030,7 +1030,7 @@ class Game(games.Game):
 
   def apply_monopoly(self, resource):
     # pylint: disable-msg=E1101
-    for p in self.players.itervalues():
+    for p in self.players.values():
       if p.id != self.my_player.id:
         p.apply_monopoly(self.my_player, resource)
 
@@ -1053,7 +1053,7 @@ class Game(games.Game):
     if not self.my_player.is_on_turn:
       raise games.NotYourTurnError()
 
-    cards = [c for c in self.my_player.cards.itervalues() if c.type == Card.TYPE_POINT and not c.is_used]
+    cards = [c for c in self.my_player.cards.values() if c.type == Card.TYPE_POINT and not c.is_used]
     if self.my_player.points + len(cards) < 10:
       raise NotEnoughPointCardsError()
 
@@ -1110,7 +1110,7 @@ class Game(games.Game):
     if self.board.free_numbers_map[nid] != True:
       raise InactiveNumberError()
 
-    for f in self.board.fields.itervalues():
+    for f in self.board.fields.values():
       f.thief = False
 
     self.board.fields[nid].thief = True
@@ -1236,7 +1236,7 @@ class Game(games.Game):
         per_owner[node.owner.id].add(Resource.map_resource2str[resource], amount)
 
     # pylint: disable-msg=E1101
-    for p in self.players.itervalues():
+    for p in self.players.values():
       r = per_owner[p.id]
       if r.sum() > 0:
         hlib.event.trigger('game.settlers.ResourcesReceived', self, hidden = True, game = self, user = p.user, resources = per_owner[p.id])
@@ -1253,7 +1253,7 @@ class Game(games.Game):
       self.type = Game.TYPE_PREPARE_THIEF
 
       # pylint: disable-msg=E1101
-      for player in self.players.itervalues():
+      for player in self.players.values():
         if player.resources.sum() > 7:
           player.apply_thief_to_full()
 
@@ -1387,7 +1387,7 @@ class Game(games.Game):
 
   def reset_players_lps(self):
     # pylint: disable-msg=E1101
-    for player in self.players.itervalues():
+    for player in self.players.values():
       player.longest_path = False
 
   def check_longest_path(self):
@@ -1419,8 +1419,8 @@ class Game(games.Game):
     max_player = None
     max_players = 0
 
-    for player in self.players.itervalues():
-      cards = [c for c in player.cards.itervalues() if c.type == Card.TYPE_KNIGHT and c.is_used]
+    for player in self.players.values():
+      cards = [c for c in player.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used]
       print player.user.name, cards
 
       if len(cards) > max_count:
@@ -1439,7 +1439,7 @@ class Game(games.Game):
 
     old_owner = None
 
-    for player in self.players.itervalues():
+    for player in self.players.values():
       if player.mightest_chilvary == True:
         old_owner = player
 

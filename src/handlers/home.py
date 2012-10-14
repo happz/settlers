@@ -35,7 +35,7 @@ class Game(hlib.api.ApiJSON):
     self.name			= g.name
     self.limit			= g.limit
     self.round			= g.round
-    self.players		= [Player(p) for p in g.players.itervalues()]
+    self.players		= [Player(p) for p in g.players.values()]
 
     if g.forhont_player != None:
       self.forhont		= hlib.api.User(g.forhont_player.user)

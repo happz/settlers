@@ -1,26 +1,3 @@
-span.icon {
-  display:                      inline-block;
-  cursor:                       pointer;
-  background-repeat:		no-repeat;
-  vertical-align:		middle;
-}
-
-span.icon-disabled {
-  cursor:			default;
-}
-
-span.icon-large {
-  width:			48px;
-  height:			48px;
-}
-
-span.icon-medium {
-  width:                        32px;
-  height:                       32px;
-  max-width:			32px;
-  max-height:			32px;
-}
-
 span.icon-menu-home {
   background-image:		url(/static/images/icons/Home48.png);
 }
@@ -59,38 +36,6 @@ span.icon-menu-logout {
 
 span.icon-game-on-turn {
   background-image:             url(/static/images/icons/Alert32.png);
-}
-
-span.icon-game-board {
-  background-image:             url(/static/images/icons/GameBoard32.gif);
-}
-
-span.icon-game-pass-turn {
-  background-image:		url(/static/images/icons/Pass32.png);
-  height:			24px;
-}
-
-span.icon-game-roll-dice {
-  background-image:		url(/static/images/icons/RollDice32.png);
-  height:			26px;
-}
-
-span.icon-game-refresh {
-  background-image:             url(/static/images/icons/Refresh32.png);
-}
-
-span.icon-game-history {
-  background-image:             url(/static/images/icons/GameHistory32.gif);
-  height:			18px;
-}
-
-span.icon-game-cards {
-    background-image:		url(/static/images/icons/Cards32.png);
-    height:			24px;
-}
-
-span.icon-game-chat {
-  background-image:             url(/static/images/icons/Chat32.png);
 }
 
 span.icon-game-join {

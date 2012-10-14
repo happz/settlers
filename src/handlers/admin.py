@@ -25,18 +25,6 @@ ValidateValue	= validator_factory(hlib.input.CommonString(), hlib.input.MaxLengt
 class ValidateLangSchema(hlib.input.SchemaValidator):
   lang = ValidateLang()
 
-class Tokens(hlib.api.ApiJSON):
-  def __init__(self, names):
-    super(Tokens, self).__init__(['tokens'])
-
-    self.tokens = [{'name': name} for name in names]
-
-class Token(hlib.api.ApiJSON):
-  def __init__(self, value):
-    super(Token, self).__init__(['value'])
-
-    self.value = value
-
 def require_lang(lang):
   if lang not in hruntime.dbroot.localization.languages:
     raise hlib.error.InvalidInputError(invalid_field = 'lang')
@@ -92,7 +80,7 @@ class I18NHandler(handlers.GenericHandler):
   def tokens(self, lang = None):
     lang = require_lang(lang)
 
-    return Tokens(lang.tokens.keys())
+    return hlib.api.Reply(200, tokens = [{'name': name} for name in lang.tokens.keys()])
 
   #
   # Token
@@ -107,7 +95,7 @@ class I18NHandler(handlers.GenericHandler):
   def token(self, lang = None, name = None):
     lang = require_lang(lang)
 
-    return Token(lang[name])
+    return hlib.api.Reply(200, value = lang[name])
 
   #
   # Add
@@ -155,7 +143,7 @@ class I18NHandler(handlers.GenericHandler):
     if lang.coverage:
       coverage = lang.coverage.coverage(lang)
 
-    return Tokens(coverage[2].keys())
+    return hlib.api.Reply(200, tokens = [{'name': name} for name in coverage[2].keys()])
 
   #
   # Missing
@@ -170,7 +158,7 @@ class I18NHandler(handlers.GenericHandler):
     if lang.coverage:
       coverage = lang.coverage.coverage(lang)
 
-    return Tokens(coverage[1].keys())
+    return hlib.api.Reply(200, tokens = [{'name': name} for name in coverage[1].keys()])
 
 class Handler(handlers.GenericHandler):
   i18n		= I18NHandler()

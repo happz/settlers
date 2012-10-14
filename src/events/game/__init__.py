@@ -89,6 +89,9 @@ class GameCanceled(UserEvent):
 
     return d
 
+class GameArchived(Event):
+  pass
+
 class GameStarted(Event):
   pass
 
@@ -133,6 +136,7 @@ import hlib
 hlib.register_event(GameCreated)
 hlib.register_event(GameFinished)
 hlib.register_event(GameCanceled)
+hlib.register_event(GameArchived)
 hlib.register_event(GameStarted)
 hlib.register_event(PlayerJoined)
 hlib.register_event(ChatPost)

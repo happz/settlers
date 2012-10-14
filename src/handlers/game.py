@@ -81,7 +81,7 @@ class ApiGameState(hlib.api.ApiJSON):
     self.render_info	= ApiRenderInfo(g.my_player.user)
     self.can_pass	= g.my_player.can_pass
 
-    self.events		= [e.to_api() for e in g.events.itervalues() if e.hidden != True]
+    self.events		= [e.to_api() for e in g.events.values() if e.hidden != True]
 
 class ChatHandler(handlers.GenericHandler):
   #
@@ -111,7 +111,7 @@ class ChatHandler(handlers.GenericHandler):
   def page(self, gid = None, start = None, length = None):
     g = require_presence_in_game(gid)
 
-    return g.chat.get_page(start = start, length = length)
+    return hlib.api.Reply(200, page = g.chat.get_page(start = start, length = length))
 
 class Handler(handlers.GenericHandler):
   chat = ChatHandler()
@@ -165,6 +165,7 @@ class Handler(handlers.GenericHandler):
     if hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_NEXT:
       for kind in games.GAME_KINDS:
         check_result = games.game_module(kind, submodule = 'handler').GameOnTurnChecker.check()
+        print [_g.id for _g in check_result]
         if len(check_result) <= 0:
           continue
 
@@ -220,7 +221,7 @@ class Handler(handlers.GenericHandler):
 
     g_state = ApiGameState(g)
 
-    for p in g.players.itervalues():
+    for p in g.players.values():
       p_state = ApiPlayerState(p)
       p.update_state(p_state)
 

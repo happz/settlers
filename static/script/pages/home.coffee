@@ -1,21 +1,21 @@
 window.settlers.templates.recent_events = {}
 window.settlers.templates.recent_events.games = '
-  <li class="header">Games</li>
+  <li class="header">{{#_g}}Games{{/_g}}</li>
   {{#games}}
-    <li id="game_{{id}}" class="info info-with-menu">
+    <li id="game_{{id}}" class="info info-with-menu info-with-border">
       <span class="game-name">{{name}}</span>
       <span class="game-menu right">
         {{#is_present}}
           {{#is_invited}}
-            <span id="game_join_{{id}}" class="icon icon-medium icon-game-join" title="Join game"></span>
+            <span id="game_join_{{id}}" class="icon icon-medium icon-game-join" title="{{#_g}}Join game{{/_g}}"></span>
           {{/is_invited}}
           {{^is_invited}}
             {{#is_on_turn}}
-              <a href="/game/?gid={{id}}#board" title="On turn!"><span class="icon icon-medium icon-game-on-turn"></span></a>
+              <a href="/game/?gid={{id}}#board" title="{{#_g}}On turn!{{/_g}}"><span class="icon icon-medium icon-game-on-turn"></span></a>
             {{/is_on_turn}}
-            <a href="/game/?gid={{id}}#board" title="Open board"><span class="icon icon-medium icon-game-board"></span></a>
-            <a href="/game/?gid={{id}}#history" title="Open history"><span class="icon icon-medium icon-game-history"></span></a>
-            <a href="/game/?gid={{id}}#chat" title="Open chat">
+            <a href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}"><span class="icon icon-medium icon-game-board"></span></a>
+            <a href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-game-history"></span></a>
+            <a href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
               <span class="icon icon-medium icon-game-chat">
                 {{#chat_posts}}
                   <span class="menu-alert">{{chat_posts}}</span>
@@ -25,39 +25,39 @@ window.settlers.templates.recent_events.games = '
           {{/is_invited}}
         {{/is_present}}
         {{^is_present}}
-          <span id="game_join_{{id}}" class="icon icon-medium icon-game-join" title="Join game"></span>
+          <span id="game_join_{{id}}" class="icon icon-medium icon-game-join" title="{{#_g}}Join game{{/_g}"></span>
         {{/is_present}}
       </span>
     </li>
   {{/games}}
 
   <li id="free_games_header" class="header">
-    Free games ({{free_games.length}} games)
+    {{#_g}}Free games{{/_g}} ({{free_games.length}} {{#_g}}games{{/_g}})
     <span class="right icon icon-medium icon-roll-open"></span>
   </li>
   <div class="hide">
   {{#free_games}}
-    <li id="game_{{id}}" class="info info-with-menu">
+    <li id="game_{{id}}" class="info info-with-menu info-with-border">
       <span class="game-name">{{name}}</span>
       <span class="game-menu right">
-        <span id="game_join_{{id}}" title="Join game" class="icon icon-medium icon-game-join"></span>
+        <span id="game_join_{{id}}" title="{{#_g}}Join game{{/_g}}" class="icon icon-medium icon-game-join"></span>
       </span>
     </li>
   {{/free_games}}
   </div>
 
   <li id="finished_games_header" class="header">
-    Finished games ({{finished_games.length}} games)
+    {{#_g}}Finished games{{/_g}} ({{finished_games.length}} {{#_g}}games{{/_g}})
     <span class="right icon icon-medium icon-roll-open"></span>
   </li>
   <div class="hide">
   {{#finished_games}}
-    <li id="game_{{id}}" class="info info-with-menu">
+    <li id="game_{{id}}" class="info info-with-menu info-with-border">
       <span class="game-name">{{name}}</span>
       <span class="game-menu right">
-        <a href="/game/?gid={{id}}#board" title="Open board"><span class="icon icon-medium icon-game-board"></span></a>
-        <a href="/game/?gid={{id}}#history" title="Open history"><span class="icon icon-medium icon-game-history"></span></a>
-        <a href="/game/?gid={{id}}#chat" title="Open chat">
+        <a href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}"><span class="icon icon-medium icon-game-board"></span></a>
+        <a href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-game-history"></span></a>
+        <a href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
           <span class="icon icon-medium icon-game-chat">
             {{#chat_posts}}
               <span class="menu-alert">{{chat_posts}}</span>
@@ -72,12 +72,12 @@ window.settlers.templates.recent_events.games = '
 window.settlers.templates.recent_events.game_preview = '
   <div class="bold">{{name}}</div>
   <div class="game-players">{{{players_list}}}</div>
-  <div class="game-limit">For {{limit}} players</div>
+  <div class="game-limit">{{limit}} {{#_g}}players{{/_g}}</div>
   {{#round}}
-    <div class="game-round">{{round}}. round, {{forhont.name}} on turn</div>
+    <div class="game-round">{{round}}. {{#_g}}round{{/_g}}, {{forhont.name}} {{#_g}}on turn{{/_g}}</div>
   {{/round}}
   {{#is_invited}}
-    <div style="font-weight: bold">You are invited!</div>
+    <div style="font-weight: bold">{{#_g}}You are invited!{{/_g}}</div>
   {{/is_invited}}
 '
 
@@ -173,7 +173,7 @@ window.settlers.setup_fetch = () ->
               content:
                 text:			tooltip
                 title:
-                  text:			'Game #' + g.id
+                  text:			(window.hlib._g 'Game') + ' #' + g.id
               position:
                 target:			$(geid)
                 at:			'center'
@@ -190,7 +190,7 @@ window.settlers.setup_fetch = () ->
                 url:			'/game/join?gid=' + g.id
                 handlers:
                   h200:		(response, ajax) ->
-                    window.hlib.INFO.success 'Game joined'
+                    window.hlib.INFO.success window.hlib._g 'Game joined'
                     update_events()
 
               return false

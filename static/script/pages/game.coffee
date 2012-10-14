@@ -14,7 +14,7 @@ window.settlers.events['game.GameCanceled']             = (e) ->
   if e.reason == 3
     return window.hlib._g 'Game has been canceled due to lack of interest'
 
-  return ''
+  return 'game.GameCanceled'
 
 window.settlers.events['game.GameStarted']              = (e) ->
   return window.hlib._g 'Game has started'
@@ -38,4 +38,4 @@ window.settlers.events['game.CardUsed']                 = (e) ->
   return (window.hlib._g '{0} used card {1} from round {2}').format e.user.name, card = window.hlib._g(e.card.type), e.card.bought
 
 window.settlers.events['game.CardBought']               = (e) ->
-  return ''
+  return (window.hlib._g '{0} bought new card').format e.user.name

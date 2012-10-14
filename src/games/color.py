@@ -25,7 +25,7 @@ class ColorSpace(object):
     self.colors		= colors or {}
 
   def unused_colors(self, user):
-    return [color_name for color_name in self.colors.iterkeys() if color_name != self.FREE_COLOR_NAME and color_name not in user.used_colors(self)]
+    return [color_name for color_name in self.colors.keys() if color_name != self.FREE_COLOR_NAME and color_name not in user.used_colors(self)]
 
   def colorize_player(self, player, viewer):
     if player == viewer:

@@ -623,12 +623,12 @@ def init():
                         3: occ_coor}
     i = i + 1
 
-  for (key, coor) in COORS['field'].iteritems():
+  for (key, coor) in COORS['field'].items():
     COORS['field'][key]  = (coor[0] * FIELD_SIDE_LENGTH, coor[1] * FIELD_HEIGHT)
     COORS['number'][key] = (COORS['field'][key][0] + FIELD_SIDE_LENGTH - NUMBER_IMAGE_WIDTH / 2, COORS['field'][key][1] + FIELD_HEIGHT / 2 - NUMBER_IMAGE_HEIGHT / 2)
     COORS['thief'][key]  = (COORS['field'][key][0] + FIELD_SIDE_LENGTH - THIEF_IMAGE_WIDTH / 2, COORS['field'][key][1] + FIELD_HEIGHT / 2 - THIEF_IMAGE_HEIGHT / 2)
 
-  for (key, coor) in COORS['sea'].iteritems():
+  for (key, coor) in COORS['sea'].items():
     coor = (coor[0] * FIELD_SIDE_LENGTH, coor[1] * FIELD_HEIGHT)
     COORS['sea'][key] = coor
     COORS['port'][key] = coor

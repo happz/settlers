@@ -27,7 +27,7 @@
     ${w_form_start('/game/new', 'New game', 'new_game')}
       ${w_form_select('kind', label = 'Game kind', required = True)}
         % for kind in games.GAME_KINDS:
-          ${w_option(kind, False, kind)}
+          ${w_option(kind, False, _(kind))}
         % endfor
       </select></div>
 
@@ -62,17 +62,17 @@
       <legend>Additional game rules</legend>
 
       ${w_form_select('turn_limit', label = 'Turn limit', default = False)}
-        ${w_option('43200', False, '12 hours')}
-        ${w_option('86400', False, '1 day')}
-        ${w_option('172800', False, '2 days')}
-        ${w_option('259200', False, '3 days')}
-        ${w_option('604800', True, '1 week')}
-        ${w_option('1209600', False, '2 weeks')}
+        ${w_option('43200', False, _('12 hours'))}
+        ${w_option('86400', False, _('1 day'))}
+        ${w_option('172800', False, _('2 days'))}
+        ${w_option('259200', False, _('3 days'))}
+        ${w_option('604800', True, _('1 week'))}
+        ${w_option('1209600', False, _('2 weeks'))}
       </select></div>
 
       ${w_form_select('floating_desert', label = 'Floating desert', default = False)}
-        ${w_option(1, True, 'Yes')}
-        ${w_option(0, False, 'No')}
+        ${w_option(1, True, _('Yes'))}
+        ${w_option(0, False, _('No'))}
       </select></div>
 
     ${w_form_end()}
@@ -83,7 +83,7 @@
   <div id="view_tournament">
     ${row_start()}
 
-    ${w_form_start('/tournament/new', 'New tournament', 'new_tournament')}
+    ${w_form_start('/tournament/new', 'New tournament', 'new_tournament', not_working = True)}
       ${w_form_select('kind', label = 'Game kind', required = True)}
         % for kind in games.GAME_KINDS:
           ${w_option(kind, False, _(kind))}

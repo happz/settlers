@@ -23,7 +23,7 @@ import hruntime
 
 ValidateNID = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf(range(0, 128)))
 ValidatePID = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf(range(0, 128)))
-ValidateResource = validator_factory(hlib.input.CommonString(), hlib.input.OneOf(['sheep', 'wood', 'rock', 'grain', 'clay']))
+ValidateResource = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 1, 2, 3, 4]))
 
 class GameOnTurnChecker(object):
   @staticmethod
@@ -70,33 +70,42 @@ class Handler(handlers.GenericHandler):
   class ValidateExchange(GenericValidateGID):
     ratio = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([2, 3, 4]))
     amount = validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
-    src = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 1, 2, 3, 4]))
-    dst = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 1, 2, 3, 4]))
+    src = ValidateResource()
+    dst = ValidateResource()
 
   @require_write
   @require_login
   @validate_by(schema = ValidateExchange)
   @api
   def exchange(self, gid = None, ratio = None, amount = None, src = None, dst = None):
-    require_on_game(gid)
+    g = require_on_game(gid)
 
-    hruntime.dbroot.games[gid].my_player.exchange_resources(ratio, src, dst, amount)
+    g.my_player.exchange_resources(ratio, src, dst, amount)
+
+  class ValidateInvention(GenericValidateGID):
+    resource1 = ValidateResource()
+    resource2 = ValidateResource()
 
   @require_write
   @require_login
+  @validate_by(schema = ValidateInvention)
   @api
   def invention(self, gid = None, resource1 = None, resource2 = None):
-    require_on_turn(gid)
+    g = require_on_turn(gid)
 
-    hruntime.dbroot.games[gid].apply_invention(resource1, resource2)
+    g.apply_invention(resource1, resource2)
+
+  class ValidateMonopoly(GenericValidateGID):
+    resource = ValidateResource()
 
   @require_write
   @require_login
+  @validate_by(schema = ValidateMonopoly)
   @api
   def monopoly(self, gid = None, resource = None):
-    require_on_turn(gid)
+    g = require_on_turn(gid)
 
-    hruntime.dbroot.games[gid].apply_monopoly(resource)
+    g.apply_monopoly(resource)
 
   @require_write
   @require_login

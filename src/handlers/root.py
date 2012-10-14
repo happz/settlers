@@ -9,6 +9,7 @@ import handlers.game
 import handlers.login
 import handlers.maint
 import handlers.maintenance
+import handlers.monitor
 import handlers.new
 import handlers.profile
 import handlers.registration
@@ -61,7 +62,7 @@ class Handler(hlib.handlers.root.Handler):
   game         = handlers.game.Handler()
   tournament   = handlers.tour.Handler()
 
-  monitor	= hlib.stats.Handler('monitor.mako')
+  monitor	= handlers.monitor.Handler()
 
   @page
   def index(self):
@@ -90,7 +91,7 @@ class Handler(hlib.handlers.root.Handler):
   @api
   def users_by_name(self, term = None):
     r = re.compile('.*?' + term + '.*?', re.I)
-    return {'users': [u.name for u in hruntime.dbroot.users.itervalues() if r.search(u.name) != None and u != hruntime.user]}
+    return {'users': [u.name for u in hruntime.dbroot.users.values() if r.search(u.name) != None and u != hruntime.user]}
 
   @api
   def trumpet(self):

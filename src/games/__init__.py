@@ -36,6 +36,9 @@ ValidateKind = hlib.input.validator_factory(hlib.input.CommonString(), hlib.inpu
 ValidateGID  = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
 ValidateCardID = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
 
+class GenericValidateKind(hlib.input.SchemaValidator):
+  kind = ValidateKind()
+
 class GenericValidateGID(hlib.input.SchemaValidator):
   gid = ValidateGID()
 
@@ -60,13 +63,13 @@ class GameLists(object):
       return cache[user.name]
 
   def f_active(self, user):
-    return self.__get_f_list('active', user, lambda: [g for g in hruntime.dbroot.games.itervalues() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))])
+    return self.__get_f_list('active', user, lambda: [g for g in hruntime.dbroot.games.values() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))])
 
   def f_inactive(self, user):
-    return self.__get_f_list('inactive', user, lambda: [g for g in hruntime.dbroot.games.itervalues() if not g.is_active and g.has_player(user)])
+    return self.__get_f_list('inactive', user, lambda: [g for g in hruntime.dbroot.games.values() if not g.is_active and g.has_player(user)])
 
   def f_archived(self, user):
-    return self.__get_f_list('archived', user, lambda: [g for g in hruntime.dbroot.games_archive.itervalues() if user.name in g.players])
+    return self.__get_f_list('archived', user, lambda: [g for g in hruntime.dbroot.games_archived.values() if user.name in g.players])
 
   # Cache invalidation
   def _inval_user(self, user):
@@ -90,7 +93,7 @@ class GameLists(object):
 
   def inval_players(self, g):
     with self._lock:
-      for p in g.players.itervalues():
+      for p in g.players.values():
         self._inval_user(p.user)
 
     return True
@@ -189,6 +192,7 @@ class Player(hlib.database.DBObject):
 
   def __getattr__(self, name):
     if name == 'is_on_turn':
+      print ('is_on_turn: %s, %s, %s, %s' % (self.user.name, self.game.id, self.game.type, self.game.is_forhont_player(self))).encode('ascii', 'replace')
       return self.game.type not in [Game.TYPE_FREE, Game.TYPE_FINISHED, Game.TYPE_CANCELED] and self.game.is_forhont_player(self)
 
     if name == 'is_slacker':
@@ -226,14 +230,14 @@ class Player(hlib.database.DBObject):
       return self.turns_missed_notlogged > Game.TURNS_MISSED_NOTLOGGED
 
   def has_resources_for(self, desc):
-    for (r, a) in desc.iteritems():
+    for (r, a) in desc.items():
       if self.resources[r] < a:
         return False
 
     return True
 
   def spend_resources_for(self, desc):
-    for (r, a) in desc.iteritems():
+    for (r, a) in desc.items():
       self.resources[r] = self.resources[r] - a
 
 class Game(hlib.database.DBObject):
@@ -337,14 +341,14 @@ class Game(hlib.database.DBObject):
       if len(self.players) < self.limit:
         return False
 
-      for p in self.players.itervalues():
+      for p in self.players.values():
         if p.confirmed != True:
           return False
 
       return True
 
     if name == 'has_invited_players':
-      for p in self.players.itervalues():
+      for p in self.players.values():
         if p.confirmed == False:
           return True
 
@@ -353,14 +357,14 @@ class Game(hlib.database.DBObject):
     if name == 'confirmed_players':
       ret = {}
 
-      for p in self.players.itervalues():
+      for p in self.players.values():
         if p.confirmed == True:
           ret[p.id] = p
 
       return ret
 
     if name == 'has_next_player':
-      for p in self.players.itervalues():
+      for p in self.players.values():
         if p.id == self.forhont_player.id:
           continue
 
@@ -376,14 +380,14 @@ class Game(hlib.database.DBObject):
 
       atime = self.last_pass
 
-      for p in self.players.itervalues():
+      for p in self.players.values():
         chat_lister = lib.chat.ChatPagerGame(self, accessed_by = p)
         if chat_lister.unread > 0:
           return False
 
         atime = max(atime, p.last_board)
 
-      if hruntime.time - atime < (86400 * 6 * 30):
+      if hruntime.time - atime < (86400 * 7):
         return False
 
       return True
@@ -446,7 +450,7 @@ class Game(hlib.database.DBObject):
     Returns True if exists player with USERID same as USER.id and player is confirmed
     """
 
-    for p in self.confirmed_players.itervalues():
+    for p in self.confirmed_players.values():
       if p.user.name == user.name:
         return True
 
@@ -493,7 +497,7 @@ class Game(hlib.database.DBObject):
     self.type = Game.TYPE_FINISHED
     self.last_pass = hruntime.time
 
-    for p in self.players.itervalues():
+    for p in self.players.values():
       p.user.vacation_add_game()
 
     hlib.event.trigger('game.GameFinished', self, game = self)
@@ -511,6 +515,8 @@ class Game(hlib.database.DBObject):
     pass
 
   def pass_turn_real(self, record = True, forced = False):
+    print ('entering "pass_turn" with state %i and forhont %s' % (self.type, self.forhont_player.user.name)).encode('ascii', 'replace')
+
     if record:
       prev_player = self.forhont_player
       next_round = self.do_pass_turn(forced = forced)
@@ -523,6 +529,8 @@ class Game(hlib.database.DBObject):
 
     if next_round == True:
       self.round = self.round + 1
+
+    print ('leaving "pass_turn" with state %i and forhont %s' % (self.type, self.forhont_player.user.name)).encode('ascii', 'replace')
 
   def pass_turn(self, check = True, record = False, forced = False):
     if check == True:

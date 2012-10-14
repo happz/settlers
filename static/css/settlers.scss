@@ -153,6 +153,14 @@ img {
   text-align:				center;
 }
 
+.red {
+    color:				red;
+}
+
+.green {
+    color:				#006400;
+}
+
 label, .label {
     color:				$color_control_text;
     font-size:				$font_size_text;
@@ -178,6 +186,10 @@ p {
     z-index:				1020;
 }
 
+ul {
+    list-style-type:			none;
+}
+
 /*
  * ----- ----- Ajax utils
  */
@@ -190,6 +202,95 @@ img.ajax_spinner {
 
 .ui-icon-closethick {
   display:		none;
+}
+
+/*
+ * ----- ----- Tables with real content
+ */
+.content-table {
+    width:				100%;
+
+    cursor:				default;
+
+    padding-top:			5px;
+    padding-bottom:			5px;
+
+    caption {
+        @include control();
+        @include corners-top();
+
+        margin-bottom:			-5px;
+    }
+
+    thead {
+        tr {
+            th {
+                @include control();
+
+                font-size:		$font_size_text_small;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            @include block();
+
+            border-top-width:		0px;
+            border-bottom-width:	0px;
+
+            &:hover {
+                background:             $color_background none !important;
+
+                td {
+                    border-bottom:	dashed 1px $color_control_background !important;
+                    border-top:		dashed 1px $color_control_background !important;
+
+                    &:first-child {
+                      border-left:	dashed 1px $color_control_background !important;
+                    }
+
+                    &:last-child {
+                      border-right:	dashed 1px $color_control_background !important;
+                    }
+                }
+            }
+
+            td {
+                padding-left:           3px;
+                font-size:		$font_size_text_small;
+
+                &:first-child {
+                    border-left:        1px solid;
+                    border-color:       $color_border;
+                }
+
+                &:last-child {
+                    border-right:       1px solid;
+                    border-color:       $color_border;
+                }
+            }
+
+            &:last-child {
+                td {
+                    border-bottom:      1px solid;
+                    border-color:       $color_border;
+
+                    &:first-child {
+                        @include corners-bottom-left();
+                    }
+
+                    &:last-child {
+                        @include corners-bottom-right();
+                    }
+                }
+            }
+        }
+    }
+}
+
+.content-table tbody tr > th:last-child {
+    @include corners-top-right();
 }
 
 /*
@@ -237,4 +338,100 @@ img.ajax_spinner {
 
 .ui-autocomplete {
     background-color: red;
+}
+
+/*
+ * Icons
+ */
+span.icon {
+    @include corners-top();
+    @include corners-bottom();
+
+    display:				inline-block;
+    cursor:				pointer;
+    background-repeat:			no-repeat;
+    vertical-align:			middle;
+
+    background-size:			100%,100%;
+}
+
+span.icon-disabled {
+    cursor:				default;
+
+    opacity:				0.25;
+    filter:				alpha(opacity=25);
+}
+
+span.icon-giant {
+    width:                      64px;
+    height:                     64px;
+    max-width:			64px;
+    max-height:			64px;
+}
+
+span.icon-large {
+  width:                        48px;
+  height:                       48px;
+}
+
+span.icon-medium {
+  width:                        32px;
+  height:                       32px;
+}
+
+/*
+ * UI bits
+ */
+.framed {
+    @include block();
+    @include corners-top();
+    @include corners-bottom();
+
+    margin-bottom:                      5px;
+    padding:                            5px;
+}
+
+.header, .ui-datepicker-header {
+    @include control();
+ 
+    cursor:                             pointer;
+    padding:                            0.3em;
+}
+
+.info {
+    @include block();
+ 
+    display:                            block;
+    padding:                            0.5em;
+    margin:                             0px; 
+    overflow:                           hidden;
+    position:                           relative;
+    text-align:                         left;
+    height:                             1em; 
+    cursor:                             default;
+ 
+    border-top-width:                   0px;
+    border-bottom-width:                0px;
+
+    font-size:                          $font_size_text_small;
+}
+  
+.info-with-border {
+    &:hover {
+        background:                     $color_background none !important;
+        border:                         dashed 1px $color_control_background !important;
+    }
+}
+
+.info-with-menu {
+    height:                             32px;
+    border-width:                       1px; 
+     
+    &:hover {
+        background:                     $color_background none;
+    }
+}
+
+.important-info {
+    font-size:                            1.5em;
 }

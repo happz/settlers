@@ -19,6 +19,7 @@ window.settlers.templates.chat_post = '
 
 window.settlers.setup_page = () ->
   chat_pager = window.settlers.setup_chat
+    id_prefix:			'chat'
     eid:			'#chat_posts'
     url:			'/chat/page'
 

@@ -42,10 +42,11 @@ cmd_options = {
 }
 
 def __on_request_started(e):
+  # pylint: disable-msg=W0613
   hruntime.i18n = hruntime.dbroot.localization.languages['cz']
 
   if hruntime.user and hruntime.user.is_on_vacation and hruntime.request.config.get('survive_vacation', None) != True:
-    raise hlib.server.HTTPRedirect('/vacation/')
+    raise hlib.http.Redirect('/vacation/')
 
 hlib.event.Hook('engine.RequestStarted', 'settlers_generic', __on_request_started)
 
@@ -64,18 +65,21 @@ def main():
   hlib.config['log.channels.error'] = stderr
 
   db_address = hlib.database.DBAddress(config.get('database', 'address'))
-  db = hlib.database.DB(db_address)
+  db = hlib.database.DB('main db', db_address, cache_size = 35000)
   db.open()
 
   app_config			= hlib.engine.Application.default_config(config.get('server', 'path'))
   app_config['title']		= config.get('web', 'title')
+  app_config['label']		= 'Settlers'
   app_config['cache.enabled']	= False
 
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
 
   app.sessions = hlib.http.session.FileStorage(os.path.join('/', 'tmp', 'settlers-sessions.dat'), app)
   app.config['sessions.time']          = 2 * 86400
+  app.config['sessions.cookie_name']	= 'settlers_sid'
 
+  app.config['log.access.format']	= '{date} {time} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
   app.channels.access = [stderr, access]
   app.channels.error  = [stderr, error]
 

@@ -38,6 +38,7 @@
 
   <script type="text/javascript" src="/static/script/jquery.form.js"></script>
   <script type="text/javascript" src="/static/script/jquery.timers.js"></script>
+  <script type="text/javascript" src="/static/script/stacktrace.js"></script>
 
   <script type="text/javascript" src="/static/script/mustache.js"></script>
   <script type="text/javascript" src="/static/script/strftime-min.js"></script>
@@ -78,17 +79,25 @@
     <script type="text/javascript" src="/static/script/pages/${current_page_name}.js"></script>
   % endif
 
-<!--  <script src="/i18n?lang=${hruntime.i18n.name}" type="text/javascript"></script> -->
+  <script src="/i18n?lang=${hruntime.i18n.name}" type="text/javascript"></script>
 
   ${parent.page_header()}
+
+  <script type="text/javascript">
+    window.settlers = window.settlers || {};
+
+    window.settlers.title = window.hlib._g("${hruntime.app.config['label']}");
+
+    % if hruntime.user != None:
+      window.settlers.user = {
+        name:			"${hruntime.user.name}"
+      };
+    % endif
+  </script>
 </%def>
 
 <%def name="page_title()">
   ${_(hruntime.app.config['title'])}
-
-  % if hruntime.user != None:
-    - ${hruntime.user.name}
-  % endif
 </%def>
 
 ##

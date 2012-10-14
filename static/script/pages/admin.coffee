@@ -1,20 +1,22 @@
 window.settlers.templates = window.settlers.templates or {}
 window.settlers.templates.i18n_unused_tokens = '
-  <ul>
+  <label>{{section_label}}</label>
+  <ul class="i18n-unused-tokens formee">
     {{#tokens}}
-      <li>{{name}}</li>
+      <label>{{name}}</label>
     {{/tokens}}
   </ul>
 '
 window.settlers.templates.i18n_missing_tokens = '
-  <ul>
+  <label>{{section_label}}</label>
+  <ul class="i18n-missing-tokens formee">
     {{#tokens}}
-      <li>{{name}}</li>
+      <label>{{name}}</label>
     {{/tokens}}
   </ul>
 '
 window.settlers.templates.i18n_tokens = '
-  <option value="Vybrat...">Vybrat...</option>
+  <option value="">Vybrat...</option>
   {{#tokens}}
     <option value="{{name}}">{{name}}</option>
   {{/tokens}}
@@ -32,38 +34,6 @@ window.settlers.templates.maintenance_access_list = '
     {{/users}}
   </ul>
 '
-
-window.settlers.refresh_token_list = (opts) ->
-  new window.hlib.Ajax
-    url:		opts.url
-    data:
-      lang:		$(opts.lang).val()
-    handlers:
-      h200:		opts.h200
-
-window.settlers.refresh_unused_list = () ->
-  window.settlers.refresh_token_list
-    url:		'/admin/i18n/unused'
-    lang:		'#i18n_edit_lang'
-    h200:		(response, ajax) ->
-      $('#i18n_unused_tokens_list').html window.hlib.render window.settlers.templates.i18n_unused_tokens, response
-      $('#i18n_unused_tokens').show()
-
-window.settlers.refresh_missed_list = () ->
-  window.settlers.refresh_token_list
-    url:		'/admin/i18n/missing'
-    lang:		'#i18n_add_lang'
-    h200:               (response, ajax) ->
-      $('#i18n_missing_tokens_list').html window.hlib.render window.settlers.templates.i18n_missing_tokens, response
-      $('#i18n_missing_tokens').show()
-
-window.settlers.refresh_present_list = () ->
-  window.settlers.refresh_token_list
-    url:		'/admin/i18n/tokens'
-    lang:		'#i18n_edit_lang'
-    h200:		(response, ajax) ->
-      $('#i18n_edit_token').html window.hlib.render window.settlers.templates.i18n_tokens, response
-      $('#i18n_edit_token').val ''
 
 window.settlers.refresh_maintenance_access_list = () ->
   new window.hlib.Ajax
@@ -87,26 +57,152 @@ window.settlers.refresh_maintenance_access_list = () ->
 
         window.hlib.INFO._hide()
 
-window.settlers.setup_forms = () ->
-  new window.hlib.Form
-    fid:                'board'
+window.settlers.refresh_token_list = (opts) ->
+  new window.hlib.Ajax
+    url:		opts.url
+    data:
+      lang:		opts.lang
+    handlers:
+      h200:		opts.h200
 
-  new window.hlib.Form
-    fid:                'password_recovery_mail'
-
-  i18n_edit = new window.hlib.Form
+window.settlers.setup_i18n_edit_form = () ->
+  form = new window.hlib.Form
     fid:		'i18n_edit'
     clear_fields:	['token', 'value']
+    disable_fields:	['token']
 
-  new window.hlib.Form
+  lang = form.field 'lang'
+  unused = form.field 'unused'
+  edit = form.field 'edit'
+  token = form.field 'token'
+  value = form.field 'value'
+  remove = form.field 'remove'
+
+  refresh_unused_list = () ->
+    window.settlers.refresh_token_list
+      url:		'/admin/i18n/unused'
+      lang:		$(lang.fid).val()
+      h200:		(response, ajax) ->
+        response.section_label = window.hlib._g 'Unused tokens'
+        $(unused.fid).html window.hlib.render window.settlers.templates.i18n_unused_tokens, response
+        $(unused.fid).show()
+
+  refresh_present_list = () ->
+    window.settlers.refresh_token_list
+      url:		'/admin/i18n/tokens'
+      lang:		$(lang.fid).val()
+      h200:		(response, ajax) ->
+        $(token.fid).html window.hlib.render window.settlers.templates.i18n_tokens, response
+
+  $(lang.fid).change () ->
+    if $(lang.fid).val() == ''
+      unused.empty()
+      $(unused.fid).hide()
+
+      value.empty()
+      $(edit.fid).hide()
+
+      tmpl_data =
+        tokens:		[]
+
+      $(token.fid).html window.hlib.render window.settlers.templates.i18n_tokens, tmpl_data
+      token.disable()
+      return
+
+    token.enable()
+
+    refresh_unused_list()
+    refresh_present_list()
+
+    window.hlib.INFO._hide()
+
+    return false
+
+  $(token.fid).change () ->
+    if $(token.fid).val() == ''
+      value.empty()
+      $(edit.fid).hide()
+      return
+
+    value.empty()
+    $(edit.fid).hide()
+    
+    new window.hlib.Ajax
+      url:              '/admin/i18n/token'
+      data:
+        lang:		$(lang.fid).val()
+        name:		$(token.fid).val()
+      handlers:
+        h200:		(response, ajax) ->
+          $(value.fid).val response.value
+          $(edit.fid).show()
+
+          window.hlib.INFO._hide()
+
+    return false
+
+  $(remove.fid).click () ->
+    new window.hlib.Ajax
+      url:		'/admin/i18n/remove'
+      data:
+        lang:		$(lang.fid).val()
+        name:		$(token.fid).val()
+      handlers:
+        h200:		(response, ajax) ->
+          form.info.success 'Removed'
+
+          value.empty()
+          $(edit.fid).hide()
+
+          refresh_unused_list()
+          refresh_present_list()
+
+          window.hlib.INFO._hide()
+
+    return false
+
+window.settlers.setup_i18n_add_form = () ->
+  form = new window.hlib.Form
     fid:		'i18n_add'
     clear_fields:	['name', 'value']
     handlers:
       s200:	(response, form) ->
         form.info.success 'Added'
 
-        window.settlers.refresh_missed_list()
+        refresh_missed_list()
         window.hlib.INFO._hide()
+
+  lang = form.field 'lang'
+  missing = form.field 'missing'
+
+  refresh_missed_list = () ->
+    window.settlers.refresh_token_list
+      url:		'/admin/i18n/missing'
+      lang:		$(lang.fid).val()
+      h200:               (response, ajax) ->
+        response.section_label = window.hlib._g 'Missing tokens'
+        $(missing.fid).html window.hlib.render window.settlers.templates.i18n_missing_tokens, response
+        $(missing.fid).show()
+
+  $(lang.fid).change () ->
+    if $(lang.fid).val() == ''
+      missing.empty()
+      $(missing.fid).hide()
+      return
+
+    refresh_missed_list()
+
+    window.hlib.INFO._hide()
+
+    return false
+
+window.settlers.setup_forms = () ->
+
+  new window.hlib.Form
+    fid:                'board'
+
+  new window.hlib.Form
+    fid:                'password_recovery_mail'
 
   new window.hlib.Form
     fid:		'maintenance_mode'
@@ -119,63 +215,8 @@ window.settlers.setup_forms = () ->
         window.settlers.refresh_maintenance_access_list()
         window.hlib.form_default_handlers.s200 response, form
 
-  $('#i18n_add_lang').change () ->
-    if $('#i18n_add_lang').val() == ''
-      $('#i18n_missing_tokens').hide()
-      return
-
-    window.settlers.refresh_missed_list()
-    window.hlib.INFO._hide()
-
-  $('#i18n_edit_lang').change () ->
-    if $('#i18n_edit_lang').val() == ''
-      $('#i18n_unused_tokens').hide()
-      return
-
-    window.settlers.refresh_unused_list()
-    window.settlers.refresh_present_list()
-
-    window.hlib.INFO._hide()
-
-  $('#i18n_remove').click () ->
-    new window.hlib.Ajax
-      url:		'/admin/i18n/remove'
-      data:
-        lang:		$('#i18n_edit_lang').val()
-        name:		$('#i18n_edit_token').val()
-      handlers:
-        h200:		(response, ajax) ->
-          i18n_edit.info.success 'Removed'
-
-          $('#i18n_edit').hide()
-          window.settlers.refresh_unused_list()
-          window.settlers.refresh_present_list()
-          window.hlib.INFO._hide()
-
-  $('#i18n_edit_token').change () ->
-    if $('#i18n_edit_token').val() == ''
-      return
-
-    $('#i18n_edit').hide()
-    $('#i18n_edit textarea').val ''
-    
-    new window.hlib.Ajax
-      url:              '/admin/i18n/token'
-      data:
-        lang:		$('#i18n_edit_lang').val()
-        name:		$('#i18n_edit_token').val()
-      handlers:
-        h200:		(response, ajax) ->
-          $('#i18n_edit textarea').val response.value
-          $('#i18n_edit').show()
-
-          window.hlib.INFO._hide()
-
-    return false
-
-  $('#maintenance_access_username').autocomplete
-    source:			'/maintenance/granted'
-    minLength:			2
+  window.settlers.setup_i18n_add_form()
+  window.settlers.setup_i18n_edit_form()
 
 window.settlers.setup_page = () ->
   window.settlers.setup_forms()

@@ -1,4 +1,4 @@
-ROOT_DIR="/data/osadnici/"
+ROOT_DIR="/data/settlers/osadnici/"
 
 # No need to change variables below this line...
 DOC_DIR="$ROOT_DIR/doc/"

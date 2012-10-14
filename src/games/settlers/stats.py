@@ -3,8 +3,10 @@ import threading
 import lib.datalayer
 import games.stats
 
+import hlib.api
 import hlib.database
 import hlib.log
+import hlib.pageable
 
 # pylint: disable-msg=F0401
 import hruntime
@@ -12,10 +14,10 @@ import hruntime
 _stats_lock = threading.RLock()
 _stats = None
 
-class Stats(hlib.database.DBObject):
+class UserStats(object):
   def __init__(self, user, points, gs, finished, wons, points_per_game):
     # pylint: disable-msg=E1002
-    super(Stats, self).__init__()
+    super(UserStats, self).__init__()
 
     self.user			= user
     self.points			= points
@@ -27,33 +29,39 @@ class Stats(hlib.database.DBObject):
   def __str__(self):
     return '%s: %i, %i, %f' % (self.user.name.encode('ascii', 'replace'), self.points, self.games, self.points_per_game)
 
-class GamesStats(games.stats.GamesStats):
-  _lock = threading.RLock()
-  _stats = None
+class Stats(games.stats.Stats):
+  def record_to_api(self, record):
+    return {
+      'user':			hlib.api.User(record.user),
+      'points':			record.points,
+      'games':			record.games,
+      'finished':		record.finished,
+      'wons':			record.wons,
+      'ppg':			record.points_per_game
+    }
 
-  @staticmethod
-  def items(key = None, reverse = False, window = None):
-    with GamesStats._lock:
-      if GamesStats._stats == None:
-        GamesStats.refresh_stats()
+  def get_records(self, start, length):
+    records = []
 
-      items = sorted(GamesStats._stats, key = key, reverse = reverse)
-      return (items[window[0]:window[0] + window[1]], len(GamesStats._stats))
+    with self.lock:
+      if self.stats == None:
+        self.refresh_stats()
 
-  @staticmethod
-  def refresh_stats():
-    GamesStats._stats = []
+      records = self.stats[start:max(start + length, len(self.stats) - 1)]
 
-    with GamesStats._lock:
+      return (records, len(self.stats))
+
+  def refresh_stats(self):
+    with self.lock:
       new_stats = {}
 
-      for g in hruntime.dbroot.games.itervalues():
+      for g in hruntime.dbroot.games.values():
         if hruntime.time - (86400 * 7 * 52) > g.last_pass:
           continue
 
-        for p in g.players.itervalues():
+        for p in g.players.values():
           if p.user.name not in new_stats:
-            s = Stats(p.user, 0, 0, 0, 0, 0.0)
+            s = UserStats(p.user, 0, 0, 0, 0, 0.0)
             new_stats[p.user.name] = s
 
           else:
@@ -65,15 +73,15 @@ class GamesStats(games.stats.GamesStats):
           if g.winner_player == p:
             s.wons += 1
 
-      GamesStats._stats = new_stats.values()
+      self.stats = new_stats.values()
 
-      for s in GamesStats._stats:
+      for s in self.stats:
         s.points_per_game = float(s.points) / float(s.games)
 
-      for v in GamesStats._stats:
+      for v in self.stats:
         print str(v)
 
-#    for s in hruntime.dbroot.stats.settlers.itervalues():
+#    for s in hruntime.dbroot.stats.settlers.values():
 #      if s.games < 20:
 #        to_delete.append(s)
 #
@@ -82,12 +90,4 @@ class GamesStats(games.stats.GamesStats):
 #    for s in to_delete:
 #      del hruntime.dbroot.stats.settlers[s.user]
 
-from hlib.ui.table import Table, TableHeader
-
-STATS_TABLE = Table(
-  ('name',            TableHeader(type = 'html', key = lambda x: x.user.name, label = 'Name')),
-  ('total_games',     TableHeader(type = 'numeric', key = lambda x: x.games, label = 'Total games')),
-  ('won_games',       TableHeader(type = 'numeric', key = lambda x: x.wons, label = 'Won games')),
-  ('total_points',    TableHeader(type = 'numeric', key = lambda x: x.points, label = 'Total points')),
-  ('points_per_game', TableHeader(type = 'numeric', key = lambda x: x.points_per_game, label = 'Points per game'))
-)
+stats = Stats()

@@ -90,9 +90,27 @@ class ChatPager(hlib.pageable.Pageable):
   # pylint: disable-msg=W0212
   entity		= property(lambda self: self._entity and self._entity or hruntime.dbroot.server)
   accessed_by		= property(lambda self: self._accessed_by if self._accessed_by != None else hruntime.user)
-  unread		= property(lambda self: 0 if self.total == 0 else max(self.entity.chat_posts.keys()) - self.accessed_by.last_board)
+  unread		= property(lambda self: 0 if self.total == 0 else max(list(self.entity.chat_posts.keys())) - self.accessed_by.last_board)
   total			= property(lambda self: len(self.entity.chat_posts))
   length		= property(lambda self: self.total)
+
+  @property
+  def unread(self):
+    if self.total == 0:
+      return 0
+
+    try:
+      keys = list(self.entity.chat_posts.keys())
+    except Exception, e:
+      import hlib.error
+      import hlib.log
+
+      e = hlib.error.error_from_exception(e)
+      hlib.log.log_error(e)
+
+      return 0
+
+    return max(keys) - self.accessed_by.last_board
 
   def trigger_event(self):
     pass

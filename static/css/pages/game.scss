@@ -36,14 +36,6 @@
 .game-round {
 }
 
-.game-player {
-    padding: {
-        left:				5px;
-        right:				5px;
-        bottom:				0.4em;
-    }
-}
-
 .game-player-header {
     position:				relative;
 }
@@ -79,4 +71,92 @@ table {
 
 .card-menu {
     vertical-align:			middle;
+}
+
+.content-table {
+    tbody {
+        tr {
+            td {
+                white-space:		nowrap;
+
+                &:nth-child(2) {
+                    text-align:		center;
+                }
+            }
+        }
+    }
+}
+
+.game-player {
+    padding: {
+        left:                           5px;
+        right:                          5px;
+        bottom:                         0.4em;
+    }
+
+    hr {
+        widht: 100%;
+    }
+
+    width:				100%;
+    border-left-width:			1px;
+    border-right-width:			1px;
+
+    tbody {
+        @include block();
+
+        border-top-width:		0px;
+        border-bottom-width:		0px;
+    }
+
+    tr:nth-child(even) {
+        td {
+            @include block();
+            border-width:		0px;
+        }
+    }
+
+    tr.even {
+        td {
+            @include block();
+            border-width:		0px;
+        }
+    }
+
+    tr {
+        td {
+            width: 100%;
+        }
+    }
+}
+
+/*
+ * Icons
+ */
+span.icon-game-board {
+    background-image:			url(/static/images/icons/Board96.png);
+}
+
+span.icon-game-cards {
+    background-image:			url(/static/images/icons/Cards96.png);
+}
+
+span.icon-game-history {
+    background-image:			url(/static/images/icons/History96.png);
+}
+
+span.icon-game-chat {
+    background-image:			url(/static/images/icons/Chat96.png);
+}
+
+span.icon-game-refresh {
+    background-image:			url(/static/images/icons/Refresh96.png);
+}
+
+span.icon-game-roll-dice {
+    background-image:			url(/static/images/icons/Dice96.png);
+}
+
+span.icon-game-pass-turn {
+    background-image:			url(/static/images/icons/Pass96.png);
 }

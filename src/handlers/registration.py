@@ -17,6 +17,13 @@ from hlib.input import validate_by
 # pylint: disable-msg=F0401
 import hruntime
 
+class UserExistsError(hlib.error.InvalidInputError):
+  def __init__(self, **kwargs):
+    kwargs['reply_status']      = 403
+    kwargs['msg']		= 'Such username already exists.'
+
+    super(UserExistsError, self).__init__(**kwargs)
+
 class RecoveryHandler(handlers.GenericHandler):
   @page
   def index(self):
@@ -61,12 +68,6 @@ class Handler(handlers.GenericHandler):
   #
   # Checkin
   #
-  class UserExistsError(hlib.error.BaseError):
-    def __init__(self, **kwargs):
-      kwargs['reply_status']	= 403
-
-      super(UserExistsError, self).__init__(**kwargs)
-
   class ValidateRegistration(hlib.input.SchemaValidator):
     username			= hlib.input.Username()
     password1			= hlib.input.Password()
@@ -81,7 +82,7 @@ class Handler(handlers.GenericHandler):
   def checkin(self, username = None, password1 = None, password2 = None, email = None):
     # pylint: disable-msg=R0201
     if username in hruntime.dbroot.users:
-      raise UserExistsError(orig_fields = True, invalid_field = 'username')
+      raise UserExistsError(invalid_field = 'username')
 
     u = lib.datalayer.User(username, lib.pwcrypt(password1), email)
     hruntime.dbroot.users[u.name] = u

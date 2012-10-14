@@ -72,16 +72,3 @@ a img {
 :focus {
     outline:				0;
 }
-
-tbody {
-    tr:nth-child(even) {
-        td {
-            background:                 $color_background;
-        }
-    }
-    tr.even {
-        td {
-            background:                 $color_background;
-        }
-    }
-}

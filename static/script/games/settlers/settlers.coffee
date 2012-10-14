@@ -9,11 +9,14 @@ window.settlers._log_enabled = false
 window.settlers.format_event_resources = (rs) ->
   return (window.hlib._g '{0} wood, {1} clay, {2} sheep, {3} grain, {4} rock').format rs.wood, rs.clay, rs.sheep, rs.grain, rs.rock
 
+window.settlers.events['game.CardUsed']					= (e) ->
+  return (window.hlib._g '{0} used card {1} from round {2}').format e.user.name, (window.hlib._g window.settlers.game.card_type_to_name[e.card.type]), e.card.bought
+
 window.settlers.events = window.settlers.events or {}
 window.settlers.events['game.settlers.LongestPathBonusEarned']		= (e) ->
-  return ''
+  return 'game.settlers.LongestPathBonusEarned'
 window.settlers.events['game.settlers.MightestChilvaryBonusEarned']	= (e) ->
-  return ''
+  return 'game.settlers.MightestChilvaryBonusEarned'
 
 window.settlers.events['game.settlers.ResourceStolen']			= (e) ->
   if e.am_i_thief == true
@@ -36,23 +39,26 @@ window.settlers.events['game.settlers.ResourcesStolen']			= (e) ->
   return ''
 
 window.settlers.events['game.settlers.DiceRolled']			= (e) ->
-  return ''
+  return 'game.settlers.DiceRolled'
 window.settlers.events['game.settlers.VillageBuilt']			= (e) ->
-  return ''
+  return 'game.settlers.VillageBuilt'
 window.settlers.events['game.settlers.TownBuild']			= (e) ->
-  return ''
+  return 'game.settlers.TownBuild'
 window.settlers.events['game.settlers.ResourcesReceived']		= (e) ->
   return (window.hlib._g '{0} received these resources: {1}').format e.user.name, (window.settlers.format_event_resources e.resources)
+
 window.settlers.events['game.settlers.ResourcesExchanged']		= (e) ->
-  return ''
+  return (window.hlib._g '{0} exchanged resources: {1} for {2}').format e.user.name, (window.settlers.format_event_resources e.src), (window.settlers.format_event_resources e.dst)
+
 window.settlers.events['game.settlers.Monopoly']			= (e) ->
-  return ''
+  return (window.hlib._g '{0} stole resources from {1}: {2}').format e.thief.name, e.victim.name, (window.settlers.format_event_resources e.resources)
 
 window.settlers.events['game.settlers.ThiefPlaced']			= (e) ->
   return (window.hlib._g '{0} moved thief').format e.user.name
 
 class window.settlers.GameObject
   resource_id_to_name:		['sheep', 'wood', 'rock', 'grain', 'clay']
+  card_type_to_name:		['undefined', 'Knight', 'Monopoly', 'Paths', 'Invention', 'Point']
 
   constructor:		(data) ->
     jQuery.extend true, @, data
@@ -214,8 +220,6 @@ class window.settlers.GameObject
         node1 = G.board.nodes[window.settlers.board_defs.paths[path.id].nodes[0] - 1]
         node2 = G.board.nodes[window.settlers.board_defs.paths[path.id].nodes[1] - 1]
 
-        _log 'nodes:', node1, node2
-
         if node1.owner == P.id or node2.owner == P.id
           m[path.id] = true
           return
@@ -224,28 +228,22 @@ class window.settlers.GameObject
         sibling2 = null
 
         sibling1 = G.get_path_sibling_by_node path, node1, 0
-        _log 's1', sibling1
         if sibling1 and (sibling1.type != 2 or sibling1.owner != G.my_player.id)
           sibling1 = null
 
         if not sibling1
           sibling1 = G.get_path_sibling_by_node path, node1, 1
-          _log 's1', sibling1
           if sibling1 and (sibling1.type != 2 or sibling1.owner != G.my_player.id)
             sibling1 = null
 
         sibling2 = G.get_path_sibling_by_node path, node2, 0
-        _log 's2', sibling2
         if sibling2 and (sibling2.type != 2 or sibling2.owner != G.my_player.id)
           sibling2 = null
 
         if not sibling2
           sibling2 = G.get_path_sibling_by_node path, node2, 1
-          _log 's2', sibling2
           if sibling2 and (sibling2.type != 2 or sibling2.owner != G.my_player.id)
             sibling2 = null
-
-        _log 'siblings', sibling1, sibling2
 
         if sibling1 and not sibling2 and node1.type != 1
           return
@@ -306,7 +304,7 @@ class window.settlers.GameObject
     if not @can_exchange_common()
       return false
 
-    return Math.max(@resources_values(@my_player.resources)) >= 3 and (@get_used_ports @my_player, -2).length > 0
+    return (Math.max.apply(Math, @resources_values(@my_player.resources)) >= 3 and (@get_used_ports @my_player, -2).length > 0)
 
   can_exchange_two:	() ->
     G = @
@@ -353,35 +351,41 @@ window.settlers.templates.game.player = '
         "></span>
     </div>
 
-    <div class="game-player-points info important-info">{{points}} points</div>
+    <div class="game-player-points info important-info">{{points}} {{#_g}}points{{/_g}}</div>
+
+    <table class="game-player-resources">
 
     {{#my_player}}
-      <div class="game-player-resources info">{{resources.wood}} of wood</div>
-      <div class="game-player-resources info">{{resources.clay}} of clay</div>
-      <div class="game-player-resources info">{{resources.grain}} of grain</div>
-      <div class="game-player-resources info">{{resources.sheep}} of sheep</div>
-      <div class="game-player-resources info">{{resources.rock}} of rock</div>
+      <tr class="info"><td>{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
+      <tr class="info"><td>{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
+      <tr class="info"><td>{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
+      <tr class="info"><td>{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
+      <tr class="info"><td>{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
     {{/my_player}}
     {{^my_player}}
-      <div class="game-player-resources info">{{resources.total}} resources totally</div>
+      <tr class="info"><td>{{#_g}}Resources{{/_g}}:</td><td>{{resources.total}}</td></tr>
     {{/my_player}}
-
-    <div class="info" style="vertical-align: center"><hr /></div>
 
     {{#my_player}}
-      <div class="game-player-cards info">{{cards.length}} cards</div>
+      </table>
+      <div class="info"><hr /></div>
+      <table class="game-player-resources">
+    {{/my_player}}
+
+    {{#my_player}}
+      <tr class="info"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.length}}</td></tr>
     {{/my_player}}
     {{^my_player}}
-      <div class="game-player-cards info">{{cards}} cards</div>
+      <tr class="info"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards}}</td></tr>
     {{/my_player}}
 
-    <div class="game-player-knights info corners-bottom">{{knights}} knights</div>
-
+      <tr class="info game-player-knights corners-bottom"><td>{{#_g}}Knights{{/_g}}:</td><td>{{knights}}</td></tr>
+    </table>
   </div>
 '
 window.settlers.templates.game.cards = '
   <ul class="game-cards">
-    <li class="header">Cards</li>
+    <li class="header">{{#_g}}Cards{{/_g}}</li>
     {{#cards}}
       <li id="card_{{id}}" class="info info-with-menu">
         <span class="card-type">{{type_name}}</span>
@@ -407,7 +411,7 @@ window.settlers.templates.game.events = '
 '
 window.settlers.templates.game.exchange = window.settlers.templates.game.exchange or {}
 window.settlers.templates.game.exchange.amount = '
-  <option value="" selected="selected"># of pieces...</option>
+  <option value="" selected="selected">{{#_g}}# pieces of ...{{/_g}}</option>
   {{#amounts}}
     <option value="{{amount}}">{{amount}}</option>
   {{/amounts}}
@@ -451,7 +455,7 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
       return
 
   __mk_resource_option = (j) ->
-    return { resource: j, resource_label: window.hlib._g G.resource_id_to_name[j] }
+    return { resource: j, resource_label: window.hlib._g G.resource_id_to_name[j].capitalize() }
 
   amounts =
     amounts:	[]
@@ -459,30 +463,55 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
   amounts.amounts.push { amount: n } for n in [i..Math.max.apply Math, (G.resources_values G.my_player.resources)] by i
 
   dst_resources =
-    hint:		'To...'
+    hint:		window.hlib._g 'To ...'
     resources:		[
-      __mk_resource_option 0
       __mk_resource_option 1
-      __mk_resource_option 2
-      __mk_resource_option 3
       __mk_resource_option 4
+      __mk_resource_option 3
+      __mk_resource_option 0
+      __mk_resource_option 2
     ]
 
   src_resources =
-    hint:		'From...'
+    hint:		window.hlib._g 'From ...'
     resources:		[
     ]
 
-  if my_player.resources.sheep >= 4
-    src_resources.resources.push __mk_resource_option 0
-  if my_player.resources.wood >= 4
-    src_resources.resources.push __mk_resource_option 1
-  if my_player.resources.rock >= 4
-    src_resources.resources.push __mk_resource_option 2
-  if my_player.resources.grain >= 4
-    src_resources.resources.push __mk_resource_option 3
-  if my_player.resources.clay >= 4
-    src_resources.resources.push __mk_resource_option 4
+  if i == 4
+    if my_player.resources.wood >= i
+      src_resources.resources.push __mk_resource_option 1
+    if my_player.resources.clay >= i
+      src_resources.resources.push __mk_resource_option 4
+    if my_player.resources.grain >= i
+      src_resources.resources.push __mk_resource_option 3
+    if my_player.resources.sheep >= i
+      src_resources.resources.push __mk_resource_option 0
+    if my_player.resources.rock >= i
+      src_resources.resources.push __mk_resource_option 2
+
+  else if i == 3 and G.can_exchange_three() == true
+    if my_player.resources.wood >= i
+      src_resources.resources.push __mk_resource_option 1
+    if my_player.resources.clay >= i
+      src_resources.resources.push __mk_resource_option 4
+    if my_player.resources.grain >= i
+      src_resources.resources.push __mk_resource_option 3
+    if my_player.resources.sheep >= i
+      src_resources.resources.push __mk_resource_option 0
+    if my_player.resources.rock >= i
+      src_resources.resources.push __mk_resource_option 2
+
+  else if i == 2
+    if G.my_player.resources.wood >= 2 and (G.get_used_ports G.my_player, 1).length > 0
+      src_resources.resources.push __mk_resource_option 1
+    if G.my_player.resources.clay >= 2 and (G.get_used_ports G.my_player, 4).length > 0
+      src_resources.resources.push __mk_resource_option 4
+    if G.my_player.resources.grain >= 2 and (G.get_used_ports G.my_player, 3).length > 0
+      src_resources.resources.push __mk_resource_option 3
+    if G.my_player.resources.sheep >= 2 and (G.get_used_ports G.my_player, 0).length > 0
+      src_resources.resources.push __mk_resource_option 0
+    if G.my_player.resources.rock >= 2 and (G.get_used_ports G.my_player, 2).length > 0
+      src_resources.resources.push __mk_resource_option 2
 
   $(eid_prefix + '_gid').val G.gid
   $(eid_prefix + '_ratio').val i
@@ -574,7 +603,7 @@ window.settlers.update_game_ui_board = () ->
             h200:     (response, ajax) ->
               window.settlers.update_game_state()
             h403:	(response, ajax) ->
-              window.hlib.INFO.error window.hlib._g response.error.message
+              window.hlib.error response.error
 
         return false
 
@@ -611,7 +640,7 @@ window.settlers.update_game_ui_board = () ->
               h200:     (response, ajax) ->
                 window.settlers.update_game_state()
               h403:	(response, ajax) ->
-                window.hlib.INFO.error window.hlib._g response.error.message
+                window.hlib.error response.error
 
           return false
 
@@ -632,6 +661,23 @@ window.settlers.update_game_ui_board = () ->
 
           window.settlers.update_game_ui()
           window.hlib.INFO._hide()
+
+          return false
+
+      else if G.state == 22 or G.state == 23
+        $('#' + attrs.id).click () ->
+          window.hlib.INFO.working()
+
+          window.hlib.Ajax
+            url:		'/game/settlers/path_click'
+            data:
+              gid:		G.gid
+              pid:		p.id
+            handlers:
+              h200:     (response, ajax) ->
+                window.settlers.update_game_state()
+              h403:	(response, ajax) ->
+                window.hlib.error response.error
 
           return false
 
@@ -673,7 +719,7 @@ window.settlers.update_game_ui_board = () ->
               h200:     (response, ajax) ->
                 window.settlers.update_game_state()
               h403:	(response, ajax) ->
-                window.hlib.INFO.error window.hlib._g response.error.message
+                window.hlib.error response.error
 
           return false
 
@@ -781,57 +827,61 @@ window.settlers.update_game_ui_status = () ->
 
   $(eid).hide()
 
-  __set_status = (s) ->
-    $(eid).html s
-    $(eid).show()
+  show_status = true
 
   if G.has_all_confirmed != true
-    __set_status 'Waiting for more players'
+    $(eid).html window.hlib._g 'Waiting for more players'
 
   else if not G.my_player.is_on_turn
-    __set_status 'Waiting for ' + G.forhont_player.user.name
+    $(eid).html (window.hlib._g 'Waiting for {0}').format G.forhont_player.user.name
 
   else if G.state == 2
-    __set_status 'Game finished'
+    $(eid).html window.hlib._g 'Game finished'
 
   else if G.state == 3
-    __set_status 'Game canceled'
+    $(eid).html window.hlib._g 'Game canceled'
 
   else if G.state == 0
-    __set_status 'Waiting for more players'
+    $(eid).html window.hlib._g 'Waiting for more players'
 
   else if G.state == 21
-    __set_status 'Choose 2 resources for free'
+    $(eid).html window.hlib._g 'Choose 2 resources for free'
 
   else if G.state == 22
-    __set_status 'Place your first free road'
+    $(eid).html window.hlib._g 'Place your first free road'
 
   else if G.state == 23
-    __set_status 'Place your second free road'
+    $(eid).html window.hlib._g 'Place your second free road'
 
   else if G.state == 10
-    __set_status 'Place your first village, first road and press "Pass turn" button'
+    $(eid).html window.hlib._g 'Place your first village, first road and press "Pass turn" button'
 
   else if G.state == 11
-    __set_status 'Place your second village and road'
+    $(eid).html window.hlib._g 'Place your second village and road'
 
   else if G.state == 13 or G.state == 15 or G.state == 19
-    __set_status 'Select new field for thief'
+    $(eid).html window.hlib._g 'Select new field for thief'
 
   else if G.state == 12
-    __set_status 'You can use your knight card, or roll dice'
+    $(eid).html window.hlib._g 'You can use your knight card, or roll dice'
 
   else if G.state == 14 or G.state == 16 or G.state == 20
-    __set_status 'Select player whom you want to relieve of resource'
+    $(eid).html window.hlib._g 'Select player whom you want to relieve of resource'
 
   else if G.state == 1
-    __set_status 'Play ;)'
+    $(eid).html window.hlib._g 'Play ;)'
 
   else if G.state == 17
-    __set_status 'Roll the dice'
+    $(eid).html window.hlib._g 'Roll the dice'
 
   else if G.state == 18
-    __set_status 'Choose what resource to steal'
+    $(eid).html window.hlib._g 'Choose what resource to steal'
+
+  else
+    show_status = false
+
+  if show_status
+    $(eid).show()
 
 window.settlers.update_game_ui_cards = () ->
   G = window.settlers.game
@@ -841,8 +891,7 @@ window.settlers.update_game_ui_cards = () ->
   if G.state == 1
     $('#new_card_form').show()
 
-  map_type_to_name = ['undefined', 'Rytir', 'Monopol', 'Cesty', 'Pokrok', 'Bod']
-  c.type_name = map_type_to_name[c.type] for c in G.my_player.cards
+  c.type_name = (window.hlib._g G.card_type_to_name[c.type]) for c in G.my_player.cards
 
   $('#cards_list').html window.hlib.render window.settlers.templates.game.cards, G.my_player
 
@@ -867,6 +916,7 @@ window.settlers.update_game_ui_history = () ->
 
 window.settlers.update_game_ui_buttons = () ->
   # reset to default
+  window.hlib.disableIcon '#show_exchange'
   window.hlib.disableIcon '#pass_turn'
   window.hlib.disableIcon '#roll_dice'
 
@@ -883,6 +933,9 @@ window.settlers.update_game_ui_buttons = () ->
   if window.settlers.game.my_player.can_roll_dice
     window.hlib.enableIcon '#roll_dice', window.settlers.roll_dice
 
+  if G.can_exchange()
+    window.hlib.enableIcon '#show_exchange', window.settlers.show_exchange
+
 window.settlers.update_game_ui = () ->
   window.settlers.update_game_ui_info()
   window.settlers.update_game_ui_players()
@@ -897,9 +950,28 @@ window.settlers.show_board = () ->
   $('#views').tabs 'select', 3
   window.location.hash = '#board'
 
+window.settlers.show_invention = () ->
+  $('#invention').show()
+
+window.settlers.hide_invention = () ->
+  $('#invention').hide()
+
+window.settlers.show_monopoly = () ->
+  $('#monopoly').show()
+
+window.settlers.hide_monopoly = () ->
+  $('#monopoly').hide()
+
 window.settlers.setup_page = () ->
   new window.hlib.Form
     fid:		'exchange_4'
+    handlers:
+      s200:		(response, form) ->
+        form.info.success 'Exchanged'
+        window.settlers.update_game_state()
+
+  new window.hlib.Form
+    fid:		'exchange_3'
     handlers:
       s200:		(response, form) ->
         form.info.success 'Exchanged'
@@ -920,6 +992,28 @@ window.settlers.setup_page = () ->
         window.settlers.update_game_state()
         show_cards()
 
+  form_invention = new window.hlib.Form
+    fid:		'invention'
+    handlers:
+      s200:		(response, form) ->
+        form.info.success 'Received'
+        window.settlers.hide_invention()
+        window.settlers.update_game_state()
+        window.settlers.show_board()
+
+  $(form_invention.field_id 'gid').val window.settlers.game.gid
+
+  form_monopoly = new window.hlib.Form
+    fid:		'monopoly'
+    handlers:
+      s200:		(response, form) ->
+        form.info.success 'Stolen'
+        window.settlers.hide_monopoly()
+        window.settlers.update_game_state()
+        window.settlers.show_board()
+
+  $(form_monopoly.field_id 'gid').val window.settlers.game.gid
+
   $('#new_card_gid').val window.settlers.game.gid
 
   show_chat = () ->
@@ -934,7 +1028,7 @@ window.settlers.setup_page = () ->
     $('#views').tabs 'select', 2
     window.location.hash = '#history'
 
-  show_exchange = () ->
+  window.settlers.show_exchange = () ->
     $('#views').tabs 'select', 5
     window.location.hash = '#exchange'
 
@@ -978,6 +1072,7 @@ window.settlers.setup_page = () ->
   $('#views').tabs()
 
   chat_pager = window.settlers.setup_chat
+    id_prefix:			'chat'
     eid:                        '#chat_posts'
     url:                        '/game/chat/page'
     data:
@@ -1004,7 +1099,7 @@ window.settlers.setup_page = () ->
     return false
 
   $('#show_exchange').click () ->
-    show_exchange()
+    window.settlers.show_exchange()
     return false
 
   $('#show_history').click () ->
@@ -1014,6 +1109,12 @@ window.settlers.setup_page = () ->
   $('#show_chat').click () ->
     show_chat()
     return false
+
+  if window.settlers.game.state == 21
+    window.settlers.show_invention()
+
+  else if window.settlers.game.state == 18
+    window.settlers.show_monopoly()
 
   if window.location.hash == '#chat'
     show_chat()
@@ -1028,7 +1129,7 @@ window.settlers.setup_page = () ->
     show_history()
 
   else if window.location.hash == '#exchange'
-    show_exchange()
+    window.settlers.show_exchange()
 
   else
     window.settlers.show_board()

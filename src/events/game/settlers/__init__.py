@@ -124,11 +124,26 @@ class ResourcesExchanged(UserEvent):
     self.src = src
     self.dst = dst
 
+  def to_api(self):
+    d = UserEvent.to_api(self)
+
+    d['src'] = resources_to_api(self.src)
+    d['dst'] = resources_to_api(self.dst)
+
+    return d
+
 class Monopoly(ThiefEvent):
   def __init__(self, resources = None, **kwargs):
     ThiefEvent.__init__(self, **kwargs)
 
     self.resources		= resources
+
+  def to_api(self):
+    d = ThiefEvent.to_api(self)
+
+    d['resources'] = resources_to_api(self.resources)
+
+    return d
 
 class ThiefPlaced(UserEvent):
   def __init__(self, field = None, **kwargs):

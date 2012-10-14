@@ -85,7 +85,7 @@ class MaintHandler(handlers.GenericHandler):
 
   @api
   def process_tournaments(self):
-    for t in hruntime.dbroot.tournaments.itervalues():
+    for t in hruntime.dbroot.tournaments.values():
       if t.stage != tournament.Tournament.STAGE_RUNNING:
         continue
 

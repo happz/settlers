@@ -6,8 +6,8 @@
 
 <%namespace file="hlib_widgets.mako" import="*" />
 
-<%def name="row_start(width = 6)">
-  <div class="row"><div class="prepend-${(12 - width) / 2} span-${width} last">
+<%def name="row_start(width = 6, offset = 0)">
+  <div class="row"><div class="prepend-${(12 - width) / 2 + offset} span-${width - offset} last">
 </%def>
 
 <%def name="row_end()">
@@ -44,7 +44,7 @@ window.settlers.templates.chat_post = '
 
 <%def name="chat_new_post(url_root, **kwargs)">
   <%
-    params = '&'.join(['%s=%s' % (k, v) for k, v in kwargs.iteritems()])
+    params = '&'.join(['%s=%s' % (k, v) for k, v in kwargs.items()])
     if len(params) > 0:
       params = '?' + params
   %>
@@ -55,7 +55,7 @@ window.settlers.templates.chat_post = '
   ${w_form_end()}
 </%def>
 
-<%def name="chat_table(width, prepend = None)">
+<%def name="chat_table(width, prepend = None, id_prefix = 'chat')">
   <%
     if prepend != None:
       classes = 'prepend-%i span-%i last' % (prepend, width - 2 * prepend)
@@ -65,11 +65,11 @@ window.settlers.templates.chat_post = '
 
   <div id="chat_posts">
     <div class="${classes} last centered">
-      <span class="chat-first">&lt;&lt;</span>
-      <span class="chat-prev">&lt;</span>
-      <span class="chat-position"></span>
-      <span class="chat-next">&gt;</span>
-      <span class="chat-last">&gt;&gt;</span>
+      <span class="${id_prefix}-first">&lt;&lt;</span>
+      <span class="${id_prefix}-prev">&lt;</span>
+      <span class="${id_prefix}-position"></span>
+      <span class="${id_prefix}-next">&gt;</span>
+      <span class="${id_prefix}-last">&gt;&gt;</span>
     </div>
 
     <div class="span-${width} prepend-top">
@@ -80,11 +80,11 @@ window.settlers.templates.chat_post = '
     </div>
 
     <div class="${classes} last centered">
-      <span class="chat-first">&lt;&lt;</span>
-      <span class="chat-prev">&lt;</span>
-      <span class="chat-position"></span>
-      <span class="chat-next">&gt;</span>
-      <span class="chat-last">&gt;&gt;</span>
+      <span class="${id_prefix}-first">&lt;&lt;</span>
+      <span class="${id_prefix}-prev">&lt;</span>
+      <span class="${id_prefix}-position"></span>
+      <span class="${id_prefix}-next">&gt;</span>
+      <span class="${id_prefix}-last">&gt;&gt;</span>
     </div>
   </div>
 </%def>

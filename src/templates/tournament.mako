@@ -1,7 +1,4 @@
 <%!
-  PLUGINS = ['JQuery', 'Accordion', 'DataTables', 'Sound']
-  FUNCTIONS = ['datatables_init']
-
   import sys
   import hlib
   import lib.chat
@@ -90,7 +87,7 @@
 <fieldset>
   <legend class="accordion_toggle">${_('Signed players')}</legend>
   <table class="accordion_content">
-    % for player in tour.players.itervalues():
+    % for player in tour.players.values():
       <tr>
         <td>${player.user.name}</td>
       </tr>
@@ -108,10 +105,10 @@
         groups, byes = tour.get_groups(round = i)
       %>
 
-      % for j, group in groups.iteritems():
+      % for j, group in groups.items():
         <tr>
           <td>${j}. ${_('group')}:</td>
-          <td>${', '.join([p.user.name for p in group.players.itervalues()])}</td>
+          <td>${', '.join([p.user.name for p in group.players.values()])}</td>
           <td>${len(group.closed_games)} of 1 games finished</td>
         </tr>
       % endfor
