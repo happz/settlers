@@ -52,37 +52,6 @@ def require_on_game(gid):
 
   return g
 
-class ApiRenderInfo(hlib.api.ApiJSON):
-  def __init__(self, u):
-    super(ApiRenderInfo, self).__init__(['board_skin'])
-
-    self.board_skin	= u.board_skin
-
-class ApiPlayerState(hlib.api.ApiJSON):
-  def __init__(self, p):
-    super(ApiPlayerState, self).__init__(['id', 'user', 'my_player', 'points', 'color'])
-
-    self.id		= p.id
-    self.user		= hlib.api.User(p.user)
-    self.my_player	= p.id == p.game.my_player.id
-    self.points		= p.points
-
-    gm = games.game_module(p.game.kind)
-    self.color = gm.COLOR_SPACE.colorize_player(p, p.game.my_player).to_api()
-
-class ApiGameState(hlib.api.ApiJSON):
-  def __init__(self, g):
-    super(ApiGameState, self).__init__(['gid', 'name', 'round', 'players', 'render_info', 'can_pass', 'events'])
-
-    self.gid		= g.id
-    self.name		= g.name
-    self.round		= g.round
-    self.players	= []
-    self.render_info	= ApiRenderInfo(g.my_player.user)
-    self.can_pass	= g.my_player.can_pass
-
-    self.events		= [e.to_api() for e in g.events.values() if e.hidden != True]
-
 class ChatHandler(handlers.GenericHandler):
   #
   # Add
@@ -216,17 +185,9 @@ class Handler(handlers.GenericHandler):
   def state(self, gid = None):
     g = require_presence_in_game(gid)
 
-    g_state = ApiGameState(g)
+    state = g.to_state()
 
-    for p in g.players.values():
-      p_state = ApiPlayerState(p)
-      p.update_state(p_state)
-
-      g_state.players.append(p_state)
-
-    g.update_state(g_state)
-
-    return hlib.api.Reply(200, game = g_state)
+    return hlib.api.Reply(200, game = g.to_state())
 
   #
   # New

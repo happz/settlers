@@ -34,6 +34,11 @@ class Player(hlib.database.DBObject):
       'is_on_turn':		self.is_on_turn
     }
 
+  def to_state(self):
+    return {
+      'user':			hlib.api.User(self.user)
+    }
+
 class Playable(hlib.database.DBObject):
   def __init__(self, flags):
     hlib.database.DBObject.__init__(self)
@@ -83,6 +88,15 @@ class Playable(hlib.database.DBObject):
       'has_password':		self.is_password_protected,
       'chat_posts':		self.chat.unread if self.chat.unread > 0 else False,
       'players':		[p.to_api() for p in self.players.values()]
+    }
+
+  def to_state(self):
+    return {
+      'gid':			self.id,
+      'name':			self.name,
+      'round':			self.round,
+      'players':		[p.to_state() for p in self.players.values()],
+      'events':			[e.to_api() for e in self.events.values() if e.hidden != True]
     }
 
 class PlayableLists(object):

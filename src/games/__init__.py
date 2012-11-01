@@ -149,12 +149,20 @@ class Player(lib.play.Player):
 
     return lib.play.Player.__getattr__(self, name)
 
-  def update_state(self, state):
-    state.update(['is_confirmed', 'is_on_turn', 'can_pass'])
+  def to_state(self):
+    d = lib.play.Player.to_state(self)
+    gm = games.game_module(self.game.kind)
 
-    state.is_confirmed		= self.confirmed
-    state.is_on_turn		= self.is_on_turn
-    state.can_pass		= self.can_pass
+    d.update({
+      'id':			self.id,
+      'my_player':              self.id == self.game.my_player.id,
+      'is_confirmed':		self.confirmed,
+      'is_on_turn':		self.is_on_turn,
+      'can_pass':		self.can_pass,
+      'color':			gm.COLOR_SPACE.colorize_player(self, self.game.my_player).to_api()
+    })
+
+    return d
 
   def add_resource_raw(self, resource, amount):
     self.resources[resource] += amount
@@ -351,13 +359,21 @@ class Game(lib.play.Playable):
 
     return d
 
-  def update_state(self, state):
-    state.update(['state', 'my_player', 'forhont_player', 'has_all_confirmed'])
+  def to_state(self):
+    d = lib.play.Playable.to_state(self)
 
-    state.state 		= self.type
-    state.my_player		= self.my_player.id
-    state.forhont_player	= self.forhont_player.id
-    state.has_all_confirmed	= self.has_all_confirmed
+    d.update({
+      'state':			self.type,
+      'my_player':		self.my_player.id,
+      'forhont_player':		self.forhont_player.id,
+      'has_all_confirmed':	self.has_all_confirmed,
+      'can_pass':		self.my_player.can_pass,
+      'render_info':            {
+        'board_skin':           hruntime.user.board_skin
+      }
+    })
+
+    return d
 
   def is_personal_free(self, user):
     return self.type == Game.TYPE_FREE and self.has_player(user)

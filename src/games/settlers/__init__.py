@@ -178,31 +178,32 @@ class Player(games.Player):
 
     return games.Player.__getattr__(self, name)
 
-  def update_state(self, state):
-    games.Player.update_state(self, state)
+  def to_state(self):
+    d = games.Player.to_state(self)
 
-    state.update(['points', 'has_longest_path', 'has_mightest_chilvary', 'knights', 'cards', 'resources', 'can_roll_dice', 'first_village', 'second_village'])
-
-    state.points		= self.points
-    state.has_longest_path	= self.longest_path
-    state.has_mightest_chilvary	= self.mightest_chilvary
-    state.knights		= len([c for c in self.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used == True])
-    state.can_roll_dice		= self.can_roll_dice
-
-    state.resources = {'total': sum(self.resources.values())}
+    d.update({
+      'points':			self.points,
+      'has_longest_path':	self.longest_path,
+      'has_mightest_chilvary':	self.mightest_chilvary,
+      'knights':		len([c for c in self.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used == True]),
+      'can_roll_dice':		self.can_roll_dice,
+      'first_village':		self.first_village and self.first_village.id or None,
+      'second_village':		self.second_village and self.second_village.id or None,
+      'resources':		{
+        'total':		sum(self.resources.values())
+      }
+    })
 
     if self.id == self.game.my_player.id:
-      state.cards = []
-      for c in self.cards.values():
-        state.cards.append(c.to_api())
+      d['cards'] = [c.to_api() for c in self.cards.values()]
 
       for k in self.resources.keys():
-        state.resources[k] = self.resources[k]
-    else:
-      state.cards = len([c for c in self.cards.values() if c.is_used != True])
+        d['resources'][k] = self.resources[k]
 
-    state.first_village		= self.first_village and self.first_village.id or None
-    state.second_village	= self.second_village and self.second_village.id or None
+    else:
+      d['cards'] = len([c for c in self.cards.values() if c.is_used != True])
+
+    return d
 
   def add_resource(self, node, field):
     if field.resource == Resource.RESOURCE_DESERT:
@@ -973,13 +974,15 @@ class Game(games.Game):
 
     return games.Game.__getattr__(self, name)
 
-  def update_state(self, state):
-    games.Game.update_state(self, state)
+  def to_state(self):
+    d = games.Game.to_state(self)
 
-    state.update(['last_numbers', 'board'])
+    d.update({
+      'last_numbers':		self.last_numbers,
+      'board':			ApiBoard(self.board)
+    })
 
-    state.last_numbers		= self.last_numbers
-    state.board			= ApiBoard(self.board)
+    return d
 
   def begin(self):
     # pylint: disable-msg=W0201
