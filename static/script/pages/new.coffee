@@ -1,11 +1,15 @@
 window.settlers.setup_forms = () ->
-  autocomplete_options =
-    source:             '/users_by_name'
-    minLength:          2
+  autocomplete_options = window.settlers.autocomplete_options()
 
-  $('#new_game_opponent1').autocomplete autocomplete_options
-  $('#new_game_opponent2').autocomplete autocomplete_options
-  $('#new_game_opponent3').autocomplete autocomplete_options
+  __setup_autocomplete = (eid) ->
+    options = window.settlers.autocomplete_options()
+    options.appendTo = $(eid).parent()
+
+    $(eid).autocomplete options
+
+  __setup_autocomplete '#new_game_opponent1'
+  __setup_autocomplete '#new_game_opponent2'
+  __setup_autocomplete '#new_game_opponent3'
 
   new window.hlib.Form
     fid:                'new_game'
@@ -20,14 +24,14 @@ window.settlers.setup_forms = () ->
 
   new window.hlib.Form
     fid:                'new_tournament'
-    dont_clean:         true
+    clear_fields:	['engine', 'kind', 'name', 'num_players', 'limit', 'desc', 'password', 'turn_limit', 'floating_desert']
     refill:             true
     handlers:
       s200:     (response, form) ->
         form.info.success 'Successfuly created'
+
       s400:     (response, form) ->
         window.hlib.form_default_handlers.s400 response, form
-        $(form.field_id 'limit').val ''
 
 window.settlers.setup_views = () ->
   $('#show_game').click () ->
@@ -49,4 +53,3 @@ window.settlers.setup_views = () ->
 window.settlers.setup_page = () ->
   window.settlers.setup_forms()
   window.settlers.setup_views()
-

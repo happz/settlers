@@ -15,10 +15,13 @@ ul.recent-events > li:last-child {
     @include corners-bottom();
 }
 
-.game-menu {
+.playable-name {
 }
 
-.game-preview {
+.playable-menu {
+}
+
+.playable-preview {
     width:		200px;
 }
 

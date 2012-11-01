@@ -361,6 +361,7 @@ window.settlers.templates.game.player = '
       <tr class="info"><td>{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
       <tr class="info"><td>{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
       <tr class="info"><td>{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
+      <tr class="info important-info"><td>{{#_g}}Total{{/_g}}:</td><td>{{resources.total}}</td></tr>
     {{/my_player}}
     {{^my_player}}
       <tr class="info"><td>{{#_g}}Resources{{/_g}}:</td><td>{{resources.total}}</td></tr>
@@ -540,7 +541,9 @@ window.settlers.update_game_ui_info = () ->
   $('#game_round').html G.round
 
   if G.last_numbers.length > 0
-    $('#settlers_last_numbers').html G.last_numbers.join ', '
+    s = G.last_numbers.slice()
+    s[0] = '<span class="label">' + s[0] + '</span>'
+    $('#settlers_last_numbers').html s.join ' '
     $('.settlers-last-numbers').show()
 
 window.settlers.update_game_ui_player = (player) ->

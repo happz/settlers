@@ -192,7 +192,6 @@ class Player(hlib.database.DBObject):
 
   def __getattr__(self, name):
     if name == 'is_on_turn':
-      print ('is_on_turn: %s, %s, %s, %s' % (self.user.name, self.game.id, self.game.type, self.game.is_forhont_player(self))).encode('ascii', 'replace')
       return self.game.type not in [Game.TYPE_FREE, Game.TYPE_FINISHED, Game.TYPE_CANCELED] and self.game.is_forhont_player(self)
 
     if name == 'is_slacker':
@@ -589,7 +588,7 @@ class Game(hlib.database.DBObject):
       if u in g.user_to_player:
         raise AlreadyJoinedError()
 
-      p = g.join(u, flags.password, invite = True)
+      p = g.join_player(u, flags.password, invite = True)
 
       hlib.event.trigger('game.PlayerInvited', g, game = g, user = p.user)
 

@@ -79,7 +79,7 @@ def main():
   app.config['sessions.time']          = 2 * 86400
   app.config['sessions.cookie_name']	= 'settlers_sid'
 
-  app.config['log.access.format']	= '{date} {time} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
+  app.config['log.access.format']	= '{date} {time} - {tid} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
   app.channels.access = [stderr, access]
   app.channels.error  = [stderr, error]
 

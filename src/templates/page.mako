@@ -33,15 +33,15 @@
   <!-- Scripts -->
   <script src="https://www.google.com/jsapi?key=ABQIAAAAnT7bvt5eCgJnKE_9xHtWrRQL0gKz-n891IYmna21nNIOzPZZixRfXXTxioGg6bd4WAedyIJq9y470A" type="text/javascript"></script>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js" type="text/javascript"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.min.js" type="text/javascript"></script>
 
   <script type="text/javascript" src="/static/script/jquery.form.js"></script>
   <script type="text/javascript" src="/static/script/jquery.timers.js"></script>
   <script type="text/javascript" src="/static/script/stacktrace.js"></script>
 
   <script type="text/javascript" src="/static/script/mustache.js"></script>
-  <script type="text/javascript" src="/static/script/strftime-min.js"></script>
+  <script type="text/javascript" src="/static/script/strftime.js"></script>
 
   <script type="text/javascript" src="/static/script/hlib.js"></script>
   <script type="text/javascript" src="/static/script/settlers.js"></script>
@@ -118,6 +118,7 @@
     <div id="menu_home"><a href="/home/" title="${_('Home')}"><span class="icon icon-large icon-menu-home"><span class="menu-alert"></span></span></a></div>
     <div><a href="/new/" title="${_('New ...')}"><span class="icon icon-large icon-menu-add"></span></a></div>
     <div id="menu_chat"><a href="/chat/" title="${_('Chat')}"><span class="icon icon-large icon-menu-chat"><span class="menu-alert"></span></span></a></div>
+    <div id="menu_talk"><a href="/home/" title="${_('Talk')}"><span class="icon icon-large icon-menu-talk"></span></a></div>
     <div><a href="/stats/" title="${_('Stats')}"><span class="icon icon-large icon-menu-stats"></span></a></div>
     <div><a href="/settings/" title="${_('Settings')}"><span class="icon icon-large icon-menu-settings"></span></a></div>
     <div><hr /></div>
@@ -186,6 +187,18 @@
 % endif
 </div>
 
-<div class="info-dialog formee hide"></div>
+<div id="info_dialog" class="info-dialog formee hide"></div>
+<span id="pull-notify" class="hide"></span>
 
-<span style="display: none" id="pull-notify"></span>
+<div id="talk_dialog" class="talk-dialog formee hide">
+  ${w_form_start('/talk/add', 'Chat', 'talk_add')}
+    ${w_form_input('text', 'text')}
+
+    <div ${w_helper_class([], append = ['grid-12-12'])}>
+      ${w_button('Close', id = 'talk_dialog_close')}
+      ${w_submit_button('Add', id = 'talk_dialog_add')}
+    </div>
+  ${w_form_end()}
+
+  <div id="talk_dialog_posts" class="talk-dialog-posts"></div>
+</div>

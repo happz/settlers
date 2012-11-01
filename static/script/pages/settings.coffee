@@ -103,12 +103,13 @@ window.settlers.setup_opponent_colors_form = () ->
           __per_user u for u in response.users
 
   $(kind.fid).change () ->
+    console.log $(kind.fid).val()
     if $(kind.fid).val() == ''
-      $(color.fid).html window.hlib.render window.settlers.templates.opponent_colors.disabled
-
       color.empty()
       color.disable()
       list.empty()
+
+      $(color.fid).html window.settlers.templates.opponent_colors.disabled
 
       return
 

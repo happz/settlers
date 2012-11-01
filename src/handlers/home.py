@@ -26,36 +26,53 @@ class Player(hlib.api.User):
     self.is_confirmed		= player.confirmed
     self.is_on_turn		= player.is_on_turn
 
-class Game(hlib.api.ApiJSON):
-  def __init__(self, g):
-    super(Game, self).__init__(['id', 'name', 'kind', 'limit', 'round', 'players', 'forhont', 'is_present', 'is_invited', 'is_on_turn', 'has_password', 'chat_posts'])
+class Playable(hlib.api.ApiJSON):
+  def __init__(self, o):
+    super(Playable, self).__init__(['id', 'name', 'kind', 'limit', 'round', 'players', 'forhont', 'is_present', 'is_invited', 'is_on_turn', 'has_password', 'chat_posts', 'is_game', 'num_players'])
 
-    self.id			= g.id
-    self.kind			= g.kind
-    self.name			= g.name
+    self.id			= o.id
+    self.kind			= o.kind
+    self.name			= o.name
+    self.round			= o.round
+    self.players		= [Player(p) for p in o.players.values()]
+
+    self.is_present		= o.has_player(hruntime.user)
+    self.has_password		= o.is_password_protected
+
+    if o.chat.unread > 0:
+      self.chat_posts = o.chat.unread
+    else:
+      self.chat_posts = False
+
+class Game(Playable):
+  def __init__(self, g):
+    super(Game, self).__init__(g)
+
+    self.is_game		= True
+
     self.limit			= g.limit
-    self.round			= g.round
-    self.players		= [Player(p) for p in g.players.values()]
 
     if g.forhont_player != None:
       self.forhont		= hlib.api.User(g.forhont_player.user)
 
-    self.is_present		= g.has_player(hruntime.user)
     self.is_invited		= g.has_player(hruntime.user) and not g.has_confirmed_player(hruntime.user)
     self.is_on_turn		= g.has_player(hruntime.user) and g.my_player.is_on_turn
-    self.has_password		= g.is_password_protected
-    if g.chat.unread > 0:
-      self.chat_posts = g.chat.unread
-    else:
-      self.chat_posts = False
+
+class Tournament(Playable):
+  def __init__(self, t):
+    super(Tournament, self).__init__(t)
+
+    self.is_game		= False
+    self.limit			= t.flags.limit
+    self.num_players		= t.num_players
 
 class RecentEvents(hlib.api.ApiJSON):
   def __init__(self):
-    super(RecentEvents, self).__init__(['games', 'free_games', 'finished_games'])
+    super(RecentEvents, self).__init__(['playable', 'free', 'finished'])
 
-    self.games			= []
-    self.free_games		= []
-    self.finished_games		= []
+    self.playable			= []
+    self.free				= []
+    self.finished			= []
 
 class Handler(handlers.GenericHandler):
   #
@@ -73,13 +90,20 @@ class Handler(handlers.GenericHandler):
   @api
   def recent_events(self):
     import games
+    import tournaments
 
     re = RecentEvents()
 
     for g in games.f_active(hruntime.user):
       if g.has_player(hruntime.user) and g.my_player.is_on_turn or g.has_player(hruntime.user) and not g.has_confirmed_player(hruntime.user) or g.has_player(hruntime.user):
-        re.games.append(Game(g))
+        re.playable.append(Game(g))
       else:
-        re.free_games.append(Game(g))
+        re.free.append(Game(g))
+
+    for t in tournaments.f_active(hruntime.user):
+      if t.has_player(hruntime.user):
+        re.playable.append(Tournament(t))
+      else:
+        re.free.append(Tournament(t))
 
     return hlib.api.Reply(200, events = re)

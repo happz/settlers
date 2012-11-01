@@ -10,6 +10,10 @@ span.icon-menu-chat {
   background-image:		url(/static/images/icons/Chat48.png);
 }
 
+span.icon-menu-talk {
+  background-image:		url(/static/images/icons/Communicate48.png);
+}
+
 span.icon-menu-stats {
   background-image:             url(/static/images/icons/Pools48.png);
 }

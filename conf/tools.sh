@@ -5,7 +5,7 @@ DOC_DIR="$ROOT_DIR/doc/"
 CONF_DIR="$ROOT_DIR/conf/"
 LIB_DIR="$ROOT_DIR/lib/"
 
-PACKAGES="events games handlers lib tournament templates"
+PACKAGES="events games handlers lib tournaments templates"
 
 EPYDOC_OPTIONS="--config $CONF_DIR/makedoc.conf -c static/css/epydoc.css"
 PYLINT_OPTIONS="--rcfile=$CONF_DIR/pylintrc"

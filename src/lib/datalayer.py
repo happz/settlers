@@ -51,10 +51,12 @@ class Root(hlib.datalayer.Root):
   def __init__(self):
     hlib.datalayer.Root.__init__(self)
 
-    self.server  = Server()
-    self.colors  = hlib.database.SimpleList()
-    self.games   = hlib.database.IndexedMapping()
-    self.games_archived = hlib.database.SimpleMapping()
+    self.server			= Server()
+    self.colors			= hlib.database.SimpleList()
+    self.games			= hlib.database.IndexedMapping()
+    self.games_archived		= hlib.database.SimpleMapping()
+    self.tournaments		= hlib.database.IndexedMapping()
+    self.tournaments_archived	= hlib.database.SimpleMapping()
     self.trumpet = hlib.database.SimpleMapping()
     self.stats   = Stats()
     self.trumpet = Trumpet()
@@ -90,7 +92,7 @@ class User(hlib.datalayer.User):
     self.table_length   = 20
 
     self.vacations      = hlib.database.IndexedMapping()
-    self.colors		= hlib.database.StringMapping()
+    self.colors		= hlib.database.SimpleMapping()
 
     # Caches
     self._v_used_colors		= None

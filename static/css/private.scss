@@ -59,6 +59,32 @@
     color:				$color_user_onturn;
 }
 
+/*
+ * ----- ----- Talk
+ */
+.talk-dialog {
+    @include corners-top();
+    @include corners-bottom();
+
+    color:                              $color_block_text !important;
+    background:                         $color_block_background !important;
+    border:                             1px solid !important;
+    border-color:                       $color_border !important;
+
+    margin:                             0px auto;
+    z-index:                            1010;
+
+    padding:				5px;
+
+    background-image:			none !important;
+    background-color:			$color_block_background !important;
+}
+
+.talk-dialog-posts {
+    @include default-font();
+    line-height:                        $font_size_text;
+}
+
 @media only screen and (max-width: 1285px) {
     .menu-widget {
         position:			absolute;

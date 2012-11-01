@@ -21,16 +21,16 @@ class UserEvent(Event):
 
     self.user			= user
 
-class TournamentCreated(Event):
+class Created(Event):
   pass
 
-class TournamentFinished(Event):
+class Finished(Event):
   pass
 
-class TournamentCanceled(Event):
+class Canceled(Event):
   pass
 
-class TournamentStarted(Event):
+class Started(Event):
   pass
 
 class PlayerJoined(UserEvent):
@@ -41,9 +41,9 @@ class ChatPost(UserEvent):
 
 import hlib
 
-hlib.register_event(TournamentCreated)
-hlib.register_event(TournamentFinished)
-hlib.register_event(TournamentCanceled)
-hlib.register_event(TournamentStarted)
+hlib.register_event(Created)
+hlib.register_event(Finished)
+hlib.register_event(Canceled)
+hlib.register_event(Started)
 hlib.register_event(PlayerJoined)
 hlib.register_event(ChatPost)

@@ -84,6 +84,10 @@
     ${row_start()}
 
     ${w_form_start('/tournament/new', 'New tournament', 'new_tournament', not_working = True)}
+      ${w_form_select('engine', label = 'Engine', required = True)}
+        ${w_option('swiss', False, 'swiss')}
+      </select></div>
+
       ${w_form_select('kind', label = 'Game kind', required = True)}
         % for kind in games.GAME_KINDS:
           ${w_option(kind, False, _(kind))}
@@ -92,10 +96,9 @@
 
       ${w_form_input('name', 'text', label = 'Tournament name', required = True)}
 
-      ${w_form_select('tournament_players', label = 'Number of players in tournament', required = True)}
-        % for i in range(8, 33):
-          ${w_option(i, False, str(i))}
-        % endfor
+      ${w_form_select('num_players', label = 'Number of players in tournament', required = True)}
+        ${w_option(12, False, '12')}
+        ${w_option(24, False, '24')}
       </select></div>
 
       ${w_form_select('limit', label = 'Number of players per game', required = True)}

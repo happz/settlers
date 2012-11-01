@@ -15,7 +15,8 @@ import handlers.profile
 import handlers.registration
 import handlers.settings
 import handlers.stats
-import handlers.tour
+import handlers.talk
+import handlers.tournament
 import handlers.vacation
 import lib.trumpet
 
@@ -60,7 +61,8 @@ class Handler(hlib.handlers.root.Handler):
   vacation     = handlers.vacation.VacationHandler()
   maint        = handlers.maint.MaintHandler()
   game         = handlers.game.Handler()
-  tournament   = handlers.tour.Handler()
+  tournament   = handlers.tournament.Handler()
+  talk		= handlers.talk.Handler()
 
   monitor	= handlers.monitor.Handler()
 
@@ -91,7 +93,7 @@ class Handler(hlib.handlers.root.Handler):
   @api
   def users_by_name(self, term = None):
     r = re.compile('.*?' + term + '.*?', re.I)
-    return {'users': [u.name for u in hruntime.dbroot.users.values() if r.search(u.name) != None and u != hruntime.user]}
+    return hlib.api.Reply(200, users = [u.name for u in hruntime.dbroot.users.values() if r.search(u.name) != None and u != hruntime.user])
 
   @api
   def trumpet(self):

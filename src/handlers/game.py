@@ -125,13 +125,10 @@ class Handler(handlers.GenericHandler):
   #
   # Index
   #
-  class ValidateIndex(GenericValidateGID):
-    _view = validator_optional(hlib.input.CommonString())
-
   @require_login
-  @validate_by(schema = ValidateIndex)
+  @validate_by(schema = GenericValidateGID)
   @page
-  def index(self, gid = None, _view = None):
+  def index(self, gid = None):
     g = require_presence_in_game(gid)
 
     return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'game-%s' % g.id, self.generate, 'games/' + g.kind + '.mako', params = {'game': g})

@@ -207,6 +207,16 @@ window.settlers.setup_forms = () ->
   new window.hlib.Form
     fid:		'maintenance_mode'
 
+  autocomplete_options = window.settlers.autocomplete_options()
+
+  __setup_autocomplete = (eid) ->
+    options = window.settlers.autocomplete_options()
+    options.appendTo = $(eid).parent()
+
+    $(eid).autocomplete options
+
+  __setup_autocomplete '#maintenance_access_username'
+
   new window.hlib.Form
     fid:		'maintenance_access'
     clear_fields:	['username']

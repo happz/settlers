@@ -5,6 +5,13 @@ window.settlers = window.settlers or {}
 window.settlers.events = window.settlers.events or {}
 window.settlers.templates = window.settlers.templates or {}
 
+window.settlers.templates.talk = {}
+window.settlers.templates.talk.posts = '
+  {{#posts}}
+    {{stamp_formatted}} - {{author.name}}: {{text}}<br />
+  {{/posts}}
+'
+
 #
 # Classes
 #
@@ -49,6 +56,70 @@ class window.settlers.PullNotify
 
           window.hlib.INFO._hide()
 
+class window.settlers.Talk
+  constructor: (eid) ->
+    @eid = eid
+    @visible = false
+
+    t = @
+
+    $(@eid).dialog
+      closeOnEscape:	true
+      closeText:        ''
+      autoOpen:         false
+      height:           400
+      width:		350
+      title:		'Chat'
+      modal:            false
+      position:		['center', 'middle']
+      open:		() ->
+        $('#talk_dialog_close').click () ->
+          t.hide()
+          return false
+        return true
+
+    $(@eid + ' div.right input[type="button"]').click () ->
+      t.hide()
+
+  update: () ->
+    t = @
+
+    new window.hlib.Ajax
+      url:		'/talk/posts'
+      handlers:
+        h200:		(response, ajax) ->
+          window.hlib.INFO._hide()
+
+          __per_post = (p) ->
+            d = new Date (p.stamp * 1000)
+            p.stamp_formatted = d.strftime '%d/%m %H:%M'
+
+          __per_post p for p in response.posts
+          $(t.eid + '_posts').html (window.hlib.render window.settlers.templates.talk.posts, response)
+
+  show: () ->
+    t = @
+
+    __call_update = () ->
+      t.update()
+
+    t.update()
+    $(@eid).dialog 'open'
+
+    @visible = true
+
+    $(@eid).everyTime '60s', __call_update
+
+  hide: () ->
+    if not @visible
+      return
+
+    $(@eid).stopTime()
+
+    $(@eid).dialog 'close'
+
+    @visible = false
+
 #
 # Methods
 #
@@ -64,6 +135,27 @@ window.settlers.hide_menu_alert = (item) ->
   eid = '#' + item + ' .menu-alert'
 
   $(eid).hide()
+
+window.settlers.autocomplete_options = () ->
+  __autocomplete_callback = (req, res) ->
+    new window.hlib.Ajax
+      url:		'/users_by_name'
+      show_spinner:	false
+      data:
+        term:		req.term
+      handlers:
+        h200:		(response, ajax) ->
+          window.hlib.INFO._hide()
+          res response.users
+        error:		(response, ajax) ->
+          window.hlib.INFO._hide()
+          res []
+
+  options =
+    minLength:          3
+    source:             __autocomplete_callback
+
+  return options
 
 window.settlers.setup_chat_form = (opts) ->
   new window.hlib.Form
@@ -94,6 +186,7 @@ window.settlers.startup = () ->
       eid:                    '.info-dialog'
 
   window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
+  window.settlers.TALK = new window.settlers.Talk '#talk_dialog'
 
   window.settlers.setup_settlers()
   window.settlers.setup_page()

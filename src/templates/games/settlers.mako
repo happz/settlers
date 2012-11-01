@@ -36,7 +36,7 @@
 
     <div class="settlers-last-numbers">
       <div class="header corners-top">Last numbers</div>
-      <span id="settlers_last_numbers" class="info important-info corners-bottom"></span>
+      </span><span id="settlers_last_numbers" class="info important-info corners-bottom"></span>
     </div>
 
     <div class="settlers-game-status framed hide">
