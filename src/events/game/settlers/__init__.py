@@ -25,7 +25,7 @@ class ThiefEvent(Event):
     return Event.__getattr__(self, name)
 
   def to_api(self):
-    d = Event.to_api(self);
+    d = Event.to_api(self)
 
     d['thief'] = hlib.api.User(self.thief) if self.thief != None else None
     d['victim'] = hlib.api.User(self.victim) if self.victim != None else None

@@ -21,6 +21,7 @@ import hlib.log
 import lib
 import lib.chat
 import lib.datalayer
+import lib.play
 
 # pylint: disable-msg=F0401
 import hruntime
@@ -43,78 +44,21 @@ class GenericValidateGID(hlib.input.SchemaValidator):
   gid = ValidateGID()
 
 # ----- Lists --------------------------------
-class GameLists(object):
-  def __init__(self):
-    super(GameLists, self).__init__()
+class GameLists(lib.play.PlayableLists):
+  def get_active(self, user):
+    return [g for g in hruntime.dbroot.games.values() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))]
 
-    self._lock		= threading.RLock()
+  def get_inactive(self, user):
+    return [g for g in hruntime.dbroot.games.values() if not g.is_active and g.has_player(user)]
 
-    self._active	= {}
-    self._inactive	= {}
-    self._archived	= {}
-
-  def __get_f_list(self, name, user, update):
-    cache = getattr(self, '_' + name)
-
-    with self._lock:
-      if user.name not in cache:
-        cache[user.name] = update()
-
-      return cache[user.name]
-
-  def f_active(self, user):
-    return self.__get_f_list('active', user, lambda: [g for g in hruntime.dbroot.games.values() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))])
-
-  def f_inactive(self, user):
-    return self.__get_f_list('inactive', user, lambda: [g for g in hruntime.dbroot.games.values() if not g.is_active and g.has_player(user)])
-
-  def f_archived(self, user):
-    return self.__get_f_list('archived', user, lambda: [g for g in hruntime.dbroot.games_archived.values() if user.name in g.players])
-
-  # Cache invalidation
-  def _inval_user(self, user):
-    with self._lock:
-      try:
-        del self._active[user.name]
-      except KeyError:
-        pass
-
-      try:
-        del self._inactive[user.name]
-      except KeyError:
-        pass
-
-      try:
-        del self._archived[user.name]
-      except KeyError:
-        pass
-
-    return True
-
-  def inval_players(self, g):
-    with self._lock:
-      for p in g.players.values():
-        self._inval_user(p.user)
-
-    return True
+  def get_archived(self, user):
+    return [g for g in hruntime.dbroot.games_archived.values() if user.name in g.players]
 
   # Shortcuts
-  def game_created(self, g):
+  def created(self, g):
     with self._lock:
       hruntime.dbroot.games.push(g)
 
-      self.inval_players(g)
-
-    return True
-
-  def game_started(self, g):
-    with self._lock:
-      self.inval_players(g)
-
-    return True
-
-  def game_finished(self, g):
-    with self._lock:
       self.inval_players(g)
 
     return True
@@ -167,7 +111,7 @@ class Card(hlib.database.DBObject):
     if name == 'is_used':
       return self.used > 0
 
-    raise AttributeError(name)
+    return hlib.database.DBObject.__getattr__(self, name)
 
   def to_api(self):
     return {
@@ -178,17 +122,14 @@ class Card(hlib.database.DBObject):
       'can_be_used':	self.can_be_used
     }
 
-class Player(hlib.database.DBObject):
+class Player(lib.play.Player):
   def __init__(self, game, user):
-    hlib.database.DBObject.__init__(self)
+    lib.play.Player.__init__(self, user)
 
     self.game		= game
     self.id		= None
-    self.user		= user
-    self.last_board	= 0
     self.turns_missed	= 0
     self.turns_missed_notlogged = 0
-    self.confirmed	= True
 
   def __getattr__(self, name):
     if name == 'is_on_turn':
@@ -206,7 +147,7 @@ class Player(hlib.database.DBObject):
     if name == 'chat':
       return lib.chat.ChatPagerGame(self.game)
 
-    raise AttributeError(name)
+    return lib.play.Player.__getattr__(self, name)
 
   def update_state(self, state):
     state.update(['is_confirmed', 'is_on_turn', 'can_pass'])
@@ -239,7 +180,7 @@ class Player(hlib.database.DBObject):
     for (r, a) in desc.items():
       self.resources[r] = self.resources[r] - a
 
-class Game(hlib.database.DBObject):
+class Game(lib.play.Playable):
   TIMEOUT_BEGIN_TYPES = []
   TIMEOUT_TURN_TYPES  = []
 
@@ -252,21 +193,13 @@ class Game(hlib.database.DBObject):
   TURNS_MISSED_NOTLOGGED = 2
 
   def __init__(self, flags, player_class):
-    hlib.database.DBObject.__init__(self)
+    lib.play.Playable.__init__(self, flags)
 
-    self.flags		= flags
     self.player_class	= player_class
 
-    self.id		= None
     self.type		= Game.TYPE_FREE
-    self.owner		= flags.owner
-    self.name		= flags.name
     self.desc		= flags.desc
-    self.password	= flags.password
-    self.limit		= flags.limit
-    self.round		= 0
     self.forhont	= 0
-    self.last_pass	= hruntime.time
     self.deleted	= False
     self.turn_limit	= flags.turn_limit
     self.kind		= flags.kind
@@ -277,25 +210,13 @@ class Game(hlib.database.DBObject):
     self.tournament_round = None
     self.tournament_group = None
 
-    self.chat_posts     = lib.chat.ChatPosts()
     self.players	= hlib.database.IndexedMapping()
 
     self.board		= None
 
-    self.events		= hlib.database.IndexedMapping()
-
   def __getattr__(self, name):
-    if name == 'user_to_player':
-      if not hasattr(self, '_v_user_to_player') or self._v_user_to_player == None:
-        self._v_user_to_player = lib.UserToPlayerMap(self)
-
-      return self._v_user_to_player
-
     if name == 'forhont_player':
       return self.players[self.forhont] if len(self.players) > 0 else None
-
-    if name == 'my_player':
-      return self.user_to_player[hruntime.user]
 
     if name == 'am_i_on_turn':
       return self.forhont_player == self.my_player
@@ -305,9 +226,6 @@ class Game(hlib.database.DBObject):
 
     if name == 'is_deleted':
       return self.deleted == True
-
-    if name == 'is_password_protected':
-      return self.password != None and len(self.password) > 0
 
     if name == 'is_finished':
       return self.type == Game.TYPE_FINISHED
@@ -418,7 +336,20 @@ class Game(hlib.database.DBObject):
 
       return d
 
-    raise AttributeError(name)
+    return lib.play.Playable.__getattr__(self, name)
+
+  def to_api(self):
+    d = lib.play.Playable.to_api(self)
+
+    d['is_game']		= True
+    d['limit']			= self.limit
+
+    d['forhont']		= hlib.api.User(self.forhont_player.user) if self.forhont_player != None else None
+
+    d['is_invited']             = self.has_player(hruntime.user) and not self.has_confirmed_player(hruntime.user)
+    d['is_on_turn']             = self.has_player(hruntime.user) and self.my_player.is_on_turn
+
+    return d
 
   def update_state(self, state):
     state.update(['state', 'my_player', 'forhont_player', 'has_all_confirmed'])
@@ -436,13 +367,6 @@ class Game(hlib.database.DBObject):
 
   def reset_players(self):
     self.players = None
-
-  def has_player(self, user):
-    """
-    Returns True if exists player with USERID same as USER.id
-    """
-
-    return user in self.user_to_player
 
   def has_confirmed_player(self, user):
     """
@@ -723,8 +647,8 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
   return g
 
 # Event hooks
-hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.game_created(e.game))
-hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.game_finished(e.game))
+hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.created(e.game))
+hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.finished(e.game))
 hlib.event.Hook('game.PlayerJoined', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
 hlib.event.Hook('game.PlayerInvited', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
 

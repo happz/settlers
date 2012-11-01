@@ -9,83 +9,28 @@ import hlib.error
 import games
 import lib.datalayer
 import lib.chat
+import lib.play
 
+# pylint: disable-msg=F0401
 import hruntime
 
 ValidateTID = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
 
-class TournamentLists(object):
-  def __init__(self):
-    super(TournamentLists, self).__init__()
+class TournamentLists(lib.play.PlayableLists):
+  def get_active(self, user):
+    return [t for t in hruntime.dbroot.tournaments.values() if t.is_active and (t.has_player(user) or t.stage == Tournament.STAGE_FREE)]
 
-    self._lock          = threading.RLock()
+  def get_inactive(self, user):
+    return [t for t in hruntime.dbroot.tournaments.values() if not t.is_active and t.has_player(user)]
 
-    self._active        = {}
-    self._inactive      = {}
-    self._archived      = {}
-
-  def __get_f_list(self, name, user, update):
-    cache = getattr(self, '_' + name)
-
-    with self._lock:
-      if user.name not in cache:
-        cache[user.name] = update()
-
-      return cache[user.name]
-
-  def f_active(self, user):
-    return self.__get_f_list('active', user, lambda: [t for t in hruntime.dbroot.tournaments.values() if t.is_active and (t.has_player(user) or t.stage == Tournament.STAGE_FREE)])
-
-  def f_inactive(self, user):
-    return self.__get_f_list('inactive', user, lambda: [t for t in hruntime.dbroot.tournaments.values() if not t.is_active and t.has_player(user)])
-
-  def f_archived(self, user):
-    return self.__get_f_list('archived', user, lambda: [t for t in hruntime.dbroot.tournaments_archived.values() if user.name in t.players])
-
-  # Cache invalidation
-  def _inval_user(self, user):
-    with self._lock:
-      try:
-        del self._active[user.name]
-      except KeyError:
-        pass
-
-      try:
-        del self._inactive[user.name]
-      except KeyError:
-        pass
-
-      try:
-        del self._archived[user.name]
-      except KeyError:
-        pass
-
-    return True
-
-  def inval_players(self, t):
-    with self._lock:
-      for p in t.players.values():
-        self._inval_user(p.user)
-
-    return True
+  def get_archived(self, user):
+    return [t for t in hruntime.dbroot.tournaments_archived.values() if user.name in t.players]
 
   # Shortcuts
-  def tournament_created(self, t):
+  def created(self, t):
     with self._lock:
       hruntime.dbroot.tournaments.push(t)
 
-      self.inval_players(t)
-
-    return True
-
-  def tournament_started(self, t):
-    with self._lock:
-      self.inval_players(t)
-
-    return True
-
-  def tournament_finished(self, t):
-    with self._lock:
       self.inval_players(t)
 
     return True
@@ -96,24 +41,18 @@ f_active        = _tournament_lists.f_active
 f_inactive      = _tournament_lists.f_inactive
 f_archived      = _tournament_lists.f_archived
 
-class Player(hlib.database.DBObject):
+class Player(lib.play.Player):
   def __init__(self, tournament, user):
-    hlib.database.DBObject.__init__(self)
+    lib.play.Player.__init__(self, user)
 
     self.tournament		= tournament
-    self.user			= user
-    self.confirmed		= True
-    self.last_board		= 0
     self.active			= True
 
   def __getattr__(self, name):
     if name == 'chat':
       return lib.chat.ChatPagerTournament(self.tournament)
 
-    if name == 'is_on_turn':
-      return False
-
-    raise AttributeError(name)
+    return lib.play.Player.__getattr__(self, name)
 
 class Group(hlib.database.DBObject):
   def __init__(self, id, tournament, round, players):
@@ -133,33 +72,21 @@ class Group(hlib.database.DBObject):
     if name == 'closed_games':
       return [g for g in self.games if g.type in [games.Game.TYPE_FINISHED, games.Game.TYPE_CANCELED]]
 
-    raise AttributeError(name)
+    return hlib.database.DBObject.__getattr__(self, name)
 
-class Tournament(hlib.database.DBObject):
+class Tournament(lib.play.Playable):
   STAGE_FREE     = 0
   STAGE_RUNNING  = 1
   STAGE_FINISHED = 2
   STAGE_CANCELED = 3
 
   def __init__(self, flags, num_players, engine_name):
-    hlib.database.DBObject.__init__(self)
+    lib.play.Playable.__init__(self, flags)
 
-    self.flags			= flags
-
-    self.id			= None
-    self.kind			= flags.kind
     self.stage			= Tournament.STAGE_FREE
-    self.owner			= flags.owner
-    self.name			= flags.name
-    self.password		= flags.password
-    self.round			= 0
-    self.limit			= flags.limit
     self.num_players		= num_players
 
-    self.chat_posts		= lib.chat.ChatPosts()
     self.players		= hlib.database.SimpleMapping()
-
-    self.events			= hlib.database.IndexedMapping()
 
     self._v_engine		= None
     self.engine_name		= engine_name
@@ -170,17 +97,6 @@ class Tournament(hlib.database.DBObject):
     if name == 'is_active':
       return self.stage in (Tournament.STAGE_FREE, Tournament.STAGE_RUNNING)
 
-    if name == 'user_to_player':
-      if not hasattr(self, '_v_user_to_player') or self._v_user_to_player == None:
-        self._v_user_to_player = lib.UserToPlayerMap(self)
-      return self._v_user_to_player
-
-    if name == 'is_password_protected':
-      return self.password != None and len(self.password) > 0
-
-    if name == 'my_player':
-      return self.user_to_player[hruntime.user]
-
     if name == 'engine':
       if not self._v_engine:
         self._v_engine = tournaments.engines.engines[self.engine_name](self)
@@ -190,10 +106,16 @@ class Tournament(hlib.database.DBObject):
     if name == 'chat':
       return lib.chat.ChatPagerTournament(self)
 
-    raise AttributeError(name)
+    return lib.play.Playable.__getattr__(self, name)
 
-  def has_player(self, user):
-    return user in self.user_to_player
+  def to_api(self):
+    d = lib.play.Playable.to_api(self)
+
+    d['is_game']		= False
+    d['limit']			= self.flags.limit
+    d['num_players']		= self.num_players
+
+    return d
 
   def create_games(self):
     player_groups = self.engine.create_groups()
@@ -215,7 +137,7 @@ class Tournament(hlib.database.DBObject):
 
       # player_id 0 is game owner
       for player_id in range(1, self.flags.limit):
-        kwargs['opponent' + str(j)] = group.players[j].user
+        kwargs['opponent' + str(player_id)] = group.players[player_id].user
 
       games.create_system_game(self.flags.kind, **kwargs)
 
@@ -263,7 +185,7 @@ class Tournament(hlib.database.DBObject):
 
     hlib.event.trigger('tournament.Created', t, tournament = t)
 
-    p = t.join_player(flags.owner, flags.password)
+    t.join_player(flags.owner, flags.password)
 
     return t
 
@@ -274,8 +196,8 @@ WrongPasswordError		= lambda: TournamentError(msg = 'Wrong password', reply_stat
 TournamentAlreadyStartedError	= lambda: TournamentError(msg = 'Game already started', reply_status = 401)
 AlreadyJoinedError		= lambda: TournamentError(msg = 'Already joined game', reply_status = 402)
 
-hlib.event.Hook('tournament.Created', 'invalidate_caches',  lambda e: _tournament_lists.tournament_created(e.tournament))
-hlib.event.Hook('tournament.Finished', 'invalidate_caches', lambda e: _tournament_lists.tournament_finished(e.tournament))
+hlib.event.Hook('tournament.Created', 'invalidate_caches',  lambda e: _tournament_lists.created(e.tournament))
+hlib.event.Hook('tournament.Finished', 'invalidate_caches', lambda e: _tournament_lists.finished(e.tournament))
 
 import events.tournament
 

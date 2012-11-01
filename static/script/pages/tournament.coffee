@@ -33,8 +33,8 @@ class window.settlers.tournamentObject
     @events.reverse()
     return window.hlib.render list_template, @
 
-window.settlers.templates.game = {}
-window.settlers.templates.game.player = '
+window.settlers.templates.tournament = {}
+window.settlers.templates.tournament.player = '
   <div class="game-player">
     <div class="game-player-header header corners-top settlers-game-player-header-{{color.name}}">
       <span class="game-player-title">{{user.name}}</span>

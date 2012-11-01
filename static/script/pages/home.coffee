@@ -179,21 +179,21 @@ window.settlers.setup_fetch = () ->
             p.players_list = () ->
               l = []
 
-              __fmt_user = (u) ->
-                s = u.name
+              __fmt_player = (player) ->
+                s = player.user.name
 
-                if u.is_online == true
+                if player.user.is_online == true
                   s = '<span class="user-online">' + s + '</span>'
 
-                if u.is_confirmed != true
+                if player.is_confirmed != true
                   s = '<span class="user-invited">' + s + '</span>'
 
-                if u.is_on_turn == true
+                if player.is_on_turn == true
                   s = '<span class="user-onturn">' + s + '</span>'
 
                 return s
               
-              l = (__fmt_user u for u in p.players)
+              l = (__fmt_player player for player in p.players)
               return l.join ', '
 
             tooltip = window.hlib.render window.settlers.templates.recent_events.playable_preview, p

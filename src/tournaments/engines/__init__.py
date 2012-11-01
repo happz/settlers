@@ -11,7 +11,7 @@ class Engine(hlib.database.DBObject):
   def create_groups(self):
     pass
 
-  def rank_players(self, games):
-    return None
+  def rate_group(self, group):
+    pass
 
 engines = {}

@@ -5,6 +5,8 @@ __license__			= 'http://www.php-suit.com/dpl'
 
 import random
 
+import hlib.database
+
 import lib.datalayer
 import tournaments.engines
 
@@ -24,7 +26,7 @@ class Player(tournaments.Player):
 
   def reset_current(self):
     for field in self.FIELDS:
-      setattr(self, 'curr_' + n, 0.0)
+      setattr(self, 'curr_' + field, 0.0)
 
     self.rand = random.randrange(0, 1000000)
 
@@ -32,9 +34,11 @@ class Player(tournaments.Player):
     for field in Player.FIELDS:
       setattr(self, field, getattr(self, field) + getattr(self, 'curr_' + field))
 
+    # pylint: disable-msg=E1101
     self.success /= 2.0
 
   def __str__(self):
+    # pylint: disable-msg=E1101
     return '%i:\t%.2f\t%.2f\t%i\t%i\t%i\t%i' % (self.user.id, self.winning_points, self.success, self.points, self.place_1, self.place_2, self.place_3)
 
 def __sort_players(a, b):
@@ -76,8 +80,8 @@ def __sort_players(a, b):
 
   return 0
 
-def sort_players():
-  return sorted(prs, cmp = __sort_players, reverse = True)
+def sort_players(players):
+  return sorted(players, cmp = __sort_players, reverse = True)
 
 class Engine(tournaments.engines.Engine):
   player_class = Player

@@ -26,32 +26,11 @@
 </%def>
 
 <div class="row prepend-top append-bottom" style="overflow: visible">
-  <div class="span-2">
-
-    <div class="game-info">
-      <div                class="header corners-top">Hra #<span id="game_id" class="game-id"></span></div>
-      <div id="game_name" class="game-name info"></div>
-      <div                class="game-round corners-bottom info important-info"><span id="game_round"></span>. kolo</div>
-    </div>
-
-    <div class="settlers-last-numbers">
-      <div class="header corners-top">Last numbers</div>
-      </span><span id="settlers_last_numbers" class="info important-info corners-bottom"></span>
-    </div>
-
-    <div class="settlers-game-status framed hide">
-    </div>
-
-    <div class="framed centered">
-      <span id="show_board"    class="icon icon-giant icon-game-board" title="${_('Show board')}"></span>
-      <span id="show_cards"    class="icon icon-giant icon-game-cards" title="${_('Show cards')}"></span>
-      <span id="show_chat"     class="icon icon-giant icon-game-chat" title="${_('Show chat')}"></span>
-      <span id="refresh"       class="icon icon-giant icon-game-refresh" title="${_('Refresh')}"></span>
-      <span id="roll_dice"     class="icon icon-giant icon-game-roll-dice" title="${_('Roll dice')}"></span>
-      <span id="pass_turn"     class="icon icon-giant icon-game-pass-turn" title="${_('Pass turn')}"></span>
-      <span id="show_exchange" class="icon icon-giant settlers-icon-game-exchange" title="${_('Exchange resources')}"></span>
-      <span id="show_history"  class="icon icon-giant icon-game-history" title="${_('Show history')}"></span>
-    </div>
+  <div class="span-2" id="right_column">
+    <div id="game-player-0-placeholder"></div>
+    <div id="game-player-1-placeholder"></div>
+    <div id="game-player-2-placeholder"></div>
+    <div id="game-player-3-placeholder"></div>
   </div>
 
   <div class="span-8">
@@ -223,10 +202,30 @@
   </div>
   </div>
 
-  <div class="span-2 last" id="right_column">
-    <div id="game-player-0-placeholder"></div>
-    <div id="game-player-1-placeholder"></div>
-    <div id="game-player-2-placeholder"></div>
-    <div id="game-player-3-placeholder"></div>
+  <div class="span-2 last">
+    <div class="game-info">
+      <div                class="header corners-top">Hra #<span id="game_id" class="game-id"></span></div>
+      <div id="game_name" class="game-name info"></div>
+      <div                class="game-round corners-bottom info important-info"><span id="game_round"></span>. kolo</div>
+    </div>
+
+    <div class="settlers-last-numbers">
+      <div class="header corners-top">Last numbers</div>
+      </span><span id="settlers_last_numbers" class="info important-info corners-bottom"></span>
+    </div>
+
+    <div class="settlers-game-status framed hide">
+    </div>
+
+    <div class="framed centered">
+      <span id="show_board"    class="icon icon-giant icon-game-board" title="${_('Show board')}"></span>
+      <span id="show_cards"    class="icon icon-giant icon-game-cards" title="${_('Show cards')}"></span>
+      <span id="show_chat"     class="icon icon-giant icon-game-chat" title="${_('Show chat')}"></span>
+      <span id="refresh"       class="icon icon-giant icon-game-refresh" title="${_('Refresh')}"></span>
+      <span id="roll_dice"     class="icon icon-giant icon-game-roll-dice" title="${_('Roll dice')}"></span>
+      <span id="pass_turn"     class="icon icon-giant icon-game-pass-turn" title="${_('Pass turn')}"></span>
+      <span id="show_exchange" class="icon icon-giant settlers-icon-game-exchange" title="${_('Exchange resources')}"></span>
+      <span id="show_history"  class="icon icon-giant icon-game-history" title="${_('Show history')}"></span>
+    </div>
   </div>
 </div>

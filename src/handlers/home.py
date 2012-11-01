@@ -17,55 +17,6 @@ import hruntime
 #
 # Api classes
 #
-class Player(hlib.api.User):
-  def __init__(self, player):
-    super(Player, self).__init__(player.user)
-
-    self.update(['is_confirmed', 'is_on_turn'])
-
-    self.is_confirmed		= player.confirmed
-    self.is_on_turn		= player.is_on_turn
-
-class Playable(hlib.api.ApiJSON):
-  def __init__(self, o):
-    super(Playable, self).__init__(['id', 'name', 'kind', 'limit', 'round', 'players', 'forhont', 'is_present', 'is_invited', 'is_on_turn', 'has_password', 'chat_posts', 'is_game', 'num_players'])
-
-    self.id			= o.id
-    self.kind			= o.kind
-    self.name			= o.name
-    self.round			= o.round
-    self.players		= [Player(p) for p in o.players.values()]
-
-    self.is_present		= o.has_player(hruntime.user)
-    self.has_password		= o.is_password_protected
-
-    if o.chat.unread > 0:
-      self.chat_posts = o.chat.unread
-    else:
-      self.chat_posts = False
-
-class Game(Playable):
-  def __init__(self, g):
-    super(Game, self).__init__(g)
-
-    self.is_game		= True
-
-    self.limit			= g.limit
-
-    if g.forhont_player != None:
-      self.forhont		= hlib.api.User(g.forhont_player.user)
-
-    self.is_invited		= g.has_player(hruntime.user) and not g.has_confirmed_player(hruntime.user)
-    self.is_on_turn		= g.has_player(hruntime.user) and g.my_player.is_on_turn
-
-class Tournament(Playable):
-  def __init__(self, t):
-    super(Tournament, self).__init__(t)
-
-    self.is_game		= False
-    self.limit			= t.flags.limit
-    self.num_players		= t.num_players
-
 class RecentEvents(hlib.api.ApiJSON):
   def __init__(self):
     super(RecentEvents, self).__init__(['playable', 'free', 'finished'])
@@ -95,15 +46,19 @@ class Handler(handlers.GenericHandler):
     re = RecentEvents()
 
     for g in games.f_active(hruntime.user):
+      ga = g.to_api()
+
       if g.has_player(hruntime.user) and g.my_player.is_on_turn or g.has_player(hruntime.user) and not g.has_confirmed_player(hruntime.user) or g.has_player(hruntime.user):
-        re.playable.append(Game(g))
+        re.playable.append(ga)
       else:
-        re.free.append(Game(g))
+        re.free.append(ga)
 
     for t in tournaments.f_active(hruntime.user):
+      ta = t.to_api()
+
       if t.has_player(hruntime.user):
-        re.playable.append(Tournament(t))
+        re.playable.append(ta)
       else:
-        re.free.append(Tournament(t))
+        re.free.append(ta)
 
     return hlib.api.Reply(200, events = re)
