@@ -41,6 +41,22 @@ cmd_options = {
   'config_file':	'settlers.conf'
 }
 
+#
+# Default values for config file options
+#
+config_defaults = {
+  'server':			{
+    'host':			'127.0.0.1',
+    'port':			8082,
+  },
+  'log':			{
+    'access_format':		'{date} {time} - {tid} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
+  },
+  'session':			{
+    'time':			2 * 86400
+  }
+}
+
 def __on_request_started(e):
   # pylint: disable-msg=W0613
   hruntime.i18n = hruntime.dbroot.localization.languages['cz']
@@ -55,7 +71,7 @@ def main():
   Main startup function of Settlers engine.
   """
 
-  config = ConfigParser.ConfigParser()
+  config = hlib.ConfigFile(default = config_defaults)
   config.read(cmd_options['config_file'])
 
   stderr = hlib.log.channels.stderr.Channel()
@@ -75,11 +91,11 @@ def main():
 
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
 
-  app.sessions = hlib.http.session.FileStorage(os.path.join('/', 'tmp', 'settlers-sessions.dat'), app)
-  app.config['sessions.time']          = 2 * 86400
-  app.config['sessions.cookie_name']	= 'settlers_sid'
+  app.sessions = hlib.http.session.FileStorage(config.get('session', 'storage_path'), app)
+  app.config['sessions.time']		= config.get('session', 'time')
+  app.config['sessions.cookie_name']	= config.get('session', 'cookie_name')
 
-  app.config['log.access.format']	= '{date} {time} - {tid} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
+  app.config['log.access.format']	= config.get('log', 'access_format')
   app.channels.access = [stderr, access]
   app.channels.error  = [stderr, error]
 
