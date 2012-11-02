@@ -199,7 +199,7 @@ class Tournament(lib.play.Playable):
 class TournamentError(hlib.error.BaseError):
   pass
 
-WrongPasswordError		= lambda: TournamentError(msg = 'Wrong password', reply_status = 401, no_code = True)
+WrongPasswordError		= lambda: TournamentError(msg = 'Wrong password', reply_status = 401)
 TournamentAlreadyStartedError	= lambda: TournamentError(msg = 'Game already started', reply_status = 401)
 AlreadyJoinedError		= lambda: TournamentError(msg = 'Already joined game', reply_status = 402)
 

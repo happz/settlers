@@ -533,11 +533,11 @@ class Game(lib.play.Playable):
 class GameError(hlib.error.BaseError):
   pass
 
-WrongPasswordError		= lambda: GameError(msg = 'Wrong password', reply_status = 401, dont_log = True, no_code = True)
+WrongPasswordError		= lambda: GameError(msg = 'Wrong password', reply_status = 401, dont_log = True)
 GameAlreadyStartedError		= lambda: GameError(msg = 'Game already started', reply_status = 401)
 AlreadyJoinedError		= lambda: GameError(msg = 'Already joined game', reply_status = 402)
 NotYourTurnError		= lambda: GameError(msg = 'Not your turn', reply_status = 402)
-NameAlreadyExistsError		= lambda: GameError(msg = 'Such name already exists', reply_status = 403, no_code = True, invalid_field = 'name')
+NameAlreadyExistsError		= lambda: GameError(msg = 'Such name already exists', reply_status = 403, invalid_field = 'name')
 NoSuchPlayerError		= lambda: GameError(msg = 'No such player', reply_status = 403)
 WrongInviteError		= lambda: GameError(msg = 'You can not invite this player', reply_status = 402)
 DoubleInviteError		= lambda: GameError(msg = 'You can not invite one player twice', reply_status = 402)
