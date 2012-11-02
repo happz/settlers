@@ -15,11 +15,26 @@ class Event(hlib.events.Event):
     self.tournament		= tournament
     self.round			= tournament.round
 
+  def to_api(self):
+    d = hlib.events.Event.to_api(self)
+
+    d['tid']			= self.tournament.id
+    d['round']			= self.round
+
+    return d
+
 class UserEvent(Event):
   def __init__(self, user = None, **kwargs):
     Event.__init__(self, **kwargs)
 
     self.user			= user
+
+  def to_api(self):
+    d = Event.to_api(self)
+
+    d['user'] = hlib.api.User(self.user)
+
+    return d
 
 class Created(Event):
   pass

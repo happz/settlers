@@ -22,7 +22,7 @@
 </%def>    
 
 <div class="row prepend-top append-bottom" style="overflow: visible">
-  <div class="prepend-2 span-8 last">
+  <div class="prepend-2 span-8">
   <div id="views">
 
     <ul class="hide">
@@ -37,7 +37,7 @@
     <div id="chat" class="hide">
       <div class="row">
         <div class="prepend-2 span-8 last">
-          ${chat_new_post('/tournament/chat', gid = tournament.id)}
+          ${chat_new_post('/tournament/chat', tid = tournament.id)}
         </div>
       </div>  
 
@@ -66,5 +66,18 @@
     </div>  
 
   </div>
+  </div>
+
+  <div class="span-2 last">
+    <div class="playable-info">
+      <div                class="header corners-top">Hra #<span id="tournament_id" class="playable-id"></span></div>
+      <div id="tournament_name" class="playable-name info"></div>
+      <div                class="playable-round corners-bottom info important-info"><span id="tournament_round"></span>. kolo</div>
+    </div>
+
+    <div class="framed centered">
+      <span id="show_chat"     class="icon icon-giant icon-playable-chat" title="${_('Show chat')}"></span>
+      <span id="show_history"  class="icon icon-giant icon-playable-history" title="${_('Show history')}"></span>
+    </div>
   </div>
 </div>

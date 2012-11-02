@@ -117,6 +117,13 @@ class Tournament(lib.play.Playable):
 
     return d
 
+  def to_state(self):
+    d = lib.play.Playable.to_state(self)
+
+    d['tid']			= self.id
+
+    return d
+
   def create_games(self):
     player_groups = self.engine.create_groups()
 

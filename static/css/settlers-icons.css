@@ -42,10 +42,6 @@ span.icon-game-on-turn {
   background-image:             url(/static/images/icons/Alert32.png);
 }
 
-span.icon-game-join {
-  background-image:             url(/static/images/icons/Accept32.png);
-}
-  
 span.icon-roll-open {
   background-image:             url(/static/images/icons/Add32.png);
 }

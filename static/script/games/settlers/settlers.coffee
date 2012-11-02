@@ -327,9 +327,9 @@ class window.settlers.GameObject
 
 window.settlers.templates.game = {}
 window.settlers.templates.game.player = '
-  <div class="game-player">
-    <div class="game-player-header header corners-top settlers-game-player-header-{{color.name}}">
-      <span class="game-player-title">{{user.name}}</span>
+  <div class="playable-player">
+    <div class="playable-player-header header corners-top settlers-game-player-header-{{color.name}}">
+      <span class="playable-player-title">{{user.name}}</span>
 
       <span class="right">
         <span class="icon settlers-player-title-icon 
@@ -351,7 +351,7 @@ window.settlers.templates.game.player = '
         "></span>
     </div>
 
-    <div class="game-player-points info important-info">{{points}} {{#_g}}points{{/_g}}</div>
+    <div class="playable-player-points info important-info">{{points}} {{#_g}}points{{/_g}}</div>
 
     <table class="game-player-resources">
 

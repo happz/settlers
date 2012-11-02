@@ -11,11 +11,11 @@ window.settlers.events['tournament.Started']              = (e) ->
   return window.hlib._g 'Tournament has started'
 
 window.settlers.events['tournament.PlayerJoined']             = (e) ->
-  return (window.hlib._g '{0} joined game').format e.user.name
+  return (window.hlib._g '{0} joined tournament').format e.user.name
 
 window.settlers = window.settlers or {}
 
-class window.settlers.tournamentObject
+class window.settlers.TournamentObject
   constructor:          (data) ->
     jQuery.extend true, @, data
 
@@ -104,7 +104,7 @@ window.settlers.templates.tournament.events = '
 '
 
 window.settlers.update_tournament_state = () ->
-  tid = window.settlers.tournament.gid
+  tid = window.settlers.tournament.tid
 
   req = window.hlib.Ajax
     url:                '/tournament/state'
@@ -119,13 +119,9 @@ window.settlers.update_tournament_state = () ->
 window.settlers.update_tournament_ui_info = () ->
   T = window.settlers.tournament
 
-  $('#tournament_id').html G.gid
-  $('#game_name').html G.name
-  $('#game_round').html G.round
-
-  if G.last_numbers.length > 0
-    $('#settlers_last_numbers').html G.last_numbers.join ', '
-    $('.settlers-last-numbers').show()
+  $('#tournament_id').html T.tid
+  $('#tournament_name').html T.name
+  $('#tournament_round').html T.round
 
 window.settlers.update_tournament_ui_player = (player) ->
   dst_id = '#tournament-player-' + player.id + '-placeholder'
@@ -141,10 +137,9 @@ window.settlers.update_tournament_ui_history = () ->
   rendered = window.settlers.tournament.render_events window.settlers.events, window.settlers.templates.tournament.events
   $('#history_events').html rendered
 
-window.settlers.update_game_ui = () ->
-  window.settlers.update_game_ui_info()
+window.settlers.update_tournament_ui = () ->
+  window.settlers.update_tournament_ui_info()
   window.settlers.update_tournament_ui_players()
-  window.settlers.update_game_ui_status()
   window.settlers.update_tournament_ui_history()
 
 window.settlers.setup_page = () ->
@@ -167,7 +162,7 @@ window.settlers.setup_page = () ->
     eid:                        '#chat_posts'
     url:                        '/tournament/chat/page'
     data:
-      gid:                      window.settlers.tournament.gid
+      tid:                      window.settlers.tournament.tid
 
   window.settlers.setup_chat_form
     eid:                        '#chat_post'

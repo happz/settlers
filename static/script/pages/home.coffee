@@ -12,7 +12,7 @@ window.settlers.templates.recent_events.playables = '
       <span class="playable-menu right">
         {{#is_present}}
           {{#is_invited}}
-            <span id="playable_join_{{id}}" class="icon icon-medium icon-game-join" title="{{#_g}}Join{{/_g}}"></span>
+            <span id="playable_join_{{id}}" class="icon icon-medium icon-playable-join" title="{{#_g}}Join{{/_g}}"></span>
           {{/is_invited}}
           {{^is_invited}}
             {{#is_on_turn}}
@@ -20,14 +20,14 @@ window.settlers.templates.recent_events.playables = '
             {{/is_on_turn}}
             {{#is_game}}
               <a href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}"><span class="icon icon-medium icon-game-board"></span></a>
-              <a href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-game-history"></span></a>
+              <a href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
               <a href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
             {{/is_game}}
             {{^is_game}}
-              <a href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-game-history"></span></a>
+              <a href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
               <a href="/tournament/?tid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
             {{/is_game}}
-              <span class="icon icon-medium icon-game-chat">
+              <span class="icon icon-medium icon-playable-chat">
                 {{#chat_posts}}
                   <span class="menu-alert">{{chat_posts}}</span>
                 {{/chat_posts}}
@@ -36,7 +36,7 @@ window.settlers.templates.recent_events.playables = '
           {{/is_invited}}
         {{/is_present}}
         {{^is_present}}
-          <span id="playable_join_{{id}}" class="icon icon-medium icon-game-join" title="{{#_g}}Join{{/_g}"></span>
+          <span id="playable_join_{{id}}" class="icon icon-medium icon-playable-join" title="{{#_g}}Join{{/_g}"></span>
         {{/is_present}}
       </span>
     </li>
@@ -56,7 +56,7 @@ window.settlers.templates.recent_events.playables = '
         <span class="playable-name">Turnaj {{name}}</span>
       {{/is_game}}
       <span class="playable-menu right">
-        <span id="playable_join_{{id}}" title="{{#_g}}Join{{/_g}}" class="icon icon-medium icon-game-join"></span>
+        <span id="playable_join_{{id}}" title="{{#_g}}Join{{/_g}}" class="icon icon-medium icon-playable-join"></span>
       </span>
     </li>
   {{/free}}
@@ -72,15 +72,15 @@ window.settlers.templates.recent_events.playables = '
       <span class="playable-name">{{name}}</span>
       <span class="playable-menu right">
         {{#is_game}}
-          <a href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}"><span class="icon icon-medium icon-game-board"></span></a>
-          <a href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-game-history"></span></a>
+          <a href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}"><span class="icon icon-medium icon-board-board"></span></a>
+          <a href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
           <a href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
         {{/is_game}}
         {{#is_game}}
-          <a href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-game-history"></span></a>
+          <a href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
           <a href="/tournament/?tid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
         {{/is_game}}
-          <span class="icon icon-medium icon-game-chat">
+          <span class="icon icon-medium icon-playable-chat">
             {{#chat_posts}}
               <span class="menu-alert">{{chat_posts}}</span>
             {{/chat_posts}}
@@ -93,19 +93,19 @@ window.settlers.templates.recent_events.playables = '
 '
 window.settlers.templates.recent_events.playable_preview = '
   <div class="bold">{{name}}</div>
-  <div class="game-players">{{{players_list}}}</div>
+  <div class="playable-players">{{{players_list}}}</div>
   {{#is_game}}
-    <div class="game-limit">{{limit}} {{#_g}}players{{/_g}}</div>
+    <div class="playable-limit">{{limit}} {{#_g}}players{{/_g}}</div>
   {{/is_game}}
   {{#round}}
-    <div class="game-round">{{round}}. {{#_g}}round{{/_g}}, {{forhont.name}} {{#_g}}on turn{{/_g}}</div>
+    <div class="playable-round">{{round}}. {{#_g}}round{{/_g}}, {{forhont.name}} {{#_g}}on turn{{/_g}}</div>
   {{/round}}
   {{#is_invited}}
     <div style="font-weight: bold">{{#_g}}You are invited!{{/_g}}</div>
   {{/is_invited}}
   {{^is_game}}
-    <div class="game-limit">{{limit}} {{#_g}}players per game{{/_g}}</div>
-    <div class="game-limit">Tournament for {{num_players}} players</div>
+    <div class="playable-limit">{{limit}} {{#_g}}players per game{{/_g}}</div>
+    <div class="playable-limit">Tournament for {{num_players}} players</div>
   {{/is_game}}
 '
 

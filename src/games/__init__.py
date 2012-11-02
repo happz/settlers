@@ -363,6 +363,7 @@ class Game(lib.play.Playable):
     d = lib.play.Playable.to_state(self)
 
     d.update({
+      'gid':			self.id,
       'state':			self.type,
       'my_player':		self.my_player.id,
       'forhont_player':		self.forhont_player.id,
@@ -511,7 +512,7 @@ class Game(lib.play.Playable):
     if len(opponents) > flags.limit - 1:
       raise TooManyInvitesError()
 
-    if flags.password == '' or flags.password == None:
+    if not flags.password or flags.password == '':
       flags.password = None
 
     else:

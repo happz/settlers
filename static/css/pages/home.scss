@@ -1,4 +1,5 @@
 @import "lib.scss";
+@import "playable.scss";
 
 .recent-events {
 }
@@ -27,12 +28,4 @@ ul.recent-events > li:last-child {
 
 span.icon-game-board {
     background-image:                   url(/static/images/icons/Board32.png);
-}
-
-span.icon-game-history {
-    background-image:                   url(/static/images/icons/History32.png);
-}
-
-span.icon-game-chat {
-    background-image:                   url(/static/images/icons/Chat32.png);
 }

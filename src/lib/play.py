@@ -92,7 +92,6 @@ class Playable(hlib.database.DBObject):
 
   def to_state(self):
     return {
-      'gid':			self.id,
       'name':			self.name,
       'round':			self.round,
       'players':		[p.to_state() for p in self.players.values()],

@@ -36,24 +36,6 @@ def require_presence_in_tournament(tid):
 class GenericValidateTID(hlib.input.SchemaValidator):
   tid = tournaments.ValidateTID
 
-class PlayerState(hlib.api.ApiJSON):
-  def __init__(self, p):
-    super(PlayerState, self).__init__(['user', 'my_player'])
-
-    self.user           = hlib.api.User(p.user)
-    self.my_player      = p.user == hruntime.user
-
-class TournamentState(hlib.api.ApiJSON):
-  def __init__(self, t):
-    super(TournamentState, self).__init__(['tid', 'name', 'round', 'players', 'events'])
-
-    self.tid            = t.id
-    self.name           = t.name
-    self.round          = t.round
-    self.players        = [PlayerState(p) for p in t.players.values()]
-
-    self.events         = [e.to_api() for e in t.events.values() if e.hidden != True]
-
 class ChatHandler(handlers.GenericHandler):
   #
   # Add
@@ -79,7 +61,7 @@ class ChatHandler(handlers.GenericHandler):
   @require_login
   @validate_by(schema = ValidatePage)
   @api
-  def page(self, gid = None, start = None, length = None):
+  def page(self, tid = None, start = None, length = None):
     t = require_presence_in_tournament(tid)
 
     return hlib.api.Reply(200, page = t.chat.get_page(start = start, length = length))
@@ -107,7 +89,7 @@ class Handler(handlers.GenericHandler):
   def state(self, tid = None):
     t = require_presence_in_tournament(tid)
 
-    return hlib.api.Reply(200, tournament = TournamentState(t))
+    return hlib.api.Reply(200, tournament = t.to_state())
 
   #
   # Join
