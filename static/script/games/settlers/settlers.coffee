@@ -542,7 +542,7 @@ window.settlers.update_game_ui_info = () ->
 
   if G.last_numbers.length > 0
     s = G.last_numbers.slice()
-    s[0] = '<span class="label">' + s[0] + '</span>'
+    s[0] = '<span class="label green">' + s[0] + '</span>'
     $('#settlers_last_numbers').html s.join ' '
     $('.settlers-last-numbers').show()
 
