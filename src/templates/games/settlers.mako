@@ -211,7 +211,9 @@
 
     <div class="settlers-last-numbers">
       <div class="header corners-top">Last numbers</div>
-      </span><span id="settlers_last_numbers" class="info important-info corners-bottom"></span>
+      <div class="info important-info corners-bottom" style="padding-bottom: 1em">
+        <span id="settlers_last_numbers"></span>
+      </div>
     </div>
 
     <div class="settlers-game-status framed hide">

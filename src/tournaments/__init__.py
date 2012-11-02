@@ -173,7 +173,7 @@ class Tournament(lib.play.Playable):
     if user in self.user_to_player:
       raise AlreadyJoinedError()
 
-    if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password.encode('ascii', 'replace')) != self.password):
+    if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password) != self.password):
       raise WrongPasswordError()
 
     player = self.engine.player_class(self, user)

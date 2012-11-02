@@ -8,6 +8,7 @@ import threading
 import hlib.api
 import hlib.database
 
+import lib
 import lib.chat
 
 # pylint: disable-msg=F0401
@@ -59,6 +60,12 @@ class Playable(hlib.database.DBObject):
     self.events			= hlib.database.IndexedMapping()
 
     self._v_user_to_player	= None
+
+    if not flags.password or flags.password == '':
+      self.password = None
+
+    else:
+      self.password = lib.pwcrypt(flags.password)
 
   def __getattr__(self, name):
     if name == 'user_to_player':

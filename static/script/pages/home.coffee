@@ -108,6 +108,9 @@ window.settlers.templates.recent_events.playable_preview = '
     <div class="playable-limit">Tournament for {{num_players}} players</div>
   {{/is_game}}
 '
+window.settlers.templates.recent_events.password = '
+  <input type="text" class="formee-txt" id="playable_join_{{id}}_password" /><span id="playable_join_{{id}}" class="icon icon-medium icon-playable-join" title="{{#_g}}Join{{/_g}}"></span>
+'
 
 window.settlers.setup_fetch = () ->
   eid = '#recent_events'
@@ -214,24 +217,58 @@ window.settlers.setup_fetch = () ->
                 def:			false
                 classes:		'playable-preview corners-top corners-bottom'
 
+            if p.has_password
+              $('#playable_join_' + p.id).replaceWith(window.hlib.render window.settlers.templates.recent_events.password, p)
+
             $('#playable_join_' + p.id).click () ->
               if p.is_game
                 url = '/game/join?gid=' + p.id
               else
                 url = '/tournament/join?tid=' + p.id
 
+              if p.has_password
+                data =
+                  password:		$('#playable_join_' + p.id + '_password').val()
+              else
+                data = null
+
+              __get_field = (response) ->
+                field = null
+
+                if response.hasOwnProperty('form') and response.form.hasOwnProperty 'invalid_field'
+                  field = response.form.invalid_field
+                else
+                  field = 'password'
+
+                field = new window.hlib.FormField '#playable_join_' + p.id + '_' + field
+                return field
+
               new window.hlib.Ajax
                 url:			url
+                data:			data
                 handlers:
                   h200:		(response, ajax) ->
                     window.hlib.INFO.success window.hlib._g 'Joined'
                     update_events()
 
+                  h400:		(response, ajax) ->
+                    field = __get_field response
+                    field.mark_error()
+
+                    window.hlib.error response.error, () ->
+                      field.unmark_error()
+
+                  h401:		(response, ajax) ->
+                    field = __get_field response
+                    field.mark_error()
+
+                    window.hlib.error response.error, () ->
+                      field.unmark_error()
+
               return false
 
             if p.chat_posts
               window.settlers.show_menu_alert peid_plain
-            # if g.has_password ...
 
           decorate_playable p for p in response.events.playable
           decorate_playable p for p in response.events.free

@@ -29,4 +29,4 @@ class UserToPlayerMap(object):
 
 def pwcrypt(passwd):
   # pylint: disable-msg=E1101
-  return hashlib.md5(passwd).hexdigest()
+  return hashlib.md5(passwd.encode('ascii', 'replace')).hexdigest()

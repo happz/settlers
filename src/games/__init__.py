@@ -398,7 +398,7 @@ class Game(lib.play.Playable):
 
   def join_player(self, user, password, invite = False):
     if user not in self.user_to_player:
-      if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password.encode('ascii', 'replace')) != self.password):
+      if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password) != self.password):
         raise WrongPasswordError()
 
       if len(self.players) >= self.limit:
@@ -512,12 +512,6 @@ class Game(lib.play.Playable):
     if len(opponents) > flags.limit - 1:
       raise TooManyInvitesError()
 
-    if not flags.password or flags.password == '':
-      flags.password = None
-
-    else:
-      flags.password = lib.pwcrypt(flags.password.encode('ascii', 'replace'))
-
     g = game_class(flags)
 
     hlib.event.trigger('game.GameCreated', g, game = g)
@@ -539,7 +533,7 @@ class Game(lib.play.Playable):
 class GameError(hlib.error.BaseError):
   pass
 
-WrongPasswordError		= lambda: GameError(msg = 'Wrong password', reply_status = 401, no_code = True)
+WrongPasswordError		= lambda: GameError(msg = 'Wrong password', reply_status = 401, dont_log = True, no_code = True)
 GameAlreadyStartedError		= lambda: GameError(msg = 'Game already started', reply_status = 401)
 AlreadyJoinedError		= lambda: GameError(msg = 'Already joined game', reply_status = 402)
 NotYourTurnError		= lambda: GameError(msg = 'Not your turn', reply_status = 402)
