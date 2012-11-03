@@ -19,7 +19,7 @@ class UserToPlayerMap(object):
 
   def __getitem__(self, user):
     for p in self.container.players.values():
-      if user.name == p.user.name:
+      if user == p.user:
         return p
 
     return None

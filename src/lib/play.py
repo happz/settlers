@@ -119,11 +119,11 @@ class PlayableLists(object):
     cache = getattr(self, '_' + name)
 
     with self._lock:
-      if user.name not in cache:
+      if user not in cache:
         update = getattr(self, 'get_' + name)
-        cache[user.name] = update(user)
+        cache[user] = update(user)
 
-      return cache[user.name]
+      return cache[user]
 
   def get_active(self, user):
     return []

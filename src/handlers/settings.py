@@ -77,7 +77,7 @@ class OpponentsHandler(handlers.GenericHandler):
 
     color = gm.COLOR_SPACE.colors[color]
 
-    if opponent.name == hruntime.user.name:
+    if opponent == hruntime.user:
       raise hlib.error.InconsistencyError(msg = 'You can not set color for yourself')
 
     if color.name not in gm.COLOR_SPACE.unused_colors(hruntime.user):

@@ -17,10 +17,10 @@ class ThiefEvent(Event):
 
   def __getattr__(self, name):
     if name == 'am_i_thief':
-      return self.thief != None and self.thief.name == hruntime.user.name
+      return self.thief != None and self.thief == hruntime.user
 
     if name == 'am_i_victim':
-      return self.victim != None and self.victim.name == hruntime.user.name
+      return self.victim != None and self.victim == hruntime.user
 
     return Event.__getattr__(self, name)
 

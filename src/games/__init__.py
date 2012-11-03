@@ -391,7 +391,7 @@ class Game(lib.play.Playable):
     """
 
     for p in self.confirmed_players.values():
-      if p.user.name == user.name:
+      if p.user == user:
         return True
 
     return False
