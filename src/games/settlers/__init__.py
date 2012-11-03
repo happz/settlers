@@ -968,9 +968,9 @@ class Game(games.Game):
         return []
 
       if self.round < 2:
-        return list(self.dice_rolls)
+        return [i for i in reversed(list(self.dice_rolls))]
       else:
-        return list(self.dice_rolls[len(self.dice_rolls) - self.limit:])
+        return [i for i in reversed(list(self.dice_rolls[len(self.dice_rolls) - self.limit:]))]
 
     return games.Game.__getattr__(self, name)
 
