@@ -103,7 +103,6 @@ window.settlers.setup_opponent_colors_form = () ->
           __per_user u for u in response.users
 
   $(kind.fid).change () ->
-    console.log $(kind.fid).val()
     if $(kind.fid).val() == ''
       color.empty()
       color.disable()
@@ -147,6 +146,24 @@ window.settlers.setup_forms = () ->
 
   new window.hlib.Form
     fid:                'sound'
+
+  new window.hlib.Form
+    fid:		'api_token'
+
+  $('#api_token_new').click () ->
+    new window.hlib.Ajax
+      url:			'/settings/api_token/new'
+      handlers:
+        h200:			(response, ajax) ->
+          if response.hasOwnProperty 'token'
+            $('#api_token_token').html response.token
+
+          window.hlib.INFO._hide()
+    return false
+
+  $('#api_token_download').click () ->
+    $('#api_token_downloader').attr 'src', '/settings/api_token/download'
+    return false
 
   window.settlers.setup_opponent_colors_form()
 

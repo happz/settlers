@@ -26,6 +26,26 @@ TABLE_ROW_COUNTS = range(10, 61, 10)
 
 ValidateColor = validator_factory(CommonString(), OneOf(games.settlers.COLOR_SPACE.colors.keys()))
 
+class ApiTokenHandler(handlers.GenericHandler):
+  @require_write
+  @require_login
+  @api
+  def new(self):
+    u = hruntime.user
+
+    u.reset_api_tokens()
+    u.api_tokens.append(hlib.api.api_token_generate(u))
+
+    return hlib.api.Reply(200, token = u.api_tokens[0])
+
+  @require_login
+  @api
+  def download(self):
+    hruntime.response.headers['Content-Type'] = 'application/force-download'
+    hruntime.response.headers['Content-Disposition'] = 'attachment; filename=settlers.conf'
+
+    return hlib.api.Raw({'api_token': hruntime.user.api_tokens[0]})
+
 class OpponentColor(hlib.api.ApiJSON):
   def __init__(self, user, color):
     super(OpponentColor, self).__init__(['user', 'color'])
@@ -132,6 +152,7 @@ class VacationHandler(handlers.GenericHandler):
 class Handler(handlers.GenericHandler):
   vacation      = VacationHandler()
   opponents     = OpponentsHandler()
+  api_token	= ApiTokenHandler()
 
   @require_login
   @page

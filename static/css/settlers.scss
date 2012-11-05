@@ -190,6 +190,11 @@ ul {
     list-style-type:			none;
 }
 
+code {
+    font-family:			$font_family_pre;
+    font-size:                          $font_size_text_small;
+}
+
 /*
  * ----- ----- Ajax utils
  */

@@ -31,7 +31,7 @@ import lib.chat
 import hlib.handlers.root
 
 # Shortcuts
-from hlib.api import api
+from hlib.api import api, api_token
 from handlers import page, require_login, survive_vacation, require_write
 from hlib.input import validate_by
 
@@ -99,19 +99,18 @@ class Handler(hlib.handlers.root.Handler):
   def trumpet(self):
     return {'message': lib.trumpet.Board.text}
 
-  @require_login
-  @api
-  def pull_notify(self):
-    r = PullNotify()
+  def prepare_notify_events(self, no_trumpet = False):
+    pn = PullNotify()
 
-    txt = lib.trumpet.Board().text
-    if len(txt) > 0:
-      r.trumpet = txt
+    if not no_trumpet:
+      txt = lib.trumpet.Board().text
+      if len(txt) > 0:
+        pn.trumpet = txt
 
     # Do I have unread posts on global chat?
     cnt = lib.chat.ChatPagerGlobal().unread
     if cnt > 0:
-      r.chat = cnt
+      pn.chat = cnt
 
     # Am I on turn in any game?
     cnt = 0
@@ -131,6 +130,16 @@ class Handler(hlib.handlers.root.Handler):
           continue
 
     if cnt > 0:
-      r.on_turn = cnt
+      pn.on_turn = cnt
 
-    return hlib.api.Reply(200, events = r)
+    return pn
+
+  @require_login
+  @api
+  def pull_notify(self):
+    return hlib.api.Reply(200, events = self.prepare_notify_events())
+
+  @require_login
+  @api_token
+  def pull_notify_at(self):
+    return hlib.api.Reply(200, events = self.prepare_notify_events(no_trumpet = True))

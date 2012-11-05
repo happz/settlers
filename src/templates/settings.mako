@@ -196,3 +196,33 @@
     ${w_submit_row('Set')}
   ${w_form_end()}
   ${row_end()}
+
+  ${row_start()}
+  ${w_form_start('/settings/api', 'API token', 'api_token')}
+    <div class="grid-12-12">
+      <input type="button" id="api_token_new" value="${_('New')}" />
+      <input type="button" id="api_token_download" value="${_('Download')}" />
+    </div>
+    <div class="grid-12-12">
+      <label>${_('Current API token')}:</label>
+    </div>
+    <div class="grid-12-12">
+      <code id="api_token_token">
+        % if len(hruntime.user.api_tokens) > 0:
+          ${hruntime.user.api_tokens[0]}
+        % endif
+      </code>
+    </div>
+    <div class="grid-12-12">
+      <hr />
+    </div>
+    <div class="grid-12-12">
+      <ul>
+        <li class="header corners-top">${_('Known applications')}</li>
+        <li class="info">
+          <a href="http://osadnici-test.happz.cz/static/settlers-notify.exe">Osadnici - Hlidacek</a>
+        </li>
+      </ul>
+    </div>
+    <iframe id="api_token_downloader" src="" class="hide" />
+  ${w_form_end()}
