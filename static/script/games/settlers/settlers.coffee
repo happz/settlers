@@ -14,9 +14,10 @@ window.settlers.events['game.CardUsed']					= (e) ->
 
 window.settlers.events = window.settlers.events or {}
 window.settlers.events['game.settlers.LongestPathBonusEarned']		= (e) ->
-  return 'game.settlers.LongestPathBonusEarned'
+  return (window.hlib._g '{0} earned bonus for longest path').format e.user.name
+
 window.settlers.events['game.settlers.MightestChilvaryBonusEarned']	= (e) ->
-  return 'game.settlers.MightestChilvaryBonusEarned'
+  return (window.hlib._g '{0} earned bonus for mightest chilvary').format e.user.name
 
 window.settlers.events['game.settlers.ResourceStolen']			= (e) ->
   if e.am_i_thief == true
