@@ -17,14 +17,17 @@ import hruntime
 ValidateTID = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
 
 class TournamentLists(lib.play.PlayableLists):
+  def get_objects(self, l):
+    return [hruntime.dbroot.tournaments[tid] for tid in l]
+
   def get_active(self, user):
-    return [t for t in hruntime.dbroot.tournaments.values() if t.is_active and (t.has_player(user) or t.stage == Tournament.STAGE_FREE)]
+    return [t.id for t in hruntime.dbroot.tournaments.values() if t.is_active and (t.has_player(user) or t.stage == Tournament.STAGE_FREE)]
 
   def get_inactive(self, user):
-    return [t for t in hruntime.dbroot.tournaments.values() if not t.is_active and t.has_player(user)]
+    return [t.id for t in hruntime.dbroot.tournaments.values() if not t.is_active and t.has_player(user)]
 
   def get_archived(self, user):
-    return [t for t in hruntime.dbroot.tournaments_archived.values() if user.name in t.players]
+    return [t.id for t in hruntime.dbroot.tournaments_archived.values() if user.name in t.players]
 
   # Shortcuts
   def created(self, t):
@@ -96,6 +99,9 @@ class Tournament(lib.play.Playable):
   def __getattr__(self, name):
     if name == 'is_active':
       return self.stage in (Tournament.STAGE_FREE, Tournament.STAGE_RUNNING)
+
+    if name == 'is_finished':
+      return self.stage == Tournament.STAGE_FINISHED
 
     if name == 'engine':
       if not self._v_engine:

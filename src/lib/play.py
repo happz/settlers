@@ -91,6 +91,7 @@ class Playable(hlib.database.DBObject):
       'kind':			self.kind,
       'name':			self.name,
       'round':			self.round,
+      'is_finished':		self.is_finished,
       'is_present':		self.has_player(hruntime.user),
       'has_password':		self.is_password_protected,
       'chat_posts':		self.chat.unread if self.chat.unread > 0 else False,
@@ -123,7 +124,10 @@ class PlayableLists(object):
         update = getattr(self, 'get_' + name)
         cache[user] = update(user)
 
-      return cache[user]
+      return self.get_objects(cache[user])
+
+  def get_objects(self, l):
+    return []
 
   def get_active(self, user):
     return []
@@ -147,17 +151,17 @@ class PlayableLists(object):
   def _inval_user(self, user):
     with self._lock:
       try:
-        del self._active[user.name]
+        del self._active[user]
       except KeyError:
         pass
 
       try:
-        del self._inactive[user.name]
+        del self._inactive[user]
       except KeyError:
         pass
 
       try:
-        del self._archived[user.name]
+        del self._archived[user]
       except KeyError:
         pass
 

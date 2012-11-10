@@ -45,14 +45,17 @@ class GenericValidateGID(hlib.input.SchemaValidator):
 
 # ----- Lists --------------------------------
 class GameLists(lib.play.PlayableLists):
+  def get_objects(self, l):
+    return [hruntime.dbroot.games[gid] for gid in l]
+
   def get_active(self, user):
-    return [g for g in hruntime.dbroot.games.values() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))]
+    return [g.id for g in hruntime.dbroot.games.values() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))]
 
   def get_inactive(self, user):
-    return [g for g in hruntime.dbroot.games.values() if not g.is_active and g.has_player(user)]
+    return [g.id for g in hruntime.dbroot.games.values() if not g.is_active and g.has_player(user)]
 
   def get_archived(self, user):
-    return [g for g in hruntime.dbroot.games_archived.values() if user.name in g.players]
+    return [g.id for g in hruntime.dbroot.games_archived.values() if user.name in g.players]
 
   # Shortcuts
   def created(self, g):
