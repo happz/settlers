@@ -437,9 +437,6 @@ class Card(games.Card):
       if not self.player.is_on_turn:
         return False
 
-      # FIXME
-      self.type = int(self.type)
-
       if not self.player.is_on_game and self.type != Card.TYPE_KNIGHT:
         return False
 
