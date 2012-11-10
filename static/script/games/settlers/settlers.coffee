@@ -832,14 +832,14 @@ window.settlers.update_game_ui_status = () ->
 
   show_status = true
 
-  if G.has_all_confirmed != true
+  if G.state == 2
+    $(eid).html (window.hlib._g 'Game finished, winner is {0}').format G.forhont_player.user.name
+
+  else if G.has_all_confirmed != true
     $(eid).html window.hlib._g 'Waiting for more players'
 
   else if not G.my_player.is_on_turn
     $(eid).html (window.hlib._g 'Waiting for {0}').format G.forhont_player.user.name
-
-  else if G.state == 2
-    $(eid).html window.hlib._g 'Game finished'
 
   else if G.state == 3
     $(eid).html window.hlib._g 'Game canceled'

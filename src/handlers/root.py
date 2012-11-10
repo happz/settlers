@@ -129,6 +129,10 @@ class Handler(hlib.handlers.root.Handler):
           cnt += 1
           continue
 
+    for g in games.f_inactive(hruntime.user):
+      if g.my_player.chat.unread > 0:
+        cnt += 1
+
     if cnt > 0:
       pn.on_turn = cnt
 

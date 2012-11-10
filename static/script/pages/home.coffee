@@ -44,9 +44,9 @@ window.settlers.templates.recent_events.playables = '
 
   <li id="free_header" class="header">
     {{#_g}}Free{{/_g}} ({{free.length}})
-    <span class="right icon icon-medium icon-roll-open"></span>
+    <span class="right icon icon-small icon-roll-open"></span>
   </li>
-  <div class="hide">
+  <section class="hide">
   {{#free}}
     <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info info-with-menu info-with-border">
       {{#is_game}}
@@ -60,23 +60,25 @@ window.settlers.templates.recent_events.playables = '
       </span>
     </li>
   {{/free}}
-  </div>
+  </section>
 
-  <li id="finished_header" class="header">
+  <li id="finished_header" class="header relative">
     {{#_g}}Finished{{/_g}} ({{finished.length}})
-    <span class="right icon icon-medium icon-roll-open"></span>
+    <span class="right icon icon-small icon-roll-open">
+      <span class="menu-alert"></span>
+    </span>
   </li>
-  <div class="hide">
+  <section class="hide">
   {{#finished}}
     <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info info-with-menu info-with-border">
       <span class="playable-name">{{name}}</span>
       <span class="playable-menu right">
         {{#is_game}}
-          <a href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}"><span class="icon icon-medium icon-board-board"></span></a>
+          <a href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}"><span class="icon icon-medium icon-game-board"></span></a>
           <a href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
           <a href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
         {{/is_game}}
-        {{#is_game}}
+        {{^is_game}}
           <a href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
           <a href="/tournament/?tid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
         {{/is_game}}
@@ -89,7 +91,7 @@ window.settlers.templates.recent_events.playables = '
       </span>
     </li>
   {{/finished}}
-  </div>
+  </section>
 '
 window.settlers.templates.recent_events.playable_preview = '
   <div class="bold">{{name}}</div>
@@ -98,7 +100,15 @@ window.settlers.templates.recent_events.playable_preview = '
     <div class="playable-limit">{{limit}} {{#_g}}players{{/_g}}</div>
   {{/is_game}}
   {{#round}}
-    <div class="playable-round">{{round}}. {{#_g}}round{{/_g}}, {{forhont.name}} {{#_g}}on turn{{/_g}}</div>
+    <div class="playable-round">
+      {{round}}. {{#_g}}round{{/_g}},
+      {{#is_finished}}
+        winner is {{forhont.name}}
+      {{/is_finished}}
+      {{^is_finished}}
+        {{forhont.name}} {{#_g}}on turn{{/_g}}
+      {{/is_finished}}
+    </div>
   {{/round}}
   {{#is_invited}}
     <div style="font-weight: bold">{{#_g}}You are invited!{{/_g}}</div>
@@ -164,13 +174,16 @@ window.settlers.setup_fetch = () ->
           $(eid).html window.hlib.render(window.settlers.templates.recent_events.playables, response.events)
 
           $('#free_header').click () ->
-            $('#free_header + div').toggle()
+            $('#free_header + section').toggle()
             $('#free_header > span').toggleClass 'icon-roll-open'
             $('#free_header > span').toggleClass 'icon-roll-close'
             return false
 
-          $('#finished_games_header').click () ->
-            $('#finished_header + div').toggle()
+          if response.events.finished_chat
+            window.settlers.show_menu_alert 'finished_header', response.events.finished_chat
+
+          $('#finished_header').click () ->
+            $('#finished_header + section').toggle()
             $('#finished_header > span').toggleClass 'icon-roll-open'
             $('#finished_header > span').toggleClass 'icon-roll-close'
             return false

@@ -22,11 +22,12 @@ import hruntime
 #
 class RecentEvents(hlib.api.ApiJSON):
   def __init__(self):
-    super(RecentEvents, self).__init__(['playable', 'free', 'finished'])
+    super(RecentEvents, self).__init__(['playable', 'free', 'finished', 'finished_chat'])
 
     self.playable			= []
     self.free				= []
     self.finished			= []
+    self.finished_chat			= False
 
 class Handler(handlers.GenericHandler):
   #
@@ -55,6 +56,16 @@ class Handler(handlers.GenericHandler):
         re.playable.append(ga)
       else:
         re.free.append(ga)
+
+    cnt = 0
+    for g in games.f_inactive(hruntime.user):
+      re.finished.append(g.to_api())
+
+      if g.my_player.chat.unread > 0:
+        cnt += 1
+
+    if cnt > 0:
+      re.finished_chat = cnt
 
     for t in tournaments.f_active(hruntime.user):
       ta = t.to_api()
