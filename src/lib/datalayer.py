@@ -172,6 +172,5 @@ class User(hlib.datalayer.User):
     self.vacations.push(v)
 
   def vacation_add_game(self):
-    self.vacation = max(self.vacation + int(hruntime.config.get('settlers', 'vacation_game_weight')), \
-                        int(hruntime.config.get('settlers', 'vacation_cap')))
+    self.vacation = max(self.vacation + 86400, 2592000)
 
