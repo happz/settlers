@@ -21,7 +21,8 @@ $color_user_onturn:                     red;
 
 /* Fonts */
 $font_size_text:                        1.4em;
-$font_size_text_small:			1.2em;
+$font_size_text_medium:			1.3em;
+$font_size_text_small:                  1.2em;
 
 $font_family_pre:			'andale mono', 'lucida console', monospace;
 
@@ -136,7 +137,7 @@ $margin_default:			1.5em;
     @include control();
     @include default-font();
 
-    font-size:				1.3em;
+    font-size:				$font_size_text_medium;
     padding:				4px 10px 4px;
     cursor:				pointer;
 }
