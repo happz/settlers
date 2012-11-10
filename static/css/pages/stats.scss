@@ -1,0 +1,21 @@
+@import "lib.scss";
+
+.stats-first {
+    @include chat-button();
+}
+
+.stats-prev {
+    @include chat-button();
+}
+
+.stats-next {
+    @include chat-button();
+}
+
+.stats-last {
+    @include chat-button();
+}
+
+.stats-position {
+    @include default-font();
+}

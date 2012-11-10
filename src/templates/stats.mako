@@ -6,9 +6,9 @@
 
 <%inherit file="page.mako" />
 
-${row_start(width = 10)}
-  <div id="stat_records">
-    <div class="span-10 last centered">
+${row_start(width = 12)}
+  <div id="stats_records">
+    <div class="prepend-1 span-10 last centered">
       <span class="stats-first">&lt;&lt;</span>
       <span class="stats-prev">&lt;</span>
       <span class="stats-position"></span>
@@ -16,8 +16,8 @@ ${row_start(width = 10)}
       <span class="stats-last">&gt;&gt;</span>
     </div>
 
-    <div class="span-10 prepend-top">
-      <table>
+    <div class="prepend-1 span-10 prepend-top">
+      <table class="content-table">
         <thead>
           <tr id="header_row">
             <th></th>
@@ -26,6 +26,7 @@ ${row_start(width = 10)}
             <th>${_('Won games')}</th>
             <th>${_('Total points')}</th>
             <th>${_('Points per game')}</th>
+            <th>${_('On turn')}</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +34,7 @@ ${row_start(width = 10)}
       </table>
     </div>
 
-    <div class="span-10 last centered">
+    <div class="prepend-1 span-10 last centered">
       <span class="stats-first">&lt;&lt;</span>
       <span class="stats-prev">&lt;</span>
       <span class="stats-position"></span>

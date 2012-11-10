@@ -11,35 +11,39 @@ import hlib.pageable
 # pylint: disable-msg=F0401
 import hruntime
 
+WINDOW				= 86400 * 7 * 52
+
 _stats_lock = threading.RLock()
 _stats = None
 
 class UserStats(object):
-  def __init__(self, user, points, gs, finished, wons, points_per_game):
+  def __init__(self, user):
     # pylint: disable-msg=E1002
     super(UserStats, self).__init__()
 
-    self.user			= user
-    self.points			= points
-    self.games			= gs
-    self.finished		= finished
-    self.wons			= wons
-    self.points_per_game	= points_per_game
+    self.user				= user
+    self.points				= 0
+    self.games				= 0
+    self.finished			= 0
+    self.wons				= 0
+    self.points_per_game		= 0.0
+    self.forhont			= 0
 
   def __str__(self):
     return '%s: %i, %i, %f' % (self.user.name.encode('ascii', 'replace'), self.points, self.games, self.points_per_game)
 
-class Stats(games.stats.Stats):
-  def record_to_api(self, record):
+  def to_api(self):
     return {
-      'user':			hlib.api.User(record.user),
-      'points':			record.points,
-      'games':			record.games,
-      'finished':		record.finished,
-      'wons':			record.wons,
-      'ppg':			record.points_per_game
+      'user':                   hlib.api.User(self.user),
+      'points':                 self.points,
+      'games':                  self.games,
+      'finished':               self.finished,
+      'wons':                   self.wons,
+      'ppg':                    self.points_per_game,
+      'forhont':		self.forhont
     }
 
+class Stats(games.stats.Stats):
   def get_records(self, start, length):
     records = []
 
@@ -56,30 +60,38 @@ class Stats(games.stats.Stats):
       new_stats = {}
 
       for g in hruntime.dbroot.games.values():
-        if hruntime.time - (86400 * 7 * 52) > g.last_pass:
+        if hruntime.time - WINDOW > g.last_pass:
           continue
 
         for p in g.players.values():
-          if p.user.name not in new_stats:
-            s = UserStats(p.user, 0, 0, 0, 0, 0.0)
-            new_stats[p.user.name] = s
+          if p.user not in new_stats:
+            s = UserStats(p.user)
+            new_stats[p.user] = s
 
           else:
-            s = new_stats[p.user.name]
+            s = new_stats[p.user]
 
           s.points += p.points
           s.games += 1
 
-          if g.winner_player == p:
-            s.wons += 1
+          if g.is_finished:
+            if g.winner_player == p:
+              s.wons += 1
+
+          elif g.is_canceled or g.is_suspended:
+            pass
+
+          else:
+            if p.id == g.forhont:
+              s.forhont += 1
 
       self.stats = new_stats.values()
 
       for s in self.stats:
         s.points_per_game = float(s.points) / float(s.games)
 
-      for v in self.stats:
-        print str(v)
+      for s in self.stats:
+        print str(s)
 
 #    for s in hruntime.dbroot.stats.settlers.values():
 #      if s.games < 20:
