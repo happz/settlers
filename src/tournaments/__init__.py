@@ -86,6 +86,8 @@ class Tournament(lib.play.Playable):
   def __init__(self, flags, num_players, engine_name):
     lib.play.Playable.__init__(self, flags)
 
+    self.chat_class		= lib.chat.ChatPagerTournament
+
     self.stage			= Tournament.STAGE_FREE
     self.num_players		= num_players
 
@@ -174,13 +176,13 @@ class Tournament(lib.play.Playable):
 
   def join_player(self, user, password):
     if self.stage != Tournament.STAGE_FREE:
-      raise TournamentAlreadyStartedError()
+      raise lib.play.AlreadyStartedError()
 
     if user in self.user_to_player:
-      raise AlreadyJoinedError()
+      raise lib.play.AlreadyJoinedError()
 
     if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password) != self.password):
-      raise WrongPasswordError()
+      raise lib.play.WrongPasswordError()
 
     player = self.engine.player_class(self, user)
     self.players[user.name] = player
@@ -204,10 +206,6 @@ class Tournament(lib.play.Playable):
 
 class TournamentError(hlib.error.BaseError):
   pass
-
-WrongPasswordError		= lambda: TournamentError(msg = 'Wrong password', reply_status = 401)
-TournamentAlreadyStartedError	= lambda: TournamentError(msg = 'Game already started', reply_status = 401)
-AlreadyJoinedError		= lambda: TournamentError(msg = 'Already joined game', reply_status = 402)
 
 hlib.event.Hook('tournament.Created', 'invalidate_caches',  lambda e: _tournament_lists.created(e.tournament))
 hlib.event.Hook('tournament.Finished', 'invalidate_caches', lambda e: _tournament_lists.finished(e.tournament))

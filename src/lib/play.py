@@ -7,12 +7,53 @@ import threading
 
 import hlib.api
 import hlib.database
+import hlib.error
 
 import lib
 import lib.chat
 
 # pylint: disable-msg=F0401
 import hruntime
+
+class PlayableError(hlib.error.BaseError):
+  pass
+
+class WrongPasswordError(PlayableError):
+  def __init__(self, *args, **kwargs):
+    kwargs.update({
+      'msg':			'Wrong password',
+      'reply_status':		401,
+      'dont_log':		True
+    })
+
+    super(WrongPasswordError, self).__init__(*args, **kwargs)
+
+class AlreadyStartedError(PlayableError):
+  def __init__(self, *args, **kwargs):
+    kwargs.update({
+      'msg':			'Already started',
+      'reply_status':		401
+    })
+
+    super(AlreadyStartedError, self).__init__(*args, **kwargs)
+
+class AlreadyJoinedError(PlayableError):
+  def __init__(self, *args, **kwargs):
+    kwargs.update({
+      'msg':			'Already joined',
+      'reply_status':		402
+    })
+
+    super(AlreadyJoinedError, self).__init__(*args, **kwargs)
+
+class CannotBeArchivedError(PlayableError):
+  def __init__(self, *args, **kwargs):
+    kwargs.update({
+      'msg':			'Can not be archived yet',
+      'reply_status':		402
+    })
+
+    super(CannotBeArchivedError, self).__init__(*args, **kwargs)
 
 class Player(hlib.database.DBObject):
   def __init__(self, user):
@@ -80,13 +121,38 @@ class Playable(hlib.database.DBObject):
     if name == 'is_password_protected':
       return self.password != None and len(self.password) > 0
 
+    if name == 'archive_deadline':
+      if self.is_active:
+        raise CannotBeArchivedError()
+
+      atime = self.last_pass
+
+      for p in self.players.values():
+        chat_lister = self.chat_class(self, accessed_by = p)
+        if chat_lister.unread > 0:
+          raise CannotBeArchivedError()
+
+        atime = max(atime, p.last_board)
+
+      return atime + (86400 * 7)
+
+    if name == 'can_be_archived':
+      try:
+        if hruntime.time > self.archive_deadline:
+          return True
+
+      except CannotBeArchivedError, e:
+        return False
+
+      return False
+
     return hlib.database.DBObject.__getattr__(self, name)
 
   def has_player(self, user):
     return user in self.user_to_player
 
   def to_api(self):
-    return {
+    ret = {
       'id':			self.id,
       'kind':			self.kind,
       'name':			self.name,
@@ -97,6 +163,13 @@ class Playable(hlib.database.DBObject):
       'chat_posts':		self.chat.unread if self.chat.unread > 0 else False,
       'players':		[p.to_api() for p in self.players.values()]
     }
+
+    try:
+      ret['archive_deadline']	= self.archive_deadline
+    except CannotBeArchivedError:
+      ret['archive_deadline']	= False
+
+    return ret
 
   def to_state(self):
     return {

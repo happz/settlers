@@ -207,6 +207,7 @@ class Game(lib.play.Playable):
     lib.play.Playable.__init__(self, flags)
 
     self.player_class	= player_class
+    self.chat_class	= lib.chat.ChatPagerGame
 
     self.type		= Game.TYPE_FREE
     self.desc		= flags.desc
@@ -302,24 +303,6 @@ class Game(lib.play.Playable):
         return True
       return False
 
-    if name == 'can_be_archived':
-      if self.is_active:
-        return False
-
-      atime = self.last_pass
-
-      for p in self.players.values():
-        chat_lister = lib.chat.ChatPagerGame(self, accessed_by = p)
-        if chat_lister.unread > 0:
-          return False
-
-        atime = max(atime, p.last_board)
-
-      if hruntime.time - atime < (86400 * 7):
-        return False
-
-      return True
-
     if name == 'deadline':
       d = self.last_pass + self.turn_limit
 
@@ -402,10 +385,10 @@ class Game(lib.play.Playable):
   def join_player(self, user, password, invite = False):
     if user not in self.user_to_player:
       if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password) != self.password):
-        raise WrongPasswordError()
+        raise lib.play.WrongPasswordError()
 
       if len(self.players) >= self.limit:
-        raise GameAlreadyStartedError()
+        raise lib.play.AlreadyStartedError()
 
       player = self.player_class(self, user)
 
@@ -415,7 +398,7 @@ class Game(lib.play.Playable):
       player = self.user_to_player[user]
 
       if player.confirmed == True:
-        raise AlreadyJoinedError()
+        raise lib.play.AlreadyJoinedError()
 
       player.confirmed = True
 
@@ -524,7 +507,7 @@ class Game(lib.play.Playable):
 
     for u in opponents:
       if u in g.user_to_player:
-        raise AlreadyJoinedError()
+        raise lib.play.AlreadyJoinedError()
 
       p = g.join_player(u, flags.password, invite = True)
 
@@ -533,12 +516,9 @@ class Game(lib.play.Playable):
     return g
 
 # --- Classes --------------------------------------------------------
-class GameError(hlib.error.BaseError):
+class GameError(lib.play.PlayableError):
   pass
 
-WrongPasswordError		= lambda: GameError(msg = 'Wrong password', reply_status = 401, dont_log = True)
-GameAlreadyStartedError		= lambda: GameError(msg = 'Game already started', reply_status = 401)
-AlreadyJoinedError		= lambda: GameError(msg = 'Already joined game', reply_status = 402)
 NotYourTurnError		= lambda: GameError(msg = 'Not your turn', reply_status = 402)
 NameAlreadyExistsError		= lambda: GameError(msg = 'Such name already exists', reply_status = 403, invalid_field = 'name')
 NoSuchPlayerError		= lambda: GameError(msg = 'No such player', reply_status = 403)
