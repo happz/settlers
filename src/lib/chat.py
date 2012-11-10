@@ -47,6 +47,15 @@ class ChatPost(hlib.database.DBObject):
 
     return self._v_formatted
 
+  def to_api(self):
+    return {
+      'id':			self.id,
+      'user':			hlib.api.User(self.user),
+      'stamp':			self.stamp,
+      'time':			time.strftime(self.user.date_format, time.localtime(self.stamp)),
+      'message':		self.formatted
+    }
+
 class ChatPosts(hlib.database.IndexedMapping):
   def __getattr__(self, name):
     if name == 'total':
@@ -69,16 +78,6 @@ class ChatPosts(hlib.database.IndexedMapping):
       _start -= 1
 
     return self.values(min = _end, max = _start)
-
-class ApiChatPost(hlib.api.ApiJSON):
-  def __init__(self, cp):
-    super(ApiChatPost, self).__init__(['id', 'user', 'stamp', 'time', 'message'])
-
-    self.id		= cp.id
-    self.user		= hlib.api.User(cp.user)
-    self.stamp		= cp.stamp
-    self.time		= time.strftime(cp.user.date_format, time.localtime(cp.stamp))
-    self.message	= cp.formatted
 
 class ChatPager(hlib.pageable.Pageable):
   def __init__(self, entity, accessed_by):
@@ -107,9 +106,6 @@ class ChatPager(hlib.pageable.Pageable):
     self.trigger_event()
 
   # Pageable interface implementation
-  def record_to_api(self, record):
-    return ApiChatPost(record)
-
   def get_records(self, start, length):
     records = self.entity.chat_posts.get_posts(start, length)
     records = [cp for cp in reversed(records)]
