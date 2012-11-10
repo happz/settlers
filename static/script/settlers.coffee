@@ -25,7 +25,7 @@ class window.settlers.PullNotify
 
   update:		() ->
     new window.hlib.Ajax
-      url:			'/pull_notify/'
+      url:			'/pull_notify'
       keep_focus:		true
       handlers:
         h200:			(response, ajax) ->
@@ -126,8 +126,11 @@ class window.settlers.Talk
 window.settlers.render_board_piece = (attrs) ->
   return '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
 
-window.settlers.show_menu_alert = (item) ->
+window.settlers.show_menu_alert = (item, cnt) ->
   eid = '#' + item + ' .menu-alert'
+
+  if cnt
+    $(eid).html cnt
 
   $(eid).show()
 
