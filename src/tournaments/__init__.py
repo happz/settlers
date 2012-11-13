@@ -55,7 +55,17 @@ class Player(lib.play.Player):
     if name == 'chat':
       return lib.chat.ChatPagerTournament(self.tournament)
 
+    if name == 'points':
+      return 0
+
     return lib.play.Player.__getattr__(self, name)
+
+  def to_state(self):
+    d = lib.play.Player.to_state(self)
+
+    d['points'] = self.points
+
+    return d
 
 class Group(hlib.database.DBObject):
   def __init__(self, id, tournament, round, players):
