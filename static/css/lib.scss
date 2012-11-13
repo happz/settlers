@@ -6,7 +6,7 @@
 $color_background:                      #ffffff;
 $color_text:                            #000000;
 
-$color_block_background:                #fafafa;
+$color_block_background:                #f4f4f4;
 $color_block_text:                      #222;
 
 $color_control_background:              #5393c2;
@@ -20,6 +20,7 @@ $color_user_invited:                    red;
 $color_user_onturn:                     red;
 
 /* Fonts */
+$font_size_text_large:			1.5em;
 $font_size_text:                        1.4em;
 $font_size_text_medium:			1.3em;
 $font_size_text_small:                  1.2em;
@@ -28,6 +29,7 @@ $font_family_pre:			'andale mono', 'lucida console', monospace;
 
 /* Margin, padding, ... */
 $margin_default:			1.5em;
+$padding_left_default:			9px;	/* from formee */
 
 /*
  * ----- ----- Basic UI bits
@@ -44,6 +46,14 @@ $margin_default:			1.5em;
     background:				$color_block_background;
     border:				1px solid;
     border-color:			$color_border;
+}
+
+@mixin flip-block() {
+    @include block();
+
+    &:hover {
+        background:			$color_background none;
+    }
 }
 
 @mixin corners-top($radius: 4px) {
@@ -129,9 +139,13 @@ $margin_default:			1.5em;
     div {
         margin:				10px;
     }
+
+    &.unread {
+        border:				dashed 2px $color_control_background !important;
+    }
 }
 
-@mixin chat-button() {
+@mixin simple-button() {
     @include corners-top();
     @include corners-bottom();
     @include control();

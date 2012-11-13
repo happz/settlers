@@ -1,31 +1,5 @@
 @import "lib.scss";
-@import "chat.scss";
 @import "playable.scss";
-
-/*
- * ----- ----- UI Tabs
- */
-.ui-tabs {
-    position:                           relative;
-    padding:                            .2em;
-    zoom:                               1;
-}
-
-.ui-tabs .ui-tabs-nav {
-    display:                            none;
-}
-
-.ui-tabs .ui-tabs-panel {
-    display:                            block;
-    border-width:                       0;
-    padding:                            1em 1.4em;
-    background:                         none;
-    overflow:				visible;
-}
-
-.ui-tabs .ui-tabs-hide {
-    display:                            none !important;
-}
 
 .game-cards-header {
 }
@@ -42,15 +16,6 @@
     li:hover {
         background:			$color_background none;
     }
-}
-
-table {
-    width:                      100%;
-}
-
-#right_column {
-  widht: 95%;
-  margin: 0px auto;
 }
 
 .card-menu {

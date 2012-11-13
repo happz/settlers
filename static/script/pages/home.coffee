@@ -2,7 +2,7 @@ window.settlers.templates.recent_events = {}
 window.settlers.templates.recent_events.playables = '
   <li class="header">{{#_g}}Playable{{/_g}}</li>
   {{#playable}}
-    <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info info-with-menu info-with-border">
+    <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info with-menu with-border">
       {{#is_game}}
         <span class="playable-name">{{name}}</span>
       {{/is_game}}
@@ -24,6 +24,8 @@ window.settlers.templates.recent_events.playables = '
               <a href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
             {{/is_game}}
             {{^is_game}}
+              <a href="/tournament/?tid={{id}}" title="{{#_g}}Show players{{/_g}}"><span class="icon icon-medium icon-tournament-players"></span></a>
+              <a href="/tournament/?tid={{id}}#rounds" title="{{#_g}}Show rounds{{/_g}}"><span class="icon icon-medium icon-tournament-rounds"></span></a>
               <a href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
               <a href="/tournament/?tid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
             {{/is_game}}
@@ -48,7 +50,7 @@ window.settlers.templates.recent_events.playables = '
   </li>
   <section class="hide">
   {{#free}}
-    <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info info-with-menu info-with-border">
+    <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info with-menu with-border">
       {{#is_game}}
         <span class="playable-name">{{name}}</span>
       {{/is_game}}
@@ -70,7 +72,7 @@ window.settlers.templates.recent_events.playables = '
   </li>
   <section class="hide">
   {{#finished}}
-    <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info info-with-menu info-with-border">
+    <li id="playable_{{#is_game}}game{{/is_game}}{{^is_game}}tournament{{/is_game}}_{{id}}" class="info with-menu with-border">
       <span class="playable-name">{{name}}</span>
       <span class="playable-menu right">
         {{#is_game}}
@@ -79,6 +81,8 @@ window.settlers.templates.recent_events.playables = '
           <a href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
         {{/is_game}}
         {{^is_game}}
+          <a href="/tournament/?tid={{id}}" title="{{#_g}}Show tournament{{/_g}}"><span class="icon icon-medium icon-tournament-players"></span></a>
+          <a href="/tournament/?tid={{id}}#rounds" title="{{#_g}}Show rounds{{/_g}}"><span class="icon icon-medium icon-tournament-rounds"></span></a>
           <a href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}"><span class="icon icon-medium icon-playable-history"></span></a>
           <a href="/tournament/?tid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}">
         {{/is_game}}

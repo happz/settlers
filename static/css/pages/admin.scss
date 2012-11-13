@@ -1,36 +1,46 @@
 @import "lib.scss";
 
-.icon-i18n-remove-token {
-    background:			url(/static/images/icons/Delete32.png);
+@mixin token-list() {
+    @include corners-top();
+    @include corners-bottom();
+    @include flip-block();
+
+    height:			15em;
+    overflow:			auto;
+
+    padding-left:		$padding_left_default;
 }
 
 .i18n-unused-tokens {
-    height:			15em;
-    overflow:			scroll;
+    @include token-list();
 }
 
 .i18n-missing-tokens {
-    height:			15em;
-    overflow:			scroll;
+    @include token-list();
+}
+
+ul.maintenance-access-list {
+    li {
+        &:hover {
+            background:		$color_background none;
+        }
+
+        &:first-child {
+            @include corners-top();
+            border-top-width:	1px !important;
+        }
+
+        &:last-child {
+            @include corners-bottom();
+            border-bottom-width:	1px !important;
+        }
+    }
+}
+
+span.icon-i18n-remove-token {
+    background:			url(/static/images/icons/Delete48.png);
 }
 
 span.icon-maintenance-access-revoke {
     background-image:		url(/static/images/icons/Delete32.png);
-}
-
-ul.maintenance-access-list {
-}
-
-.maintenance-access-list li:hover {
-    background:                 $color_background none;
-}
-
-ul.maintenance-access-list > li:first-child {
-    @include corners-top();
-    border-top-width:                     1px !important;
-}
-
-ul.maintenance-access-list > li:last-child {
-    @include corners-bottom();
-    border-bottom-width:                  1px !important;
 }

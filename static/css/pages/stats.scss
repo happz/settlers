@@ -1,19 +1,19 @@
 @import "lib.scss";
 
 .stats-first {
-    @include chat-button();
+    @include simple-button();
 }
 
 .stats-prev {
-    @include chat-button();
+    @include simple-button();
 }
 
 .stats-next {
-    @include chat-button();
+    @include simple-button();
 }
 
 .stats-last {
-    @include chat-button();
+    @include simple-button();
 }
 
 .stats-position {

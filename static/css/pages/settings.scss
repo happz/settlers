@@ -12,30 +12,24 @@
     display:					none;
 }
 
-.ui-datepicker-header {
-}
+.opponent-colors-list {
+    li {
+        &:hover {
+            background:                 $color_background none;
+        }
 
-.ui-icon-closethick {
-    display:					none;
+        &:first-child {
+            @include corners-top();
+            border-top-width:                     1px !important;
+        }
+
+        &:last-child {
+            @include corners-bottom();
+            border-bottom-width:                  1px !important;
+        }
+    }
 }
 
 span.icon-opponent-color-remove {
     background-image:           url(/static/images/icons/Delete32.png);
-}
-
-ul.opponent-colors-list {
-}
-
-.opponent-colors-list li:hover {
-    background:                 $color_background none;
-}
-
-ul.opponent-colors-list > li:first-child {
-    @include corners-top();
-    border-top-width:                     1px !important;
-}
-
-ul.opponent-colors-list > li:last-child {
-    @include corners-bottom();
-    border-bottom-width:                  1px !important;
 }

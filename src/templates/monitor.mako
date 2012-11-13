@@ -37,7 +37,7 @@
 
       % for record_name, record_value in namespace.items():
         % if type(record_value) not in [types.DictType, types.ListType]:
-          <li class="info info-with-border">
+          <li class="info with-border">
             <span class="monitor-record-name">${record_name}</span>
             <%
               if record_name in ns_fmt:

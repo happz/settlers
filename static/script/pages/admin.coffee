@@ -1,7 +1,7 @@
 window.settlers.templates = window.settlers.templates or {}
 window.settlers.templates.i18n_unused_tokens = '
   <label>{{section_label}}</label>
-  <ul class="i18n-unused-tokens formee">
+  <ul class="i18n-unused-tokens">
     {{#tokens}}
       <label>{{name}}</label>
     {{/tokens}}
@@ -9,7 +9,7 @@ window.settlers.templates.i18n_unused_tokens = '
 '
 window.settlers.templates.i18n_missing_tokens = '
   <label>{{section_label}}</label>
-  <ul class="i18n-missing-tokens formee">
+  <ul class="i18n-missing-tokens">
     {{#tokens}}
       <label>{{name}}</label>
     {{/tokens}}
@@ -25,7 +25,7 @@ window.settlers.templates.maintenance_access_list = '
   <ul class="maintenance-access-list">
     <li class="header">Users with granted access</li>
     {{#users}}
-      <li class="info info-with-menu">
+      <li class="info with-menu">
         <span class="">{{name}}</span>
         <span class="user-menu right">
           <span id="user_maintenance_access_revoke_{{name}}" class="icon icon-medium icon-maintenance-access-revoke"></span>

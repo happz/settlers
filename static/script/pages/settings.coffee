@@ -11,7 +11,7 @@ window.settlers.templates.opponent_colors.list = '
   <ul class="opponent-colors-list">
     <li class="header">Opponent colors</li>
     {{#users}}
-      <li class="info info-with-menu">
+      <li class="info with-menu">
         <span class="">{{user.name}}</span>
         <span class="user-menu right">
           <span id="opponent_colors_remove_{{user.name}}" class="icon icon-medium icon-opponent-color-remove"></span>

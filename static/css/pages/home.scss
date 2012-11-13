@@ -2,28 +2,15 @@
 @import "playable.scss";
 
 .recent-events {
-}
+    li {
+        &:first-child {
+            @include corners-top();
+        }
 
-.recent-events li:hover {
-    background:			$color_background none;
-}
-
-ul.recent-events > li:first-child {
-    @include corners-top();
-}
-
-ul.recent-events > li:last-child {
-    @include corners-bottom();
-}
-
-.playable-name {
-}
-
-.playable-menu {
-}
-
-.playable-preview {
-    width:		200px;
+        &:last-child {
+            @include corners-bottom();
+        }
+    }
 }
 
 span.icon-game-board {

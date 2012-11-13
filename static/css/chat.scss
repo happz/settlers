@@ -5,19 +5,19 @@
 }
 
 .chat-first {
-    @include chat-button();
+    @include simple-button();
 }
 
 .chat-prev {
-    @include chat-button();
+    @include simple-button();
 }
 
 .chat-next {
-    @include chat-button();
+    @include simple-button();
 }
 
 .chat-last {
-    @include chat-button();
+    @include simple-button();
 }
 
 .chat-position {

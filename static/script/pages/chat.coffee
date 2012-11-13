@@ -1,7 +1,7 @@
 window.settlers.templates.chat_post = '
   <tr>
     <td>
-      <fieldset class="chat-post">
+      <fieldset id="chat_post_{{id}}" class="chat-post">
         <legend>
           {{#user.is_online}}
             <span class="user-online">
