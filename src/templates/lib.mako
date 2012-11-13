@@ -23,25 +23,6 @@
   import hlib.i18n
 %>
 
-<%def name="chat_post_template()">
-window.settlers.templates.chat_post = '
-  <tr><td>
-  <fieldset class="chat-post">
-    <legend>
-      {{#user.is_online}}
-        <span class="user-online">
-      {{/user.is_online}}
-      {{user.name}}
-      {{#user.is_online}}
-        </span>
-      {{/user.is_online}} - {{time}}
-    </legend>
-    <div>{{{message}}}</div>
-  </fieldset>
-  </td></tr>
-'
-</%def>
-
 <%def name="chat_new_post(url_root, **kwargs)">
   <%
     params = '&'.join(['%s=%s' % (k, v) for k, v in kwargs.items()])
@@ -58,7 +39,7 @@ window.settlers.templates.chat_post = '
 <%def name="chat_table(width, prepend = None, id_prefix = 'chat')">
   <%
     if prepend != None:
-      classes = 'prepend-%i span-%i last' % (prepend, width - 2 * prepend)
+      classes = 'prepend-%i span-%i' % (prepend, width - 2 * prepend)
     else:
       classes = 'span-' + str(width)
   %>
