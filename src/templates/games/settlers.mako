@@ -175,7 +175,10 @@
             ${w_form_select('dst', struct = False, default = False)}
             </select>
           </div>
-          ${w_submit_row('Exchange')}
+          <div class="grid-12-12">
+            ${w_submit_button('Exchange and return to board', id = 'exchange_3_submit_board')}
+            ${w_submit_button('Exchange')}
+          </div>
         ${w_form_end()}
       </div>
 
@@ -195,7 +198,10 @@
             ${w_form_select('dst', struct = False, default = False)}
             </select>
           </div>
-          ${w_submit_row('Exchange')}
+          <div class="grid-12-12">
+            ${w_submit_button('Exchange and return to board', id = 'exchange_2_submit_board')}
+            ${w_submit_button('Exchange')}
+          </div>
         ${w_form_end()}
       </div>
     </div>
@@ -206,12 +212,12 @@
     <div class="playable-info">
       <div                class="header corners-top">Hra #<span id="game_id" class="playable-id"></span></div>
       <div id="game_name" class="playable-name info"></div>
-      <div                class="playable-round corners-bottom info important-info"><span id="game_round"></span>. kolo</div>
+      <div                class="playable-round corners-bottom info important"><span id="game_round"></span>. kolo</div>
     </div>
 
     <div class="settlers-last-numbers">
       <div class="header corners-top">Last numbers</div>
-      <div class="info important-info corners-bottom" style="padding-bottom: 1em">
+      <div class="info important corners-bottom" style="padding-bottom: 1em">
         <span id="settlers_last_numbers"></span>
       </div>
     </div>

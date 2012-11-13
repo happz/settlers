@@ -352,7 +352,7 @@ window.settlers.templates.game.player = '
         "></span>
     </div>
 
-    <div class="playable-player-points info important-info">{{points}} {{#_g}}points{{/_g}}</div>
+    <div class="playable-player-points info important">{{points}} {{#_g}}points{{/_g}}</div>
 
     <table class="game-player-resources">
 
@@ -362,7 +362,7 @@ window.settlers.templates.game.player = '
       <tr class="info"><td>{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
       <tr class="info"><td>{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
       <tr class="info"><td>{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
-      <tr class="info important-info"><td>{{#_g}}Total{{/_g}}:</td><td>{{resources.total}}</td></tr>
+      <tr class="info important"><td>{{#_g}}Total{{/_g}}:</td><td>{{resources.total}}</td></tr>
     {{/my_player}}
     {{^my_player}}
       <tr class="info"><td>{{#_g}}Resources{{/_g}}:</td><td>{{resources.total}}</td></tr>
@@ -389,7 +389,7 @@ window.settlers.templates.game.cards = '
   <ul class="game-cards">
     <li class="header">{{#_g}}Cards{{/_g}}</li>
     {{#cards}}
-      <li id="card_{{id}}" class="info info-with-menu">
+      <li id="card_{{id}}" class="info with-menu">
         <span class="card-type">{{type_name}}</span>
         {{#can_be_used}}
           <span class="card-menu right">
@@ -967,26 +967,22 @@ window.settlers.hide_monopoly = () ->
   $('#monopoly').hide()
 
 window.settlers.setup_page = () ->
-  new window.hlib.Form
-    fid:		'exchange_4'
-    handlers:
-      s200:		(response, form) ->
-        form.info.success 'Exchanged'
-        window.settlers.update_game_state()
+  exchange_form = (ratio) ->
+    f = new window.hlib.Form
+      fid:		'exchange_' + ratio
+      handlers:
+        s200:		(response, form) ->
+          form.info.success 'Exchanged'
+          window.settlers.update_game_state()
 
-  new window.hlib.Form
-    fid:		'exchange_3'
-    handlers:
-      s200:		(response, form) ->
-        form.info.success 'Exchanged'
-        window.settlers.update_game_state()
+    $('#exchange_' + ratio + '_submit_board').click () ->
+      f.submit()
+      window.settlers.show_board()
+      return false
 
-  new window.hlib.Form
-    fid:		'exchange_2'
-    handlers:
-      s200:		(response, form) ->
-        form.info.success 'Exchanged'
-        window.settlers.update_game_state()
+  exchange_form '4'
+  exchange_form '3'
+  exchange_form '2'
 
   new window.hlib.Form
     fid:		'new_card'
