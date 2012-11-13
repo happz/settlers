@@ -49,4 +49,5 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = hlib.pageable.ValidatePage)
   @api
   def page(self, start = None, length = None):
-    return hlib.api.Reply(200, page = self.chat.get_page(start = start, length = length))
+    last_board = hruntime.user.last_board
+    return hlib.api.Reply(200, page = self.chat.get_page(start = start, length = length), last_board = last_board)

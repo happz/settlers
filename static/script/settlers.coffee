@@ -178,6 +178,12 @@ window.settlers.setup_chat = (opts) ->
     eid:		opts.eid
     start:		0
     length:		20
+    after_refresh:	(response, pager) ->
+      __mark_unread = (post) ->
+        if post.id > response.last_board
+          $('#chat_post_' + post.id).addClass 'unread'
+
+      __mark_unread post for post in response.page.records
 
   pager.refresh()
 
