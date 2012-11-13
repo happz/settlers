@@ -26,10 +26,15 @@
   <div id="views">
 
     <ul class="hide">
+      <li><a href="#empty">Empty</a></li>
       <li><a href="#players">Players</a></li>
       <li><a href="#chat">Chat</a></li>  
       <li><a href="#history">History</a></li>
+      <li><a href="#rounds">Rounds</a></li>
     </ul>
+
+    <div id="empty" class="hide">
+    </div>
 
     <div id="players" class="hide">
     </div>
@@ -65,6 +70,9 @@
       </div>
     </div>  
 
+    <div id="rounds" class="hide">
+    </div>
+
   </div>
   </div>
 
@@ -72,12 +80,15 @@
     <div class="playable-info">
       <div                class="header corners-top">Hra #<span id="tournament_id" class="playable-id"></span></div>
       <div id="tournament_name" class="playable-name info"></div>
-      <div                class="playable-round corners-bottom info important-info"><span id="tournament_round"></span>. kolo</div>
+      <div                class="playable-round corners-bottom info important"><span id="tournament_round"></span>. kolo</div>
     </div>
 
     <div class="framed centered">
+      <span id="show_players"  class="icon icon-giant icon-tournament-players" title="${_('Show players')}"></span>
+      <span id="show_rounds"   class="icon icon-giant icon-tournament-rounds" title="${_('Show rounds')}"></span>
       <span id="show_chat"     class="icon icon-giant icon-playable-chat" title="${_('Show chat')}"></span>
       <span id="show_history"  class="icon icon-giant icon-playable-history" title="${_('Show history')}"></span>
+      <span id="refresh"       class="icon icon-giant icon-tournament-refresh" title="${_('Refresh')}"></span>
     </div>
   </div>
 </div>

@@ -35,60 +35,14 @@ class window.settlers.TournamentObject
 
 window.settlers.templates.tournament = {}
 window.settlers.templates.tournament.player = '
-  <div class="game-player">
-    <div class="game-player-header header corners-top settlers-game-player-header-{{color.name}}">
-      <span class="game-player-title">{{user.name}}</span>
-
-      <span class="right">
-        <span class="icon settlers-player-title-icon 
-        {{#has_mightest_chilvary}}
-          settlers-icon-chilvary-on
-        {{/has_mightest_chilvary}}
-        {{^has_mightest_chilvary}}
-          settlers-icon-chilvary-off
-        {{/has_mightest_chilvary}}
-        "></span>
-  
-      <span class="icon settlers-player-title-icon
-        {{#has_longest_path}}
-          settlers-icon-path-on
-        {{/has_longest_path}}
-        {{^has_longest_path}}
-          settlers-icon-path-off
-        {{/has_longest_path}} 
-        "></span>
+  <div class="tournament-player corners-bottom">
+    <div class="tournament-player-header corners-top header">
+      <span class="tournament-player-title">{{user.name}}</span>
     </div>
 
-    <div class="game-player-points info important-info">{{points}} {{#_g}}points{{/_g}}</div>
+    <div class="tournament-player-points info important">{{points}} {{#_g}}points{{/_g}}</div>
 
-    <table class="game-player-resources">
-
-    {{#my_player}}
-      <tr class="info"><td>{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
-      <tr class="info"><td>{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
-      <tr class="info"><td>{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
-      <tr class="info"><td>{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
-      <tr class="info"><td>{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
-    {{/my_player}}
-    {{^my_player}}
-      <tr class="info"><td>{{#_g}}Resources{{/_g}}:</td><td>{{resources.total}}</td></tr>
-    {{/my_player}}
-
-    {{#my_player}}
-      </table>
-      <div class="info"><hr /></div>
-      <table class="game-player-resources">
-    {{/my_player}}
-
-    {{#my_player}}
-      <tr class="info"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.length}}</td></tr>
-    {{/my_player}}
-    {{^my_player}}
-      <tr class="info"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards}}</td></tr>
-    {{/my_player}}
-
-      <tr class="info game-player-knights corners-bottom"><td>{{#_g}}Knights{{/_g}}:</td><td>{{knights}}</td></tr>
-    </table>
+    <table class="tournament-player-info"></table>
   </div>
 '
 window.settlers.templates.tournament.events = '
@@ -124,13 +78,12 @@ window.settlers.update_tournament_ui_info = () ->
   $('#tournament_round').html T.round
 
 window.settlers.update_tournament_ui_player = (player) ->
-  dst_id = '#tournament-player-' + player.id + '-placeholder'
-
-  $(dst_id).html ''
   rendered = window.hlib.render window.settlers.templates.tournament.player, player
-  $(dst_id).html rendered
+  $('#players').append rendered
 
 window.settlers.update_tournament_ui_players = () ->
+  $('#players').html ''
+
   window.settlers.update_tournament_ui_player p for p in window.settlers.tournament.players
 
 window.settlers.update_tournament_ui_history = () ->
@@ -144,16 +97,20 @@ window.settlers.update_tournament_ui = () ->
 
 window.settlers.setup_page = () ->
   show_players = () ->
-    $('#views').tabs 'select', 0
+    $('#views').tabs 'select', 1
     window.location.hash = ''
 
   show_chat = () ->
-    $('#views').tabs 'select', 1
+    $('#views').tabs 'select', 2
     window.location.hash = '#chat'
 
   show_history = () ->
-    $('#views').tabs 'select', 2
+    $('#views').tabs 'select', 3
     window.location.hash = '#history'
+
+  show_rounds = () ->
+    $('#views').tabs 'select', 4
+    window.location.hash = '#rounds'
 
   $('#views').tabs()
 
@@ -173,7 +130,7 @@ window.settlers.setup_page = () ->
   window.settlers.update_tournament_state()
 
   $('#refresh').click () ->
-    window.settlers.update_game_state()
+    window.settlers.update_tournament_state()
     return false
 
   $('#show_history').click () ->
@@ -184,11 +141,21 @@ window.settlers.setup_page = () ->
     show_chat()
     return false
 
+  $('#show_players').click () ->
+    show_players()
+    return false
+
+  $('#show_rounds').click () ->
+    show_rounds()
+
   if window.location.hash == '#chat'
     show_chat()
 
   else if window.location.hash == '#history'
     show_history()
+
+  else if window.location.hash == '#rounds'
+    show_rounds()
 
   else
     show_players()
