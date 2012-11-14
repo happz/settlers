@@ -116,7 +116,7 @@ class Tournament(lib.play.Playable):
       return self.stage == Tournament.STAGE_FINISHED
 
     if name == 'engine':
-      if not self._v_engine:
+      if not hasattr(self, '_v_engine') or not self._v_engine:
         self._v_engine = tournaments.engines.engines[self.engine_name](self)
 
       return self._v_engine
