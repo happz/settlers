@@ -198,7 +198,7 @@ class Handler(handlers.GenericHandler):
     turn_limit			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
     kind			= ValidateKind()
 
-    password			= validator_optional(hlib.input.Username())
+    password			= validator_optional(hlib.input.Password())
     desc			= validator_optional(validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(64)))
 
     opponent1			= validator_optional(hlib.input.Username())
