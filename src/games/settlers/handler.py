@@ -5,6 +5,7 @@ import lib.chat
 
 import hlib.api
 import hlib.error
+import hlib.input
 import hlib.log
 
 # Shortcuts
@@ -13,7 +14,7 @@ from hlib.api import api
 from hlib.input import validate_by, validator_factory
 
 # Validators
-from games import ValidateGID
+from games import ValidateGID, ValidateNew
 from lib.chat import ValidateChatPost
 from handlers.game import require_presence_in_game, require_on_turn, require_on_game
 from games import GenericValidateGID
@@ -132,3 +133,13 @@ class Handler(handlers.GenericHandler):
   @api
   def pass_turn_second(self, gid = None, second_village = None, second_path = None):
     return hruntime.root.game.do_pass_turn(gid, second_village = second_village, second_path = second_path)
+
+  class ValidateNew(ValidateNew):
+    floating_desert = validator_factory(hlib.input.NotEmpty(), hlib.input.Bool())
+
+  @require_login
+  @require_write
+  @validate_by(schema = ValidateNew)
+  @api
+  def new(self, **kwargs):
+    games.handle_new(**kwargs)

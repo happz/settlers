@@ -22,6 +22,10 @@ window.settlers.setup_forms = () ->
       s400:     (response, form) ->
         window.hlib.form_default_handlers.s400 response, form
 
+  $('#new_game_submit').click () ->
+    $('#new_game_form').attr 'action', '/game/' + $('#new_game_kind').val() + '/new'
+    return true
+
   new window.hlib.Form
     fid:                'new_tournament'
     clear_fields:	['engine', 'kind', 'name', 'num_players', 'limit', 'desc', 'password', 'turn_limit', 'floating_desert']

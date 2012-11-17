@@ -72,32 +72,56 @@ f_active	= _game_lists.f_active
 f_inactive	= _game_lists.f_inactive
 f_archived	= _game_lists.f_archived
 
+# ----- For handler -------------------------
+import hlib.input
+
+class ValidateNew(hlib.input.SchemaValidator):
+  name                        = hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.MinLength(2), hlib.input.MaxLength(64))
+  limit                       = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([3, 4]))
+  turn_limit                  = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
+  kind                        = ValidateKind()
+
+  password                    = hlib.input.validator_optional(hlib.input.Password())
+  desc                        = hlib.input.validator_optional(hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(64)))
+
+  opponent1                   = hlib.input.validator_optional(hlib.input.Username())
+  opponent2                   = hlib.input.validator_optional(hlib.input.Username())
+  opponent3                   = hlib.input.validator_optional(hlib.input.Username())
+
+  allow_extra_fields          = True
+  if_key_missing              = None
+
+def handle_new(**kwargs):
+  gm = game_module(kwargs['kind'])
+
+  creation_flags = gm.GameCreationFlags(**kwargs)
+  creation_flags.owner = hruntime.user
+
+  return gm.Game.create_game(creation_flags)
+
 def game_module(k, submodule = None):
   return sys.modules['games.' + k + ('.' + submodule if submodule != None else '')]
 
 class GameCreationFlags(hlib.database.DBObject):
   FLAGS = ['name', 'limit', 'turn_limit', 'password', 'desc', 'kind', 'opponent1', 'opponent2', 'opponent3', 'tournament_players', 'dont_shuffle', 'owner']
 
-  def __init__(self, kwargs):
+  def __init__(self, **kwargs):
     hlib.database.DBObject.__init__(self)
 
-    self.flags = kwargs
+    for f in self.FLAGS:
+      setattr(self, f, None)
+
+    for k, v in kwargs.iteritems():
+      if k not in self.FLAGS:
+        raise AttributeError(name)
+
+      setattr(self, k, v)
 
   def __getattr__(self, name):
-    if name in self.FLAGS:
-      return self.flags.get(name, None)
-
     if name == 'opponents':
       return [self.opponent1, self.opponent2, self.opponent3]
 
     return hlib.database.DBObject.__getattr__(self, name)
-
-  def __setattr__(self, name, value):
-    if name in self.FLAGS:
-      self.flags[name] = value
-      return
-
-    hlib.database.DBObject.__setattr__(self, name, value)
 
 class Card(hlib.database.DBObject):
   def __init__(self, game, player, typ, bought):
@@ -626,7 +650,7 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
   if label == None:
     label = 'SH - ' + time.strftime('%d/%m/%Y %H:%M:%S', hruntime.localtime)
 
-  flags = gm.GameCreationFlags(kwargs)
+  flags = gm.GameCreationFlags(**kwargs)
 
   flags.name      = label
   flags.password  = None

@@ -24,7 +24,7 @@
   <div id="view_game">
     ${row_start()}
 
-    ${w_form_start('/game/new', 'New game', 'new_game')}
+    ${w_form_start('/', 'New game', 'new_game')}
       ${w_form_select('kind', label = 'Game kind', required = True)}
         % for kind in games.GAME_KINDS:
           ${w_option(kind, False, _(kind))}
@@ -41,7 +41,7 @@
 
       ${w_form_input('desc', 'text', label = 'Game description')}
 
-      ${w_submit_row('Create')}
+      ${w_submit_row('Create', id = 'new_game_submit')}
     </fieldset>
 
     <fieldset>

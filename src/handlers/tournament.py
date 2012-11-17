@@ -128,7 +128,7 @@ class Handler(handlers.GenericHandler):
   def new(self, **kwargs):
     gm = games.game_module(kwargs['kind'])
 
-    flags = gm.GameCreationFlags(kwargs)
+    flags = gm.GameCreationFlags(**kwargs)
     flags.owner = hruntime.user
 
     t = tournaments.Tournament.create_tournament(flags, kwargs['num_players'], kwargs['engine'])

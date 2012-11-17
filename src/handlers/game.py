@@ -188,34 +188,3 @@ class Handler(handlers.GenericHandler):
     state = g.to_state()
 
     return hlib.api.Reply(200, game = g.to_state())
-
-  #
-  # New
-  #
-  class ValidateNew(hlib.input.SchemaValidator):
-    name			= validator_factory(hlib.input.CommonString(), hlib.input.MinLength(2), hlib.input.MaxLength(64))
-    limit			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([3, 4]))
-    turn_limit			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
-    kind			= ValidateKind()
-
-    password			= validator_optional(hlib.input.Password())
-    desc			= validator_optional(validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(64)))
-
-    opponent1			= validator_optional(hlib.input.Username())
-    opponent2			= validator_optional(hlib.input.Username())
-    opponent3			= validator_optional(hlib.input.Username())
-
-    allow_extra_fields		= True
-    if_key_missing		= None
-
-  @require_login
-  @require_write
-  @validate_by(schema = ValidateNew)
-  @api
-  def new(self, **kwargs):
-    gm = games.game_module(kwargs['kind'])
-
-    creation_flags = gm.GameCreationFlags(kwargs)
-    creation_flags.owner = hruntime.user
-
-    gm.Game.create_game(creation_flags)
