@@ -21,7 +21,7 @@ window.settlers.events['game.settlers.MightestChilvaryBonusEarned']	= (e) ->
 
 window.settlers.events['game.settlers.ResourceStolen']			= (e) ->
   if e.am_i_thief == true
-    return (window.hlib._g 'You stole 1 piece of {0} from {1}').format e.resource, e.victim.name
+    return (window.hlib._g 'You stole 1 piece of {0} from {1}').format (window.hlib._g window.settlers.game.resource_id_to_name[e.resource]), e.victim.name
 
   if e.am_i_victim == true
     return (window.hlib._g '{0} stole 1 piece of {1} from you').format e.thief.name, e.resource
