@@ -1,3 +1,5 @@
+import collections
+
 import lib.datalayer
 
 class Color(object):
@@ -22,7 +24,7 @@ class ColorSpace(object):
     super(ColorSpace, self).__init__()
 
     self.kind		= kind
-    self.colors		= colors or {}
+    self.colors		= collections.OrderedDict(colors)
 
   def unused_colors(self, user):
     return [color_name for color_name in self.colors.keys() if color_name != self.FREE_COLOR_NAME and color_name not in user.used_colors(self)]
