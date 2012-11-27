@@ -1421,7 +1421,6 @@ class Game(games.Game):
 
     for player in self.players.values():
       cards = [c for c in player.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used]
-      print player.user.name, cards
 
       if len(cards) > max_count:
         max_count = len(cards)

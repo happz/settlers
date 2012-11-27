@@ -131,7 +131,6 @@ class Handler(handlers.GenericHandler):
     if hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_NEXT:
       for kind in games.GAME_KINDS:
         check_result = games.game_module(kind, submodule = 'handler').GameOnTurnChecker.check()
-        print [_g.id for _g in check_result]
         if len(check_result) <= 0:
           continue
 

@@ -1,5 +1,4 @@
 import collections
-import pprint
 import threading
 
 import hlib.event
