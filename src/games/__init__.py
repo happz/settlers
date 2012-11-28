@@ -132,11 +132,11 @@ class Card(hlib.database.DBObject):
     self.player		= player
     self.type		= typ
     self.bought		= bought
-    self.used		= 0
+    self.used		= False
 
   def __getattr__(self, name):
     if name == 'is_used':
-      return self.used > 0
+      return self.used != False and self.used > 0
 
     return hlib.database.DBObject.__getattr__(self, name)
 

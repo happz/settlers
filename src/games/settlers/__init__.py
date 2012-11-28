@@ -185,23 +185,23 @@ class Player(games.Player):
       'points':			self.points,
       'has_longest_path':	self.longest_path,
       'has_mightest_chilvary':	self.mightest_chilvary,
-      'knights':		len([c for c in self.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used == True]),
       'can_roll_dice':		self.can_roll_dice,
       'first_village':		self.first_village and self.first_village.id or None,
       'second_village':		self.second_village and self.second_village.id or None,
       'resources':		{
         'total':		sum(self.resources.values())
+      },
+      'cards':			{
+        'unused_cards':		len([c for c in self.cards.values() if c.is_used != True]),
+        'used_knights':		len([c for c in self.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used])
       }
     })
 
     if self.id == self.game.my_player.id:
-      d['cards'] = [c.to_api() for c in self.cards.values()]
+      d['cards']['cards'] = [c.to_api() for c in self.cards.values()]
 
       for k in self.resources.keys():
         d['resources'][k] = self.resources[k]
-
-    else:
-      d['cards'] = len([c for c in self.cards.values() if c.is_used != True])
 
     return d
 
@@ -951,9 +951,9 @@ class Game(games.Game):
       for dr in self.dice_rolls:
         i = i + 1
         if i > self.limit * 3:
-          ss['without']['numbers'][dr.number] += 1
+          ss['without']['numbers'][dr] += 1
 
-        ss['with']['numbers'][dr.number] += 1
+        ss['with']['numbers'][dr] += 1
 
       ss['with']['sum'] = sum(ss['with']['numbers'])
       ss['without']['sum'] = sum(ss['without']['numbers'])
