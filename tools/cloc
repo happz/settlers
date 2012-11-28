@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cloc --read-lang-def=conf/cloc.langs --exclude-dir=compiled/ --exclude-ext=js,css src static/script/ static/css/
+cloc --read-lang-def=../conf/cloc.langs --exclude-dir=../compiled/ --exclude-ext=js,css ../src ../static/script/ ../static/css/
