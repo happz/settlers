@@ -225,7 +225,3 @@ window.settlers.setup_page = () ->
   window.settlers.setup_forms()
 
   window.settlers.refresh_maintenance_access_list()
-
-  $('#test_error').click () ->
-    window.hlib.WORKING.show()
-    false
