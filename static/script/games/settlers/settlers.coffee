@@ -329,76 +329,51 @@ class window.settlers.GameObject
 window.settlers.templates.game = {}
 window.settlers.templates.game.player = '
   <div class="playable-player">
-    <div class="playable-player-header header corners-top settlers-game-player-header-{{color.name}}">
-      <span class="playable-player-title">{{user.name}}</span>
-
-      <span class="right">
-        <span class="icon settlers-player-title-icon 
-        {{#has_mightest_chilvary}}
-          settlers-icon-chilvary-on
-        {{/has_mightest_chilvary}}
-        {{^has_mightest_chilvary}}
-          settlers-icon-chilvary-off
-        {{/has_mightest_chilvary}}
-        "></span>
-  
-      <span class="icon settlers-player-title-icon
-        {{#has_longest_path}}
-          settlers-icon-path-on
-        {{/has_longest_path}}
-        {{^has_longest_path}}
-          settlers-icon-path-off
-        {{/has_longest_path}} 
-        "></span>
+    <div class="game-player-header settlers-game-player-header-{{color.name}}">
+      <h4>
+        {{user.name}}
+        <div class="pull-right">
+          {{#has_mightest_chilvary}}
+            <span class="settlers-player-title-icon settlers-icon-chilvary-on"></span>
+          {{/has_mightest_chilvary}}
+          {{#has_longest_path}}
+            <span class="settlers-player-title-icon settlers-icon-path-on"></span>
+          {{/has_longest_path}}
+        </div>
+      </h4>
     </div>
 
-    <div class="playable-player-points info important">{{points}} {{#_g}}points{{/_g}}</div>
+    <table class="table table-condensed">
+      <tr class="success"><td colspan="2"><strong>{{points}} {{#_g}}points{{/_g}}</strong></td></tr>
+      {{#my_player}}
+        <tr><td>{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
+        <tr><td>{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
+        <tr><td>{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
+        <tr><td>{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
+        <tr><td>{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
+        <tr class="info"><td>{{#_g}}Total{{/_g}}:</td><td>{{resources.total}}</td></tr>
+      {{/my_player}}
+      {{^my_player}}
+        <tr><td>{{#_g}}Resources{{/_g}}:</td><td>{{resources.total}}</td></tr>
+      {{/my_player}}
 
-    <table class="game-player-resources">
-
-    {{#my_player}}
-      <tr class="info"><td>{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
-      <tr class="info"><td>{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
-      <tr class="info"><td>{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
-      <tr class="info"><td>{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
-      <tr class="info"><td>{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
-      <tr class="info important"><td>{{#_g}}Total{{/_g}}:</td><td>{{resources.total}}</td></tr>
-    {{/my_player}}
-    {{^my_player}}
-      <tr class="info"><td>{{#_g}}Resources{{/_g}}:</td><td>{{resources.total}}</td></tr>
-    {{/my_player}}
-
-    {{#my_player}}
-      </table>
-      <div class="info"><hr /></div>
-      <table class="game-player-resources">
-    {{/my_player}}
-
-    {{#my_player}}
-      <tr class="info"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.length}}</td></tr>
-    {{/my_player}}
-    {{^my_player}}
-      <tr class="info"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards}}</td></tr>
-    {{/my_player}}
-
-      <tr class="info game-player-knights corners-bottom"><td>{{#_g}}Knights{{/_g}}:</td><td>{{knights}}</td></tr>
+      <tr><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.unused_cards}}</td></tr>
+      <tr><td>{{#_g}}Knights{{/_g}}:</td><td>{{cards.used_knights}}</td></tr>
     </table>
   </div>
 '
 window.settlers.templates.game.cards = '
-  <ul class="game-cards">
-    <li class="header">{{#_g}}Cards{{/_g}}</li>
-    {{#cards}}
-      <li id="card_{{id}}" class="info with-menu">
-        <span class="card-type">{{type_name}}</span>
-        {{#can_be_used}}
-          <span class="card-menu right">
-            <span id="card_use_{{id}}" class="icon icon-medium icon-card-use"></span>
-          </span>
-        {{/can_be_used}}
-      </li>
-    {{/cards}}
-  </ul>
+  {{#cards}}
+    <div id="card_{{id}}" class="mediumListIconTextItem">
+      <div class="icon-grid-view mediumListIconTextItem-Image" />
+      <div class="mediumListIconTextItem-Detail">
+        <h4>{{type_name}}</h4>
+        {{#used}}
+          <p>Used in round #{{used}}.</p>
+        {{/used}}
+      </div>
+    </div>
+  {{/cards}}
 '
 window.settlers.templates.game.events = '
   {{#events}}
@@ -436,7 +411,7 @@ window.settlers.update_game_state = () ->
       h200:		(response, ajax) ->
         window.settlers.game = new window.settlers.GameObject response.game
         window.settlers.update_game_ui()
-        window.hlib.INFO._hide()
+        window.hlib.MESSAGE.hide()
 
 window.settlers.__refresh_game_ui_exchange = (i) ->
   eid_prefix = '#exchange_' + i
@@ -532,8 +507,8 @@ window.settlers.update_game_ui_exchange = () ->
     $('#exchange_no').show()
 
 window.settlers.update_game_ui_info = () ->
-  $('.settlers-last-numbers').hide()
-  $('.settlers-game-status').hide()
+  $('#last_numbers').hide()
+  $('#game_status').hide()
 
   G = window.settlers.game
 
@@ -543,9 +518,9 @@ window.settlers.update_game_ui_info = () ->
 
   if G.last_numbers.length > 0
     s = G.last_numbers.slice()
-    s[0] = '<span class="label green">' + s[0] + '</span>'
-    $('#settlers_last_numbers').html s.join ' '
-    $('.settlers-last-numbers').show()
+    s[0] = '<span class="badge badge-success">' + s[0] + '</span>'
+    $('#last_numbers p').html s.join ' '
+    $('#last_numbers').show()
 
 window.settlers.update_game_ui_player = (player) ->
   dst_id = '#game-player-' + player.id + '-placeholder'
@@ -571,18 +546,39 @@ window.settlers.update_game_ui_board = () ->
 
   $(eid).html ''
 
+  # experimental - resize to fit to height...
+  resize_ratio = (window.screen.height - 20) / $('body').height()
+  if resize_ratio > 1.0
+    resize_ratio = false
+
+  __resize_piece = (piece_eid) ->
+    if not resize_ratio
+      return
+
+    l = $(piece_eid).css 'left'
+    t = $(piece_eid).css 'top'
+
+    $(piece_eid).css 'left', (parseFloat(l) * resize_ratio) + 'px'
+    $(piece_eid).css 'top', (parseFloat(t) * resize_ratio) + 'px'
+
+    $(piece_eid).css 'max-width', ($(piece_eid).width() * resize_ratio)
+    $(piece_eid).css 'max-height', ($(piece_eid).height() * resize_ratio)
+
   __add_field = (f) ->
     attrs =
       id:		'settlers_board_field_' + f.id
       class:		'settlers-board-piece settlers-board-field settlers-board-field-' + f.id + ' settlers-board-field-' + bs + '-' + map_resource_to_str[f.resource + 2]
 
     $(eid).append window.settlers.render_board_piece attrs
+    __resize_piece '#settlers_board_field_' + f.id
 
     if f.thief == true
       attrs =
+        id:		'settlers_board_thief'
         class:		'settlers-board-piece settlers-board-thief settlers-board-thief-' + bs + ' settlers-board-thief-' + f.id
 
       $(eid).append window.settlers.render_board_piece attrs
+      __resize_piece '#settlers_board_thief'
 
   __add_number = (f) ->
     attrs =
@@ -593,10 +589,11 @@ window.settlers.update_game_ui_board = () ->
       attrs.class += ' settlers-board-number-active'
 
     $(eid).append window.settlers.render_board_piece attrs
+    __resize_piece '#settlers_board_number_' + f.id
 
     if (G.state == 13 or G.state == 15 or G.state == 19) and f.thief != true
       $('#' + attrs.id).click () ->
-        window.hlib.INFO.working()
+        window.hlib.WORKING.show()
 
         window.hlib.Ajax
           url:			'/game/settlers/number_click'
@@ -606,8 +603,6 @@ window.settlers.update_game_ui_board = () ->
           handlers:
             h200:     (response, ajax) ->
               window.settlers.update_game_state()
-            h403:	(response, ajax) ->
-              window.hlib.error response.error
 
         return false
 
@@ -629,11 +624,12 @@ window.settlers.update_game_ui_board = () ->
       attrs.class += ' settlers-board-path-active settlers-board-path-' + bs + '-free-' + map_pathid_to_position[p.id] + '-active'
 
     $(eid).append window.settlers.render_board_piece attrs
+    __resize_piece '#settlers_board_path_' + p.id
 
     if G.current_active_paths_map[p.id] == true
       if G.state == 1
         $('#' + attrs.id).click () ->
-          window.hlib.INFO.working()
+          window.hlib.WORKING.show()
 
           window.hlib.Ajax
             url:		'/game/settlers/path_click'
@@ -643,14 +639,12 @@ window.settlers.update_game_ui_board = () ->
             handlers:
               h200:     (response, ajax) ->
                 window.settlers.update_game_state()
-              h403:	(response, ajax) ->
-                window.hlib.error response.error
 
           return false
 
       else if G.state == 10 or G.state == 11
         $('#' + attrs.id).click () ->
-          window.hlib.INFO.working()
+          window.hlib.WORKING.show()
 
           if G.current_path
             G.current_path.type = 1
@@ -664,13 +658,13 @@ window.settlers.update_game_ui_board = () ->
           G.current_active_paths_map = window.settlers.game.active_paths_map()
 
           window.settlers.update_game_ui()
-          window.hlib.INFO._hide()
+          window.hlib.MESSAGE.hide()
 
           return false
 
       else if G.state == 22 or G.state == 23
         $('#' + attrs.id).click () ->
-          window.hlib.INFO.working()
+          window.hlib.WORKING.show()
 
           window.hlib.Ajax
             url:		'/game/settlers/path_click'
@@ -680,8 +674,6 @@ window.settlers.update_game_ui_board = () ->
             handlers:
               h200:     (response, ajax) ->
                 window.settlers.update_game_state()
-              h403:	(response, ajax) ->
-                window.hlib.error response.error
 
           return false
 
@@ -708,11 +700,12 @@ window.settlers.update_game_ui_board = () ->
 
     s = '<span ' +  ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
     $(eid).append(s)
+    __resize_piece '#settlers_board_node_' + n.id
 
     if G.current_active_nodes_map[n.id] == true
       if G.state == 1
         $('#' + attrs.id).click () ->
-          window.hlib.INFO.working()
+          window.hlib.WORKING.show()
 
           window.hlib.Ajax
             url:		'/game/settlers/node_click'
@@ -722,14 +715,12 @@ window.settlers.update_game_ui_board = () ->
             handlers:
               h200:     (response, ajax) ->
                 window.settlers.update_game_state()
-              h403:	(response, ajax) ->
-                window.hlib.error response.error
 
           return false
 
       else if G.state == 10
         $('#settlers_board_node_' + n.id).click () ->
-          window.hlib.INFO.working()
+          window.hlib.WORKING.show()
 
           # cleanup - remove old selected village
           G.my_player.first_village = null
@@ -757,13 +748,13 @@ window.settlers.update_game_ui_board = () ->
 
           # render
           window.settlers.update_game_ui()
-          window.hlib.INFO._hide()
+          window.hlib.MESSAGE.hide()
 
           return false
 
       else if G.state == 11
         $('#settlers_board_node_' + n.id).click () ->
-          window.hlib.INFO.working()
+          window.hlib.WORKING.show()
 
           # cleanup - remove old selected village
           G.my_player.second_village = null
@@ -791,7 +782,7 @@ window.settlers.update_game_ui_board = () ->
 
           # render
           window.settlers.update_game_ui()
-          window.hlib.INFO._hide()
+          window.hlib.MESSAGE.hide()
 
           return false
 
@@ -812,11 +803,13 @@ window.settlers.update_game_ui_board = () ->
     classes = 'settlers-board-piece settlers-board-sea settlers-board-sea-' + (2 * p.id + 1) + ' settlers-board-port-' + map_resource_to_str[p.resource + 2] + '-' + p.clock + '-' + bs
     s = '<span id="settlers_board_port_' + p.id + '" class="' + classes + '"></span>'
     $(eid).append(s)
+    __resize_piece '#settlers_board_port_' + p.id
 
   __add_sea = (i) ->
     classes = 'settlers-board-piece settlers-board-sea settlers-board-sea-' + (2 * i) + ' settlers-board-sea-' + bs
-    s = '<span class="' + classes + '"></span>'
+    s = '<span id="settlers_board_sea_' + i + '" class="' + classes + '"></span>'
     $(eid).append(s)
+    __resize_piece '#settlers_board_sea_' + i
 
   __add_field f for f in G.board.fields
   __add_number f for f in G.board.fields
@@ -827,7 +820,7 @@ window.settlers.update_game_ui_board = () ->
 
 window.settlers.update_game_ui_status = () ->
   G = window.settlers.game
-  eid = '.settlers-game-status'
+  eid = '#game_status'
 
   $(eid).hide()
 
@@ -895,12 +888,15 @@ window.settlers.update_game_ui_cards = () ->
   if G.state == 1
     $('#new_card_form').show()
 
-  c.type_name = (window.hlib._g G.card_type_to_name[c.type]) for c in G.my_player.cards
+  c.type_name = (window.hlib._g G.card_type_to_name[c.type]) for c in G.my_player.cards.cards
 
-  $('#cards_list').html window.hlib.render window.settlers.templates.game.cards, G.my_player
+  $('#cards_list').html window.hlib.render window.settlers.templates.game.cards, G.my_player.cards
 
   decorate_card = (c) ->
-    $('#card_use_' + c.id).click () ->
+    if not c.can_be_used
+      return
+
+    $('#card_' + c.id).click () ->
       window.hlib.Ajax
         url:			'/game/card_click'
         data:
@@ -912,7 +908,7 @@ window.settlers.update_game_ui_cards = () ->
             window.settlers.show_board()
       return false
 
-  decorate_card c for c in G.my_player.cards
+  decorate_card c for c in G.my_player.cards.cards
 
 window.settlers.update_game_ui_history = () ->
   rendered = window.settlers.game.render_events window.settlers.events, window.settlers.templates.game.events
@@ -923,6 +919,7 @@ window.settlers.update_game_ui_buttons = () ->
   window.hlib.disableIcon '#show_exchange'
   window.hlib.disableIcon '#pass_turn'
   window.hlib.disableIcon '#roll_dice'
+  window.hlib.disableIcon '#show_stats'
 
   G = window.settlers.game
 
@@ -933,6 +930,9 @@ window.settlers.update_game_ui_buttons = () ->
   else
     if window.settlers.game.my_player.can_pass
       window.hlib.enableIcon '#pass_turn', window.settlers.pass_turn
+
+  if G.state == 2
+    window.hlib.enableIcon '#show_stats', window.settlers.show_stats
 
   if window.settlers.game.my_player.can_roll_dice
     window.hlib.enableIcon '#roll_dice', window.settlers.roll_dice
@@ -950,21 +950,39 @@ window.settlers.update_game_ui = () ->
   window.settlers.update_game_ui_exchange()
   window.settlers.update_game_ui_buttons()
 
+  if window.settlers.game.state == 21
+    window.settlers.show_invention()
+
+  else if window.settlers.game.state == 18
+    window.settlers.show_monopoly()
+
+  else
+    window.settlers.show_game_board()
+
+window.settlers.show_stats = () ->
+  $('#views').tabs 'select', 6
+  window.location.hash = '#stats'
+
 window.settlers.show_board = () ->
   $('#views').tabs 'select', 3
   window.location.hash = '#board'
 
+window.settlers.hide_board_view_sections = () ->
+  $('#invention').hide()
+  $('#monopoly').hide()
+  $('.game-board').hide()
+
 window.settlers.show_invention = () ->
+  window.settlers.hide_board_view_sections()
   $('#invention').show()
 
-window.settlers.hide_invention = () ->
-  $('#invention').hide()
-
 window.settlers.show_monopoly = () ->
+  window.settlers.hide_board_view_sections()
   $('#monopoly').show()
 
-window.settlers.hide_monopoly = () ->
-  $('#monopoly').hide()
+window.settlers.show_game_board = () ->
+  window.settlers.hide_board_view_sections()
+  $('.game-board').show()
 
 window.settlers.setup_page = () ->
   exchange_form = (ratio) ->
@@ -997,7 +1015,6 @@ window.settlers.setup_page = () ->
     handlers:
       s200:		(response, form) ->
         form.info.success 'Received'
-        window.settlers.hide_invention()
         window.settlers.update_game_state()
         window.settlers.show_board()
 
@@ -1008,7 +1025,6 @@ window.settlers.setup_page = () ->
     handlers:
       s200:		(response, form) ->
         form.info.success 'Stolen'
-        window.settlers.hide_monopoly()
         window.settlers.update_game_state()
         window.settlers.show_board()
 
@@ -1064,7 +1080,7 @@ window.settlers.setup_page = () ->
       url:			'/game/settlers/roll_dice?gid=' + window.settlers.game.gid
       handlers:
         h200:		(response, ajax) ->
-          window.hlib.INFO._hide()
+          window.hlib.MESSAGE.hide()
           window.settlers.update_game_state()
 
     return false
@@ -1110,11 +1126,9 @@ window.settlers.setup_page = () ->
     show_chat()
     return false
 
-  if window.settlers.game.state == 21
-    window.settlers.show_invention()
-
-  else if window.settlers.game.state == 18
-    window.settlers.show_monopoly()
+  $('#show_stats').click () ->
+    window.hlib.show_stats()
+    return false
 
   if window.location.hash == '#chat'
     show_chat()
@@ -1131,20 +1145,30 @@ window.settlers.setup_page = () ->
   else if window.location.hash == '#exchange'
     window.settlers.show_exchange()
 
+  else if window.location.hash == '#stats' and G.state == 2
+    window.settlers.show_stats()
+
   else
     window.settlers.show_board()
 
 window.settlers.templates.chat_post = '
-  <fieldset class="chat-post">
-    <legend>
-      {{#user.is_online}}
-        <span class="user-online">
-      {{/user.is_online}}
-      {{user.name}}
-      {{#user.is_online}}
-        </span>
-      {{/user.is_online}} - {{time}}
-    </legend>
-    <div>{{{message}}}</div>
-  </fieldset>
+ <tr id="chat_post_{{id}}">
+    <td>
+      <h3>
+        <span class="chat-post-unread label label-important hide">Unread</span>
+        {{#user.is_online}}
+          <span class="user-online">
+        {{/user.is_online}}
+        {{user.name}}
+        {{#user.is_online}}
+          </span>
+        {{/user.is_online}} - {{time}}
+      </h3>
+
+      <div>
+
+        <p>{{{message}}}</p>
+      </div>
+    </td>
+  </tr>
 '

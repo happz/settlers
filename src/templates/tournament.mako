@@ -2,8 +2,7 @@
   import hlib
 %>
 
-<%namespace file="hlib_widgets.mako"  import="*"/>
-<%namespace file="event.mako" import="*" />
+<%namespace file="hlib_ui.mako" import="*" />
 <%namespace file="lib.mako" import="*" />
 
 <%inherit file="page.mako" />

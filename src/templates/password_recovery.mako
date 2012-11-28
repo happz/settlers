@@ -1,12 +1,15 @@
+<%namespace file="hlib_ui.mako" import="*" />
+
 <%inherit file="page.mako" />
 
-<%namespace file="hlib_widgets.mako"  import="*" />
 <%namespace file="lib.mako" import="*" />
 
-${row_start()}
-  ${w_form_start('/registration/recovery/recover', 'Password recovery', 'recovery')}
-    ${w_form_input('username', 'text', 'Login name')}
-    ${w_form_input('email', 'text', 'E-mail address')}
-    ${w_submit_row('Create new password')}
-  ${w_form_end()}
-${row_end()}
+${ui_page_header('Settlers')}
+
+${ui_row_start(span = 6)}
+  ${ui_form_start(action = '/registration/recovery/recover', legend = 'Password recovery', id = 'recovery')}
+    ${ui_input(form_name = 'username', type = 'text', label = 'Login name')}
+    ${ui_input(form_name = 'email', type = 'text', label = 'E-mail address')}
+    ${ui_submit(value = 'Create new password')}
+  ${ui_form_end()}
+${ui_row_end()}

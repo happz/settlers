@@ -5,5 +5,5 @@ window.settlers.setup_page = () ->
     clear_fields:		['username', 'email']
     handlers:
       s200:     (response, form) ->
-        window.hlib.INFO.success 'New password was sent to your e-mail'
+        window.hlib.INFO.show 'Password recovery', 'New password was sent to your e-mail'
         window.hlib.redirect '/login/'

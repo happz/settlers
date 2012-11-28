@@ -94,9 +94,6 @@ class User(hlib.datalayer.User):
     self.vacations      = hlib.database.IndexedMapping()
     self.colors		= hlib.database.SimpleMapping()
 
-    # Caches
-    self._v_used_colors		= None
-
   def __getattr__(self, name):
     if name == 'is_autoplayer':
       return self.autoplayer == True
@@ -127,21 +124,14 @@ class User(hlib.datalayer.User):
 
     if new_color != None:
       self.colors[color_space.kind][self.name] = new_color.name
-      self._v_used_colors = None
 
     return color_space.colors[self.colors[color_space.kind][self.name]]
 
   def used_colors(self, color_space):
-    if not hasattr(self, '_v_used_colors') or self._v_used_colors == None:
-      self._v_used_colors = {}
+    used_colors  = [self.color(color_space).name]
+    used_colors += self.colors[color_space.kind].values()
 
-    if color_space.kind not in self._v_used_colors:
-      self._v_used_colors[color_space.kind] = [self.color(color_space).name]
-
-    if color_space.kind in self.colors:
-      self._v_used_colors[color_space.kind] += self.colors[color_space.kind].values()
-
-    return self._v_used_colors[color_space.kind]
+    return used_colors
 
   def vacation_revoke(self):
     if self.has_prepared_vacation:

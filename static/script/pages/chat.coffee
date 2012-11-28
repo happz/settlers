@@ -1,18 +1,21 @@
 window.settlers.templates.chat_post = '
-  <tr>
+  <tr id="chat_post_{{id}}">
     <td>
-      <fieldset id="chat_post_{{id}}" class="chat-post">
-        <legend>
-          {{#user.is_online}}
-            <span class="user-online">
-          {{/user.is_online}}
-          {{user.name}}
-          {{#user.is_online}}
-            </span>
-          {{/user.is_online}} - {{time}}
-        </legend>
-        <div>{{{message}}}</div>
-      </fieldset>
+      <h3>
+        <span class="chat-post-unread label label-important hide">Unread</span>
+        {{#user.is_online}}
+          <span class="user-online">
+        {{/user.is_online}}
+        {{user.name}}
+        {{#user.is_online}}
+          </span>
+        {{/user.is_online}} - {{time}}
+      </h3>
+
+      <div>
+
+        <p>{{{message}}}</p>
+      </div>
     </td>
   </tr>
 '

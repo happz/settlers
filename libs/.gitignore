@@ -1,5 +1,4 @@
 coffee-script.js
-formee-3.1
 jquery.form.js
 jquery.form.min.js
 jquery.qtip.css
@@ -14,3 +13,4 @@ mustache.js
 mustache.min.js
 stacktrace.js
 strftime-min.js
+bootmetro-0.6.0

@@ -15,7 +15,6 @@ import handlers.profile
 import handlers.registration
 import handlers.settings
 import handlers.stats
-import handlers.talk
 import handlers.tournament
 import handlers.vacation
 import lib.trumpet
@@ -62,7 +61,6 @@ class Handler(hlib.handlers.root.Handler):
   maint        = handlers.maint.MaintHandler()
   game         = handlers.game.Handler()
   tournament   = handlers.tournament.Handler()
-  talk		= handlers.talk.Handler()
 
   monitor	= handlers.monitor.Handler()
 

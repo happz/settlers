@@ -6,7 +6,7 @@ window.settlers.check_status = () ->
         if response.enabled == false
           window.hlib.redirect '/login/'
 
-        window.hlib.INFO._hide()
+        window.hlib.MESSAGE.hide()
 
 window.settlers.setup_page = () ->
   new window.hlib.Form

@@ -14,215 +14,154 @@
   import handlers.settings
 %>
 
-<%namespace file="hlib_widgets.mako"  import="*"/>
+<%namespace file="hlib_ui.mako" import="*" />
 <%namespace file="lib.mako" import="*" />
 
 <%inherit file="page.mako" />
 
-  ${row_start()}
-  ${w_form_start('/settings/password', 'Change password', 'password')}
-    ${w_form_input('password1', 'password', label = 'Password')}
-    ${w_form_input('password2', 'password', label = 'Password verification')}
+${ui_page_header('Settings')}
 
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
+<div class="row-fluid">
+  <!-- Leave space for affix -->
+  <div class="offset2 span10">
 
-  ${row_start()}
-  ${w_form_start('/settings/after_pass_turn', 'After pass turn do what?', 'after_pass_turn')}
-    ${w_form_select('action', default = False)}
-      ${w_option(lib.datalayer.User.AFTER_PASS_TURN_STAY, hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_STAY, _('Stay on current game'))}
-      ${w_option(lib.datalayer.User.AFTER_PASS_TURN_NEXT, hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_NEXT, _('Switch to next current game'))}
-      ${w_option(lib.datalayer.User.AFTER_PASS_TURN_CURR, hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_CURR, _('Switch to current games'))}
-    </select></div>
+<!-- "Account" section -->
+${ui_section_header('account', 'Account')}
 
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
+  <!-- Change password -->
+  ${ui_form_start(action = '/settings/password', id = 'password', legend = 'Change password')}
+    <!-- Password -->
+    ${ui_input(type = 'password', label = 'Password', form_name = 'password1')}
 
-  ${row_start()}
-  ${w_form_start('/settings/color', 'Favourite color', 'color')}
-    <div class="grid-6-12">
-      ${w_form_select('kind', label = 'Game', struct = False)}
-        % for kind in games.GAME_KINDS:
-          ${w_option(kind, False, _(kind))}
-        % endfor
-      </select>
-    </div>
-    <div class="grid-6-12 omega">
-      ${w_form_select('color', label = 'Color', struct = False)}
-        % for color_name in games.settlers.COLOR_SPACE.unused_colors(user):
-          <%
-            color = games.settlers.COLOR_SPACE.colors[color_name]
-          %>
-          ${w_option(color.name, False, _(color.label), classes = ['colors'], style = ['background-image: url(/static/images/games/settlers/board/real/players/' + color.name + '/node/village.gif)'])}
-        % endfor
-      </select>
-    </div>
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
+    <!-- Password verification -->
+    ${ui_input(type = 'password', label = 'Password verification', form_name = 'password2')}
 
-  ${row_start()}
-  ${w_form_start('/settings/opponents/add', 'Colors for opponents', 'opponent_colors')}
-    <div class="grid-4-12">
-      ${w_form_input('username', 'text', label = 'Player', struct = False)}
-    </div>
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
 
-    <div class="grid-4-12">
-      ${w_form_select('kind', label = 'Game', struct = False)}
-        % for kind in games.GAME_KINDS:
-          ${w_option(kind, False, _(kind))}
-        % endfor
-      </select>
-    </div>
+  <!-- After "Pass turn" -->
+  ${ui_form_start(action = '/settings/after_pass_turn', id = 'after_pass_turn', legend = 'After pass turn do what?')}
+    <!-- After "Pass turn" -->
+    ${ui_select_start(form_name = 'action', default = False, size = 'xxlarge')}
+      ${ui_select_option(value = lib.datalayer.User.AFTER_PASS_TURN_NEXT, selected = (hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_NEXT), label = 'Switch to next current game')}
+      ${ui_select_option(value = lib.datalayer.User.AFTER_PASS_TURN_STAY, selected = (hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_STAY), label = 'Stay on current game')}
+      ${ui_select_option(value = lib.datalayer.User.AFTER_PASS_TURN_CURR, selected = (hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_CURR), label = 'Switch to current games')}
+    ${ui_select_end()}
 
-    <div class="grid-4-12 omega">
-      ${w_form_select('color', label = 'Color', struct = False, default = False)}
-        <option value="">${_('Choose kind first')}</option>
-      </select>
-    </div>
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
 
-  ${row_start()}
-    <div class="grid-12-12" id="opponent_colors_list">
-    </div>
-  ${row_end()}
-
-  ${row_start()}
-  ${w_form_start('/settings/per_page', 'Items per page of table', 'per_page')}
-    ${w_form_select('per_page', default = False)}
+  <!-- Per page -->
+  ${ui_form_start(action = '/settings/per_page', id = 'per_page', legend = 'Items per page of table')}
+    ${ui_select_start(form_name = 'per_page', default = False)}
       % for cnt in handlers.settings.TABLE_ROW_COUNTS:
-        ${w_option(cnt, user.table_length == cnt, cnt)}
+        ${ui_select_option(value = cnt, selected = (user.table_length == cnt), label = str(cnt))}
       % endfor
-    </select></div>
+    ${ui_select_end()}
 
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
 
-  ${row_start()}
-  ${w_form_start('/settings/board_skin', 'Game board skin', 'board_skin')}
-    ${w_form_select('skin', default = False)}
-      ${w_option('real', user.board_skin == 'real', _('Realistic'))}
-      ${w_option('simple', user.board_skin == 'simple', _('Simple'))}
-    </select></div>
+  <!-- Sound -->
+  ${ui_form_start(id = 'sound', action = '/settings/sound', legend = 'Sound notification')}
+    ${ui_select_start(form_name = 'sound', label = 'Play sound when player is on turn', default = False)}
+      ${ui_select_option(value = 0, selected = (hruntime.user.sound == False), label = 'No')}
+      ${ui_select_option(value = 1, selected = (hruntime.user.sound == True), label = 'Yes')}
+    ${ui_select_end()}
 
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
 
-  ${row_start()}
-  ${w_form_start('/settings/vacation/start', 'Vacation', 'vacation', not_working = True)}
-    <div class="grid-12-12">
-      <div class="form-msg-info">
-        <h3>${_('Vacation left')}: ${stamp_to_days_hours(user.vacation)}</h3>
+</section>
+
+<!-- "Colors" section -->
+${ui_section_header('colors', 'Colors')}
+
+  <!-- Color -->
+  ${ui_form_start(action = '/settings/color', id = 'color', legend = 'Favourite color')}
+    <!-- Game -->
+    ${ui_select_start(form_name = 'kind', label = 'Game', default = 'Choose...')}
+      % for kind in games.GAME_KINDS:
+        ${ui_select_option(value = kind, selected = False, label = kind)}
+      % endfor
+    ${ui_select_end()}
+
+    <!-- Color -->
+    ${ui_select_start(form_name = 'color', label = 'Color', default = False, disabled = True)}
+    ${ui_select_end()}
+
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
+
+  <!-- Opponent colors -->
+  ${ui_form_start(action = '/settings/opponents/add', id = 'opponent_colors', legend = 'Colors for opponents')}
+    <!-- Game -->
+    ${ui_select_start(form_name = 'kind', label = 'Game', default = 'Choose...')}
+      % for kind in games.GAME_KINDS:
+        ${ui_select_option(value = kind, selected = False, label = kind)}
+      % endfor
+    ${ui_select_end()}
+
+    <!-- Color -->
+    ${ui_select_start(form_name = 'color', label = 'Color', default = False, disabled = True)}
+    ${ui_select_end()}
+
+    <!-- Player -->
+    ${ui_input(type = 'text', form_name = 'username', label = 'Player')}
+
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
+
+  <div id="opponent_colors_list"></div>
+
+  <!-- Board skin -->
+  ${ui_form_start(action = '/settings/board_skin', legend = 'Game board skin', id = 'board_skin')}
+    ${ui_select_start(form_name = 'skin', default = False)}
+      ${ui_select_option(value = 'real', selected = (user.board_skin == 'real'), label = 'Realistic')}
+      ${ui_select_option(value = 'simple', selected = (user.board_skin == 'simple'), label = 'Simple')}
+    ${ui_select_end()}
+
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
+
+</section>
+
+<!-- "API" section -->
+${ui_section_header('api', 'API')}
+
+  <!-- API token -->
+  ${ui_form_start(id = 'api_token', action = '/settings/api', legend = 'API token')}
+    <div class="control-group">
+      <div class="controls">
+        <input type="button" id="api_token_new" value="${_('New token')}" class="btn" />
+        <input type="button" id="api_token_download" value="${_('Download token')}" class="btn" />
       </div>
     </div>
+  ${ui_form_end()}
 
-    <%def name="list_vacation(label, vacation)">
-      <div class="grid-2-12">${_(label + ' from')}</div>
-      <div class="grid-3-12">${time.strftime(user.date_format, time.localtime(vacation.start))}</div>
-      <div class="grid-1-12">${_('to')}</div>
-      <div class="grid-3-12">${time.strftime(user.date_format, time.localtime(vacation.start + vacation.length))}</div>
-      <div class="grid-3-12">(${stamp_to_days_hours(vacation.length)})</div>
-    </%def>
-
-    % if user.has_vacation == True:
-      <hr />
-
-      % for v in lib.datalayer.VacationRecord.load_from_db_by_user(user.id, order = ('start', False)):
-        ${list_vacation('Passed vacation', v)}
-      % endfor
+  <h4>${_('Current API token')}</h4>
+  <code id="api_token_token">
+    % if len(hruntime.user.api_tokens) > 0:
+      ${hruntime.user.api_tokens[0]}
     % endif
+  </code>
 
-    % if user.has_prepared_vacation == True:
-      <hr />
+  <hr />
 
-      ${list_vacation('Vacation planned', user.last_vacation)}
-      <div class="grid-1-12">
-        <a href="/settings/vacation/revoke">${_('Revoke')}</a>
+  <header><h4>${_('Remote applications')}</h4></header>
+
+  <div class="listview-container grid-layout">
+    <div class="mediumListIconTextItem">
+      <img src="holder.js/60x60" class="mediumListIconTextItem-Image" />
+      <div class="mediumListIconTextItem-Detail">
+        <h4>Osadnici - Hlidacek</h4>
+        <a href="http://osadnici-test.happz.cz/static/settlers-notify.exe">Download</a>
       </div>
-    % endif
+    </div>
+  </div>
 
-    <div class="grid-12-12">
-      <label>${_('Start vacation from')}</label>
-    </div>
-    <div class="grid-6-12">
-      <input type="text" class="dateRange" name="vacation_from_day" id="vacation_from_day" />
-    </div>
-    <div class="grid-6-12">
-      <select name="vacation_from_hour">
-        ${w_option('', True, '')}
-        % for i in range(0, 9):
-          ${w_option(i, False, '0' + str(i) + ':00')}
-        % endfor
-        % for i in range(10, 24):
-          ${w_option(i, False, str(i) + ':00')}
-        % endfor
-      </select>
-    </div>
+  <iframe id="api_token_downloader" src="" class="hide"></iframe>
+</section>
 
-    <div class="grid-12-12">
-      <label>${_('to')}</label>
-    </div>
-    <div class="grid-6-12">
-      <input type="text" class="dateRange" name="vacation_to_day" id="vacation_to_day" />
-    </div>
-    <div class="grid-6-12">
-      <select name="vacation_to_hour">
-        ${w_option('', True, '')}
-        % for i in range(0, 9):
-          ${w_option(i, False, '0' + str(i) + ':00')}
-        % endfor
-        % for i in range(10, 24):
-          ${w_option(i, False, str(i) + ':00')}
-        % endfor
-      </select>
-    </div>
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
-
-  ${row_start()}
-  ${w_form_start('/settings/sound', 'Sound notification', 'sound')} 
-    ${w_form_select('sound', label = 'Play sound when player is on turn', default = False)}
-      ${w_option('0', hruntime.user.sound == False, _('No'))}
-      ${w_option('1', hruntime.user.sound == True, _('Yes'))}
-    </select></div>
-
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-  ${row_end()}
-
-  ${row_start()}
-  ${w_form_start('/settings/api', 'API token', 'api_token')}
-    <div class="grid-12-12">
-      <input type="button" id="api_token_new" value="${_('New')}" />
-      <input type="button" id="api_token_download" value="${_('Download')}" />
-    </div>
-    <div class="grid-12-12">
-      <label>${_('Current API token')}:</label>
-    </div>
-    <div class="grid-12-12">
-      <code id="api_token_token">
-        % if len(hruntime.user.api_tokens) > 0:
-          ${hruntime.user.api_tokens[0]}
-        % endif
-      </code>
-    </div>
-    <div class="grid-12-12">
-      <hr />
-    </div>
-    <div class="grid-12-12">
-      <ul>
-        <li class="header corners-top">${_('Known applications')}</li>
-        <li class="info">
-          <a href="http://osadnici-test.happz.cz/static/settlers-notify.exe">Osadnici - Hlidacek</a>
-        </li>
-      </ul>
-    </div>
-    <iframe id="api_token_downloader" src="" class="hide" />
-  ${w_form_end()}
+  </div>
+</div>

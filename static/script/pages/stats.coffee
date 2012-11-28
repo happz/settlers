@@ -1,6 +1,5 @@
 window.settlers.templates.record = '
   <tr>
-    <td></td>
     <td>{{user.name}}</td>
     <td>{{games}}</td>
     <td>{{wons}}</td>

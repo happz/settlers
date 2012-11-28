@@ -22,17 +22,17 @@ window.settlers.templates.i18n_tokens = '
   {{/tokens}}
 '
 window.settlers.templates.maintenance_access_list = '
-  <ul class="maintenance-access-list">
-    <li class="header">Users with granted access</li>
-    {{#users}}
-      <li class="info with-menu">
-        <span class="">{{name}}</span>
-        <span class="user-menu right">
-          <span id="user_maintenance_access_revoke_{{name}}" class="icon icon-medium icon-maintenance-access-revoke"></span>
-        </span>
-      </li>
-    {{/users}}
-  </ul>
+  {{#users}}
+    <div class="mediumListIconTextItem">
+      <img src="holder.js/60x60" class="mediumListIconTextItem-Image" />
+      <div class="mediumListIconTextItem-Detail">
+        <h4>{{name}}</h4>
+        <div class="btn-toolbar">
+          <a class="btn" href="#" title="{{#_g}}Remove{{/_g}}" rel="tooltip" data-placement="right" id="user_maintenance_access_revoke_{{name}}"><i class="icon-remove"></i></a>
+        </div>
+      </div>
+    </div>
+  {{/users}}
 '
 
 window.settlers.refresh_maintenance_access_list = () ->
@@ -51,11 +51,12 @@ window.settlers.refresh_maintenance_access_list = () ->
               handlers:
                 h200:			(response, ajax) ->
                   window.settlers.refresh_maintenance_access_list()
-                  window.hlib.INFO._hide()
+                  window.hlib.MESSAGE.hide()
+            return false
 
         __per_user u for u in response.users
 
-        window.hlib.INFO._hide()
+        window.hlib.MESSAGE.hide()
 
 window.settlers.refresh_token_list = (opts) ->
   new window.hlib.Ajax
@@ -114,7 +115,7 @@ window.settlers.setup_i18n_edit_form = () ->
     refresh_unused_list()
     refresh_present_list()
 
-    window.hlib.INFO._hide()
+    window.hlib.MESSAGE.hide()
 
     return false
 
@@ -137,7 +138,7 @@ window.settlers.setup_i18n_edit_form = () ->
           $(value.fid).val response.value
           $(edit.fid).show()
 
-          window.hlib.INFO._hide()
+          window.hlib.MESSAGE.hide()
 
     return false
 
@@ -157,7 +158,7 @@ window.settlers.setup_i18n_edit_form = () ->
           refresh_unused_list()
           refresh_present_list()
 
-          window.hlib.INFO._hide()
+          window.hlib.MESSAGE.hide()
 
     return false
 
@@ -170,7 +171,7 @@ window.settlers.setup_i18n_add_form = () ->
         form.info.success 'Added'
 
         refresh_missed_list()
-        window.hlib.INFO._hide()
+        window.hlib.MESSAGE.hide()
 
   lang = form.field 'lang'
   missing = form.field 'missing'
@@ -192,7 +193,7 @@ window.settlers.setup_i18n_add_form = () ->
 
     refresh_missed_list()
 
-    window.hlib.INFO._hide()
+    window.hlib.MESSAGE.hide()
 
     return false
 
@@ -207,15 +208,7 @@ window.settlers.setup_forms = () ->
   new window.hlib.Form
     fid:		'maintenance_mode'
 
-  autocomplete_options = window.settlers.autocomplete_options()
-
-  __setup_autocomplete = (eid) ->
-    options = window.settlers.autocomplete_options()
-    options.appendTo = $(eid).parent()
-
-    $(eid).autocomplete options
-
-  __setup_autocomplete '#maintenance_access_username'
+  $('#maintenance_access_username').typeahead window.settlers.autocomplete_options()
 
   new window.hlib.Form
     fid:		'maintenance_access'
@@ -232,3 +225,7 @@ window.settlers.setup_page = () ->
   window.settlers.setup_forms()
 
   window.settlers.refresh_maintenance_access_list()
+
+  $('#test_error').click () ->
+    window.hlib.WORKING.show()
+    false

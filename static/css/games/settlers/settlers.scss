@@ -1,13 +1,5 @@
 @import "lib.scss";
 
-.settlers-last-numbers {
-  padding-bottom:		0.4em;
-}
-
-.settlers-game-status {
-  color:			green;
-}
-
 .settlers-game-player-header-red {
   background:			red !important;
 }
@@ -54,6 +46,12 @@
 }
 
 .settlers-player-title-icon {
+    display:			inline-block;
+    cursor:			pointer;
+    background-repeat:		no-repeat;
+    vertical-align:		middle;
+    background-size:		100%,100%;
+
   width:			15px;
   height:			15px;
 }
@@ -88,19 +86,6 @@
   z-index:			20;
 }
 
-ul.game-cards {
-}
-
-ul.game-cards > li:first-child {
-    @include corners-top();
-    border-top-width:                     1px !important;
-}
-
-ul.game-cards > li:last-child {
-    @include corners-bottom();
-    border-bottom-width:                  1px !important;
-}
-
 /*
  * Common setup for all board pieces
  */
@@ -110,6 +95,7 @@ ul.game-cards > li:last-child {
     background-attachment:		scroll;
     background-position:		left top;
     background-repeat:			no-repeat;
+    background-size:			100% 100%;
 }
 
 /*

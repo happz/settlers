@@ -5,87 +5,100 @@
   import hruntime
 %>
 
-<%namespace file="hlib_widgets.mako"  import="*"/>
+<%namespace file="hlib_ui.mako" import="*" />
 <%namespace file="lib.mako" import="*" />
 
 <%inherit file="page.mako" />
 
-${row_start()}
-${w_form_start('/admin/trumpet/change_board', 'Change board', 'board')}
-  ${w_form_text('text', label = 'Text', default = lib.trumpet.Board().text)}
-  ${w_submit_row('Set')}
-${w_form_end()}
-${row_end()}
+${ui_page_header('Administration')}
 
-${row_start()}
-${w_form_start('/admin/trumpet/change_password_recovery_mail', 'Change "Password recovery" mail', 'password_recovery_mail')}
-  ${w_form_input('subject', 'text', label = 'Subject', default = lib.trumpet.PasswordRecoveryMail().subject)}
-  ${w_form_text('text', label = 'Text', default = lib.trumpet.PasswordRecoveryMail().text)}
-  ${w_submit_row('Set')}
-${w_form_end()}
-${row_end()}
+<div class="row-fluid">
+  <div class="offset2 span10">
 
-${row_start()}
-${w_form_start('/admin/i18n/add', 'Add token', 'i18n_add')}
-  ${w_form_select('lang', label = 'Language')}
-    % for key in hruntime.dbroot.localization.languages.keys():
-      ${w_option(key, False, key)}
-    % endfor
-  </select></div>
+<!-- "Trumpet" section -->
+${ui_section_header('trumpet', 'Trumpet')}
 
-  <div class="grid-12-12 hide" id="i18n_add_missing">
-  </div>
+  <!-- Change board -->
+  ${ui_form_start(action = '/admin/trumpet/change_board', legend = 'Change board', id = 'board')}
+    ${ui_textarea(form_name = 'text', label = 'Text', value = lib.trumpet.Board().text, size = 'xxlarge')}
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
 
-  ${w_form_input('name', 'text', label = 'Name')}
-  ${w_form_input('value', 'text', label = 'Value')}
-  ${w_submit_row('Add')}
-${w_form_end()}
-${row_end()}
+  <!-- Change password recovery mail -->
+  ${ui_form_start(action = '/admin/trumpet/change_password_recovery_mail', legend = 'Change "Password recovery" mail', id = 'password_recovery_mail')}
+    ${ui_input(form_name = 'subject', type = 'text', label = 'Subject', value = lib.trumpet.PasswordRecoveryMail().subject, size = 'xxlarge')}
+    ${ui_textarea(form_name = 'text', label = 'Text', value = lib.trumpet.PasswordRecoveryMail().text, size = 'xxlarge')}
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
 
-${row_start()}
-${w_form_start('/admin/i18n/token', 'Edit tokens', 'i18n_edit')}
-  ${w_form_select('lang', label = 'Language')}
-    % for key in hruntime.dbroot.localization.languages.keys():
-      ${w_option(key, False, key)}
-    % endfor
-  </select></div>
+</section>
 
-  <div class="grid-12-12 hide" id="i18n_edit_unused">
-  </div>
+<!-- "Language" section -->
+${ui_section_header('language', 'Language')}
 
-  ${w_form_select('token')}
-  </select></div>
+  <!-- Add token -->
+  ${ui_form_start(action = '/admin/i18n/add', legend = 'Add token', id = 'i18n_add')}
+    ${ui_select_start(form_name = 'lang', label = 'Language', default = 'Choose ...')}
+      % for key in hruntime.dbroot.localization.languages.keys():
+        ${ui_select_option(value = key, selected = False, label = str(key))}
+      % endfor
+    ${ui_select_end()}
 
-  <div id="i18n_edit_edit" class="hide">
-    <div class="grid-11-12">
-      ${w_form_text('value', struct = False)}
+    <div class="hide" id="i18n_add_missing"></div>
+
+    ${ui_input(form_name = 'name', type = 'text', label = 'Name')}
+    ${ui_input(form_name = 'value', type = 'text', label = 'Value')}
+
+    ${ui_submit(value = 'Add')}
+  ${ui_form_end()}
+
+  <!-- Edit token -->
+  ${ui_form_start(action = '/admin/i18n/token', legend = 'Edit tokens', id = 'i18n_edit')}
+    ${ui_select_start(form_name = 'lang', label = 'Language', default = 'Choose ...')}
+      % for key in hruntime.dbroot.localization.languages.keys():
+        ${ui_select_option(value = key, selected = False, label = key)}
+      % endfor
+    ${ui_select_end()}
+
+    <div id="i18n_edit_unused"></div>
+
+    ${ui_select_start(form_name = 'token')}
+    ${ui_select_end()}
+
+    <div id="i18n_edit_edit" class="hide">
+      ${ui_textarea(form_name = 'value', size = 'xxlarge')}
     </div>
-    <div class="grid-1-12">
-      <span class="icon icon-medium icon-i18n-remove-token" title="${_('Remove token')}" id="i18n_edit_remove"></span>
-    </div>
-    ${w_submit_row('Change')}
+    <a href="#" id="i18n_edit_remove" title="${_('Remove token')}" rel="tooltip" data-placement="top">
+      <span class="icon-remove"></span>
+    </a>
+
+    ${ui_submit(value = 'Change')}
+  ${ui_form_end()}
+
+</section>
+
+<!-- "Maintenance" section -->
+${ui_section_header('maintenance', 'Maintenance')}
+
+  <!-- Change mode -->
+  ${ui_form_start(action = '/maintenance/mode', legend = 'Maintenance mode', id = 'maintenance_mode')}
+    ${ui_select_start(form_name = 'mode', label = 'Maintenance mode is', default = False)}
+      ${ui_select_option(value = 1, selected = (hruntime.dbroot.server.maintenance_mode == True), label = 'Enabled')}
+      ${ui_select_option(value = 0, selected = (hruntime.dbroot.server.maintenance_mode != True), label = 'Disabled')}
+    ${ui_select_end()}
+
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
+
+  <!-- Grant access -->
+  ${ui_form_start(action = '/maintenance/grant', legend = 'Grant maintenance access', id = 'maintenance_access')}
+    ${ui_input(form_name = 'username', type = 'text', label = 'Username')}
+    ${ui_submit(value = 'Grant')}
+  ${ui_form_end()}
+
+  <div id="maintenance_access_list" class="listview-container grid-layout"></div>
+
+</section>
+
   </div>
-${w_form_end()}
-${row_end()}
-
-${row_start()}
-  ${w_form_start('/maintenance/mode', 'Maintenance mode', 'maintenance_mode')}
-    ${w_form_select('mode', label = 'Maintenance mode is', default = False)}
-      ${w_option('1', hruntime.dbroot.server.maintenance_mode == True, 'Enabled')}
-      ${w_option('0', hruntime.dbroot.server.maintenance_mode != True, 'Disabled')}
-    </select></div>
-    ${w_submit_row('Set')}
-  ${w_form_end()}
-${row_end()}
-
-${row_start()}
-  ${w_form_start('/maintenance/grant', 'Grant maintenance access', 'maintenance_access')}
-    ${w_form_input('username', 'text', label = 'Username')}
-    ${w_submit_row('Grant')}
-  ${w_form_end()}
-${row_end()}
-
-${row_start()}
-<div class="grid-12-12" id="maintenance_access_list">
 </div>
-${row_end()}

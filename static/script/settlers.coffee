@@ -5,23 +5,22 @@ window.settlers = window.settlers or {}
 window.settlers.events = window.settlers.events or {}
 window.settlers.templates = window.settlers.templates or {}
 
-window.settlers.templates.talk = {}
-window.settlers.templates.talk.posts = '
-  {{#posts}}
-    {{stamp_formatted}} - {{author.name}}: {{text}}<br />
-  {{/posts}}
-'
-
 #
 # Classes
 #
 class window.settlers.PullNotify
   constructor:	() ->
     pull_notify = @
+
+#    $('#trumpet_board_dialog').modal
+#      show:			false
+#      backdrop:			'static'
+#      keyboard:			false
+
     __call_update = () ->
       pull_notify.update()
 
-    $('.menu-widget').everyTime '60s', __call_update
+    $('.win-commandlayout').everyTime '60s', __call_update
 
   update:		() ->
     new window.hlib.Ajax
@@ -33,14 +32,15 @@ class window.settlers.PullNotify
           window.hlib.setTitle 'Osadnici'
           window.settlers.hide_menu_alert 'menu_chat'
           window.settlers.hide_menu_alert 'menu_home'
+
           $('#trumpet_board').hide()
+          $('body').css 'margin-top', '0'
 
           to_title = 0
 
           if response.events.chat != false
             to_title += response.events.chat
-            $('#menu_chat .menu-alert').html response.events.chat
-            window.settlers.show_menu_alert 'menu_chat'
+            window.settlers.show_menu_alert 'menu_chat', response.events.chat
 
           if response.events.on_turn != false
             to_title += response.events.on_turn
@@ -51,74 +51,12 @@ class window.settlers.PullNotify
             window.hlib.setTitle window.settlers.title + ' (' + to_title + ')'
 
           if response.events.trumpet != false
-            $('#trumpet_board div').html response.events.trumpet
-            $('#trumpet_board').show()
+            $('#trumpet_board_dialog p').html response.events.trumpet
+            $('#trumpet_board_dialog').show()
 
-          window.hlib.INFO._hide()
+            $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
 
-class window.settlers.Talk
-  constructor: (eid) ->
-    @eid = eid
-    @visible = false
-
-    t = @
-
-    $(@eid).dialog
-      closeOnEscape:	true
-      closeText:        ''
-      autoOpen:         false
-      height:           400
-      width:		350
-      title:		'Chat'
-      modal:            false
-      position:		['center', 'middle']
-      open:		() ->
-        $('#talk_dialog_close').click () ->
-          t.hide()
-          return false
-        return true
-
-    $(@eid + ' div.right input[type="button"]').click () ->
-      t.hide()
-
-  update: () ->
-    t = @
-
-    new window.hlib.Ajax
-      url:		'/talk/posts'
-      handlers:
-        h200:		(response, ajax) ->
-          window.hlib.INFO._hide()
-
-          __per_post = (p) ->
-            d = new Date (p.stamp * 1000)
-            p.stamp_formatted = d.strftime '%d/%m %H:%M'
-
-          __per_post p for p in response.posts
-          $(t.eid + '_posts').html (window.hlib.render window.settlers.templates.talk.posts, response)
-
-  show: () ->
-    t = @
-
-    __call_update = () ->
-      t.update()
-
-    t.update()
-    $(@eid).dialog 'open'
-
-    @visible = true
-
-    $(@eid).everyTime '60s', __call_update
-
-  hide: () ->
-    if not @visible
-      return
-
-    $(@eid).stopTime()
-
-    $(@eid).dialog 'close'
-
-    @visible = false
+          window.hlib.MESSAGE.hide()
 
 #
 # Methods
@@ -127,7 +65,7 @@ window.settlers.render_board_piece = (attrs) ->
   return '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
 
 window.settlers.show_menu_alert = (item, cnt) ->
-  eid = '#' + item + ' .menu-alert'
+  eid = '#' + item + ' span.menu-alert'
 
   if cnt
     $(eid).html cnt
@@ -135,28 +73,25 @@ window.settlers.show_menu_alert = (item, cnt) ->
   $(eid).show()
 
 window.settlers.hide_menu_alert = (item) ->
-  eid = '#' + item + ' .menu-alert'
+  eid = '#' + item + ' span.menu-alert'
 
   $(eid).hide()
 
 window.settlers.autocomplete_options = () ->
-  __autocomplete_callback = (req, res) ->
-    new window.hlib.Ajax
-      url:		'/users_by_name'
-      show_spinner:	false
-      data:
-        term:		req.term
-      handlers:
-        h200:		(response, ajax) ->
-          window.hlib.INFO._hide()
-          res response.users
-        error:		(response, ajax) ->
-          window.hlib.INFO._hide()
-          res []
-
   options =
-    minLength:          3
-    source:             __autocomplete_callback
+    minLength:                  3
+    source:                     (query, process) ->
+      new window.hlib.Ajax
+        url:                    '/users_by_name'
+        show_spinner:           false
+        data:
+          term:                 query
+        handlers:
+          h200:                 (response, ajax) ->
+            process response.users
+          error:                (response, ajax) ->
+            process []
+      return null
 
   return options
 
@@ -181,7 +116,7 @@ window.settlers.setup_chat = (opts) ->
     after_refresh:	(response, pager) ->
       __mark_unread = (post) ->
         if post.id > response.last_board
-          $('#chat_post_' + post.id).addClass 'unread'
+          $('#chat_post_' + post.id + ' .chat-post-unread-badge').show()
 
       __mark_unread post for post in response.page.records
 
@@ -191,11 +126,9 @@ window.settlers.setup_chat = (opts) ->
 
 window.settlers.startup = () ->
   window.hlib.setup_common
-    info_dialog:
-      eid:                    '.info-dialog'
+    message_dialog:		'#message_dialog'
 
   window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
-  window.settlers.TALK = new window.settlers.Talk '#talk_dialog'
 
   window.settlers.setup_settlers()
   window.settlers.setup_page()
@@ -203,7 +136,13 @@ window.settlers.startup = () ->
   if window.settlers.user
     window.settlers.PULL_NOTIFY.update()
 
+window.settlers.post_startup = () ->
+  $('a[rel=tooltip]').tooltip()
+  $('button[rel=tooltip]').tooltip()
+  $('body').css 'margin-bottom', ($('footer').height() + 'px')
+
 #
 # Bind startup event
 #
 $(window).bind 'hlib_startup', window.settlers.startup
+$(window).bind 'hlib_poststartup', window.settlers.post_startup

@@ -1,9 +1,25 @@
 <%!
+  import pygooglechart
+
   import hlib
+
+  def dice_rolls_chart(game):
+    c = pygooglechart.GroupedVerticalBarChart(510, 150)
+
+    c.set_bar_width(19)
+    c.set_bar_spacing(0)
+    c.set_colours(['4E9258', '5E767E'])
+    c.fill_solid(pygooglechart.Chart.BACKGROUND, 'ddddbb')
+
+    c.add_data(game.dice_rolls_stats['with']['numbers'].values())
+    c.add_data(game.dice_rolls_stats['without']['numbers'].values())
+
+    c.set_axis_range(pygooglechart.Axis.BOTTOM, 2, 12)
+
+    return c.get_url().replace('&', '&amp;')
 %>
 
-<%namespace file="../hlib_widgets.mako"  import="*"/>
-<%namespace file="../event.mako"         import="*" />
+<%namespace file="../hlib_ui.mako" import="*" />
 <%namespace file="../lib.mako"           import="*" />
 
 <%inherit file="../page.mako" />
@@ -19,22 +35,29 @@
     $(window).bind('hlib_prestartup', function () {
       window.settlers = window.settlers || {};
       window.settlers.game = {
-        gid:	${game.id}
+        gid:	${game.id},
+        state:	${game.type}
       };
     });
   </script>
 </%def>
 
-<div class="row prepend-top append-bottom" style="overflow: visible">
-  <div class="span-2" id="right_column">
+</div>
+<div class="container">
+
+<div class="row" style="overflow: visible">
+  <div class="span2">
     <div id="game-player-0-placeholder"></div>
+    <hr />
     <div id="game-player-1-placeholder"></div>
+    <hr />
     <div id="game-player-2-placeholder"></div>
+    <hr />
     <div id="game-player-3-placeholder"></div>
   </div>
 
-  <div class="span-8">
-  <div id="views">
+  <div class="span8 board-column">
+    <div id="views">
 
     <ul class="hide">
       <li><a href="#empty">Empty</a></li>
@@ -43,27 +66,52 @@
       <li><a href="#board">Board</a></li>
       <li><a href="#cards">Cards</a></li>
       <li><a href="#exchange">Exchange</a></li>
+      <li><a href="#stats">Stats</a></li>
     </ul>
 
     <div id="empty" class="hide" ></div>
 
     <div id="chat" class="hide">
-      <div class="row">
-        <div class="prepend-2 span-8 last">
-          ${chat_new_post('/game/chat', gid = game.id)}
+      <div style="height: 798px; overflow: auto">
+        <div class="span6">
+        ${ui_form_start(action = '/game/chat/add?gid=' + str(game.id), legend = 'New message', id = 'chat_post')}
+          ${ui_textarea(form_name = 'text', size = 'xlarge')}
+          ${ui_submit(value = 'Add')}
+        ${ui_form_end()}
         </div>
-      </div>
 
-      <div class="row">
-        <div class="span-12 last">
-          ${chat_table(12, prepend = 1)}
+        <div id="chat_posts">
+          <div class="pagination pagination-right">
+            <ul>
+              <li><a href="#" class="chat-first">${_('First')}</a></li>
+              <li><a href="#" class="chat-next">${_('Next')}</a></li>
+              <li></li>
+              <li><a href="#" class="chat-previous">${_('Previous')}</a></li>
+              <li><a href="#" class="chat-last">${_('Last')}</a></li>
+            </ul>
+          </div>
+
+          <table class="table">
+            <tbody>
+            </tbody>
+          </table>
+
+          <div class="pagination pagination-right">
+            <ul>
+              <li><a href="#" class="chat-first">${_('First')}</a></li>
+              <li><a href="#" class="chat-next">${_('Next')}</a></li>
+              <li></li>
+              <li><a href="#" class="chat-previous">${_('Previous')}</a></li>
+              <li><a href="#" class="chat-last">${_('Last')}</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
     <div id="history" class="hide">
       <div style="height: 798px; overflow: auto">
-        <table class="content-table">
+        <table class="table table-hover">
           <caption>${_('Game history')}</caption>
           <thead>
             <tr>
@@ -78,40 +126,40 @@
       </div>
     </div>
 
-    <div id="board" class="hide" style="padding: 0px !important">
-      <div id="invention" class="row hide">
-        ${w_form_start('/game/settlers/invention', 'Invention', 'invention')}
-          ${w_form_input('gid', 'hidden', struct = False)}
-          ${w_form_select('resource1', label = 'First resource')}
+    <div id="board" class="hide board-view">
+      <div id="invention" class="hide">
+        ${ui_form_start(action = '/game/settlers/invention', legend = 'Invention', id = 'invention')}
+          ${ui_input(form_name = 'gid', type = 'hidden')}
+          ${ui_select_start(form_name = 'resource1', label = 'First resource')}
             <option value="1">${_('Wood')}</option>
             <option value="4">${_('Clay')}</option>
             <option value="0">${_('Sheep')}</option>
             <option value="3">${_('Grain')}</option>
             <option value="2">${_('Rock')}</option>
-          </select></div>
-          ${w_form_select('resource2', label = 'Second resource')}
+          ${ui_select_end()}
+          ${ui_select_start(form_name = 'resource2', label = 'Second resource')}
             <option value="1">${_('Wood')}</option>
             <option value="4">${_('Clay')}</option>
             <option value="0">${_('Sheep')}</option>
             <option value="3">${_('Grain')}</option>
             <option value="2">${_('Rock')}</option>
-          </select></div>
-          ${w_submit_row('Add')}
-        ${w_form_end()}
+          ${ui_select_end()}
+          ${ui_submit(value = 'Add')}
+        ${ui_form_end()}
       </div>
 
-      <div id="monopoly" class="row hide">
-        ${w_form_start('/game/settlers/monopoly', 'Monopoly', 'monopoly')}
-          ${w_form_input('gid', 'hidden', struct = False)}
-          ${w_form_select('resource', label = 'Resource')}
+      <div id="monopoly" class="hide">
+        ${ui_form_start(action = '/game/settlers/monopoly', legend = 'Monopoly', id = 'monopoly')}
+          ${ui_input(form_name = 'gid', type = 'hidden')}
+          ${ui_select_start(form_name = 'resource', label = 'Resource')}
             <option value="1">${_('Wood')}</option>
             <option value="4">${_('Clay')}</option>
             <option value="0">${_('Sheep')}</option>
             <option value="3">${_('Grain')}</option>
             <option value="2">${_('Rock')}</option>
-          </select></div>
-          ${w_submit_row('Steal')}
-        ${w_form_end()}
+          ${ui_select_end()}
+          ${ui_submit(value = 'Steal')}
+        ${ui_form_end()}
       </div>
 
       <div class="game-board">
@@ -119,121 +167,125 @@
     </div>
 
     <div id="cards" class="hide">
-      ${w_form_start('/game/buy_card', 'Buy new action card', 'new_card')}
-        ${w_form_input('gid', 'hidden', struct = False)}
-        ${w_submit_row('Buy')}
-      ${w_form_end()}
+      ${ui_form_start(action = '/game/buy_card', legend = 'Buy new action card', id = 'new_card')}
+        ${ui_input(form_name = 'gid', type = 'hidden')}
+        ${ui_submit(value = 'Buy')}
+      ${ui_form_end()}
 
-      <div id="cards_list"></div>
+      <div id="cards_list" class="listview-container grid-layout"></div>
     </div>
 
     <div id="exchange" class="hide">
       <div id="exchange_no">
-        ${w_form_start('/', 'Exchange resources', 'exchange_no')}
-          <div class="grid-12-12">
-            <label>Das ist nich moeglich!</label>
-          </div>
-        ${w_form_end()}
+        <h3>Das ist nich moeglich!</h3>
       </div>
 
-      <div id="exchange_4" class="hide">
-        ${w_form_start('/game/settlers/exchange', 'Exchange 4:1', 'exchange_4')}
-          ${w_form_input('gid', 'hidden', struct = False)}
-          ${w_form_input('ratio', 'hidden', struct = False)}
-          <div class="grid-4-12">
-            ${w_form_select('amount', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-4-12">
-            ${w_form_select('src', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-4-12 last">
-            ${w_form_select('dst', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-12-12">
-            ${w_submit_button('Exchange and return to board', id = 'exchange_4_submit_board')}
-            ${w_submit_button('Exchange')}
-          </div>
-        ${w_form_end()}
-      </div>
+      <%def name="exchange_form(ratio)">
+        <div id="exchange_${ratio}" class="hide">
+          ${ui_form_start(action = '/game/settlers/exchange', legend = 'Exchange ' + str(ratio) + ':1', id = 'exchange_' + str(ratio))}
+            ${ui_input(form_name = 'gid', type = 'hidden')}
+            ${ui_input(form_name = 'ratio', type = 'hidden')}
 
-      <div id="exchange_3" class="hide">
-        ${w_form_start('/game/settlers/exchange?ratio=3', 'Exchange 3:1', 'exchange_3')}
-          ${w_form_input('gid', 'hidden', struct = False)}
-          ${w_form_input('ratio', 'hidden', struct = False)}
-          <div class="grid-4-12">
-            ${w_form_select('amount', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-4-12">
-            ${w_form_select('src', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-4-12 last">
-            ${w_form_select('dst', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-12-12">
-            ${w_submit_button('Exchange and return to board', id = 'exchange_3_submit_board')}
-            ${w_submit_button('Exchange')}
-          </div>
-        ${w_form_end()}
-      </div>
+            ${ui_select_start(form_name = 'amount', default = False)}
+            ${ui_select_end()}
 
-      <div id="exchange_2" class="hide">
-        ${w_form_start('/game/settlers/exchange?ratio=2', 'Exchange 2:1', 'exchange_2')}
-          ${w_form_input('gid', 'hidden', struct = False)}
-          ${w_form_input('ratio', 'hidden', struct = False)}
-          <div class="grid-4-12">
-            ${w_form_select('amount', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-4-12">
-            ${w_form_select('src', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-4-12 last">
-            ${w_form_select('dst', struct = False, default = False)}
-            </select>
-          </div>
-          <div class="grid-12-12">
-            ${w_submit_button('Exchange and return to board', id = 'exchange_2_submit_board')}
-            ${w_submit_button('Exchange')}
-          </div>
-        ${w_form_end()}
+            ${ui_select_start(form_name = 'src', default = False)}
+            ${ui_select_end()}
+
+            ${ui_select_start(form_name = 'dst', default = False)}
+            ${ui_select_end()}
+
+            <div class="control-group">
+              <div class="controls">
+                <input type="submit" value="${_('Exchange and return to board')}" id="exchange_${ratio}_submit_board" />
+                <input type="submit" value="${_('Exchange')}" />
+              </div>
+            </div>
+          ${ui_form_end()}
+        </div>
+      </%def>
+
+      ${exchange_form(4)}
+      ${exchange_form(3)}
+      ${exchange_form(2)}
+    </div>
+
+    <div id="stats" class="hide">
+      <table class="table table-striped">
+        <tr>
+          <th />
+          % for i in range(2, 13):
+            <th>${i}</th>
+          % endfor
+        </tr>
+        <tr>
+          <td style="background-color: #4E9258">${_('With first 3 rounds')}</td>
+          % for i in range(2, 13):
+            <td class="align-center">
+              ${game.dice_rolls_stats['with']['numbers'][i]}
+              <hr />
+              ${int((float(game.dice_rolls_stats['with']['numbers'][i]) / float(game.dice_rolls_stats['with']['sum'])) * 100)}%
+            </td>
+          % endfor
+        </tr>
+        <tr>
+          <td style="background-color: #5e767e">${_('Without first 3 rounds')}</td>
+          % for i in range(2, 13):
+            <td>
+              ${game.dice_rolls_stats['without']['numbers'][i]}
+              <hr />
+              ${int((float(game.dice_rolls_stats['without']['numbers'][i]) / float(game.dice_rolls_stats['without']['sum'])) * 100)}%
+            </td>
+          % endfor
+        </tr>
+      </table>
+
+      <div style="text-align: center">
+        <img src="${dice_rolls_chart(game)}" style="height: 150px"/>
       </div>
+    </div>
+
     </div>
   </div>
-  </div>
 
-  <div class="span-2 last">
-    <div class="playable-info">
-      <div                class="header corners-top">Hra #<span id="game_id" class="playable-id"></span></div>
-      <div id="game_name" class="playable-name info"></div>
-      <div                class="playable-round corners-bottom info important"><span id="game_round"></span>. kolo</div>
+  <div class="span2 menu-column">
+    <div>
+      <header><h3>Hra #<span id="game_id"></span></h3></header>
+
+      <div id="game_name"></div>
+      <div><span id="game_round"></span>. kolo</div>
     </div>
 
-    <div class="settlers-last-numbers">
-      <div class="header corners-top">Last numbers</div>
-      <div class="info important corners-bottom" style="padding-bottom: 1em">
-        <span id="settlers_last_numbers"></span>
-      </div>
+    <hr />
+
+    <div id="last_numbers">
+      <header><h4>${_('Last numbers')}</h4></header>
+
+      <div><p></p></div>
     </div>
 
-    <div class="settlers-game-status framed hide">
-    </div>
+    <hr />
 
-    <div class="framed centered">
-      <span id="show_board"    class="icon icon-giant icon-game-board" title="${_('Show board')}"></span>
-      <span id="show_cards"    class="icon icon-giant icon-game-cards" title="${_('Show cards')}"></span>
-      <span id="show_chat"     class="icon icon-giant icon-playable-chat" title="${_('Show chat')}"></span>
-      <span id="refresh"       class="icon icon-giant icon-game-refresh" title="${_('Refresh')}"></span>
-      <span id="roll_dice"     class="icon icon-giant icon-game-roll-dice" title="${_('Roll dice')}"></span>
-      <span id="pass_turn"     class="icon icon-giant icon-game-pass-turn" title="${_('Pass turn')}"></span>
-      <span id="show_exchange" class="icon icon-giant settlers-icon-game-exchange" title="${_('Exchange resources')}"></span>
-      <span id="show_history"  class="icon icon-giant icon-playable-history" title="${_('Show history')}"></span>
+    <div id="game_status" class="hide text-success"><p></p></div>
+
+    <%def name="menu_entry(id, icon, label)">
+      <button class="win-command" title="${_(label)}" rel="tooltip" data-placement="left" id="${id}">
+        <span class="win-commandimage win-commandring">${icon}</span>
+      </a>
+    </%def>
+
+    <hr />
+
+    <div class="win-commandlayout" style="text-align: center">
+      ${menu_entry('show_board',    '&#xe1a5;', 'Show board')}
+      ${menu_entry('show_cards',    '&#xe15c;', 'Show cards')}
+      ${menu_entry('show_chat',     '&#x005a;', 'Show chat')}
+      ${menu_entry('refresh',       '&#xe124;', 'Refresh')}
+      ${menu_entry('roll_dice',     '&#xe017;', 'Roll dice')}
+      ${menu_entry('pass_turn',     '&#x0060;', 'Pass turn')}
+      ${menu_entry('show_exchange', '&#xe1d4;', 'Exchange resources')}
+      ${menu_entry('show_history',  '&#xe015;', 'Show history')}
+      ${menu_entry('show_stats',    '&#x0072;', 'Show stats')}
     </div>
   </div>
 </div>

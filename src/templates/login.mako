@@ -4,13 +4,15 @@
 
 <%inherit file="page.mako" />
 
-<%namespace file="hlib_widgets.mako"  import="*"/>
+<%namespace file="hlib_ui.mako" import="*" />
 <%namespace file="lib.mako" import="*" />
 
-${row_start()}
-  ${w_form_start('/login/login', 'Game login', 'login')}
-    ${w_form_input('username', 'text', 'Login name')}
-    ${w_form_input('password', 'password', 'Password')}
-    ${w_submit_row('Log in')}
- ${w_form_end()}
-${row_end()}
+${ui_page_header('Settlers')}
+
+${ui_row_start(span = 6)}
+  ${ui_form_start(action = '/login/login', id = 'login', legend = 'Game login')}
+    ${ui_input(type = 'text', label = 'Login name', form_name = 'username')}
+    ${ui_input(type = 'password', label = 'Password', form_name = 'password')}
+    ${ui_submit(value = 'Log in')}
+  ${ui_form_end()}
+${ui_row_end()}

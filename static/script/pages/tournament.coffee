@@ -68,7 +68,7 @@ window.settlers.update_tournament_state = () ->
       h200:             (response, ajax) ->
         window.settlers.tournament = new window.settlers.TournamentObject response.tournament
         window.settlers.update_tournament_ui()
-        window.hlib.INFO._hide()
+        window.hlib.MESSAGE.hide()
 
 window.settlers.update_tournament_ui_info = () ->
   T = window.settlers.tournament

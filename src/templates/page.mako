@@ -6,29 +6,41 @@
   import hruntime
 %>
 
+<%namespace file="hlib_ui.mako" import="*" />
 <%namespace file="lib.mako" import="*" />
-<%namespace file="hlib_widgets.mako" import="*" />
 
 <%inherit file="hlib_page.mako" />
 
+<%def name="script(path)">
+  <script src="/static/script/${path}.js"></script>
+</%def>
+
 <%def name="page_header()">
+  <meta charset="utf-8" />
+
+  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> -->
+  <!-- Mobile viewport optimized: h5bp.com/viewport -->
+  <meta name="viewport" content="width=device-width">
+  <!-- Enable responsive design -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- remove or comment this line if you want to use the local fonts -->
+  <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' /> -->
+
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/static/css/reset.css" type="text/css" media="screen, projection" />
-  <link rel="stylesheet" href="/static/css/settlers.css" type="text/css" media="screen, projection" />
-  <!--[if lt IE 8]>
-    <link rel="stylesheet" href="/static/css/ie.css" type="text/css" media="screen, projection" />
-  <![endif]-->
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootstrap-responsive.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-tiles.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-charms.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/metro-ui-light.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/icomoon.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/datepicker.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/daterangepicker.css">
 
-  <link rel="stylesheet" href="/static/css/formee-structure.css" type="text/css" />
-  <link rel="stylesheet" href="/static/css/formee-style.css" type="text/css" />
+  <script src="/static/metro/scripts/modernizr-2.6.1.min.js"></script>
 
-  <link rel="stylesheet" href="/static/css/settlers-icons.css" type="text/css" />
-
-  % if hruntime.user != None:
-    <link rel="stylesheet" href="/static/css/private.css" type="text/css" />
-  % else:
-    <link rel="stylesheet" href="/static/css/public.css" type="text/css" />
-  % endif
+  <link rel="stylesheet" href="/static/css/settlers.css" type="text/css" />
 
   <!-- Scripts -->
   <script src="https://www.google.com/jsapi?key=ABQIAAAAnT7bvt5eCgJnKE_9xHtWrRQL0gKz-n891IYmna21nNIOzPZZixRfXXTxioGg6bd4WAedyIJq9y470A" type="text/javascript"></script>
@@ -57,7 +69,6 @@
     <link rel="stylesheet" href="/static/css/pages/game.css" type="text/css" />
     <link rel="stylesheet" href="/static/css/games/${kind}/${kind}.css" type="text/css" />
     <link rel="stylesheet" href="/static/css/games/${kind}/${kind}-board.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/games/${kind}/${kind}-icons.css" type="text/css" />
 
     <script type="text/javascript" src="/static/script/pages/game.js"></script>
     <script type="text/javascript" src="/static/script/games/${kind}/${kind}.js"></script>
@@ -109,96 +120,128 @@
 </%def>
 
 <%def name="page_header_public()">
+  <div class="container-fluid">
+</%def>
+
+<%def name="menu_entry(icon, label, href = None, id = None)">
+  <%
+    href = href or '#'
+    id = 'id="' + id + '"' if id else ''
+  %>
+
+  <a class="win-command" href="${href}" title="${_(label)}" rel="tooltip" data-placement="top" ${id} style="position: relative">
+    <span class="win-commandimage win-commandring">${icon}</span>
+    <span class="win-label">${_(label)}</span>
+    % if len(id) > 0:
+      <span class="badge badge-important menu-alert"></span>
+    % endif
+  </a>
 </%def>
 
 <%def name="page_header_private()">
-  <div class="framed menu-widget">
-    <div class="menu-info"><span class="user-name">${hruntime.user.name}</span></div>
-    <hr />
-    <div id="menu_home"><a href="/home/" title="${_('Home')}"><span class="icon icon-large icon-menu-home"><span class="menu-alert"></span></span></a></div>
-    <div><a href="/new/" title="${_('New ...')}"><span class="icon icon-large icon-menu-add"></span></a></div>
-    <div id="menu_chat"><a href="/chat/" title="${_('Chat')}"><span class="icon icon-large icon-menu-chat"><span class="menu-alert"></span></span></a></div>
-    <div id="menu_talk"><a href="/home/" title="${_('Talk')}"><span class="icon icon-large icon-menu-talk"></span></a></div>
-    <div><a href="/stats/" title="${_('Stats')}"><span class="icon icon-large icon-menu-stats"></span></a></div>
-    <div><a href="/settings/" title="${_('Settings')}"><span class="icon icon-large icon-menu-settings"></span></a></div>
-    <div><hr /></div>
-    <div><a href="/help/" title="${_('Help')}"><span class="icon icon-large icon-menu-help"></span></a></div>
-    <div><hr /></div>
-    % if hruntime.user.is_admin:
-      <div><a href="/admin/" title="${_('Admin')}"><span class="icon icon-large icon-menu-admin"></span></a></div>
-      <div><a href="/monitor/" title="${_('Monitor')}"><span class="icon icon-large icon-menu-monitor"></span></a></div>
-      <div><hr /></div>
-    % endif
-    <div><a href="/logout/" id="menu_logout" title="${_('Log out')}"><span class="icon icon-large icon-menu-logout"></span></a></div>
-  </div>
+  <div class="container-fluid">
 </%def>
 
 <%def name="page_footer_private()">
+  <%
+    current_page_name = next.name.split(':')[1].split('.')[0]
+  %>
+
+  </div>
+
+  <footer class="win-commandlayout navbar-fixed-bottom navbar-inverse win-ui-dark">
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12" style="text-align: center">
+          ${menu_entry('&#x0021;', 'Home', href = '/home/', id = 'menu_home')}
+          ${menu_entry('&#xe03e;', 'New ...', href = '/new/')}
+          ${menu_entry('&#xe20d;', 'Board', href = '/chat/', id = 'menu_chat')}
+          ${menu_entry('&#x0072;', 'Stats', href = '/stats/')}
+          ${menu_entry('&#x0070;', 'Settings', href = '/settings/')}
+
+          <hr class="win-command" />
+
+          ${menu_entry('&#xe1a4;', 'Help', href = '/help/')}
+
+          % if hruntime.user.is_admin:
+            ${menu_entry('&#x006e;', 'Admin', href = '/admin/')}
+            ${menu_entry('&#xe037;', 'Monitor', href = '/monitor/')}
+            <hr class="win-command" />
+          % endif
+          ${menu_entry('&#xe040;', 'Log out', href = '/logout', id = 'menu_logout')}
+        </div>
+      </div>
+    </div>
+  </footer>
 </%def>
 
 <%def name="page_footer_public()">
+  </div>
+
   <%
     current_page_name = next.name.split(':')[1].split('.')[0]
     if current_page_name == 'maintenance':
       return ''
   %>
 
-  <div class="row">
-    <div class="prepend-3 span-6 last" style="text-align: center">
+  <div class="row-fluid">
+    <div class="offset3 span6" style="text-align: center">
       <a href="/login/">${_('Log in')}</a> | <a href="/registration/">${_('Registration')}</a> | <a href="/registration/recovery/">${_('Forgot password?')}</a> | <a href="/loginas/">${_('Admin login')}</a>
     </div>
   </div>
 
-% if True:
-  <div class="row">
-    <div class="prepend-top prepend-3 span-6 last poweredby-box">
+% if False:
+  <div class="row-fluid">
+    <div class="offset3 span6 poweredby-box">
       ${powered_by('www.python.org', 'python-powered-w-100x40.png', 'Python')}
       ${powered_by('www.lighttpd.net', 'light_logo.png', 'Lighttpd')}
       ${powered_by('www.makotemplates.org', 'makoLogo.png', 'Mako Templates')}
       ${powered_by('www.jquery.com', 'powered_by-jquery.png', 'JQuery')}
       ${powered_by('jashkenas.github.com/coffee-script/', 'coffeescript_logo.png', 'CoffeeScript')}
-      ${powered_by('formee.org', 'formee.png', 'Formee')}
     </div>
   </div>
 % endif
 </%def>
 
-<div class="container">
-  % if hruntime.user != None:
-    ${page_header_private()}
-  % else:
-    ${page_header_public()}
-  % endif
-
-  <div class="row">
-    <div id="trumpet_board" class="prepend-top prepend-3 span-6 last hide">
-      <div class="formee-msg-info"></div>
-    </div>
+<div class="modal warning hide trumpet-board" tabindex="-1" role="dialog" aria-hidden="true" id="trumpet_board_dialog">
+  <div class="modal-body">
+    <p></p>
   </div>
+</div>
 
-  <div class="prepend-top append-bottom">
-    ${next.body()}
-  </div>
+% if hruntime.user != None:
+  ${page_header_private()}
+% else:
+  ${page_header_public()}
+% endif
+
+${next.body()}
 
 % if hruntime.user != None:
   ${page_footer_private()}
 % else:
   ${page_footer_public()}
 % endif
-</div>
 
-<div id="info_dialog" class="info-dialog formee hide"></div>
 <span id="pull-notify" class="hide"></span>
 
-<div id="talk_dialog" class="talk-dialog formee hide">
-  ${w_form_start('/talk/add', 'Chat', 'talk_add')}
-    ${w_form_input('text', 'text')}
-
-    <div ${w_helper_class([], append = ['grid-12-12'])}>
-      ${w_button('Close', id = 'talk_dialog_close')}
-      ${w_submit_button('Add', id = 'talk_dialog_add')}
-    </div>
-  ${w_form_end()}
-
-  <div id="talk_dialog_posts" class="talk-dialog-posts"></div>
+<!-- Message dialog -->
+<div class="modal message hide fade" tabindex="-1" role="dialog" aria-hidden="true" id="message_dialog">
+  <div class="modal-header">
+    <h3></h3>
+  </div>
+  <div class="modal-body">
+    <p></p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-large" data-dismiss="modal">${_('Close')}</button>
+  </div>
 </div>
+
+<script src="/static/metro/scripts/jquery.mousewheel.js"></script>
+<script src="/static/metro/scripts/jquery.scrollTo.js"></script>
+<script src="/static/metro/scripts/bootstrap.js"></script>
+<script src="/static/metro/scripts/bootmetro.js"></script>
+<script src="/static/metro/scripts/bootmetro-charms.js"></script>
+<script src="/static/metro/scripts/holder.js"></script>
+<script src="/static/metro/scripts/bootstrap-datepicker.js"></script>

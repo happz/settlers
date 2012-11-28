@@ -1,10 +1,6 @@
 @import "lib.scss";
 
 @mixin token-list() {
-    @include corners-top();
-    @include corners-bottom();
-    @include flip-block();
-
     height:			15em;
     overflow:			auto;
 
@@ -17,30 +13,4 @@
 
 .i18n-missing-tokens {
     @include token-list();
-}
-
-ul.maintenance-access-list {
-    li {
-        &:hover {
-            background:		$color_background none;
-        }
-
-        &:first-child {
-            @include corners-top();
-            border-top-width:	1px !important;
-        }
-
-        &:last-child {
-            @include corners-bottom();
-            border-bottom-width:	1px !important;
-        }
-    }
-}
-
-span.icon-i18n-remove-token {
-    background:			url(/static/images/icons/Delete48.png);
-}
-
-span.icon-maintenance-access-revoke {
-    background-image:		url(/static/images/icons/Delete32.png);
 }

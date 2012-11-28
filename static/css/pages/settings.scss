@@ -7,29 +7,3 @@
     }
     padding-left:				25px;
 }
-
-.ui-datepicker-trigger {
-    display:					none;
-}
-
-.opponent-colors-list {
-    li {
-        &:hover {
-            background:                 $color_background none;
-        }
-
-        &:first-child {
-            @include corners-top();
-            border-top-width:                     1px !important;
-        }
-
-        &:last-child {
-            @include corners-bottom();
-            border-bottom-width:                  1px !important;
-        }
-    }
-}
-
-span.icon-opponent-color-remove {
-    background-image:           url(/static/images/icons/Delete32.png);
-}

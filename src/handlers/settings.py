@@ -1,6 +1,5 @@
 import calendar
 import time
-import pprint
 
 import hlib
 import hlib.api
@@ -57,22 +56,11 @@ class OpponentsHandler(handlers.GenericHandler):
   @require_login
   @validate_by(schema = GenericValidateKind)
   @api
-  def colors(self, kind = None):
-    gm = games.game_module(kind)
-
-    return hlib.api.Reply(200, colors = [gm.COLOR_SPACE.colors[cn].to_api() for cn in gm.COLOR_SPACE.unused_colors(hruntime.user)])
-
-  @require_login
-  @validate_by(schema = GenericValidateKind)
-  @api
   def opponents(self, kind = None):
     gm = games.game_module(kind)
 
     if kind not in hruntime.user.colors:
       return hlib.api.Reply(200, users = [])
-
-    for k, v in hruntime.user.colors[kind].items():
-      print k, v
 
     return hlib.api.Reply(200, users = [OpponentColor(hruntime.dbroot.users[username], gm.COLOR_SPACE.colors[hruntime.user.colors[kind][username]]) for username in hruntime.user.colors[kind].keys() if username != hruntime.user.name])
 
@@ -216,6 +204,17 @@ class Handler(handlers.GenericHandler):
   #
   # Change user's color
   #
+  class ValidateUnusedColors(SchemaValidator):
+    kind = ValidateKind()
+
+  @require_login
+  @validate_by(schema = ValidateUnusedColors)
+  @api
+  def unused_colors(self, kind = None):
+    gm = games.game_module(kind)
+
+    return hlib.api.Reply(200, colors = [{'name': color.name, 'label': color.label} for color in [gm.COLOR_SPACE.colors[name] for name in gm.COLOR_SPACE.unused_colors(hruntime.user)]])
+
   class ValidateMyColor(SchemaValidator):
     kind = ValidateKind()
     color = ValidateColor()

@@ -1,16 +1,18 @@
-<%namespace file="lib.mako"          import="*"/>
-<%namespace file="hlib_widgets.mako" import="*"/>
+<%namespace file="hlib_ui.mako" import="*" />
+<%namespace file="lib.mako" import="*"/>
 
 <%inherit file="page.mako" />
 
-<div class="row">
-  <div class="prepend-3 span-6 last">
+${ui_page_header('Chat')}
+
+<div class="row-fluid">
+  <div class="span12">
     ${chat_new_post('/chat')}
   </div>
 </div>
 
-<div class="row">
-  <div class="span-12">
-    ${chat_table(12, prepend = 1)}
+<div class="row-fluid">
+  <div class="span12">
+    ${chat_table()}
   </div>
 </div>

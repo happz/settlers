@@ -3,7 +3,7 @@
   import lib.trumpet
 %>
 
-<%namespace file="hlib_widgets.mako"  import="*"/>
+<%namespace file="hlib_ui.mako" import="*" />
 
 <%inherit file="page.mako" />
 

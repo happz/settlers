@@ -6,5 +6,5 @@ window.settlers.setup_page = () ->
     clear_fields:		['username', 'password1', 'password2', 'email']
     handlers:
       s200:     (response, form) ->
-        window.hlib.INFO.success 'New account created, you may log in', () ->
+        window.hlib.INFO.show 'Registration', 'New account created, you may log in'
         window.hlib.redirect '/login/'

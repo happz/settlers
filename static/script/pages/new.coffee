@@ -1,11 +1,8 @@
 window.settlers.setup_forms = () ->
-  autocomplete_options = window.settlers.autocomplete_options()
-
   __setup_autocomplete = (eid) ->
     options = window.settlers.autocomplete_options()
-    options.appendTo = $(eid).parent()
 
-    $(eid).autocomplete options
+    $(eid).typeahead options
 
   __setup_autocomplete '#new_game_opponent1'
   __setup_autocomplete '#new_game_opponent2'
@@ -37,23 +34,5 @@ window.settlers.setup_forms = () ->
       s400:     (response, form) ->
         window.hlib.form_default_handlers.s400 response, form
 
-window.settlers.setup_views = () ->
-  $('#show_game').click () ->
-    $('#views').tabs 'select', 0
-    $('#show_game').hide()
-    $('#show_tournament').show()
-
-  $('#show_tournament').click () ->
-    $('#views').tabs 'select', 1
-    $('#show_tournament').hide()
-    $('#show_game').show()
-
-  $('#views').tabs()
-
-  $('#views').tabs 'select', 0
-  $('#show_game').hide()
-  $('#show_tournament').show()
-
 window.settlers.setup_page = () ->
   window.settlers.setup_forms()
-  window.settlers.setup_views()
