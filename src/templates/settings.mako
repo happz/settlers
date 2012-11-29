@@ -152,7 +152,7 @@ ${ui_section_header('api', 'API')}
 
   <div class="listview-container grid-layout">
     <div class="mediumListIconTextItem">
-      <img src="holder.js/60x60" class="mediumListIconTextItem-Image" />
+      <img src="/static/metro/scripts/holder.js/60x60" class="mediumListIconTextItem-Image" />
       <div class="mediumListIconTextItem-Detail">
         <h4>Osadnici - Hlidacek</h4>
         <a href="http://osadnici-test.happz.cz/static/settlers-notify.exe">Download</a>
