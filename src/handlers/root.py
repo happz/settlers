@@ -58,7 +58,7 @@ class Handler(hlib.handlers.root.Handler):
   registration = handlers.registration.Handler()
   stats        = handlers.stats.StatsHandler()
   vacation     = handlers.vacation.VacationHandler()
-  maint        = handlers.maint.MaintHandler()
+  maint        = handlers.maint.Handler()
   game         = handlers.game.Handler()
   tournament   = handlers.tournament.Handler()
 

@@ -9,89 +9,42 @@ import hlib.event
 import events.game
 import tournament
 
+import hlib.event
+
+import lib.play
+
 # Handlers
-from handlers import page
+from handlers import page, require_write
 from hlib.api import api
 
 # pylint: disable-msg=F0401
 import hruntime
 
-def process_games_begin(gs):
-  for game in gs:
-    if game.deadline > hruntime.time:
-      continue
-
-    game.cancel(reason = events.game.GameCanceled.REASON_EMPTY, user = None)
-
-def process_games_turn(gs):
-  for game in gs:
-    if hruntime.time <= game.deadline:
-      continue
-
-    player = game.forhont_player
-
-    if game.last_pass <= player.user.atime and player.user.atime <= game.deadline:
-      player.turns_missed = player.turns_missed + 1
-      hlib.event.trigger('game.PlayerMissed', game, game = game, user = player.user, logged = True)
-
-    else:
-      player.turns_missed_notlogged = player.turns_missed_notlogged + 1
-      hlib.event.trigger('game.PlayerMissed', game, game = game, user = player.user, logged = False)
-
-    if player.has_too_many_misses(logged=False):
-      game.cancel(reason = events.game.GameCanceled.REASON_ABSENTEE, user = player.user)
-
-    else:
-      if game.has_next_player == True:
-        hruntime.session.name = player.user.name
-        game.type = games.Game.TYPE_GAME
-        game.pass_turn(check = False, record = False, forced = True)
-
-      else:
-        game.cancel(reason = events.game.GameCanceled.REASON_MASSIVE, user = None)
-
-class MaintHandler(handlers.GenericHandler):
+class Handler(handlers.GenericHandler):
+  @require_write
   @api
-  def process_timeouts(self):
-    process_games_begin([g for g in hruntime.dbroot.games if g.is_free and g.is_waiting_begin])
-    process_games_turn([g for g in games.f_active if g.is_waiting_begin])
+  def process_archive_deadlines(self):
+    def __process_list(playable_list, playable_archived_list, event_name, handle_name):
+      archived = []
 
-    raise hlib.error.DieError()
+      for p in playable_list.values():
+        try:
+          if p.archive_deadline >= hruntime.time:
+            continue
+        except lib.play.CannotBeArchivedError, e:
+          continue
 
-  @api
-  def process_deads(self):
-    for u in hruntime.server.dead_accounts:
-      u.delete_from_db()
+        archived.append(p)
 
-    raise hlib.error.DieError()
+      for p in archived:
+        del playable_list[p.id]
 
-  @api
-  def refresh_stats(self):
-    # pylint: disable-msg=R0201
-    games.settlers.stats.GamesStats.refresh_stats()
+        playable_archived_list[p.id] = p
 
-  @api
-  def create_system_games(self):
-    def __create_games(count, limit):
-      # pylint: disable-msg=W0612
-      for i in range(0, count):
-        games.create_system_game('settlers', limit = limit, turn_limit = 604800)
-        time.sleep(5)
-        hruntime.time = None
+        kwargs = {handle_name: p}
+        hlib.event.trigger(event_name, p, **kwargs)
 
-    cnt = hruntime.server.free_system_games_count
-    if cnt <= 20:
-      __create_games(20 - cnt, 3)
+      return [p.id for p in archived]
 
-  @api
-  def process_tournaments(self):
-    for t in hruntime.dbroot.tournaments.values():
-      if t.stage != tournament.Tournament.STAGE_RUNNING:
-        continue
-
-      if t.has_closed_all_games != True:
-        continue
-
-      t.next_round()
-
-    raise hlib.error.DieError()
+    return hlib.api.Reply(200, archived_games = __process_list(hruntime.dbroot.games, hruntime.dbroot.games_archived, 'game.GameArchived', 'game'),
+                               archived_tournaments = __process_list(hruntime.dbroot.tournaments, hruntime.dbroot.tournaments_archived, 'tournament.Archived', 'tournament'))

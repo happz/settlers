@@ -42,6 +42,9 @@ class Created(Event):
 class Finished(Event):
   pass
 
+class Archived(Event):
+  pass
+
 class Canceled(Event):
   pass
 

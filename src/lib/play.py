@@ -262,3 +262,7 @@ class PlayableLists(object):
       self.inval_players(p)
 
     return True
+
+  def archived(self, p):
+    with self._lock:
+      self.inval_players(p)

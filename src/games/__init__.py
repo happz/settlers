@@ -667,6 +667,7 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
 # Event hooks
 hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.created(e.game))
 hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.finished(e.game))
+hlib.event.Hook('game.GameArchived', 'invalidate_caches', lambda e: _game_lists.archived(e.game))
 hlib.event.Hook('game.PlayerJoined', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
 hlib.event.Hook('game.PlayerInvited', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
 

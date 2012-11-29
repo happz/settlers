@@ -218,6 +218,7 @@ class TournamentError(hlib.error.BaseError):
 
 hlib.event.Hook('tournament.Created', 'invalidate_caches',  lambda e: _tournament_lists.created(e.tournament))
 hlib.event.Hook('tournament.Finished', 'invalidate_caches', lambda e: _tournament_lists.finished(e.tournament))
+hlib.event.Hook('tournament.Archived', 'invalidate_caches', lambda e: _tournament_lists.archived(e.tournament))
 
 import events.tournament
 
