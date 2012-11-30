@@ -57,14 +57,14 @@ config_defaults = {
   }
 }
 
-def __on_request_started(e):
+def on_request_started(e):
   # pylint: disable-msg=W0613
   hruntime.i18n = hruntime.dbroot.localization.languages['cz']
 
   if hruntime.user and hruntime.user.is_on_vacation and hruntime.request.config.get('survive_vacation', None) != True:
     raise hlib.http.Redirect('/vacation/')
 
-hlib.event.Hook('engine.RequestStarted', 'settlers_generic', __on_request_started)
+hlib.event.Hook('engine.RequestStarted', 'settlers_generic', on_request_started)
 
 def main():
   """
