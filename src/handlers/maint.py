@@ -17,6 +17,8 @@ import lib.play
 from handlers import page, require_write
 from hlib.api import api
 
+from hlib.input import validate_by
+
 # pylint: disable-msg=F0401
 import hruntime
 
@@ -48,3 +50,10 @@ class Handler(handlers.GenericHandler):
 
     return hlib.api.Reply(200, archived_games = __process_list(hruntime.dbroot.games, hruntime.dbroot.games_archived, 'game.GameArchived', 'game'),
                                archived_tournaments = __process_list(hruntime.dbroot.tournaments, hruntime.dbroot.tournaments_archived, 'tournament.Archived', 'tournament'))
+
+  @require_write
+  @validate_by(schema = games.GenericValidateKind)
+  @api
+  def refresh_stats_games(self, kind = None):
+    gm = games.game_module(kind, submodule = 'stats')
+    gm.stats.refresh_stats()
