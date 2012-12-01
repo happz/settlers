@@ -652,6 +652,7 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
 
   flags = gm.GameCreationFlags(**kwargs)
 
+  flags.kind			= kind
   flags.name      = label
   flags.password  = None
   flags.desc      = ''
