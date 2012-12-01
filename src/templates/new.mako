@@ -36,7 +36,7 @@ ${ui_section_header('game', 'Game')}
         <!-- Description -->
         ${ui_input(form_name = 'desc', type = 'text', label = 'Game description')}
 
-        ${ui_submit(value = 'Create', id = 'submit')}
+        ${ui_submit(value = 'Create', id = 'new_game_submit')}
       </fieldset>
 
       <fieldset>
@@ -105,7 +105,7 @@ ${ui_section_header('tournament', 'Tournament')}
         <!-- Description -->
         ${ui_input(form_name = 'desc', type = 'text', label = 'Tournament description')}
 
-        ${ui_submit(value = 'Create', id = 'submit')}
+        ${ui_submit(value = 'Create', id = 'new_tournament_submit')}
       </fieldset>
 
       <fieldset>
