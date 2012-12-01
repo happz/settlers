@@ -139,12 +139,14 @@ ${ui_section_header('api', 'API')}
     </div>
   ${ui_form_end()}
 
-  <h4>${_('Current API token')}</h4>
-  <code id="api_token_token">
-    % if len(hruntime.user.api_tokens) > 0:
-      ${hruntime.user.api_tokens[0]}
-    % endif
-  </code>
+  % if len(hruntime.user.api_tokens) > 0:
+    <h4>${_('Current API token')}</h4>
+      <code id="api_token_token">
+        ${hruntime.user.api_tokens[0]}
+      </code>
+  % else:
+    <strong>${_('You have no API token yet. If you need one click "New token" button')}</strong>
+  % endif
 
   <hr />
 
