@@ -57,3 +57,17 @@ class Handler(handlers.GenericHandler):
   def refresh_stats_games(self, kind = None):
     gm = games.game_module(kind, submodule = 'stats')
     gm.stats.refresh_stats()
+
+  @require_write
+  @api
+  def create_system_games(self):
+    def __create_games(count, limit):
+      for i in range(0, count):
+        g = games.create_system_game('settlers', limit = limit, turn_limit = 604800)
+        time.sleep(5)
+        hruntime.time = None
+
+    cnt = hruntime.dbroot.counters.free_games
+    if cnt <= hruntime.app.config['system_games.limit']:
+      __create_games(hruntime.app.config['system_games.limit'] - cnt, hruntime.app.config['system_games.sleep'])
+      games._game_lists.inval_all('active')

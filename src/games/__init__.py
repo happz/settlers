@@ -645,7 +645,7 @@ class Board(hlib.database.DBObject):
 def create_system_game(kind, label = None, owner = None, **kwargs):
   gm = games.game_module(kind)
 
-  owner = owner or hruntime.dbroot.users[1]
+  owner = owner or hruntime.dbroot.users['SYSTEM']
 
   if label == None:
     label = 'SH - ' + time.strftime('%d/%m/%Y %H:%M:%S', hruntime.localtime)

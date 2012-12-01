@@ -247,6 +247,10 @@ class PlayableLists(object):
 
     return True
 
+  def inval_all(self, l):
+    with self._lock:
+      setattr(self, '_' + l, {})
+
   # Shortcuts
   def created(self, p):
     return True

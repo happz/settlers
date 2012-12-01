@@ -54,6 +54,10 @@ config_defaults = {
   },
   'session':			{
     'time':			21600
+  },
+  'system_games':		{
+    'limit':			20,
+    'sleep':			3
   }
 }
 
@@ -98,6 +102,9 @@ def main():
   app.config['log.access.format']	= config.get('log', 'access_format')
   app.channels.access = [stderr, access]
   app.channels.error  = [stderr, error]
+
+  app.config['system_games.limit']	= int(config.get('system_games', 'limit'))
+  app.config['system_games.sleep']	= int(config.get('system_games', 'sleep'))
 
   server_config			= hlib.server.Server.default_config()
   server_config['server']	= config.get('server', 'host')
