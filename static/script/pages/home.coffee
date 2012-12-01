@@ -4,7 +4,7 @@ window.settlers.templates.recent_events.playables = '
     <div id="{{eid}}" class="mediumListIconTextItem">
       <div class="icon-grid-view mediumListIconTextItem-Image" />
       <div class="mediumListIconTextItem-Detail">
-        <h4>{{#is_game}}{{#_g}}Game{{/_g}}{{/is_game}}{{^is_game}}{{#_g}}Tournament{{/_g}}{{/is_game}}&nbsp;{{id}} - {{name}}</h4>
+        <h4 title="{{name}}">{{#is_game}}{{#_g}}Game{{/_g}}{{/is_game}}{{^is_game}}{{#_g}}Tournament{{/_g}}{{/is_game}}&nbsp;{{id}} - {{name}}</h4>
         <div class="btn-toolbar">
           <div class="btn-group">
             {{#is_present}}

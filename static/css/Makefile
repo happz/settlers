@@ -1,4 +1,5 @@
 STYLES = settlers.css pages/settings.css pages/game.css pages/admin.css pages/maintenance.css pages/monitor.css \
+         pages/home.css \
          games/settlers/settlers.css
 
 all: $(STYLES)
