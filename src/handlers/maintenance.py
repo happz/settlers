@@ -77,7 +77,7 @@ class Handler(handlers.GenericHandler):
   @api
   def grant(self, username = None):
     if username not in hruntime.dbroot.users:
-      raise hlib.error.NoSuchUserError(username)
+      raise hlib.error.NoSuchUserError(username, invalid_field = 'username')
 
     u = hruntime.dbroot.users[username]
     u.maintenance_access = True
