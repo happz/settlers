@@ -6,6 +6,8 @@ Data layer objects and method
 @license:			DPL (U{http://www.php-suit.com/dpl})
 """
 
+import threading
+
 import hlib
 import hlib.database
 import hlib.datalayer
@@ -21,17 +23,23 @@ import hruntime
 from hlib.datalayer import DummyUser
 
 # --- Database records -----------------------------------------------
+counters_lock = threading.RLock()
+
+class Counters(hlib.database.DBObject):
+  def __getattr__(self, name):
+    if name == 'total_games':
+      return len(hruntime.dbroot.games) + len(hruntime.dbroot.games_archived)
+
+    if name == 'free_games':
+      return len([g for g in hruntime.dbroot.games.values() if g.is_free])
+
+    return hlib.database.DBObject.__getattr__(self, name)
+
 class Server(hlib.datalayer.Server):
   def __init__(self):
     hlib.datalayer.Server.__init__(self)
 
     self.chat_posts		= lib.chat.ChatPosts()
-
-  def __getattr__(self, name):
-    if name == 'total_games_count':
-      return len(hruntime.dbroot.games) + len(hruntime.dbroot.games_archived)
-
-    return hlib.datalayer.Server.__getattr__(self, name)
 
 class Stats(hlib.database.DBObject):
   def __init__(self):
@@ -61,6 +69,7 @@ class Root(hlib.datalayer.Root):
     self.stats   = Stats()
     self.trumpet = Trumpet()
 
+    self.counters		= Counters()
     self.dummy_owner = None
 
 class Vacation(hlib.database.DBObject):
@@ -163,4 +172,3 @@ class User(hlib.datalayer.User):
 
   def vacation_add_game(self):
     self.vacation = max(self.vacation + 86400, 2592000)
-
