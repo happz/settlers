@@ -1,7 +1,7 @@
 window.settlers.templates.recent_events = {}
 window.settlers.templates.recent_events.playables = '
   {{#playables}}
-    <div id="{{eid}}" class="mediumListIconTextItem">
+    <div id="{{eid}}" class="mediumListIconTextItem" data-placement="top" data-content="{{{players_list}}}" data-title="{{name}}">
       <div class="icon-grid-view mediumListIconTextItem-Image" />
       <div class="mediumListIconTextItem-Detail">
         <h4 title="{{name}}">{{#is_game}}{{#_g}}Game{{/_g}}{{/is_game}}{{^is_game}}{{#_g}}Tournament{{/_g}}{{/is_game}}&nbsp;{{id}} - {{name}}</h4>
@@ -114,25 +114,6 @@ window.settlers.setup_page = () ->
   decorate_playable = (p) ->
     peid = '#' + p.peid
 
-    p.players_list = () ->
-      l = []
-
-      __fmt_player = (player) ->
-        s = player.user.name
-
-        if player.user.is_online == true
-          s = '<span class="user-online">' + s + '</span>'
-
-        if player.is_confirmed != true
-          s = '<span class="user-invited">' + s + '</span>'
-
-        if player.is_on_turn == true
-          s = '<span class="user-onturn">' + s + '</span>'
-
-        return s
-
-      l = (__fmt_player player for player in p.players)
-      return l.join ', '
 
     __generic_click = (button, postfix) ->
       eid = '#' + p.eid
@@ -227,12 +208,38 @@ window.settlers.setup_page = () ->
       d = new Date (p.archive_deadline * 1000)
       console.log d.strftime '%d/%m %H:%M'
 
+    $('#' + p.eid).popover
+      html:			true
+      trigger:			'hover'
+
   refresh_list = (opts) ->
     $(opts.eid).html ''
 
     opts.playables.sort cmp_playables
 
     __per_playable = (p) ->
+      __players_list = () ->
+        l = []
+
+        __fmt_player = (player) ->
+          s = player.user.name
+
+          if player.user.is_online == true
+            s = '<span class=\'user-online\'>' + s + '</span>'
+
+          if player.is_confirmed != true
+            s = '<span class=\'user-invited\'>' + s + '</span>'
+
+          if player.is_on_turn == true
+            s = '<span class=\'user-onturn\'>' + s + '</span>'
+
+          return s
+
+        l = (__fmt_player player for player in p.players)
+        return l.join ', '
+
+      p.players_list = __players_list
+
       p.eid = 'playable_' + (if p.is_game then 'game' else 'tournament') + '_' + p.id
 
     __per_playable p for p in opts.playables
