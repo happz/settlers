@@ -346,11 +346,11 @@ window.settlers.templates.game.player = '
     <table class="table table-condensed">
       <tr class="success"><td colspan="2"><strong>{{points}} {{#_g}}points{{/_g}}</strong></td></tr>
       {{#my_player}}
-        <tr><td>{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
-        <tr><td>{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
-        <tr><td>{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
-        <tr><td>{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
-        <tr><td>{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/wood.gif" />{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/clay.gif" />{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/sheep.gif" />{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/grain.gif" />{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/rock.gif" />{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
         <tr class="info"><td>{{#_g}}Total{{/_g}}:</td><td>{{resources.total}}</td></tr>
       {{/my_player}}
       {{^my_player}}
@@ -524,6 +524,8 @@ window.settlers.update_game_ui_info = () ->
 
 window.settlers.update_game_ui_player = (player) ->
   dst_id = '#game-player-' + player.id + '-placeholder'
+
+  player.game = window.settlers.game
 
   $(dst_id).html ''
   rendered = window.hlib.render window.settlers.templates.game.player, player
