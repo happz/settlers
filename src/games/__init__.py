@@ -465,8 +465,6 @@ class Game(lib.play.Playable):
     pass
 
   def pass_turn_real(self, record = True, forced = False):
-    print ('entering "pass_turn" with state %i and forhont %s' % (self.type, self.forhont_player.user.name)).encode('ascii', 'replace')
-
     if record:
       prev_player = self.forhont_player
       next_round = self.do_pass_turn(forced = forced)
@@ -479,8 +477,6 @@ class Game(lib.play.Playable):
 
     if next_round == True:
       self.round = self.round + 1
-
-    print ('leaving "pass_turn" with state %i and forhont %s' % (self.type, self.forhont_player.user.name)).encode('ascii', 'replace')
 
   def pass_turn(self, check = True, record = False, forced = False):
     if check == True:
