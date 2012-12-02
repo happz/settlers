@@ -5,13 +5,6 @@
 
 <%namespace file="hlib_ui.mako" import="*" />
 
-<%def name="page_header()">
-  ${parent.page_header()}
-
-  <link rel="stylesheet" href="/static/css/jquery.qtip.css" type="text/css" />
-  <script type="text/javascript" src="/static/script/jquery.qtip.js"></script>
-</%def>
-
 <%inherit file="page.mako" />
 
 ${ui_page_header('Home')}

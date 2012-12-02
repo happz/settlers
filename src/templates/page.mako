@@ -128,10 +128,6 @@
 ## Start rendering
 ##
 
-<%def name="powered_by(link, img, label)">
-  <a href="http://${link}/"><img src="/static/images/poweredby/${img}" alt="${label}" /></a>
-</%def>
-
 <%def name="page_header_public()">
   <div class="container-fluid">
 </%def>
@@ -202,18 +198,6 @@
       <a href="/login/">${_('Log in')}</a> | <a href="/registration/">${_('Registration')}</a> | <a href="/registration/recovery/">${_('Forgot password?')}</a> | <a href="/loginas/">${_('Admin login')}</a>
     </div>
   </div>
-
-% if False:
-  <div class="row-fluid">
-    <div class="offset3 span6 poweredby-box">
-      ${powered_by('www.python.org', 'python-powered-w-100x40.png', 'Python')}
-      ${powered_by('www.lighttpd.net', 'light_logo.png', 'Lighttpd')}
-      ${powered_by('www.makotemplates.org', 'makoLogo.png', 'Mako Templates')}
-      ${powered_by('www.jquery.com', 'powered_by-jquery.png', 'JQuery')}
-      ${powered_by('jashkenas.github.com/coffee-script/', 'coffeescript_logo.png', 'CoffeeScript')}
-    </div>
-  </div>
-% endif
 </%def>
 
 <div class="modal warning hide trumpet-board" tabindex="-1" role="dialog" aria-hidden="true" id="trumpet_board_dialog">

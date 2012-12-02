@@ -1,1 +1,0 @@
-../../libs/jquery.qtip.min.js

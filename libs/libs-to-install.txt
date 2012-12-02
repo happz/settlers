@@ -16,12 +16,6 @@
 
 	ln -sr jquery.form.min.js ../static/script/jquery.form.js
 
-***jQuery qTip
-	http://craigsworks.com/projects/qtip/docs/
-
-	ln -sr jquery.qtip.min.js ../static/script/jquery.qtip.js
-	ln -sr jquery.qtip.css ../static/css/jquery.qtip.min.css
-
 *** jQuery Sound
 	http://code.google.com/p/wixet/source/browse/trunk/web/js/jquery-sound.js?spec=svn292&r=292
 
