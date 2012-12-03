@@ -444,8 +444,8 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
     resources:		[
       __mk_resource_option 1
       __mk_resource_option 4
-      __mk_resource_option 3
       __mk_resource_option 0
+      __mk_resource_option 3
       __mk_resource_option 2
     ]
 
@@ -459,10 +459,10 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
       src_resources.resources.push __mk_resource_option 1
     if my_player.resources.clay >= i
       src_resources.resources.push __mk_resource_option 4
-    if my_player.resources.grain >= i
-      src_resources.resources.push __mk_resource_option 3
     if my_player.resources.sheep >= i
       src_resources.resources.push __mk_resource_option 0
+    if my_player.resources.grain >= i
+      src_resources.resources.push __mk_resource_option 3
     if my_player.resources.rock >= i
       src_resources.resources.push __mk_resource_option 2
 
@@ -471,10 +471,10 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
       src_resources.resources.push __mk_resource_option 1
     if my_player.resources.clay >= i
       src_resources.resources.push __mk_resource_option 4
-    if my_player.resources.grain >= i
-      src_resources.resources.push __mk_resource_option 3
     if my_player.resources.sheep >= i
       src_resources.resources.push __mk_resource_option 0
+    if my_player.resources.grain >= i
+      src_resources.resources.push __mk_resource_option 3
     if my_player.resources.rock >= i
       src_resources.resources.push __mk_resource_option 2
 
@@ -483,10 +483,10 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
       src_resources.resources.push __mk_resource_option 1
     if G.my_player.resources.clay >= 2 and (G.get_used_ports G.my_player, 4).length > 0
       src_resources.resources.push __mk_resource_option 4
-    if G.my_player.resources.grain >= 2 and (G.get_used_ports G.my_player, 3).length > 0
-      src_resources.resources.push __mk_resource_option 3
     if G.my_player.resources.sheep >= 2 and (G.get_used_ports G.my_player, 0).length > 0
       src_resources.resources.push __mk_resource_option 0
+    if G.my_player.resources.grain >= 2 and (G.get_used_ports G.my_player, 3).length > 0
+      src_resources.resources.push __mk_resource_option 3
     if G.my_player.resources.rock >= 2 and (G.get_used_ports G.my_player, 2).length > 0
       src_resources.resources.push __mk_resource_option 2
 
