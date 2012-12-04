@@ -4,6 +4,10 @@ window.settlers.setup_page = () ->
     focus:                      'username'
     clear_fields:		['username', 'email']
     handlers:
-      s200:     (response, form) ->
-        window.hlib.INFO.show 'Password recovery', 'New password was sent to your e-mail'
-        window.hlib.redirect '/login/'
+      s200:			(response, form) ->
+        form.info.success 'New password was sent to your e-mail', true
+
+        redirect = () ->
+          window.hlib.redirect '/login/'
+
+        $('body').everyTime '15s', redirect

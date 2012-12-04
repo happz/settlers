@@ -24,6 +24,13 @@ class UserExistsError(hlib.error.InvalidInputError):
 
     super(UserExistsError, self).__init__(**kwargs)
 
+class WrongEmailError(hlib.error.InvalidInputError):
+  def __init__(self, **kwargs):
+    kwargs['reply_status']	= 403
+    kwargs['msg']		= 'E-mail address is wrong'
+
+    super(WrongEmailError, self).__init__(**kwargs)
+
 class RecoveryHandler(handlers.GenericHandler):
   @page
   def index(self):
@@ -38,12 +45,12 @@ class RecoveryHandler(handlers.GenericHandler):
   @api
   def recover(self, username = None, email = None):
     if username not in hruntime.dbroot.users:
-      return ApyReply(401)
+      raise hlib.error.NoSuchUserError(username)
 
     u = hruntime.dbroot.users[username]
 
     if email != u.email:
-      return ApyReply(401, message = 'E-mail address is wrong')
+      raise WrongEmailError()
 
     new_password = ''
 
@@ -53,7 +60,7 @@ class RecoveryHandler(handlers.GenericHandler):
 
     u.password = lib.pwcrypt(new_password)
 
-    hlib.mail.send_email('osadnici@happz.cz', email, hruntime.root.admin.trumpet.password_recovery_mail.subject, hruntime.root.admin.trumpet.password_recovery_mail.text % (u.name, new_password), SMTPserver = 'localhost')
+    hlib.mail.send_email(hruntime.app, 'osadnici@happz.cz', email, hruntime.root.admin.trumpet.password_recovery_mail.subject, hruntime.root.admin.trumpet.password_recovery_mail.text % (u.name, new_password))
 
 class Handler(handlers.GenericHandler):
   recovery = RecoveryHandler()
