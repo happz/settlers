@@ -31,7 +31,8 @@ class window.settlers.PullNotify
           # Reset all widgets
           window.hlib.setTitle 'Osadnici'
           window.settlers.hide_menu_alert 'menu_chat'
-          window.settlers.hide_menu_alert 'menu_home'
+          window.settlers.hide_menu_alert 'menu_home', 'badge-important'
+          window.settlers.hide_menu_alert 'menu_home', 'badge-info'
 
           $('#trumpet_board').hide()
           $('body').css 'margin-top', '0'
@@ -44,8 +45,7 @@ class window.settlers.PullNotify
 
           if response.events.on_turn != false
             to_title += response.events.on_turn
-            $('#menu_home .menu-alert').html response.events.on_turn
-            window.settlers.show_menu_alert 'menu_home'
+            window.settlers.show_menu_alert 'menu_home', response.events.on_turn, 'badge-important'
 
           if to_title > 0
             window.hlib.setTitle window.settlers.title + ' (' + to_title + ')'
@@ -56,6 +56,10 @@ class window.settlers.PullNotify
 
             $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
 
+          if response.events.free_games != false
+            $('#menu_home .menu-alert.badge-info').html response.events.free_games
+            window.settlers.show_menu_alert 'menu_home', response.events.free_games, 'badge-info', (response.events.free_games + ' ' + (window.hlib._g 'free games'))
+
           window.hlib.MESSAGE.hide()
 
 #
@@ -64,16 +68,25 @@ class window.settlers.PullNotify
 window.settlers.render_board_piece = (attrs) ->
   return '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
 
-window.settlers.show_menu_alert = (item, cnt) ->
+window.settlers.show_menu_alert = (item, cnt, additional, tooltip) ->
   eid = '#' + item + ' span.menu-alert'
+
+  if additional
+    eid += '.' + additional
 
   if cnt
     $(eid).html cnt
 
+  if tooltip
+    $(eid).attr 'title', tooltip
+
   $(eid).show()
 
-window.settlers.hide_menu_alert = (item) ->
+window.settlers.hide_menu_alert = (item, additional) ->
   eid = '#' + item + ' span.menu-alert'
+
+  if additional
+    eid += '.' + additional
 
   $(eid).hide()
 

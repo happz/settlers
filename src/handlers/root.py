@@ -1,6 +1,7 @@
 import re
 
 import games
+import tournaments
 import handlers
 import handlers.admin
 import handlers.home
@@ -39,11 +40,12 @@ import hruntime
 
 class PullNotify(hlib.api.ApiJSON):
   def __init__(self):
-    super(PullNotify, self).__init__(['chat', 'on_turn', 'trumpet'])
+    super(PullNotify, self).__init__(['chat', 'on_turn', 'trumpet', 'free_games'])
 
     self.chat           = False
     self.on_turn	= False
     self.trumpet	= False
+    self.free_games	= False
 
 class Handler(hlib.handlers.root.Handler):
   admin		= handlers.admin.Handler()
@@ -109,6 +111,12 @@ class Handler(hlib.handlers.root.Handler):
     cnt = lib.chat.ChatPagerGlobal().unread
     if cnt > 0:
       pn.chat = cnt
+
+    # Are there any free games?
+    cnt  = len([g for g in games.f_active(hruntime.user) if g.is_free and not g.is_personal_free(hruntime.user)])
+    cnt += len([t for t in tournaments.f_active(hruntime.user) if t.is_active and not t.has_player(hruntime.user)])
+    if cnt > 0:
+      pn.free_games = cnt
 
     # Am I on turn in any game?
     cnt = 0

@@ -15,6 +15,11 @@
     top:                                3px;
 
     display:                            none;
+
+    &.badge-info {
+        left:				-3px;
+        right:				auto;
+    }
 }
 
 /*
