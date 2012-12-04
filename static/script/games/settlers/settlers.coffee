@@ -885,6 +885,7 @@ window.settlers.update_game_ui_status = () ->
 window.settlers.update_game_ui_cards = () ->
   G = window.settlers.game
 
+  window.settlers.hide_menu_alert 'show_cards', 'badge-info'
   $('#new_card_form').hide()
 
   if G.state == 1
@@ -912,6 +913,9 @@ window.settlers.update_game_ui_cards = () ->
 
   decorate_card c for c in G.my_player.cards.cards
 
+  if G.my_player.cards.unused_cards > 0
+    window.settlers.show_menu_alert 'show_cards', G.my_player.cards.unused_cards, 'badge-info', (window.hlib.format_string (window.hlib._g '%(count)s unused cards'), {count: G.my_player.cards.unused_cards})
+
 window.settlers.update_game_ui_history = () ->
   rendered = window.settlers.game.render_events window.settlers.events, window.settlers.templates.game.events
   $('#history_events').html rendered
@@ -933,11 +937,11 @@ window.settlers.update_game_ui_buttons = () ->
     if window.settlers.game.my_player.can_pass
       window.hlib.enableIcon '#pass_turn', window.settlers.pass_turn
 
-  if G.state == 2
-    window.hlib.enableIcon '#show_stats', window.settlers.show_stats
-
   if window.settlers.game.my_player.can_roll_dice
     window.hlib.enableIcon '#roll_dice', window.settlers.roll_dice
+
+  if G.state == 2
+    window.hlib.enableIcon '#show_stats', window.settlers.show_stats
 
   if G.can_exchange()
     window.hlib.enableIcon '#show_exchange', window.settlers.show_exchange

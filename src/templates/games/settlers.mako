@@ -268,17 +268,22 @@
 
     <div id="game_status" class="hide text-success"><p></p></div>
 
-    <%def name="menu_entry(id, icon, label)">
-      <button class="win-command" title="${_(label)}" rel="tooltip" data-placement="left" id="${id}">
+    <%def name="menu_entry(id, icon, label, content = None)">
+      <%
+        content = content or ''
+      %>
+
+      <button class="win-command" title="${_(label)}" rel="tooltip" data-placement="left" id="${id}" style="position: relative">
         <span class="win-commandimage win-commandring">${icon}</span>
-      </a>
+        ${content}
+      </button>
     </%def>
 
     <hr />
 
     <div class="win-commandlayout" style="text-align: center">
       ${menu_entry('show_board',    '&#xe1a5;', 'Show board')}
-      ${menu_entry('show_cards',    '&#xe15c;', 'Show cards')}
+      ${menu_entry('show_cards',    '&#xe15c;', 'Show cards', content = '<span class="badge badge-info menu-alert"></span>')}
       ${menu_entry('show_chat',     '&#x005a;', 'Show chat')}
       ${menu_entry('refresh',       '&#xe124;', 'Refresh')}
       ${menu_entry('roll_dice',     '&#xe017;', 'Roll dice')}
