@@ -98,6 +98,23 @@ class I18NHandler(handlers.GenericHandler):
     return hlib.api.Reply(200, value = lang[name])
 
   #
+  # Edit
+  #
+  class ValidateEdit(ValidateLangSchema):
+    name = ValidateName()
+    value = ValidateValue()
+
+  @require_write
+  @require_admin
+  @require_login
+  @validate_by(schema = ValidateEdit)
+  @api
+  def edit(self, lang = None, name = None, value = None):
+    lang = require_lang(lang)
+
+    lang[name] = value
+
+  #
   # Add
   #
   class ValidateAdd(ValidateLangSchema):

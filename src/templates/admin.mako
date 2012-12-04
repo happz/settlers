@@ -38,7 +38,9 @@ ${ui_section_header('language', 'Language')}
 
   <!-- Add token -->
   ${ui_form_start(action = '/admin/i18n/add', legend = 'Add token', id = 'i18n_add')}
-    ${ui_select_start(form_name = 'lang', label = 'Language', default = 'Choose ...')}
+
+    <!-- Language -->
+    ${ui_select_start(form_name = 'lang', label = 'Language', default = 'Choose...')}
       % for key in hruntime.dbroot.localization.languages.keys():
         ${ui_select_option(value = key, selected = False, label = str(key))}
       % endfor
@@ -46,15 +48,15 @@ ${ui_section_header('language', 'Language')}
 
     <div class="hide" id="i18n_add_missing"></div>
 
-    ${ui_input(form_name = 'name', type = 'text', label = 'Name')}
-    ${ui_input(form_name = 'value', type = 'text', label = 'Value')}
+    ${ui_input(form_name = 'name', type = 'text', label = 'Name', disabled = True, placeholder = 'Choose language first...')}
+    ${ui_input(form_name = 'value', type = 'text', label = 'Value', disabled = True, placeholder = 'Choose language first...')}
 
-    ${ui_submit(value = 'Add')}
+    ${ui_submit(value = 'Add', id = 'i18n_add_submit', disabled = True)}
   ${ui_form_end()}
 
   <!-- Edit token -->
-  ${ui_form_start(action = '/admin/i18n/token', legend = 'Edit tokens', id = 'i18n_edit')}
-    ${ui_select_start(form_name = 'lang', label = 'Language', default = 'Choose ...')}
+  ${ui_form_start(action = '/admin/i18n/edit', legend = 'Edit tokens', id = 'i18n_edit')}
+    ${ui_select_start(form_name = 'lang', label = 'Language', default = 'Choose...')}
       % for key in hruntime.dbroot.localization.languages.keys():
         ${ui_select_option(value = key, selected = False, label = key)}
       % endfor
@@ -62,17 +64,14 @@ ${ui_section_header('language', 'Language')}
 
     <div id="i18n_edit_unused"></div>
 
-    ${ui_select_start(form_name = 'token')}
+    ${ui_select_start(form_name = 'name', label = 'Token', disabled = True, placeholder = 'Choose language first...')}
+      <option value="" disabled="disabled">Choose language first...</option>
     ${ui_select_end()}
 
-    <div id="i18n_edit_edit" class="hide">
-      ${ui_textarea(form_name = 'value', size = 'xxlarge')}
-    </div>
-    <a href="#" id="i18n_edit_remove" title="${_('Remove token')}" rel="tooltip" data-placement="top">
-      <span class="icon-remove"></span>
-    </a>
+    ${ui_textarea(form_name = 'value', size = 'xxlarge', disabled = True, placeholder = 'Choose language first...')}
+    <a href="#" id="i18n_edit_remove" title="${_('Remove token')}" rel="tooltip" data-placement="top" class="hide"><span class="icon-remove"></span></a>
 
-    ${ui_submit(value = 'Change')}
+    ${ui_submit(value = 'Change', id = 'i18n_edit_submit', disabled = True)}
   ${ui_form_end()}
 
 </section>

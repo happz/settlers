@@ -9,9 +9,7 @@ window.settlers.templates.recent_events.playables = '
           <div class="btn-group">
             {{#is_present}}
               {{#is_invited}}
-                <button class="btn" id="{{eid}}_join" title="{{#_g}}Join{{/_g}}" rel="tooltip" data-placement="top">
-                  <i class="icon-checkmark"></i>
-                </button>
+                <button class="btn" id="{{eid}}_join" title="{{#_g}}Join{{/_g}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
               {{/is_invited}}
               {{^is_invited}}
                 {{#is_game}}
@@ -34,7 +32,7 @@ window.settlers.templates.recent_events.playables = '
               {{/is_invited}}
             {{/is_present}}
             {{^is_present}}
-              <a class="btn" href="#" id="{{eid}}_join" title="{{#_g}}Join{{/_g}}"><i class="icon-checkmark"></i></a>
+              <button class="btn" id="{{eid}}_join" title="{{#_g}}Join{{/_g}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
             {{/is_present}}
           </div>
         </div>
@@ -165,8 +163,15 @@ window.settlers.setup_page = () ->
           data:			data
           handlers:
             h200:		(response, ajax) ->
-              window.hlib.INFO.show 'Joined'
-              update_events()
+              console.log 'joined, show info and update'
+              window.hlib.INFO.show 'You have joined a game', ''
+
+              __update = () ->
+                window.hlib.MESSAGE.hide()
+                update_events()
+                window.settlers.PULL_NOTIFY.update()
+
+              $('body').oneTime '5s', __update
 
             h400:		(response, ajax) ->
               field = __get_field response

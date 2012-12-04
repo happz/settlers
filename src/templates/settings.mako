@@ -28,6 +28,14 @@ ${ui_page_header('Settings')}
 <!-- "Account" section -->
 ${ui_section_header('account', 'Account')}
 
+  <!-- Change email -->
+  ${ui_form_start(action = '/settings/email', id = 'email', legend = 'Change e-mail')}
+    <!-- Email -->
+    ${ui_input(type = 'text', label = 'New e-mail', form_name = 'email', value = hruntime.user.email)}
+
+    ${ui_submit(value = 'Set')}
+  ${ui_form_end()}
+
   <!-- Change password -->
   ${ui_form_start(action = '/settings/password', id = 'password', legend = 'Change password')}
     <!-- Password -->
@@ -90,7 +98,7 @@ ${ui_section_header('colors', 'Colors')}
     ${ui_select_start(form_name = 'color', label = 'Color', default = False, disabled = True)}
     ${ui_select_end()}
 
-    ${ui_submit(value = 'Set')}
+    ${ui_submit(value = 'Set', id = 'color_submit', disabled = True)}
   ${ui_form_end()}
 
   <!-- Opponent colors -->
@@ -157,7 +165,7 @@ ${ui_section_header('api', 'API')}
       <img src="/static/metro/scripts/holder.js/60x60" class="mediumListIconTextItem-Image" />
       <div class="mediumListIconTextItem-Detail">
         <h4>${_('Settlers - Notify')}</h4>
-        <a href="http://osadnici-test.happz.cz/static/apps/settlers-notify.exe">Download</a>
+        <a href="http://osadnici-test.happz.cz/static/apps/settlers-notify-setup.exe">Download</a>
       </div>
     </div>
   </div>

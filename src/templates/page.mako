@@ -132,10 +132,11 @@
   <div class="container-fluid">
 </%def>
 
-<%def name="menu_entry(icon, label, href = None, id = None)">
+<%def name="menu_entry(icon, label, href = None, id = None, content = None)">
   <%
     href = href or '#'
     id = 'id="' + id + '"' if id else ''
+    content = content or ''
   %>
 
   <a class="win-command" href="${href}" title="${_(label)}" rel="tooltip" data-placement="top" ${id} style="position: relative">
@@ -143,6 +144,7 @@
     <span class="win-label">${_(label)}</span>
     % if len(id) > 0:
       <span class="badge badge-important menu-alert"></span>
+      ${content}
     % endif
   </a>
 </%def>
@@ -162,7 +164,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12" style="text-align: center">
-          ${menu_entry('&#x0021;', 'Home', href = '/home/', id = 'menu_home')}
+          ${menu_entry('&#x0021;', 'Home', href = '/home/', id = 'menu_home', content = '<span class="badge badge-info menu-alert"></span>')}
           ${menu_entry('&#xe03e;', 'New ...', href = '/new/')}
           ${menu_entry('&#xe20d;', 'Board', href = '/chat/', id = 'menu_chat')}
           ${menu_entry('&#x0072;', 'Stats', href = '/stats/')}

@@ -57,23 +57,47 @@ window.settlers.setup_forms = () ->
     fid:			'after_pass_turn'
 
   # Color
-  $('#color_kind').change () ->
-    refresh_colors('color')
-
-  new window.hlib.Form
+  form_color = new window.hlib.Form
     fid:			'color'
-    clear_fields:		['color']
+    clear_fields:		['kind', 'color']
     handlers:
       s200:     (response, form) ->
         form.info.success 'Successfuly changed'
 
-        $('#color_kind').val ''
-        refresh_colors('color')
+        (form.field 'color').disable()
 
       s400:     (response, form) ->
         window.hlib.form_default_handlers.s400 response, form
 
-  refresh_colors('color')
+  (form_color.field 'color').enable (f) ->
+    window.hlib.Ajax
+      url:			'/settings/unused_colors'
+      data:
+        kind:			(form_color.field 'kind').value()
+      handlers:
+        h200:			(response, ajax) ->
+          c.label = window.hlib._g c.label for c in response.colors
+          response._g = window.hlib._g
+
+          f.content(window.hlib.render '<option value="">{{#_g}}Choose...{{/_g}}</option>{{#colors}}<option value="{{name}}" class="colors" style="background-image: url(/static/images/games/settlers/board/real/players/{{name}}/node/village.gif)">{{label}}</option>{{/colors}}', response)
+
+          window.hlib.MESSAGE.hide()
+
+  (form_color.field 'color').disable (f) ->
+    f.placeholder 'Choose game kind first...'
+    (form_color.field 'submit').disable()
+
+  $((form_color.field 'kind').fid).change () ->
+    if (form_color.field 'kind').value()
+      (form_color.field 'color').enable()
+    else
+      (form_color.field 'color').disable()
+
+  $((form_color.field 'color').fid).change () ->
+    if (form_color.field 'color').value()
+      (form_color.field 'submit').enable()
+    else
+      (form_color.field 'submit').disable()
 
   # Opponent color
   refresh_opponent_colors_list = () ->
@@ -150,6 +174,10 @@ window.settlers.setup_forms = () ->
 
   refresh_colors('color')
   refresh_opponent_colors_list()
+
+  # Email
+  new window.hlib.Form
+    fid:		'email'
 
   # Per page
   new window.hlib.Form

@@ -148,6 +148,21 @@ class Handler(handlers.GenericHandler):
     return self.generate('settings.mako')
 
   #
+  # Email
+  #
+  class ValidateEmail(SchemaValidator):
+    email = hlib.input.Email()
+
+  @require_write
+  @require_login
+  @validate_by(schema = ValidateEmail)
+  @api
+  def email(self, email = None):
+    hruntime.user.email = email
+
+    return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'email': hruntime.user.email}))
+
+  #
   # Items per page
   #
   # Used for all tables - games, statistics, ... - if there are any tables at all...
