@@ -111,13 +111,13 @@ ${ui_section_header('colors', 'Colors')}
     ${ui_select_end()}
 
     <!-- Color -->
-    ${ui_select_start(form_name = 'color', label = 'Color', default = False, disabled = True)}
+    ${ui_select_start(form_name = 'color', label = 'Color', default = False, disabled = True, placeholder = 'Choose game first...')}
     ${ui_select_end()}
 
     <!-- Player -->
-    ${ui_input(type = 'text', form_name = 'username', label = 'Player')}
+    ${ui_input(type = 'text', form_name = 'username', label = 'Player', disabled = True)}
 
-    ${ui_submit(value = 'Set')}
+    ${ui_submit(value = 'Set', id = 'opponent_colors_submit', disabled = True)}
   ${ui_form_end()}
 
   <div id="opponent_colors_list"></div>
