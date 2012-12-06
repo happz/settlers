@@ -60,9 +60,8 @@ class GameLists(lib.play.PlayableLists):
   # Shortcuts
   def created(self, g):
     with self._lock:
+      super(GameLists, self).created(g)
       hruntime.dbroot.games.push(g)
-
-      self.inval_players(g)
 
     return True
 
@@ -71,6 +70,13 @@ _game_lists = GameLists()
 f_active	= _game_lists.f_active
 f_inactive	= _game_lists.f_inactive
 f_archived	= _game_lists.f_archived
+
+import hlib.stats
+hlib.stats.init_namespace('Games lists', {
+  'Active':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('active').items() ]),
+  'Inactive':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('inactive').items() ]),
+  'Archived':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('archived').items() ])
+})
 
 # ----- For handler -------------------------
 import hlib.input
@@ -663,6 +669,7 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
 
 # Event hooks
 hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.created(e.game))
+hlib.event.Hook('game.GameStarted', 'invalidate_caches',  lambda e: _game_lists.started(e.game))
 hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.finished(e.game))
 hlib.event.Hook('game.GameArchived', 'invalidate_caches', lambda e: _game_lists.archived(e.game))
 hlib.event.Hook('game.PlayerJoined', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))

@@ -220,6 +220,10 @@ class PlayableLists(object):
   def f_archived(self, user):
     return self.__get_f_list('archived', user)
 
+  def snapshot(self, l):
+    with self._lock:
+      return getattr(self, '_' + l).copy()
+
   # Cache invalidation
   def _inval_user(self, user):
     with self._lock:
@@ -253,6 +257,8 @@ class PlayableLists(object):
 
   # Shortcuts
   def created(self, p):
+    self.inval_all('active')
+
     return True
 
   def started(self, p):

@@ -31,9 +31,8 @@ class TournamentLists(lib.play.PlayableLists):
   # Shortcuts
   def created(self, t):
     with self._lock:
+      super(TournamentLists, self).created(t)
       hruntime.dbroot.tournaments.push(t)
-
-      self.inval_players(t)
 
     return True
 
