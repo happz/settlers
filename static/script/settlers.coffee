@@ -20,7 +20,7 @@ class window.settlers.PullNotify
     __call_update = () ->
       pull_notify.update()
 
-    $('.win-commandlayout').everyTime '60s', __call_update
+    $('.win-commandlayout').everyTime '300s', __call_update
 
   update:		() ->
     new window.hlib.Ajax
