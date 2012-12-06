@@ -1,7 +1,7 @@
 window.settlers.templates.recent_events = {}
 window.settlers.templates.recent_events.playables = '
   {{#playables}}
-    <div id="{{eid}}" class="mediumListIconTextItem" data-placement="top" data-content="{{{players_list}}}" data-title="{{name}}">
+    <div id="{{eid}}" class="mediumListIconTextItem" data-placement="top" data-content="{{limit}} {{#_g}}players{{/_g}}<br />{{{players_list}}}" data-title="{{name}}">
       <div class="icon-grid-view mediumListIconTextItem-Image" />
       <div class="mediumListIconTextItem-Detail">
         <h4 title="{{name}}">{{#is_game}}{{#_g}}Game{{/_g}}{{/is_game}}{{^is_game}}{{#_g}}Tournament{{/_g}}{{/is_game}}&nbsp;{{id}} - {{name}}</h4>
