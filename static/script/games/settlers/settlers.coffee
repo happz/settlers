@@ -344,18 +344,15 @@ window.settlers.templates.game.player = '
     </div>
 
     <table class="table table-condensed">
-      <tr class="success"><td colspan="2"><strong>{{points}} {{#_g}}points{{/_g}}</strong></td></tr>
+      <tr class="info"><td><strong>{{#_g}}Points{{/_g}}:</strong></td><td><strong>{{points}}</strong></td></tr>
       {{#my_player}}
         <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/wood.gif" />{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/clay.gif" />{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/sheep.gif" />{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/grain.gif" />{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/rock.gif" />{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
-        <tr class="info"><td>{{#_g}}Total{{/_g}}:</td><td>{{resources.total}}</td></tr>
       {{/my_player}}
-      {{^my_player}}
-        <tr><td>{{#_g}}Resources{{/_g}}:</td><td>{{resources.total}}</td></tr>
-      {{/my_player}}
+      <tr class="info"><td><strong>{{#_g}}Resources{{/_g}}:</td><td><strong>{{resources.total}}</td></tr>
 
       <tr><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.unused_cards}}</td></tr>
       <tr><td>{{#_g}}Knights{{/_g}}:</td><td>{{cards.used_knights}}</td></tr>
