@@ -354,7 +354,12 @@ window.settlers.templates.game.player = '
       {{/my_player}}
       <tr class="info"><td><strong>{{#_g}}Resources{{/_g}}:</td><td><strong>{{resources.total}}</td></tr>
 
-      <tr><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.unused_cards}}</td></tr>
+      {{#my_player}}
+        <tr rel="tooltip" data-placement="right" title="{{cards.unused_cards_str}}"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.unused_cards}}</td></tr>
+      {{/my_player}}
+      {{^my_player}}
+        <tr><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.unused_cards}}</td></tr>
+      {{/my_player}}
       <tr><td>{{#_g}}Knights{{/_g}}:</td><td>{{cards.used_knights}}</td></tr>
     </table>
   </div>
@@ -524,12 +529,46 @@ window.settlers.update_game_ui_player = (player) ->
 
   player.game = window.settlers.game
 
+  if player.my_player
+    unused_cards_desc =
+      Knight:			0
+      Monopoly:			0
+      Paths:			0
+      Invention:		0
+      Point:			0
+
+    __per_card = (c) ->
+      if c.used != false
+        return
+
+      k = window.settlers.game.card_type_to_name[c.type]
+
+      unused_cards_desc[k] = unused_cards_desc[k] + 1
+
+    __per_card c for c in player.cards.cards
+
+    unused_cards_arr = []
+    __per_type = (t) ->
+      if not unused_cards_desc.hasOwnProperty t
+        return
+      if unused_cards_desc[t] <= 0
+        return
+
+      unused_cards_arr.push ('' + unused_cards_desc[t] + 'x ' + window.hlib._g t)
+
+    __per_type t for t in window.settlers.game.card_type_to_name
+
+    player.cards.unused_cards_str = unused_cards_arr.join '<br />'
+
   $(dst_id).html ''
   rendered = window.hlib.render window.settlers.templates.game.player, player
   $(dst_id).html rendered
 
 window.settlers.update_game_ui_players = () ->
   window.settlers.update_game_ui_player p for p in window.settlers.game.players
+
+  $('tr[rel=tooltip]').tooltip
+    html:			true
 
 window.settlers.update_game_ui_board = () ->
   eid = '.game-board'
