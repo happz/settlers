@@ -14,4 +14,4 @@ class Handler(handlers.GenericHandler):
   @require_login
   @page
   def index(self):
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'new', self.generate, 'new.mako')
+    return hruntime.cache.test_and_set(hruntime.user, 'new', self.generate, 'new.mako')

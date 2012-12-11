@@ -100,7 +100,7 @@ class Handler(handlers.GenericHandler):
   def index(self, gid = None):
     g = require_presence_in_game(gid)
 
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'game-%s' % g.id, self.generate, 'games/' + g.kind + '.mako', params = {'game': g})
+    return hruntime.cache.test_and_set(hruntime.user, 'game-%s' % g.id, self.generate, 'games/' + g.kind + '.mako', params = {'game': g})
 
   #
   # Join

@@ -30,7 +30,7 @@ class Handler(handlers.GenericHandler):
   @require_login
   @page
   def index(self):
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'chat', self.generate, 'chat.mako')
+    return hruntime.cache.test_and_set(hruntime.user, 'chat', self.generate, 'chat.mako')
 
   #
   # Add
