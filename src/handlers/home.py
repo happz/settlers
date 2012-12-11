@@ -5,10 +5,10 @@ __license__                     = 'http://www.php-suit.com/dpl'
 
 import threading
 
+import hlib.api
+
 import handlers
 import lib.datalayer
-
-import hlib.api
 
 from hlib.api import api
 from handlers import page, require_login, require_write
@@ -44,35 +44,38 @@ class Handler(handlers.GenericHandler):
   @require_login
   @api
   def recent_events(self):
-    import games
-    import tournaments
+    def __recent_events():
+      import games
+      import tournaments
 
-    re = RecentEvents()
+      re = RecentEvents()
 
-    for g in games.f_active(hruntime.user):
-      ga = g.to_api()
+      for g in games.f_active(hruntime.user):
+        ga = g.to_api()
 
-      if g.has_player(hruntime.user) and g.my_player.is_on_turn or g.has_player(hruntime.user) and not g.has_confirmed_player(hruntime.user) or g.has_player(hruntime.user):
-        re.playable.append(ga)
-      else:
-        re.free.append(ga)
+        if g.has_player(hruntime.user) and g.my_player.is_on_turn or g.has_player(hruntime.user) and not g.has_confirmed_player(hruntime.user) or g.has_player(hruntime.user):
+          re.playable.append(ga)
+        else:
+          re.free.append(ga)
 
-    cnt = 0
-    for g in games.f_inactive(hruntime.user):
-      re.finished.append(g.to_api())
+      cnt = 0
+      for g in games.f_inactive(hruntime.user):
+        re.finished.append(g.to_api())
 
-      if g.my_player.chat.unread > 0:
-        cnt += 1
+        if g.my_player.chat.unread > 0:
+          cnt += 1
 
-    if cnt > 0:
-      re.finished_chat = cnt
+      if cnt > 0:
+        re.finished_chat = cnt
 
-    for t in tournaments.f_active(hruntime.user):
-      ta = t.to_api()
+      for t in tournaments.f_active(hruntime.user):
+        ta = t.to_api()
 
-      if t.has_player(hruntime.user):
-        re.playable.append(ta)
-      else:
-        re.free.append(ta)
+        if t.has_player(hruntime.user):
+          re.playable.append(ta)
+        else:
+          re.free.append(ta)
 
-    return hlib.api.Reply(200, events = re)
+      return hlib.api.Reply(200, events = re).dump()
+
+    return hruntime.cache.test_and_set(hruntime.user, 'recent_events', __recent_events)

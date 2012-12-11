@@ -131,6 +131,9 @@ class ChatPagerTournament(ChatPager):
   def __init__(self, tour):
     super(ChatPagerTournament, self).__init__(tour, tour.my_player)
 
+  def trigger_event(self):
+    hlib.event.trigger('tournament.ChatPost', self.entity, hidden = True, user = hruntime.user, game = self.entity)
+
 class ChatPagerGlobal(ChatPager):
   def __init__(self):
     super(ChatPagerGlobal, self).__init__(None, None)

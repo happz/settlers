@@ -259,10 +259,14 @@ class PlayableLists(object):
   def created(self, p):
     self.inval_all('active')
 
+    hruntime.cache.remove_for_all_users('recent_events')
+
     return True
 
   def started(self, p):
     self.inval_all('active')
+
+    hruntime.cache.remove_for_all_users('recent_events')
 
     return True
 
@@ -270,8 +274,16 @@ class PlayableLists(object):
     with self._lock:
       self.inval_players(p)
 
+    for player in p.players.values():
+      hruntime.cache.remove(p.user, 'recent_events')
+
     return True
 
   def archived(self, p):
     with self._lock:
       self.inval_players(p)
+
+    for player in p.players.values():
+      hruntime.cache.remove(p.user, 'recent_events')
+
+    return True
