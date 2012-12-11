@@ -91,7 +91,7 @@ def main():
   app_config			= hlib.engine.Application.default_config(config.get('server', 'path'))
   app_config['title']		= config.get('web', 'title')
   app_config['label']		= 'Settlers'
-  app_config['cache.enabled']	= False
+  app_config['cache.enabled']	= True
 
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
 
