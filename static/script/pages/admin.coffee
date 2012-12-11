@@ -1,30 +1,22 @@
-window.settlers.templates = window.settlers.templates or {}
-window.settlers.templates.i18n_tokens = '
-  <option value="">Vybrat...</option>
-  {{#tokens}}
-    <option value="{{name}}">{{name}}</option>
-  {{/tokens}}
-'
-window.settlers.templates.maintenance_access_list = '
-  {{#users}}
-    <div class="mediumListIconTextItem">
-      <img src="holder.js/60x60" class="mediumListIconTextItem-Image" />
-      <div class="mediumListIconTextItem-Detail">
-        <h4>{{name}}</h4>
-        <div class="btn-toolbar">
-          <a class="btn" href="#" title="{{#_g}}Remove{{/_g}}" rel="tooltip" data-placement="right" id="user_maintenance_access_revoke_{{name}}"><i class="icon-remove"></i></a>
-        </div>
-      </div>
-    </div>
-  {{/users}}
-'
-
 window.settlers.refresh_maintenance_access_list = () ->
   new window.hlib.Ajax
     url:		'/maintenance/granted_full'
     handlers:
       h200:		(response, ajax) ->
-        $('#maintenance_access_list').html window.hlib.render window.settlers.templates.maintenance_access_list, response
+        tmpl = doT.template '
+          {{~ it.users :user:index}}
+            <div class="mediumListIconTextItem">
+              <img src="holder.js/60x60" class="mediumListIconTextItem-Image" />
+              <div class="mediumListIconTextItem-Detail">
+                <h4>{{= user.name}}</h4>
+                <div class="btn-toolbar">
+                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="user_maintenance_access_revoke_{{= name}}"><i class="icon-remove"></i></a>
+                </div>
+              </div>
+            </div>
+          {{~}}'
+
+        $('#maintenance_access_list').html tmpl response
 
         __per_user = (u) ->
           $('#user_maintenance_access_revoke_' + u.name).click () ->
@@ -69,10 +61,15 @@ window.settlers.setup_forms = () ->
       url:			'/admin/i18n/missing'
       lang:			(form_i18n_add.field 'lang').value()
       h200:			(response, ajax) ->
-        tmpl = '<h4>{{section_label}}</h4><ul class="i18n-missing-tokens">{{#tokens}}<li>{{name}}</li>{{/tokens}}</ul>'
-        response.section_label = window.hlib._g 'Missing tokens'
+        tmpl = doT.template '
+          <h4>{{= window.hlib._g("Missing tokens")}}</h4>
+          <ul class="i18n-missing-tokens">
+            {{~ it.tokens :token:index}}
+              <li>{{= token.name}}</li>
+            {{~}}
+          </ul>'
 
-        (form_i18n_add.field 'missing').content(window.hlib.render tmpl, response).show()
+        (form_i18n_add.field 'missing').content(tmpl response).show()
 
         window.hlib.MESSAGE.hide()
 
@@ -123,10 +120,15 @@ window.settlers.setup_forms = () ->
       url:			'/admin/i18n/unused'
       lang:			(form_i18n_edit.field 'lang').value()
       h200:			(response, ajax) ->
-        tmpl = '<h4>{{section_label}}</h4><ul class="i18n-unused-tokens">{{#tokens}}<li>{{name}}</li>{{/tokens}}</ul>'
-        response.section_label = window.hlib._g 'Unused tokens'
+        tmpl = doT.template '
+          <h4>{{= window.hlib._g("Unused tokens")}}</h4>
+          <ul class="i18n-unused-tokens">
+            {{~ it.tokens :token:index}}
+              <li>{{= token.name}}</li>
+            {{~}}
+          </ul>'
 
-        f.content(window.hlib.render tmpl, response).show()
+        f.content(tmpl response).show()
 
   (form_i18n_edit.field 'unused').disable (f) ->
     f.empty().hide()
@@ -137,10 +139,13 @@ window.settlers.setup_forms = () ->
       url:			'/admin/i18n/tokens'
       lang:			(form_i18n_edit.field 'lang').value()
       h200:			(response, ajax) ->
-        tmpl = '<option value="">{{#_g}}Choose...{{/_g}}</option>{{#tokens}}<option value="{{name}}">{{name}}</option>{{/tokens}}'
-        response._g = window.hlib._g
+        tmpl = doT.template '
+          <option value="">{{= window.hlib._g("Choose...")}}</option>
+          {{~ it.tokens :token:index}}
+            <option value="{{= token.name}}">{{= token.name}}</option>
+          {{~}}'
 
-        (form_i18n_edit.field 'name').content(window.hlib.render tmpl, response)
+        (form_i18n_edit.field 'name').content(tmpl response)
         window.hlib.MESSAGE.hide()
 
   (form_i18n_edit.field 'name').disable (f) ->

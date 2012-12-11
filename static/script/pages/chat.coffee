@@ -1,20 +1,20 @@
-window.settlers.templates.chat_post = '
-  <tr id="chat_post_{{id}}">
+window.settlers.templates.chat_post = doT.template '
+  <tr id="chat_post_{{= it.id}}">
     <td>
       <h3>
         <span class="chat-post-unread label label-important hide">Unread</span>
-        {{#user.is_online}}
+        {{? it.user.is_online}}
           <span class="user-online">
-        {{/user.is_online}}
-        {{user.name}}
-        {{#user.is_online}}
+        {{?}}
+        {{= it.user.name}}
+        {{? it.user.is_online}}
           </span>
-        {{/user.is_online}} - {{time}}
+        {{?}} - {{= it.time}}
       </h3>
 
       <div>
 
-        <p>{{{message}}}</p>
+        <p>{{= it.message}}</p>
       </div>
     </td>
   </tr>

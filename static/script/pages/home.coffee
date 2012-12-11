@@ -1,74 +1,51 @@
 window.settlers.templates.recent_events = {}
-window.settlers.templates.recent_events.playables = '
-  {{#playables}}
-    <div id="{{eid}}" class="mediumListIconTextItem" data-placement="top" data-content="{{limit}} {{#_g}}players{{/_g}}<br />{{{players_list}}}" data-title="{{name}}">
-      <div class="icon-grid-view mediumListIconTextItem-Image" />
-      <div class="mediumListIconTextItem-Detail">
-        <h4 title="{{name}}">{{#is_game}}{{#_g}}Game{{/_g}}{{/is_game}}{{^is_game}}{{#_g}}Tournament{{/_g}}{{/is_game}}&nbsp;{{id}} - {{name}}</h4>
-        <div class="btn-toolbar">
-          <div class="btn-group">
-            {{#is_present}}
-              {{#is_invited}}
-                <button class="btn" id="{{eid}}_join" title="{{#_g}}Join{{/_g}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
-              {{/is_invited}}
-              {{^is_invited}}
-                {{#is_game}}
-                  <a class="btn" href="/game/?gid={{id}}#board" title="{{#_g}}Show board{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_board"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
-                  <a class="btn" href="/game/?gid={{id}}#history" title="{{#_g}}Show history{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_history"><i class="icon-clipboard-2"></i></a>
-                  <a class="btn" href="/game/?gid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_chat"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
-                  {{#is_finished}}
-                    <a class="btn" href="/game/?gid={{id}}#stats" title="{{#_g}}Show stats{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_stats"><i class="icon-bars"></i></a>
-                  {{/is_finished}}
-                {{/is_game}}
-                {{^is_game}}
-                  <a class="btn" href="/tournament/?tid={{id}}#board" title="{{#_g}}Show board{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_board"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
-                  <a class="btn" href="/tournament/?tid={{id}}#history" title="{{#_g}}Show history{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_history"><i class="icon-clipboard-2"></i></a>
-                  <a class="btn" href="/tournament/?tid={{id}}#chat" title="{{#_g}}Show chat{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_chat"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
-                  <a class="btn" href="/tournament/?tid={{id}}#rounds" title="{{#_g}}Show rounds{{/_g}}" rel="tooltip" data-placement="top"><i class="icon-clipboard-2"></i></a>
-                  {{#is_finished}}
-                    <a class="btn" href="/tournament/?tid={{id}}#stats" title="{{#_g}}Show stats{{/_g}}" rel="tooltip" data-placement="top" id="{{eid}}_stats"><i class="icon-bars"></i></a>
-                  {{/is_finished}}
-                {{/is_game}}
-              {{/is_invited}}
-            {{/is_present}}
-            {{^is_present}}
-              <button class="btn" id="{{eid}}_join" title="{{#_g}}Join{{/_g}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
-            {{/is_present}}
-          </div>
+window.settlers.templates.recent_events.playable = doT.template '
+  <div id="{{= it.eid}}" class="mediumListIconTextItem" data-placement="top" data-content="{{= it.limit}} {{= window.hlib._g("players")}}<br />{{= it.players_list}}" data-title="{{= it.name}}">
+    <div class="icon-grid-view mediumListIconTextItem-Image" />
+    <div class="mediumListIconTextItem-Detail">
+      <h4 title="{{= it.name}}">
+        {{? it.is_game}}
+          {{= window.hlib._g("Game")}}
+        {{?? it.is_game == false}}
+          {{= window.hlib._g("Tournament")}}
+        {{?}}
+        &nbsp;{{= it.id}} - {{= it.name}}
+      </h4>
+      <div class="btn-toolbar">
+        <div class="btn-group">
+          {{? it.is_present}}
+            {{? it.is_invited}}
+              <button class="btn" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
+            {{??}}
+              {{? it.is_game}}
+                <a class="btn" href="/game/?gid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history"><i class="icon-clipboard-2"></i></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
+                {{? it.is_finished}}
+                  <a class="btn" href="/game/?gid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats"><i class="icon-bars"></i></a>
+                {{?}}
+              {{??}}
+                <a class="btn" href="/tournament/?tid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history"><i class="icon-clipboard-2"></i></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#rounds" title="{{= window.hlib._g("Show rounds")}}" rel="tooltip" data-placement="top"><i class="icon-clipboard-2"></i></a>
+                {{? it.is_finished}}
+                  <a class="btn" href="/tournament/?tid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats"><i class="icon-bars"></i></a>
+                {{?}}
+              {{?}}
+            {{?}}
+          {{??}}
+            <button class="btn" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
+          {{?}}
         </div>
       </div>
     </div>
-  {{/playables}}
+  </div>
 '
 
-window.settlers.templates.recent_events.playable_preview = '
-  <div class="bold">{{name}}</div>
-  <div class="playable-players">{{{players_list}}}</div>
-  {{#is_game}}
-    <div class="playable-limit">{{limit}} {{#_g}}players{{/_g}}</div>
-  {{/is_game}}
-  {{#round}}
-    <div class="playable-round">
-      {{round}}. {{#_g}}round{{/_g}},
-      {{#is_finished}}
-        winner is {{forhont.name}}
-      {{/is_finished}}
-      {{^is_finished}}
-        {{forhont.name}} {{#_g}}on turn{{/_g}}
-      {{/is_finished}}
-    </div>
-  {{/round}}
-  {{#is_invited}}
-    <div style="font-weight: bold">{{#_g}}You are invited!{{/_g}}</div>
-  {{/is_invited}}
-  {{^is_game}}
-    <div class="playable-limit">{{limit}} {{#_g}}players per game{{/_g}}</div>
-    <div class="playable-limit">Tournament for {{num_players}} players</div>
-  {{/is_game}}
-'
-window.settlers.templates.recent_events.password = '
-  <input type="text" id="{{id}}_join_password" />
-  <button class="btn" id="{{id}}_join" title="{{#_g}}Join{{/_g}}" rel="tooltip" data-placement="top">
+window.settlers.templates.recent_events.password = doT.template '
+  <input type="text" id="{{= it.id}}_join_password" />
+  <button class="btn" id="{{= it.id}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top">
     <i class="icon-checkmark"></i>
   </button>
 '
@@ -111,7 +88,6 @@ window.settlers.setup_page = () ->
 
   decorate_playable = (p) ->
     peid = '#' + p.peid
-
 
     __generic_click = (button, postfix) ->
       eid = '#' + p.eid
@@ -190,7 +166,7 @@ window.settlers.setup_page = () ->
         return false
 
     if p.has_password
-      $('#' + p.eid + '_join').replaceWith(window.hlib.render window.settlers.templates.recent_events.password, p)
+      $('#' + p.eid + '_join').replaceWith(window.settlers.templates.recent_events.password p)
 
     if p.is_present
       __generic_click()
@@ -217,41 +193,34 @@ window.settlers.setup_page = () ->
       html:			true
       trigger:			'hover'
 
+  render_playable = (eid, p) ->
+    p.eid = 'playable_' + (if p.is_game then 'game' else 'tournament') + '_' + p.id
+
+    __fmt_player = (player) ->
+      s = player.user.name
+
+      if player.user.is_online == true
+        s = '<span class=\'user-online\'>' + s + '</span>'
+
+      if player.is_confirmed != true
+        s = '<span class=\'user-invited\'>' + s + '</span>'
+
+      if player.is_on_turn == true
+        s = '<span class=\'user-onturn\'>' + s + '</span>'
+
+      return s
+
+    p.players_list = (__fmt_player player for player in p.players).join ', '
+
+    $(eid).append window.settlers.templates.recent_events.playable p
+    decorate_playable p
+
   refresh_list = (opts) ->
     $(opts.eid).html ''
 
     opts.playables.sort cmp_playables
 
-    __per_playable = (p) ->
-      __players_list = () ->
-        l = []
-
-        __fmt_player = (player) ->
-          s = player.user.name
-
-          if player.user.is_online == true
-            s = '<span class=\'user-online\'>' + s + '</span>'
-
-          if player.is_confirmed != true
-            s = '<span class=\'user-invited\'>' + s + '</span>'
-
-          if player.is_on_turn == true
-            s = '<span class=\'user-onturn\'>' + s + '</span>'
-
-          return s
-
-        l = (__fmt_player player for player in p.players)
-        return l.join ', '
-
-      p.players_list = __players_list
-
-      p.eid = 'playable_' + (if p.is_game then 'game' else 'tournament') + '_' + p.id
-
-    __per_playable p for p in opts.playables
-
-    $(opts.eid).html window.hlib.render(window.settlers.templates.recent_events.playables, opts)
-
-    decorate_playable p for p in opts.playables
+    render_playable opts.eid, p for p in opts.playables
 
   update_events = () ->
     new window.hlib.Ajax

@@ -1,10 +1,80 @@
-_log_enabled = false
-_log = (args...) ->
-  if window.settlers._log_enabled == true
-    console.log args
-
 window.settlers = window.settlers or {}
-window.settlers._log_enabled = false
+
+window.settlers.templates = window.settlers.templates or {}
+window.settlers.templates.game = {}
+window.settlers.templates.game.player = doT.template '
+  <div class="playable-player">
+    <div class="game-player-header settlers-game-player-header-{{= it.color.name}}">
+      <h4>
+        {{= it.user.name}}
+        <div class="pull-right">
+          {{? it.has_mightest_chilvary}}
+            <span class="settlers-player-title-icon settlers-icon-chilvary-on"></span>
+          {{?}}
+          {{? it.has_longest_path}}
+            <span class="settlers-player-title-icon settlers-icon-path-on"></span>
+          {{?}}
+        </div>
+      </h4>
+    </div>
+
+    <table class="table table-condensed">
+      <tr class="info"><td><strong>{{= window.hlib._g("Points")}}:</strong></td><td><strong>{{= it.points}}</strong></td></tr>
+      {{? it.my_player}}
+        <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/wood.gif" />{{= window.hlib._g("Wood")}}:</td><td>{{= it.resources.wood}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/clay.gif" />{{= window.hlib._g("Clay")}}:</td><td>{{= it.resources.clay}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/sheep.gif" />{{= window.hlib._g("Sheep")}}:</td><td>{{= it.resources.sheep}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/grain.gif" />{{= window.hlib._g("Grain")}}:</td><td>{{= it.resources.grain}}</td></tr>
+        <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/rock.gif" />{{= window.hlib._g("Rock")}}:</td><td>{{= it.resources.rock}}</td></tr>
+      {{?}}
+      <tr class="info"><td><strong>{{= window.hlib._g("Resources")}}:</td><td><strong>{{= it.resources.total}}</td></tr>
+
+      {{? it.my_player}}
+        <tr rel="tooltip" data-placement="right" title="{{= it.cards.unused_cards_str}}"><td>{{= window.hlib._g("Cards")}}:</td><td>{{= it.cards.unused_cards}}</td></tr>
+      {{??}}
+        <tr><td>{{= window.hlib._g("Cards")}}:</td><td>{{= it.cards.unused_cards}}</td></tr>
+      {{?}}
+      <tr><td>{{= window.hlib._g("Knights")}}:</td><td>{{= it.cards.used_knights}}</td></tr>
+    </table>
+  </div>
+'
+window.settlers.templates.game.cards = doT.template '
+  {{~ it.cards :card:index}}
+    <div id="card_{{= card.id}}" class="mediumListIconTextItem">
+      <div class="icon-grid-view mediumListIconTextItem-Image" />
+      <div class="mediumListIconTextItem-Detail">
+        <h4>{{= window.hlib._g(window.settlers.game.card_type_to_name[card.type])}}</h4>
+        {{? card.used}}
+          <p>Used in round #{{= card.used}}.</p>
+        {{?}}
+      </div>
+    </div>
+  {{~}}
+'
+window.settlers.templates.game.events = doT.template '
+  {{~ it.events :event:index}}
+    {{? !event.hidden}}
+      <tr>
+        <td class="event-stamp">{{= new Date(event.stamp * 1000).strftime("%d/%m %H:%M")}}</td>
+        <td class="event-round">{{= event.round}}.</td>
+        <td class="event-message">{{= window.settlers.events[event.ename](event)}}</td>
+      </tr>
+    {{?}}
+  {{~}}
+'
+window.settlers.templates.game.exchange = window.settlers.templates.game.exchange or {}
+window.settlers.templates.game.exchange.amount = doT.template '
+  <option value="" selected="selected">{{= window.hlib._g("# pieces of ...")}}</option>
+  {{~ it.amounts :amount:index}}
+    <option value="{{= amount}}">{{= amount}}</option>
+  {{~}}
+'
+window.settlers.templates.game.exchange.resources = doT.template '
+  <option value="" selected="selected">{{= hint}}</option>
+  {{~ it.resources :resource:index}}
+    <option value="{{= resource.resource}}">{{= resource.resource_label}}</option>
+  {{~}}
+'
 
 window.settlers.format_event_resources = (rs) ->
   return (window.hlib._g '{0} wood, {1} clay, {2} sheep, {3} grain, {4} rock').format rs.wood, rs.clay, rs.sheep, rs.grain, rs.rock
@@ -83,6 +153,8 @@ class window.settlers.GameObject
 
     @current_active_nodes_map = null
     @current_active_paths_map = null
+
+    @events.reverse()
 
   get_thief_field:	() ->
     fields = @board.fields.filter (f) -> f.thief == true
@@ -259,16 +331,6 @@ class window.settlers.GameObject
 
     return window.settlers.board_defs.active_paths_map_negative
 
-  render_events:	(event_formatters, list_template) ->
-    __per_event = (e) ->
-      d = new Date (e.stamp * 1000)
-      e.stamp_formatted = d.strftime '%d/%m %H:%M'
-      e.message = event_formatters[e.ename] e
-
-    __per_event e for e in @events
-    @events.reverse()
-    return window.hlib.render list_template, @
-
   resources_values:	(rs) ->
     return [rs.wood, rs.clay, rs.sheep, rs.grain, rs.rock]
 
@@ -326,81 +388,6 @@ class window.settlers.GameObject
   can_exchange:		() ->
     return @can_exchange_four() or @can_exchange_three() or @can_exchange_two()
 
-window.settlers.templates.game = {}
-window.settlers.templates.game.player = '
-  <div class="playable-player">
-    <div class="game-player-header settlers-game-player-header-{{color.name}}">
-      <h4>
-        {{user.name}}
-        <div class="pull-right">
-          {{#has_mightest_chilvary}}
-            <span class="settlers-player-title-icon settlers-icon-chilvary-on"></span>
-          {{/has_mightest_chilvary}}
-          {{#has_longest_path}}
-            <span class="settlers-player-title-icon settlers-icon-path-on"></span>
-          {{/has_longest_path}}
-        </div>
-      </h4>
-    </div>
-
-    <table class="table table-condensed">
-      <tr class="info"><td><strong>{{#_g}}Points{{/_g}}:</strong></td><td><strong>{{points}}</strong></td></tr>
-      {{#my_player}}
-        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/wood.gif" />{{#_g}}Wood{{/_g}}:</td><td>{{resources.wood}}</td></tr>
-        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/clay.gif" />{{#_g}}Clay{{/_g}}:</td><td>{{resources.clay}}</td></tr>
-        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/sheep.gif" />{{#_g}}Sheep{{/_g}}:</td><td>{{resources.sheep}}</td></tr>
-        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/grain.gif" />{{#_g}}Grain{{/_g}}:</td><td>{{resources.grain}}</td></tr>
-        <tr><td><img src="/static/images/games/settlers/board/{{game.render_info.board_skin}}/icons/rock.gif" />{{#_g}}Rock{{/_g}}:</td><td>{{resources.rock}}</td></tr>
-      {{/my_player}}
-      <tr class="info"><td><strong>{{#_g}}Resources{{/_g}}:</td><td><strong>{{resources.total}}</td></tr>
-
-      {{#my_player}}
-        <tr rel="tooltip" data-placement="right" title="{{cards.unused_cards_str}}"><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.unused_cards}}</td></tr>
-      {{/my_player}}
-      {{^my_player}}
-        <tr><td>{{#_g}}Cards{{/_g}}:</td><td>{{cards.unused_cards}}</td></tr>
-      {{/my_player}}
-      <tr><td>{{#_g}}Knights{{/_g}}:</td><td>{{cards.used_knights}}</td></tr>
-    </table>
-  </div>
-'
-window.settlers.templates.game.cards = '
-  {{#cards}}
-    <div id="card_{{id}}" class="mediumListIconTextItem">
-      <div class="icon-grid-view mediumListIconTextItem-Image" />
-      <div class="mediumListIconTextItem-Detail">
-        <h4>{{type_name}}</h4>
-        {{#used}}
-          <p>Used in round #{{used}}.</p>
-        {{/used}}
-      </div>
-    </div>
-  {{/cards}}
-'
-window.settlers.templates.game.events = '
-  {{#events}}
-    {{^hidden}}
-      <tr>
-        <td class="event-stamp">{{stamp_formatted}}</td>
-        <td class="event-round">{{round}}.</td>
-        <td class="event-message">{{message}}</td>
-      </tr>
-    {{/hidden}}
-  {{/events}}
-'
-window.settlers.templates.game.exchange = window.settlers.templates.game.exchange or {}
-window.settlers.templates.game.exchange.amount = '
-  <option value="" selected="selected">{{#_g}}# pieces of ...{{/_g}}</option>
-  {{#amounts}}
-    <option value="{{amount}}">{{amount}}</option>
-  {{/amounts}}
-'
-window.settlers.templates.game.exchange.resources = '
-  <option value="" selected="selected">{{hint}}</option>
-  {{#resources}}
-    <option value="{{resource}}">{{resource_label}}</option>
-  {{/resources}}
-'
 
 window.settlers.update_game_state = () ->
   gid = window.settlers.game.gid
@@ -494,9 +481,9 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
 
   $(eid_prefix + '_gid').val G.gid
   $(eid_prefix + '_ratio').val i
-  $(eid_prefix + '_amount').html window.hlib.render window.settlers.templates.game.exchange.amount, amounts
-  $(eid_prefix + '_src').html window.hlib.render window.settlers.templates.game.exchange.resources, src_resources
-  $(eid_prefix + '_dst').html window.hlib.render window.settlers.templates.game.exchange.resources, dst_resources
+  $(eid_prefix + '_amount').html window.settlers.templates.game.exchange.amount amounts
+  $(eid_prefix + '_src').html window.settlers.templates.game.exchange.resources src_resources
+  $(eid_prefix + '_dst').html window.settlers.templates.game.exchange.resources dst_resources
 
   $(eid_prefix).show()
 
@@ -560,9 +547,7 @@ window.settlers.update_game_ui_player = (player) ->
 
     player.cards.unused_cards_str = unused_cards_arr.join '<br />'
 
-  $(dst_id).html ''
-  rendered = window.hlib.render window.settlers.templates.game.player, player
-  $(dst_id).html rendered
+  $(dst_id).html window.settlers.templates.game.player player
 
 window.settlers.update_game_ui_players = () ->
   window.settlers.update_game_ui_player p for p in window.settlers.game.players
@@ -927,9 +912,7 @@ window.settlers.update_game_ui_cards = () ->
   if G.state == 1
     $('#new_card_form').show()
 
-  c.type_name = (window.hlib._g G.card_type_to_name[c.type]) for c in G.my_player.cards.cards
-
-  $('#cards_list').html window.hlib.render window.settlers.templates.game.cards, G.my_player.cards
+  $('#cards_list').html window.settlers.templates.game.cards G.my_player.cards
 
   decorate_card = (c) ->
     if not c.can_be_used
@@ -953,8 +936,7 @@ window.settlers.update_game_ui_cards = () ->
     window.settlers.show_menu_alert 'show_cards', G.my_player.cards.unused_cards, 'badge-info', (window.hlib.format_string (window.hlib._g '%(count)s unused cards'), {count: G.my_player.cards.unused_cards})
 
 window.settlers.update_game_ui_history = () ->
-  rendered = window.settlers.game.render_events window.settlers.events, window.settlers.templates.game.events
-  $('#history_events').html rendered
+  $('#history_events').html window.settlers.templates.game.events window.settlers.game
 
 window.settlers.update_game_ui_buttons = () ->
   # reset to default
@@ -1193,23 +1175,23 @@ window.settlers.setup_page = () ->
   else
     window.settlers.show_board()
 
-window.settlers.templates.chat_post = '
- <tr id="chat_post_{{id}}">
+window.settlers.templates.chat_post = doT.template '
+ <tr id="chat_post_{{= it.id}}">
     <td>
       <h3>
         <span class="chat-post-unread label label-important hide">Unread</span>
-        {{#user.is_online}}
+        {{? it.user.is_online}}
           <span class="user-online">
-        {{/user.is_online}}
-        {{user.name}}
-        {{#user.is_online}}
+        {{?}}
+        {{= it.user.name}}
+        {{? it.user.is_online}}
           </span>
-        {{/user.is_online}} - {{time}}
+        {{?}} - {{= it.time}}
       </h3>
 
       <div>
 
-        <p>{{{message}}}</p>
+        <p>{{= it.message}}</p>
       </div>
     </td>
   </tr>

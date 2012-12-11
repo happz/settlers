@@ -59,7 +59,13 @@ window.settlers.setup_forms = () ->
           c.label = window.hlib._g c.label for c in response.colors
           response._g = window.hlib._g
 
-          f.content(window.hlib.render '<option value="">{{#_g}}Choose...{{/_g}}</option>{{#colors}}<option value="{{name}}" class="colors" style="background-image: url(/static/images/games/settlers/board/real/players/{{name}}/node/village.gif)">{{label}}</option>{{/colors}}', response)
+          tmpl = doT.template '
+            <option value="">{{= window.hlib._g("Choose...")}}</option>
+            {{~ it.colors :color:index}}
+              <option value="{{= color.name}}" class="colors" style="background-image: url(/static/images/games/settlers/board/real/players/{{= color.name}}/node/village.gif)">{{= color.label}}</option>
+            {{~}}'
+
+          f.content tmpl response
 
           window.hlib.MESSAGE.hide()
 
@@ -101,7 +107,12 @@ window.settlers.setup_forms = () ->
           c.label = window.hlib._g c.label for c in response.colors
           response._g = window.hlib._g
 
-          f.content(window.hlib.render '<option value="">{{#_g}}Choose...{{/_g}}</option>{{#colors}}<option value="{{name}}" class="colors" style="background-image: url(/static/images/games/settlers/board/real/players/{{name}}/node/village.gif)">{{label}}</option>{{/colors}}', response)
+          tmpl = doT.template '
+            <option value="">{{= window.hlib._g("Choose...")}}</option>
+            {{~ it.colors :color:index}}
+              <option value="{{= color.name}}" class="colors" style="background-image: url(/static/images/games/settlers/board/real/players/{{= color.name}}/node/village.gif)">{{= color.label}}</option>
+            {{~}}'
+          f.content tmpl response
 
           window.hlib.MESSAGE.hide()
 
@@ -110,16 +121,16 @@ window.settlers.setup_forms = () ->
 
   # list
   (form_opponent_color.field 'list').enable (f) ->
-    tmpl = '
+    tmpl = doT.template '
       <div class="listview-container grid-layout">
-        {{#users}}
-          <div class="mediumListIconTextItem" title="Click to remove" id="opponent_{{user.name}}">
-            <img class="mediumListIconTextItem-Image" style="background-color: {{color.color}}"/>
+        {{~ it.users :pair:index}}
+          <div class="mediumListIconTextItem" title="Click to remove" id="opponent_{{= pair.user.name}}">
+            <img class="mediumListIconTextItem-Image" style="background-color: {{= pair.color.color}}"/>
             <div class="mediumListIconTextItem-Detail">
-              <h4>{{user.name}}</h4>
+              <h4>{{= pair.user.name}}</h4>
             </div>
           </div>
-        {{/users}}
+        {{~}}
       </div>'
 
     new window.hlib.Ajax
@@ -133,7 +144,7 @@ window.settlers.setup_forms = () ->
             window.hlib.MESSAGE.hide()
             return
 
-          (form_opponent_color.field 'list').content(window.hlib.render tmpl, response).show()
+          (form_opponent_color.field 'list').content(tmpl response).show()
 
           __per_user = (u) ->
             $('#opponent_' + u.user.name).click () ->

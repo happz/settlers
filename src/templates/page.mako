@@ -52,7 +52,7 @@
   <script type="text/javascript" src="/static/script/jquery.timers.js"></script>
   <script type="text/javascript" src="/static/script/stacktrace.js"></script>
 
-  <script type="text/javascript" src="/static/script/mustache.js"></script>
+  <script type="text/javascript" src="/static/script/doT.min.js"></script>
   <script type="text/javascript" src="/static/script/strftime.js"></script>
 
   <script type="text/javascript" src="/static/script/hlib.js"></script>
