@@ -230,7 +230,6 @@ window.settlers.setup_forms = () ->
   window.settlers.setup_i18n_add_form()
   window.settlers.setup_i18n_edit_form()
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   window.settlers.setup_forms()
-
   window.settlers.refresh_maintenance_access_list()

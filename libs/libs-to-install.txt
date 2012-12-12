@@ -41,6 +41,13 @@
 
 	ln -sr stacktrace.js ../static/script/stacktrace.js
 
+*** SHJS
+	http://shjs.sourceforge.net/
+
+	ln -sr shjs/sh_main.min.js ../static/script/sh_main.js
+	ln -sr shjs/sh_python.min.js ../static/script/sh_python.js
+	ln -sr shjs/sh_style.css ../static/css/sh_style.css
+
 *** strftime
 	http://code.google.com/p/strftime-js/
 

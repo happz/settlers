@@ -1,2 +1,2 @@
-window.settlers.setup_page = () ->
-  return
+$(window).bind 'page_poststartup', () ->
+  sh_highlightDocument()

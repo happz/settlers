@@ -20,7 +20,7 @@ window.settlers.templates.chat_post = doT.template '
   </tr>
 '
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   chat_pager = window.settlers.setup_chat
     id_prefix:			'chat'
     eid:			'#chat_posts'

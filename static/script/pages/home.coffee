@@ -50,7 +50,7 @@ window.settlers.templates.recent_events.password = doT.template '
   </button>
 '
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   cmp_playables = (x, y) ->
     if x.is_invited == true
       if y.is_invited == true

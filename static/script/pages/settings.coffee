@@ -218,7 +218,7 @@ window.settlers.setup_forms = () ->
 
   window.settlers.setup_opponent_colors_form()
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   window.settlers.setup_datepickers()
   window.settlers.setup_autocomplete()
   window.settlers.setup_forms()

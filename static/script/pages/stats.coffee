@@ -1,15 +1,15 @@
-window.settlers.templates.record = '
+window.settlers.templates.record = doT.template '
   <tr>
-    <td>{{user.name}}</td>
-    <td>{{games}}</td>
-    <td>{{wons}}</td>
-    <td>{{points}}</td>
-    <td>{{ppg}}</td>
-    <td>{{forhont}}</td>
+    <td>{{= it.user.name}}</td>
+    <td>{{= it.games}}</td>
+    <td>{{= it.wons}}</td>
+    <td>{{= it.points}}</td>
+    <td>{{= it.ppg}}</td>
+    <td>{{= it.forhont}}</td>
   </tr>
 '
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   pager = new window.hlib.Pager
     id_prefix:          'stats'
     url:                '/stats/page'

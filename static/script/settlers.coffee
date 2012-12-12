@@ -12,11 +12,6 @@ class window.settlers.PullNotify
   constructor:	() ->
     pull_notify = @
 
-#    $('#trumpet_board_dialog').modal
-#      show:			false
-#      backdrop:			'static'
-#      keyboard:			false
-
     __call_update = () ->
       pull_notify.update()
 
@@ -65,9 +60,6 @@ class window.settlers.PullNotify
 #
 # Methods
 #
-window.settlers.render_board_piece = (attrs) ->
-  return '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
-
 window.settlers.show_menu_alert = (item, cnt, additional, tooltip) ->
   eid = '#' + item + ' span.menu-alert'
 
@@ -137,25 +129,21 @@ window.settlers.setup_chat = (opts) ->
 
   return pager
 
-window.settlers.startup = () ->
-  window.hlib.setup_common
+$(window).bind 'hlib_startup', () ->
+  window.hlib.setup
     message_dialog:		'#message_dialog'
 
   window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
 
-  window.settlers.setup_settlers()
-  window.settlers.setup_page()
-
   if window.settlers.user
+    $('#menu_logout').click () ->
+      new window.hlib.Ajax
+        url:			'/logout/'
+      return false
+
     window.settlers.PULL_NOTIFY.update()
 
-window.settlers.post_startup = () ->
+$(window).bind 'hlib_poststartup', () ->
   $('a[rel=tooltip]').tooltip()
   $('button[rel=tooltip]').tooltip()
   $('body').css 'margin-bottom', ($('footer').height() + 'px')
-
-#
-# Bind startup event
-#
-$(window).bind 'hlib_startup', window.settlers.startup
-$(window).bind 'hlib_poststartup', window.settlers.post_startup

@@ -39,3 +39,6 @@ window.settlers.events['game.CardUsed']                 = (e) ->
 
 window.settlers.events['game.CardBought']               = (e) ->
   return (window.hlib._g '{0} bought new card').format e.user.name
+
+window.settlers.render_board_piece = (attrs) ->
+  return '<span ' + ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'

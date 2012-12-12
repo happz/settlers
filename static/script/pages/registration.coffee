@@ -1,4 +1,4 @@
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   new window.hlib.Form
     fid:                        'checkin'
     focus:                      'username'

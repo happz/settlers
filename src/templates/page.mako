@@ -57,7 +57,6 @@
 
   <script type="text/javascript" src="/static/script/hlib.js"></script>
   <script type="text/javascript" src="/static/script/settlers.js"></script>
-  <script type="text/javascript" src="/static/script/pages/page.js"></script>
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 

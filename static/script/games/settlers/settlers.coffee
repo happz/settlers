@@ -1008,7 +1008,7 @@ window.settlers.show_game_board = () ->
   window.settlers.hide_board_view_sections()
   $('.game-board').show()
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   exchange_form = (ratio) ->
     f = new window.hlib.Form
       fid:		'exchange_' + ratio

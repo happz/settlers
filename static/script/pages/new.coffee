@@ -34,5 +34,5 @@ window.settlers.setup_forms = () ->
       s400:     (response, form) ->
         window.hlib.form_default_handlers.s400 response, form
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   window.settlers.setup_forms()
