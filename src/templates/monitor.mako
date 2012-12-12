@@ -1,7 +1,13 @@
 <%!
+  import pprint
   import types
 
   import hlib.stats
+
+  import hruntime
+
+  def pformat(d):
+    return pprint.pformat(d).replace('<', '&lt;').replace('>', '&gt;')
 %>
 
 <%namespace file="hlib_ui.mako" import="*" />
@@ -25,10 +31,20 @@
   %>
 </%def>
 
+<%def name="page_header()">
+  ${parent.page_header()}
+
+  <script type="text/javascript" src="/static/script/sh_main.js"></script>
+  <script type="text/javascript" src="/static/script/sh_python.js"></script>
+  <link rel="stylesheet" href="/static/css/sh_style.css" type="text/css" />
+</%def>
+
 ${ui_page_header('Monitor')}
 
 <div class="row-fluid">
   <div class="offset2 span10">
+
+  ${ui_section_header('runtime', 'Runtime status')}
 
 <table class="table table-striped">
   <tbody>
@@ -104,7 +120,28 @@ ${ui_page_header('Monitor')}
   % endfor
 % endfor
 
-      </tbody>
-    </table>
+  </tbody>
+</table>
+
+  </div>
+</div>
+
+<div class="row-fluid">
+  <div class="offset2 span10">
+    ${ui_section_header('config', 'Config')}
+
+    <h4>Application</h4>
+    <pre class="sh_python">
+${pformat(hruntime.app.config)}
+    </pre>
+
+    % for engine in hruntime.app.engines:
+      % for server in engine.servers:
+        <h4>${engine.stats_name} - ${server.name}</h4>
+        <pre class="sh_python">
+${pformat(server.config)}
+        </pre>
+      % endfor
+    % endfor
   </div>
 </div>
