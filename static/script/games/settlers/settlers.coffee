@@ -66,11 +66,11 @@ window.settlers.templates.game.exchange = window.settlers.templates.game.exchang
 window.settlers.templates.game.exchange.amount = doT.template '
   <option value="" selected="selected">{{= window.hlib._g("# pieces of ...")}}</option>
   {{~ it.amounts :amount:index}}
-    <option value="{{= amount}}">{{= amount}}</option>
+    <option value="{{= amount.amount}}">{{= amount.amount}}</option>
   {{~}}
 '
 window.settlers.templates.game.exchange.resources = doT.template '
-  <option value="" selected="selected">{{= hint}}</option>
+  <option value="" selected="selected">{{= window.hlib._g(it.hint)}}</option>
   {{~ it.resources :resource:index}}
     <option value="{{= resource.resource}}">{{= resource.resource_label}}</option>
   {{~}}
@@ -429,7 +429,7 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
   amounts.amounts.push { amount: n } for n in [i..Math.max.apply Math, (G.resources_values G.my_player.resources)] by i
 
   dst_resources =
-    hint:		window.hlib._g 'To ...'
+    hint:		'To ...'
     resources:		[
       __mk_resource_option 1
       __mk_resource_option 4
@@ -439,7 +439,7 @@ window.settlers.__refresh_game_ui_exchange = (i) ->
     ]
 
   src_resources =
-    hint:		window.hlib._g 'From ...'
+    hint:		'From ...'
     resources:		[
     ]
 
