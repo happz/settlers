@@ -275,7 +275,7 @@ class PlayableLists(object):
       self.inval_players(p)
 
     for player in p.players.values():
-      hruntime.cache.remove(p.user, 'recent_events')
+      hruntime.cache.remove(player.user, 'recent_events')
 
     return True
 
@@ -284,6 +284,6 @@ class PlayableLists(object):
       self.inval_players(p)
 
     for player in p.players.values():
-      hruntime.cache.remove(p.user, 'recent_events')
+      hruntime.cache.remove(player.user, 'recent_events')
 
     return True
