@@ -80,32 +80,7 @@
         ${ui_form_end()}
         </div>
 
-        <div id="chat_posts">
-          <div class="pagination pagination-right">
-            <ul>
-              <li><a href="#" class="chat-first">${_('First')}</a></li>
-              <li><a href="#" class="chat-next">${_('Next')}</a></li>
-              <li></li>
-              <li><a href="#" class="chat-previous">${_('Previous')}</a></li>
-              <li><a href="#" class="chat-last">${_('Last')}</a></li>
-            </ul>
-          </div>
-
-          <table class="table">
-            <tbody>
-            </tbody>
-          </table>
-
-          <div class="pagination pagination-right">
-            <ul>
-              <li><a href="#" class="chat-first">${_('First')}</a></li>
-              <li><a href="#" class="chat-next">${_('Next')}</a></li>
-              <li></li>
-              <li><a href="#" class="chat-previous">${_('Previous')}</a></li>
-              <li><a href="#" class="chat-last">${_('Last')}</a></li>
-            </ul>
-          </div>
-        </div>
+        ${chat_table()}
       </div>
     </div>
 
