@@ -175,6 +175,7 @@ class Playable(hlib.database.DBObject):
     return {
       'name':			self.name,
       'round':			self.round,
+      'limit':			self.limit,
       'players':		[p.to_state() for p in self.players.values()],
       'events':			[e.to_api() for e in self.events.values() if e.hidden != True]
     }
@@ -249,24 +250,24 @@ class PlayableLists(object):
       for player in p.players.values():
         self._inval_user(player.user)
 
+        hruntime.cache.remove(player.user, 'recent_events')
+
     return True
 
   def inval_all(self, l):
     with self._lock:
       setattr(self, '_' + l, {})
 
+      hruntime.cache.remove_for_all_users('recent_events')
+
   # Shortcuts
   def created(self, p):
     self.inval_all('active')
-
-    hruntime.cache.remove_for_all_users('recent_events')
 
     return True
 
   def started(self, p):
     self.inval_all('active')
-
-    hruntime.cache.remove_for_all_users('recent_events')
 
     return True
 
@@ -274,16 +275,10 @@ class PlayableLists(object):
     with self._lock:
       self.inval_players(p)
 
-    for player in p.players.values():
-      hruntime.cache.remove(player.user, 'recent_events')
-
     return True
 
   def archived(self, p):
     with self._lock:
       self.inval_players(p)
-
-    for player in p.players.values():
-      hruntime.cache.remove(player.user, 'recent_events')
 
     return True
