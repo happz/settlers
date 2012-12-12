@@ -58,6 +58,10 @@ config_defaults = {
   'system_games':		{
     'limit':			20,
     'sleep':			3
+  },
+  'cache':			{
+    'enabled':			False,
+    'dont_cache':		''
   }
 }
 
@@ -91,7 +95,10 @@ def main():
   app_config			= hlib.engine.Application.default_config(config.get('server', 'path'))
   app_config['title']		= config.get('web', 'title')
   app_config['label']		= 'Settlers'
-  app_config['cache.enabled']	= True
+
+  app_config['cache.enabled']	= bool(config.get('cache', 'enabled'))
+  for token in config.get('cache', 'dont_cache').split(','):
+    app_config['cache.dont_cache.' + token.strip()] = True
 
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
 
