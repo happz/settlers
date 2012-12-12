@@ -25,7 +25,7 @@
   ${ui_form_end()}
 </%def>
 
-<%def name="chat_table(id_prefix = 'chat')">
+<%def name="chat_table()">
   <div id="chat_posts">
     <div class="pagination pagination-right">
       <ul>
