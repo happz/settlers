@@ -23,38 +23,30 @@ class window.settlers.TournamentObject
 
     T = @
 
-  render_events:        (event_formatters, list_template) ->
-    __per_event = (e) ->
-      d = new Date (e.stamp * 1000)
-      e.stamp_formatted = d.strftime '%d/%m %H:%M'
-      e.message = event_formatters[e.ename] e
-
-    __per_event e for e in @events
     @events.reverse()
-    return window.hlib.render list_template, @
 
 window.settlers.templates.tournament = {}
-window.settlers.templates.tournament.player = '
-  <div class="tournament-player corners-bottom">
-    <div class="tournament-player-header corners-top header">
-      <span class="tournament-player-title">{{user.name}}</span>
+window.settlers.templates.tournament.player = doT.template '
+  <div class="playable-player">
+    <div class="tournament-player-header">
+      <h4>{{= it.user.name}}</h4>
     </div>
 
-    <div class="tournament-player-points info important">{{points}} {{#_g}}points{{/_g}}</div>
-
-    <table class="tournament-player-info"></table>
+    <table class="table table-condensed">
+      <tr class="info"><td><strong>{{= window.hlib._g("Points")}}:</strong></td><td><strong>{{= it.points}}</strong></td></tr>
+    </table>
   </div>
 '
-window.settlers.templates.tournament.events = '
-  {{#events}}
-    {{^hidden}}
+window.settlers.templates.tournament.events = doT.template '
+  {{~ it.events :event:index}}
+    {{? !event.hidden}}
       <tr>
-        <td class="event-stamp">{{stamp_formatted}}</td>
-        <td class="event-round">{{round}}.</td>
-        <td class="event-message">{{message}}</td>
+        <td class="event-stamp">{{= new Date(event.stamp * 1000).strftime("%d/%m %H:%M")}}</td>
+        <td class="event-round">{{= event.round}}.</td>
+        <td class="event-message">{{= window.settlers.events[event.ename](event)}}</td>
       </tr>
-    {{/hidden}}
-  {{/events}}
+    {{?}}
+  {{~}}
 '
 
 window.settlers.update_tournament_state = () ->
@@ -76,10 +68,19 @@ window.settlers.update_tournament_ui_info = () ->
   $('#tournament_id').html T.tid
   $('#tournament_name').html T.name
   $('#tournament_round').html T.round
+  $('#tournament_num_players').html T.num_players
+
+window.settlers.update_tournament_ui_status = () ->
+  T = window.settlers.tournament
+  eid = '#tournament_status'
+
+  $(eid).hide()
+
+  if T.stage == 0
+   $(eid).html(window.hlib._g 'Waiting for more players').show()
 
 window.settlers.update_tournament_ui_player = (player) ->
-  rendered = window.hlib.render window.settlers.templates.tournament.player, player
-  $('#players').append rendered
+  $('#players').append window.settlers.templates.tournament.player player
 
 window.settlers.update_tournament_ui_players = () ->
   $('#players').html ''
@@ -87,15 +88,25 @@ window.settlers.update_tournament_ui_players = () ->
   window.settlers.update_tournament_ui_player p for p in window.settlers.tournament.players
 
 window.settlers.update_tournament_ui_history = () ->
-  rendered = window.settlers.tournament.render_events window.settlers.events, window.settlers.templates.tournament.events
-  $('#history_events').html rendered
+  $('#history_events').html window.settlers.templates.tournament.events window.settlers.tournament
+
+window.settlers.update_tournament_ui_buttons = () ->
+  # reset to default
+  window.hlib.disableIcon '#show_stats'
+
+  T = window.settlers.tournament
+
+  if T.stage == 2
+    window.hlib.enableIcon '#show_stats', window.settlers.show_stats
 
 window.settlers.update_tournament_ui = () ->
   window.settlers.update_tournament_ui_info()
+  window.settlers.update_tournament_ui_status()
   window.settlers.update_tournament_ui_players()
   window.settlers.update_tournament_ui_history()
+  window.settlers.update_tournament_ui_buttons()
 
-window.settlers.setup_page = () ->
+$(window).bind 'page_startup', () ->
   show_players = () ->
     $('#views').tabs 'select', 1
     window.location.hash = ''
@@ -111,6 +122,10 @@ window.settlers.setup_page = () ->
   show_rounds = () ->
     $('#views').tabs 'select', 4
     window.location.hash = '#rounds'
+
+  window.settlers.show_stats = () ->
+    $('#views').tabs 'select', 5
+    window.location.hash = '#stats'
 
   $('#views').tabs()
 
@@ -148,6 +163,9 @@ window.settlers.setup_page = () ->
   $('#show_rounds').click () ->
     show_rounds()
 
+  $('#show_stats').click () ->
+    window.settlers.show_stats()
+
   if window.location.hash == '#chat'
     show_chat()
 
@@ -157,20 +175,30 @@ window.settlers.setup_page = () ->
   else if window.location.hash == '#rounds'
     show_rounds()
 
+  else if window.location.hash == '#stats'
+    window.settlers.show_stats()
+
   else
     show_players()
 
-window.settlers.templates.chat_post = '
-  <fieldset class="chat-post">
-    <legend>
-      {{#user.is_online}}
-        <span class="user-online">
-      {{/user.is_online}}
-      {{user.name}}
-      {{#user.is_online}}
-        </span>   
-      {{/user.is_online}} - {{time}}
-    </legend>
-    <div>{{{message}}}</div>
-  </fieldset>
+window.settlers.templates.chat_post = doT.template '
+ <tr id="chat_post_{{= it.id}}">
+    <td>
+      <h3>
+        <span class="chat-post-unread label label-important hide">Unread</span>
+        {{? it.user.is_online}}
+          <span class="user-online">
+        {{?}}
+        {{= it.user.name}}
+        {{? it.user.is_online}}
+          </span>
+        {{?}} - {{= it.time}}
+      </h3>
+
+      <div>
+
+        <p>{{= it.message}}</p>
+      </div>
+    </td>
+  </tr>
 '

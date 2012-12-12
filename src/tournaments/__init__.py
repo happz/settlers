@@ -42,6 +42,13 @@ f_active        = _tournament_lists.f_active
 f_inactive      = _tournament_lists.f_inactive
 f_archived      = _tournament_lists.f_archived
 
+import hlib.stats
+hlib.stats.init_namespace('Tournaments lists', {
+  'Active':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('active').items() ]),
+  'Inactive':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('inactive').items() ]),
+  'Archived':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('archived').items() ])
+})
+
 class Player(lib.play.Player):
   def __init__(self, tournament, user):
     lib.play.Player.__init__(self, user)
@@ -137,6 +144,8 @@ class Tournament(lib.play.Playable):
     d = lib.play.Playable.to_state(self)
 
     d['tid']			= self.id
+    d['stage']			= self.stage
+    d['num_players']		= self.num_players
 
     return d
 
@@ -216,8 +225,11 @@ class TournamentError(hlib.error.BaseError):
   pass
 
 hlib.event.Hook('tournament.Created', 'invalidate_caches',  lambda e: _tournament_lists.created(e.tournament))
+hlib.event.Hook('torunament.Started', 'invalidate_caches',  lambda e: _tournament_lists.started(e.tournament))
 hlib.event.Hook('tournament.Finished', 'invalidate_caches', lambda e: _tournament_lists.finished(e.tournament))
 hlib.event.Hook('tournament.Archived', 'invalidate_caches', lambda e: _tournament_lists.archived(e.tournament))
+hlib.event.Hook('tournament.PlayerJoined', 'invalidate_caches', lambda e: _tournament_lists.inval_players(e.tournament))
+hlib.event.Hook('tournament.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_users([p.user for p in e.tournament.players.values()], 'recent_events'))
 
 import events.tournament
 
