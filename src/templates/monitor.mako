@@ -1,10 +1,18 @@
 <%!
+  import inspect
   import pprint
   import types
 
+  import hlib.event
   import hlib.stats
 
   import hruntime
+
+  def pformat_hook(h):
+    if h.callback.__name__ == '<lambda>':
+      return inspect.getsource(h.callback).strip()
+
+    return 'Hook(callback = %s, args = %s, kwargs = %s)' % (pformat(h.callback), h.args, h.kwargs)
 
   def pformat(d):
     return pprint.pformat(d).replace('<', '&lt;').replace('>', '&gt;')
@@ -123,6 +131,7 @@ ${ui_page_header('Monitor')}
   </tbody>
 </table>
 
+    </section>
   </div>
 </div>
 
@@ -130,18 +139,37 @@ ${ui_page_header('Monitor')}
   <div class="offset2 span10">
     ${ui_section_header('config', 'Config')}
 
-    <h4>Application</h4>
-    <pre class="sh_python">
+      <h4>Application</h4>
+      <pre class="sh_python">
 ${pformat(hruntime.app.config)}
-    </pre>
+      </pre>
 
-    % for engine in hruntime.app.engines:
-      % for server in engine.servers:
-        <h4>${engine.stats_name} - ${server.name}</h4>
-        <pre class="sh_python">
+      % for engine in hruntime.app.engines:
+        % for server in engine.servers:
+          <h4>${engine.stats_name} - ${server.name}</h4>
+          <pre class="sh_python">
 ${pformat(server.config)}
-        </pre>
+          </pre>
+        % endfor
       % endfor
+    </section>
+  </div>
+</div>
+
+<div class="row-fluid">
+  <div class="offset2 span10">
+    ${ui_section_header('event_hooks', 'Event hooks')}
+      <pre class="sh_python">
+{
+% for ename, hooks in hlib.event._HOOKS.items():
+  ${ename}: {
+    % for hname, hook in hooks.items():
+      ${hname}: ${pformat_hook(hook)},
     % endfor
+  },
+% endfor
+}
+      </pre>
+    </section>
   </div>
 </div>
