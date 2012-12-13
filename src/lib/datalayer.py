@@ -26,14 +26,36 @@ from hlib.datalayer import DummyUser
 counters_lock = threading.RLock()
 
 class Counters(hlib.database.DBObject):
-  def __getattr__(self, name):
-    if name == 'total_games':
-      return len(hruntime.dbroot.games) + len(hruntime.dbroot.games_archived)
+  def __init__(self):
+    hlib.database.DBObject.__init__(self)
 
-    if name == 'free_games':
-      return len([g for g in hruntime.dbroot.games.values() if g.is_free])
+    self.games			= hlib.database.Length()
+    self.games_archived		= hlib.database.Length()
+    self.games_active		= hlib.database.Length()
+    self.games_free		= hlib.database.Length()
+    self.games_inactive		= hlib.database.Length()
 
-    return hlib.database.DBObject.__getattr__(self, name)
+    self.tournaments		= hlib.database.Length()
+    self.tournaments_archived	= hlib.database.Length()
+    self.tournaments_active	= hlib.database.Length()
+    self.tournaments_free	= hlib.database.Length()
+    self.tournaments_inactive	= hlib.database.Length()
+
+hlib.event.Hook('game.GameCreated', 'update_counters',  lambda e:     not hruntime.dbroot.counters.games.change(1) \
+                                                                  and not hruntime.dbroot.counters.games_active.change(1) \
+                                                                  and not hruntime.dbroot.counters.games_free.change(1))
+hlib.event.Hook('game.GameStarted', 'update_counters',  lambda e: hruntime.dbroot.counters.games_free.change(-1))
+hlib.event.Hook('game.GameFinished', 'update_counters', lambda e:     not hruntime.dbroot.counters.games_active.change(-1) \
+                                                                  and not hruntime.dbroot.counters.games_inactive.change(1))
+hlib.event.Hook('game.GameArchived', 'update_counters', lambda e: hruntime.dbroot.counters.games_archived.change(1))
+
+hlib.event.Hook('tournament.Created', 'update_counters',  lambda e:     not hruntime.dbroot.counters.tournaments.change(1) \
+                                                                  and not hruntime.dbroot.counters.tournaments_active.change(1) \
+                                                                  and not hruntime.dbroot.counters.tournaments_free.change(1))
+hlib.event.Hook('tournament.Started', 'update_counters',  lambda e: hruntime.dbroot.counters.tournaments_free.change(-1))
+hlib.event.Hook('tournament.Finished', 'update_counters', lambda e:     not hruntime.dbroot.counters.tournaments_active.change(-1) \
+                                                                  and not hruntime.dbroot.counters.tournaments_inactive.change(1))
+hlib.event.Hook('tournament.Archived', 'update_counters', lambda e: hruntime.dbroot.counters.tournaments_archived.change(1))
 
 class Server(hlib.datalayer.Server):
   def __init__(self):
