@@ -1,11 +1,15 @@
 window.settlers.templates.record = doT.template '
-  <tr>
+  {{? it.user.name == window.settlers.user.name}}
+    <tr class="info">
+  {{??}}
+    <tr>
+  {{?}}
     <td>{{= it.user.name}}</td>
     <td>{{= it.games}}</td>
     <td>{{= it.wons}}</td>
+    <td>{{= it.finished}}</td>
     <td>{{= it.points}}</td>
     <td>{{= it.ppg}}</td>
-    <td>{{= it.forhont}}</td>
   </tr>
 '
 

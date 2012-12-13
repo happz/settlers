@@ -23,6 +23,7 @@ class UserStats(object):
 
     self.user				= user
     self.points				= 0
+    self.finished_points		= 0
     self.games				= 0
     self.finished			= 0
     self.wons				= 0
@@ -35,7 +36,7 @@ class UserStats(object):
   def to_api(self):
     return {
       'user':                   hlib.api.User(self.user),
-      'points':                 self.points,
+      'points':                 self.finished_points,
       'games':                  self.games,
       'finished':               self.finished,
       'wons':                   self.wons,
@@ -59,10 +60,7 @@ class Stats(games.stats.Stats):
     with self.lock:
       new_stats = {}
 
-      for g in hruntime.dbroot.games.values():
-        if hruntime.time - WINDOW > g.last_pass:
-          continue
-
+      def __process_game(g):
         for p in g.players.values():
           if p.user not in new_stats:
             s = UserStats(p.user)
@@ -75,6 +73,9 @@ class Stats(games.stats.Stats):
           s.games += 1
 
           if g.is_finished:
+            s.finished += 1
+            s.finished_points += p.points
+
             if g.winner_player == p:
               s.wons += 1
 
@@ -85,13 +86,23 @@ class Stats(games.stats.Stats):
             if p.id == g.forhont:
               s.forhont += 1
 
-      self.stats = new_stats.values()
+      for g in hruntime.dbroot.games.values():
+        if hruntime.time - WINDOW > g.last_pass:
+          continue
 
-      for s in self.stats:
-        s.points_per_game = float(s.points) / float(s.games)
+        __process_game(g)
 
-      for s in self.stats:
-        print str(s)
+      for g in hruntime.dbroot.games_archived.values():
+        if hruntime.time - WINDOW > g.last_pass:
+          continue
+
+        __process_game(g)
+
+      for s in new_stats.values():
+        if s.finished > 0:
+          s.points_per_game = float(s.finished_points) / float(s.finished)
+
+      self.stats = sorted(new_stats.values(), key = lambda x: x.points_per_game, reverse = True)
 
 #    for s in hruntime.dbroot.stats.settlers.values():
 #      if s.games < 20:
