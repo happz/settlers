@@ -40,9 +40,9 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidatNodeClick)
   @api
   def node_click(self, gid = None, nid = None):
-    require_on_turn(gid)
+    g = require_on_turn(gid)
 
-    return hruntime.dbroot.games[gid].node_clicked(nid)
+    return g.node_clicked(nid)
 
   class ValidatePathClick(GenericValidateGID):
     pid = ValidatePID()
@@ -52,9 +52,9 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidatePathClick)
   @api
   def path_click(self, gid = None, pid = None):
-    require_on_turn(gid)
+    g = require_on_turn(gid)
 
-    return hruntime.dbroot.games[gid].path_clicked(pid)
+    return g.path_clicked(pid)
 
   class ValidateNumberClick(GenericValidateGID):
     nid = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf(range(1, 20)))
@@ -64,9 +64,9 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidateNumberClick)
   @api
   def number_click(self, gid = None, nid = None):
-    require_on_turn(gid)
+    g = require_on_turn(gid)
 
-    return hruntime.dbroot.games[gid].number_clicked(nid)
+    return g.number_clicked(nid)
 
   class ValidateExchange(GenericValidateGID):
     ratio = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([2, 3, 4]))
