@@ -8,6 +8,7 @@ import lib.chat
 import lib.datalayer
 
 import hlib.api
+import hlib.event
 import hlib.input
 import hlib.pageable
 
@@ -51,3 +52,5 @@ class Handler(handlers.GenericHandler):
   def page(self, start = None, length = None):
     last_board = hruntime.user.last_board
     return hlib.api.Reply(200, page = self.chat.get_page(start = start, length = length), last_board = last_board)
+
+hlib.event.Hook('system.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_all_users('recent_events'))
