@@ -53,7 +53,7 @@ config_defaults = {
     'access_format':		'{date} {time} - {tid} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
   },
   'session':			{
-    'time':			21600
+    'time':			3600
   },
   'system_games':		{
     'limit':			20,
