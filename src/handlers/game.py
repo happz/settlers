@@ -126,7 +126,7 @@ class Handler(handlers.GenericHandler):
     g.pass_turn(**kwargs)
 
     if hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_STAY:
-      return
+      return hlib.api.Reply(200, game = g.to_state())
 
     if hruntime.user.after_pass_turn == lib.datalayer.User.AFTER_PASS_TURN_NEXT:
       for kind in games.GAME_KINDS:
@@ -159,6 +159,7 @@ class Handler(handlers.GenericHandler):
     g = require_on_game(gid)
 
     g.buy_card()
+    return hlib.api.Reply(200, game = g.to_state())
 
   #
   # Card click
@@ -174,6 +175,7 @@ class Handler(handlers.GenericHandler):
     g = require_on_turn(gid)
 
     g.card_clicked(cid)
+    return hlib.api.Reply(200, game = g.to_state())
 
   #
   # State

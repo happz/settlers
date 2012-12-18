@@ -388,6 +388,10 @@ class window.settlers.GameObject
   can_exchange:		() ->
     return @can_exchange_four() or @can_exchange_three() or @can_exchange_two()
 
+window.settlers.refresh_game_state = (response) ->
+  window.settlers.game = new window.settlers.GameObject response.game
+  window.settlers.update_game_ui()
+  window.hlib.MESSAGE.hide()
 
 window.settlers.update_game_state = () ->
   gid = window.settlers.game.gid
@@ -398,9 +402,7 @@ window.settlers.update_game_state = () ->
       gid:		gid
     handlers:
       h200:		(response, ajax) ->
-        window.settlers.game = new window.settlers.GameObject response.game
-        window.settlers.update_game_ui()
-        window.hlib.MESSAGE.hide()
+        window.settlers.refresh_game_state response
 
 window.settlers.__refresh_game_ui_exchange = (i) ->
   eid_prefix = '#exchange_' + i
@@ -625,7 +627,7 @@ window.settlers.update_game_ui_board = () ->
             nid:		f.id
           handlers:
             h200:     (response, ajax) ->
-              window.settlers.update_game_state()
+              window.settlers.refresh_game_state response
 
         return false
 
@@ -661,7 +663,7 @@ window.settlers.update_game_ui_board = () ->
               pid:		p.id
             handlers:
               h200:     (response, ajax) ->
-                window.settlers.update_game_state()
+                window.settlers.refresh_game_state response
 
           return false
 
@@ -696,7 +698,7 @@ window.settlers.update_game_ui_board = () ->
               pid:		p.id
             handlers:
               h200:     (response, ajax) ->
-                window.settlers.update_game_state()
+                window.settlers.refresh_game_state response
 
           return false
 
@@ -737,7 +739,7 @@ window.settlers.update_game_ui_board = () ->
               nid:		n.id
             handlers:
               h200:     (response, ajax) ->
-                window.settlers.update_game_state()
+                window.settlers.refresh_game_state response
 
           return false
 
@@ -818,7 +820,7 @@ window.settlers.update_game_ui_board = () ->
               nid:		n.id
             handlers:
               h200:	(response, ajax) ->
-                window.settlers.update_game_state()
+                window.settlers.refresh_game_state response
 
           return false
 
@@ -926,7 +928,7 @@ window.settlers.update_game_ui_cards = () ->
           cid:			c.id
         handlers:
           h200:			(response, ajax) ->
-            window.settlers.update_game_state()
+            window.settlers.refresh_game_state response
             window.settlers.show_board()
       return false
 
@@ -1015,7 +1017,7 @@ $(window).bind 'page_startup', () ->
       handlers:
         s200:		(response, form) ->
           form.info.success 'Exchanged'
-          window.settlers.update_game_state()
+          window.settlers.refresh_game_state response
 
     $('#exchange_' + ratio + '_submit_board').click () ->
       f.submit()
@@ -1031,7 +1033,7 @@ $(window).bind 'page_startup', () ->
     handlers:
       s200:		(response, form) ->
         form.info.success 'Bought'
-        window.settlers.update_game_state()
+        window.settlers.refresh_game_state response
         show_cards()
 
   form_invention = new window.hlib.Form
@@ -1039,7 +1041,7 @@ $(window).bind 'page_startup', () ->
     handlers:
       s200:		(response, form) ->
         form.info.success 'Received'
-        window.settlers.update_game_state()
+        window.settlers.refresh_game_state response
         window.settlers.show_board()
 
   $(form_invention.field_id 'gid').val window.settlers.game.gid
@@ -1049,7 +1051,7 @@ $(window).bind 'page_startup', () ->
     handlers:
       s200:		(response, form) ->
         form.info.success 'Stolen'
-        window.settlers.update_game_state()
+        window.settlers.refresh_game_state response
         window.settlers.show_board()
 
   $(form_monopoly.field_id 'gid').val window.settlers.game.gid
@@ -1082,7 +1084,7 @@ $(window).bind 'page_startup', () ->
 
       handlers:
         h200:		(response, ajax) ->
-          window.settlers.update_game_state()
+          window.settlers.refresh_game_state response
 
     if G.state == 10
       config.url = '/game/settlers/pass_turn_first'
@@ -1105,7 +1107,7 @@ $(window).bind 'page_startup', () ->
       handlers:
         h200:		(response, ajax) ->
           window.hlib.MESSAGE.hide()
-          window.settlers.update_game_state()
+          window.settlers.refresh_game_state response
 
     return false
 

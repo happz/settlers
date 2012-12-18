@@ -42,7 +42,8 @@ class Handler(handlers.GenericHandler):
   def node_click(self, gid = None, nid = None):
     g = require_on_turn(gid)
 
-    return g.node_clicked(nid)
+    g.node_clicked(nid)
+    return hlib.api.Reply(200, game = g.to_state())
 
   class ValidatePathClick(GenericValidateGID):
     pid = ValidatePID()
@@ -54,7 +55,8 @@ class Handler(handlers.GenericHandler):
   def path_click(self, gid = None, pid = None):
     g = require_on_turn(gid)
 
-    return g.path_clicked(pid)
+    g.path_clicked(pid)
+    return hlib.api.Reply(200, game = g.to_state())
 
   class ValidateNumberClick(GenericValidateGID):
     nid = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf(range(1, 20)))
@@ -66,7 +68,8 @@ class Handler(handlers.GenericHandler):
   def number_click(self, gid = None, nid = None):
     g = require_on_turn(gid)
 
-    return g.number_clicked(nid)
+    g.number_clicked(nid)
+    return hlib.api.Reply(200, game = g.to_state())
 
   class ValidateExchange(GenericValidateGID):
     ratio = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([2, 3, 4]))
@@ -82,6 +85,7 @@ class Handler(handlers.GenericHandler):
     g = require_on_game(gid)
 
     g.my_player.exchange_resources(ratio, src, dst, amount)
+    return hlib.api.Reply(200, game = g.to_state())
 
   class ValidateInvention(GenericValidateGID):
     resource1 = ValidateResource()
@@ -95,6 +99,7 @@ class Handler(handlers.GenericHandler):
     g = require_on_turn(gid)
 
     g.apply_invention(resource1, resource2)
+    return hlib.api.Reply(200, game = g.to_state())
 
   class ValidateMonopoly(GenericValidateGID):
     resource = ValidateResource()
@@ -107,6 +112,7 @@ class Handler(handlers.GenericHandler):
     g = require_on_turn(gid)
 
     g.apply_monopoly(resource)
+    return hlib.api.Reply(200, game = g.to_state())
 
   @require_write
   @require_login
@@ -116,6 +122,7 @@ class Handler(handlers.GenericHandler):
     g = require_on_turn(gid)
 
     g.roll_dice()
+    return hlib.api.Reply(200, game = g.to_state())
 
   class ValidatePassTurnFirst(GenericValidateGID):
     allow_extra_fields = True
