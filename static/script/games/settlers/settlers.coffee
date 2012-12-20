@@ -19,15 +19,18 @@ window.settlers.templates.game.player = doT.template '
     </div>
 
     <table class="table table-condensed">
-      <tr class="info"><td><strong>{{= window.hlib._g("Points")}}:</strong></td><td><strong>{{= it.points}}</strong></td></tr>
       {{? it.my_player}}
+        <tr class="info"><td colspan="2"><strong>{{= it.points}} {{= window.hlib._g("points")}}</strong></td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/wood.gif" />{{= window.hlib._g("Wood")}}:</td><td>{{= it.resources.wood}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/clay.gif" />{{= window.hlib._g("Clay")}}:</td><td>{{= it.resources.clay}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/sheep.gif" />{{= window.hlib._g("Sheep")}}:</td><td>{{= it.resources.sheep}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/grain.gif" />{{= window.hlib._g("Grain")}}:</td><td>{{= it.resources.grain}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/rock.gif" />{{= window.hlib._g("Rock")}}:</td><td>{{= it.resources.rock}}</td></tr>
+        <tr class="info"><td colspan="2"><strong>{{= it.resources.total}} {{= window.hlib._g("resources totally")}}</strong></td></tr>
+      {{??}}
+        <tr class="info"><td><strong>{{= window.hlib._g("Points")}}:</strong></td><td><strong>{{= it.points}}</strong></td></tr>
+        <tr class="info"><td><strong>{{= window.hlib._g("Resources")}}:</td><td><strong>{{= it.resources.total}}</td></tr>
       {{?}}
-      <tr class="info"><td><strong>{{= window.hlib._g("Resources")}}:</td><td><strong>{{= it.resources.total}}</td></tr>
 
       {{? it.my_player}}
         <tr rel="tooltip" data-placement="right" title="{{= it.cards.unused_cards_str}}"><td>{{= window.hlib._g("Cards")}}:</td><td>{{= it.cards.unused_cards}}</td></tr>
@@ -937,6 +940,14 @@ window.settlers.update_game_ui_cards = () ->
   if G.my_player.cards.unused_cards > 0
     window.settlers.show_menu_alert 'show_cards', G.my_player.cards.unused_cards, 'badge-info', (window.hlib.format_string (window.hlib._g '%(count)s unused cards'), {count: G.my_player.cards.unused_cards})
 
+  $('#apply_points').hide()
+  if G.state == 12 or G.state == 1
+    cnt = 0
+    (cnt += 1 if c.type == 5 and c.used == false) for c in G.my_player.cards.cards
+    if cnt + G.my_player.points >= 10
+      $('#apply_points_gid').val G.gid
+      $('#apply_points').show()
+
 window.settlers.update_game_ui_history = () ->
   $('#history_events').html window.settlers.templates.game.events window.settlers.game
 
@@ -1034,6 +1045,14 @@ $(window).bind 'page_startup', () ->
       s200:		(response, form) ->
         form.info.success 'Bought'
         window.settlers.refresh_game_state response
+        show_cards()
+
+  new window.hlib.Form
+    fid:		'apply_points'
+    handlers:
+      s200:		(response, form) ->
+        form.info.success 'Applied'
+        window.settlers.update_game_state()
         show_cards()
 
   form_invention = new window.hlib.Form

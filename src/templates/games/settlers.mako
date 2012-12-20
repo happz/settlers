@@ -147,6 +147,13 @@
         ${ui_submit(value = 'Buy')}
       ${ui_form_end()}
 
+      <div id="apply_points" class="hide">
+        ${ui_form_start(action = '/game/settlers/apply_points', legend = 'Apply Point cards to win', id = 'apply_points')}
+          ${ui_input(form_name = 'gid', type = 'hidden')}
+          ${ui_submit(value = 'Apply')}
+        ${ui_form_end()}
+      </div>
+
       <div id="cards_list" class="listview-container grid-layout"></div>
     </div>
 

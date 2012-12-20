@@ -150,3 +150,12 @@ class Handler(handlers.GenericHandler):
   @api
   def new(self, **kwargs):
     games.handle_new(**kwargs)
+
+  @require_login
+  @require_write
+  @validate_by(schema = GenericValidateGID)
+  @api
+  def apply_points(self, gid = None):
+    g = require_on_turn(gid)
+
+    return g.apply_points()
