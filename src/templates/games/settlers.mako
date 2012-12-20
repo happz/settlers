@@ -154,7 +154,7 @@
         ${ui_form_end()}
       </div>
 
-      <div id="cards_list" class="listview-container grid-layout"></div>
+      <div id="cards_list" style="height: 798px; overflow: auto"></div>
     </div>
 
     <div id="exchange" class="hide">

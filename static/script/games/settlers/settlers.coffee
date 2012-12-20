@@ -42,17 +42,23 @@ window.settlers.templates.game.player = doT.template '
   </div>
 '
 window.settlers.templates.game.cards = doT.template '
-  {{~ it.cards :card:index}}
-    <div id="card_{{= card.id}}" class="mediumListIconTextItem">
-      <div class="icon-grid-view mediumListIconTextItem-Image" />
-      <div class="mediumListIconTextItem-Detail">
-        <h4>{{= window.hlib._g(window.settlers.game.card_type_to_name[card.type])}}</h4>
-        {{? card.used}}
-          <p>Used in round #{{= card.used}}.</p>
-        {{?}}
-      </div>
-    </div>
-  {{~}}
+  <table class="table">
+    {{~ it.cards :card:index}}
+      <tr>
+        <td>
+          <div id="card_{{= card.id}}" class="mediumListIconTextItem">
+            <div class="icon-grid-view mediumListIconTextItem-Image" />
+            <div class="mediumListIconTextItem-Detail">
+              <h4>{{= window.hlib._g(window.settlers.game.card_type_to_name[card.type])}}</h4>
+              {{? card.used}}
+                <p>Used in round #{{= card.used}}.</p>
+              {{?}}
+            </div>
+          </div>
+        </td>
+      </tr>
+    {{~}}
+  </table>
 '
 window.settlers.templates.game.events = doT.template '
   {{~ it.events :event:index}}
