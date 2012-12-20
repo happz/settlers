@@ -30,7 +30,7 @@
     <div class="pagination pagination-right">
       <ul>
         <li><a href="#" class="chat-first">${_('First')}</a></li>
-        <li><a href="#" class="chat-previous">${_('Previous')}</a></li>
+        <li><a href="#" class="chat-prev">${_('Previous')}</a></li>
         <li></li>
         <li><a href="#" class="chat-next">${_('Next')}</a></li>
         <li><a href="#" class="chat-last">${_('Last')}</a></li>
@@ -45,7 +45,7 @@
     <div class="pagination pagination-right">
       <ul>
         <li><a href="#" class="chat-first">${_('First')}</a></li>
-        <li><a href="#" class="chat-previous">${_('Previous')}</a></li>
+        <li><a href="#" class="chat-prev">${_('Previous')}</a></li>
         <li></li>
         <li><a href="#" class="chat-next">${_('Next')}</a></li>
         <li><a href="#" class="chat-last">${_('Last')}</a></li>
