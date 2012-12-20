@@ -141,9 +141,10 @@ $(window).bind 'hlib_startup', () ->
         url:			'/logout/'
       return false
 
-    window.settlers.PULL_NOTIFY.update()
-
 $(window).bind 'hlib_poststartup', () ->
   $('a[rel=tooltip]').tooltip()
   $('button[rel=tooltip]').tooltip()
   $('body').css 'margin-bottom', ($('footer').height() + 'px')
+
+  if window.settlers.user
+    window.settlers.PULL_NOTIFY.update()
