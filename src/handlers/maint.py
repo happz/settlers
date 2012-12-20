@@ -71,3 +71,5 @@ class Handler(handlers.GenericHandler):
     if cnt <= hruntime.app.config['system_games.limit']:
       __create_games(hruntime.app.config['system_games.limit'] - cnt, hruntime.app.config['system_games.sleep'])
       games._game_lists.inval_all('active')
+
+    return hlib.api.Reply(200, created_games = (hruntime.app.config['system_games.limit'] - cnt))
