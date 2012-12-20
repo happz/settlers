@@ -61,7 +61,7 @@ class Player(hlib.database.DBObject):
 
     self.user			= user
     self.confirmed		= True
-    self.last_board		= 0
+    self.last_board		= -1
 
   def __getattr__(self, name):
     if name == 'is_on_turn':

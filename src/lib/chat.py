@@ -105,17 +105,20 @@ class ChatPager(hlib.pageable.Pageable):
 
     self.trigger_event()
 
+  def update_last_access(self, new_last):
+    # pylint: disable-msg=W0621
+    import hlib.handlers
+    hlib.handlers.enable_write()
+
+    self.accessed_by.last_board = new_last
+
   # Pageable interface implementation
   def get_records(self, start, length):
     records = self.entity.chat_posts.get_posts(start, length)
     records = [cp for cp in reversed(records)]
 
     if len(records) > 0 and self.accessed_by.last_board < records[0].id:
-      # pylint: disable-msg=W0621
-      import hlib.handlers
-      hlib.handlers.enable_write()
-
-      self.accessed_by.last_board = records[0].id
+      self.update_last_access(records[0].id)
 
     return (records, self.length)
 
@@ -124,12 +127,22 @@ class ChatPagerGame(ChatPager):
     accessed_by = accessed_by or game.my_player
     super(ChatPagerGame, self).__init__(game, accessed_by)
 
+  def update_last_access(self, new_last):
+    super(ChatPagerGame, self).update_last_access(new_last)
+
+    hruntime.cache.remove_for_users([p.user for p in self.accessed_by.game.players.values()], 'recent_events')
+
   def trigger_event(self):
     hlib.event.trigger('game.ChatPost', self.entity, hidden = True, user = hruntime.user, game = self.entity)
 
 class ChatPagerTournament(ChatPager):
   def __init__(self, tour):
     super(ChatPagerTournament, self).__init__(tour, tour.my_player)
+
+  def update_last_access(self, new_last):
+    super(ChatPagerTournament, self).update_last_access(new_last)
+
+    hruntime.cache.remove_for_users([p.user for p in self.accessed_by.tournament.players.values()], 'recent_events')
 
   def trigger_event(self):
     hlib.event.trigger('tournament.ChatPost', self.entity, hidden = True, user = hruntime.user, game = self.entity)
