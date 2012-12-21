@@ -9,7 +9,7 @@ window.settlers.templates.record = doT.template '
     <td>{{= it.wons}}</td>
     <td>{{= it.finished}}</td>
     <td>{{= it.points}}</td>
-    <td>{{= it.ppg}}</td>
+    <td>{{= it.ppg.toFixed(3)}}</td>
   </tr>
 '
 
