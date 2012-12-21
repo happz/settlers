@@ -1,1 +1,1 @@
-/data/hlib/static/script/hlib.coffee
+/data/settlers/hlib/static/script/hlib.coffee
