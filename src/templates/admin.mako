@@ -48,8 +48,8 @@ ${ui_section_header('language', 'Language')}
 
     <div class="hide" id="i18n_add_missing"></div>
 
-    ${ui_input(form_name = 'name', type = 'text', label = 'Name', disabled = True, placeholder = 'Choose language first...')}
-    ${ui_input(form_name = 'value', type = 'text', label = 'Value', disabled = True, placeholder = 'Choose language first...')}
+    ${ui_input(form_name = 'name', type = 'text', label = 'Name', disabled = True, placeholder = _('Choose language first...'))}
+    ${ui_input(form_name = 'value', type = 'text', label = 'Value', disabled = True, placeholder = _('Choose language first...'))}
 
     ${ui_submit(value = 'Add', id = 'i18n_add_submit', disabled = True)}
   ${ui_form_end()}
@@ -64,11 +64,11 @@ ${ui_section_header('language', 'Language')}
 
     <div id="i18n_edit_unused"></div>
 
-    ${ui_select_start(form_name = 'name', label = 'Token', disabled = True, placeholder = 'Choose language first...')}
+    ${ui_select_start(form_name = 'name', label = 'Token', disabled = True, placeholder = _('Choose language first...'))}
       <option value="" disabled="disabled">Choose language first...</option>
     ${ui_select_end()}
 
-    ${ui_textarea(form_name = 'value', size = 'xxlarge', disabled = True, placeholder = 'Choose language first...')}
+    ${ui_textarea(form_name = 'value', size = 'xxlarge', disabled = True, placeholder = _('Choose language first...'))}
     <a href="#" id="i18n_edit_remove" title="${_('Remove token')}" rel="tooltip" data-placement="top" class="hide"><span class="icon-remove"></span></a>
 
     ${ui_submit(value = 'Change', id = 'i18n_edit_submit', disabled = True)}

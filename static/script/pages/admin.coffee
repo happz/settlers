@@ -84,10 +84,10 @@ window.settlers.setup_forms = () ->
         window.hlib.MESSAGE.hide()
 
   (form_i18n_add.field 'name').disable (f) ->
-    f.placeholder 'Choose language first...'
+    f.placeholder window.hlib._g 'Choose language first...'
 
   (form_i18n_add.field 'value').disable (f) ->
-    f.placeholder 'Choose language first...'
+    f.placeholder window.hlib._g 'Choose language first...'
 
   $((form_i18n_add.field 'lang').fid).change () ->
     if (form_i18n_add.field 'lang').value()
@@ -149,7 +149,7 @@ window.settlers.setup_forms = () ->
         window.hlib.MESSAGE.hide()
 
   (form_i18n_edit.field 'name').disable (f) ->
-    f.placeholder 'Choose language first...'
+    f.placeholder window.hlib._g 'Choose language first...'
 
     (form_i18n_edit.field 'value').disable()
 
@@ -169,7 +169,7 @@ window.settlers.setup_forms = () ->
           window.hlib.MESSAGE.hide()
 
   (form_i18n_edit.field 'value').disable (f) ->
-    f.empty().placeholder('Choose token first...')
+    f.empty().placeholder window.hlib._g 'Choose token first...'
     (form_i18n_edit.field 'remove').hide()
     (form_i18n_edit.field 'submit').disable()
 
