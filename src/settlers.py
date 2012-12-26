@@ -5,6 +5,7 @@ import formencode
 import handlers
 import functools
 import getopt
+import ipaddr
 import sys
 import handlers.root
 import traceback
@@ -99,6 +100,13 @@ def main():
   app_config['cache.enabled']	= bool(config.get('cache', 'enabled'))
   for token in config.get('cache', 'dont_cache').split(','):
     app_config['cache.dont_cache.' + token.strip()] = True
+
+  app_config['hosts']		= {}
+  if config.has_section('hosts'):
+    for option in config.options('hosts'):
+      addresses = config.get('hosts', option)
+
+      app_config['hosts'][option] = [(ipaddr.IPNetwork(addr.strip()) if '/' in addr else ipaddr.IPAddress(addr.strip())) for addr in addresses.strip().split(',')]
 
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
 

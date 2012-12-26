@@ -14,7 +14,7 @@ import hlib.event
 import lib.play
 
 # Handlers
-from handlers import page, require_write
+from handlers import page, require_write, require_hosts
 from hlib.api import api
 
 from hlib.input import validate_by
@@ -22,7 +22,10 @@ from hlib.input import validate_by
 # pylint: disable-msg=F0401
 import hruntime
 
+maint_require_hosts = lambda: hruntime.app.config['hosts']['maint.*']
+
 class Handler(handlers.GenericHandler):
+  @require_hosts(get_hosts = maint_require_hosts)
   @require_write
   @api
   def process_archive_deadlines(self):
@@ -51,6 +54,7 @@ class Handler(handlers.GenericHandler):
     return hlib.api.Reply(200, archived_games = __process_list(hruntime.dbroot.games, hruntime.dbroot.games_archived, 'game.GameArchived', 'game'),
                                archived_tournaments = __process_list(hruntime.dbroot.tournaments, hruntime.dbroot.tournaments_archived, 'tournament.Archived', 'tournament'))
 
+  @require_hosts(get_hosts = maint_require_hosts)
   @require_write
   @validate_by(schema = games.GenericValidateKind)
   @api
@@ -58,6 +62,7 @@ class Handler(handlers.GenericHandler):
     gm = games.game_module(kind, submodule = 'stats')
     gm.stats.refresh_stats()
 
+  @require_hosts(get_hosts = maint_require_hosts)
   @require_write
   @api
   def create_system_games(self):
@@ -73,3 +78,9 @@ class Handler(handlers.GenericHandler):
       games._game_lists.inval_all('active')
 
     return hlib.api.Reply(200, created_games = (hruntime.app.config['system_games.limit'] - cnt))
+
+  @require_hosts(get_hosts = maint_require_hosts)
+  @require_write
+  @api
+  def pack_db(self):
+    hruntime.db.pack()
