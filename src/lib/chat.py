@@ -145,7 +145,7 @@ class ChatPagerTournament(ChatPager):
     hruntime.cache.remove_for_users([p.user for p in self.accessed_by.tournament.players.values()], 'recent_events')
 
   def trigger_event(self):
-    hlib.event.trigger('tournament.ChatPost', self.entity, hidden = True, user = hruntime.user, game = self.entity)
+    hlib.event.trigger('tournament.ChatPost', self.entity, hidden = True, user = hruntime.user, tournament = self.entity)
 
 class ChatPagerGlobal(ChatPager):
   def __init__(self):
