@@ -23,7 +23,7 @@ class StatsHandler(handlers.GenericHandler):
   @require_login
   @page
   def index(self):
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'stats', self.generate, 'stats.mako')
+    return hruntime.cache.test_and_set(lib.datalayer.SystemUser(), 'stats', self.generate, 'stats.mako')
 
   #
   # Page

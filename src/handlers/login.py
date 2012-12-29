@@ -20,7 +20,7 @@ class LoginHandler(handlers.GenericHandler):
   #
   @page
   def index(self):
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'login', self.generate, 'login.mako')
+    return hruntime.cache.test_and_set(lib.datalayer.SystemUser(), 'login', self.generate, 'login.mako')
 
   #
   # Login
@@ -61,7 +61,7 @@ class LoginAsHandler(handlers.GenericHandler):
   #
   @page
   def index(self):
-    return hruntime.cache.test_and_set(lib.datalayer.DummyUser('__system__'), 'loginas', self.generate, 'loginas.mako')
+    return hruntime.cache.test_and_set(lib.datalayer.SystemUser(), 'loginas', self.generate, 'loginas.mako')
 
   #
   # Login
