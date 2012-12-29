@@ -87,7 +87,6 @@
     <div id="history" class="hide">
       <div style="height: 798px; overflow: auto">
         <table class="table table-hover">
-          <caption>${_('Game history')}</caption>
           <thead>
             <tr>
               <th>${_('Time')}</th>
