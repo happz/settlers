@@ -11,11 +11,6 @@ import hlib.pageable
 # pylint: disable-msg=F0401
 import hruntime
 
-WINDOW				= 86400 * 7 * 52
-
-_stats_lock = threading.RLock()
-_stats = None
-
 class UserStats(object):
   def __init__(self, user):
     # pylint: disable-msg=E1002
@@ -45,6 +40,8 @@ class UserStats(object):
     }
 
 class Stats(games.stats.Stats):
+  WINDOW			= 86400 * 7 * 52
+
   def get_records(self, start, length):
     records = []
 
@@ -87,13 +84,13 @@ class Stats(games.stats.Stats):
               s.forhont += 1
 
       for g in hruntime.dbroot.games.values():
-        if hruntime.time - WINDOW > g.last_pass:
+        if hruntime.time - self.WINDOW > g.last_pass:
           continue
 
         __process_game(g)
 
       for g in hruntime.dbroot.games_archived.values():
-        if hruntime.time - WINDOW > g.last_pass:
+        if hruntime.time - self.WINDOW > g.last_pass:
           continue
 
         __process_game(g)
@@ -103,6 +100,8 @@ class Stats(games.stats.Stats):
           s.points_per_game = float(s.finished_points) / float(s.finished)
 
       self.stats = sorted(new_stats.values(), key = lambda x: x.points_per_game, reverse = True)
+
+      self.last_update = hruntime.time
 
 #    for s in hruntime.dbroot.stats.settlers.values():
 #      if s.games < 20:

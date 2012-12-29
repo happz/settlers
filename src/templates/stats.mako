@@ -1,5 +1,7 @@
 <%!
-  import games.settlers.stats
+  import time
+
+  from games.settlers.stats import stats as gs_settlers
 
   import hruntime
 %>
@@ -15,6 +17,12 @@ ${ui_page_header('Stats')}
   <div class="offset2 span10">
 
     ${ui_section_header('stats_settlers', 'Settlers stats')}
+      <div>
+        % if gs_settlers.last_update != None:
+          <p>${_('Stats since')} ${time.strftime('%d. %m. %Y', time.localtime(gs_settlers.last_update - gs_settlers.WINDOW))}</p>
+        % endif
+      </div>
+
         <div id="stats_records">
           <div class="pagination pagination-right">
             <ul>
@@ -28,6 +36,7 @@ ${ui_page_header('Stats')}
 
           <div>
             <table class="table table-bordered table-hover">
+
               <thead>
                 <tr>
                   <th style="width: 25%;">${_('Name')}</th>

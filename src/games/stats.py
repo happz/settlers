@@ -8,3 +8,4 @@ class Stats(hlib.pageable.Pageable):
 
     self.lock		= threading.RLock()
     self.stats		= None
+    self.last_update		= None
