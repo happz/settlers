@@ -20,7 +20,11 @@ import games
 # pylint: disable-msg=F0401
 import hruntime
 
-from hlib.datalayer import DummyUser
+def SystemUser():
+  if not hasattr(SystemUser, 'user_instance'):
+    SystemUser.user_instance = hlib.datalayer.DummyUser('__system__')
+
+  return SystemUser.user_instance
 
 # --- Database records -----------------------------------------------
 counters_lock = threading.RLock()
