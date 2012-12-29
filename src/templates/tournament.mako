@@ -47,7 +47,7 @@
       <div id="chat" class="hide">
         <div style="height: 798px; overflow: auto">
           <div class="span6">
-          ${ui_form_start(action = '/tournament/chat/add?gid=' + str(tournament.id), legend = 'New message', id = 'chat_post')}
+          ${ui_form_start(action = '/tournament/chat/add?tid=' + str(tournament.id), legend = 'New message', id = 'chat_post')}
             ${ui_textarea(form_name = 'text', size = 'xlarge')}
             ${ui_submit(value = 'Add')}
           ${ui_form_end()}
@@ -59,8 +59,7 @@
 
       <div id="history" class="hide">
         <div style="height: 798px; overflow: auto">
-          <table class="content-table">
-            <caption>${_('Tournament history')}</caption>
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th>${_('Time')}</th>
