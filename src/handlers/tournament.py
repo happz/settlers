@@ -3,6 +3,7 @@ __copyright__			= 'Copyright 2010 - 2012, Milos Prchlik'
 __contact__			= 'happz@happz.cz'
 __license__			= 'http://www.php-suit.com/dpl'
 
+import hlib.error
 import handlers
 import hlib.i18n
 
