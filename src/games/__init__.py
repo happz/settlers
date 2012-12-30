@@ -119,7 +119,7 @@ class GameCreationFlags(hlib.database.DBObject):
 
     for k, v in kwargs.iteritems():
       if k not in self.FLAGS:
-        raise AttributeError(name)
+        raise AttributeError(k)
 
       setattr(self, k, v)
 
