@@ -72,12 +72,15 @@ class Handler(handlers.GenericHandler):
         time.sleep(5)
         hruntime.time = None
 
-    cnt = hruntime.dbroot.counters.games_free()
-    if cnt <= hruntime.app.config['system_games.limit']:
-      __create_games(hruntime.app.config['system_games.limit'] - cnt, hruntime.app.config['system_games.sleep'])
+    cnt = hruntime.app.config['system_games.limit'] - hruntime.dbroot.counters.games_free()
+    if cnt > 0:
+      __create_games(cnt, hruntime.app.config['system_games.sleep'])
       games._game_lists.inval_all('active')
 
-    return hlib.api.Reply(200, created_games = (hruntime.app.config['system_games.limit'] - cnt))
+    else:
+      cnt = 0
+
+    return hlib.api.Reply(200, created_games = cnt)
 
   @require_hosts(get_hosts = maint_require_hosts)
   @require_write
