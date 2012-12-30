@@ -129,6 +129,20 @@ window.settlers.setup_chat = (opts) ->
 
   return pager
 
+window.settlers.fmt_player = (player) ->
+  s = player.user.name
+
+  if player.user.is_online == true
+    s = '<span class=\'user-online\'>' + s + '</span>'
+
+  if player.is_confirmed != true
+    s = '<span class=\'user-invited\'>' + s + '</span>'
+
+  if player.is_on_turn == true
+    s = '<span class=\'user-onturn\'>' + s + '</span>'
+
+  return s
+
 $(window).bind 'hlib_startup', () ->
   window.hlib.setup
     message_dialog:		'#message_dialog'
