@@ -15,7 +15,7 @@ window.settlers.templates.recent_events.playable = doT.template '
         <div class="btn-group">
           {{? it.is_present}}
             {{? it.is_invited}}
-              <button class="btn" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
+              <a class="btn" href="#" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i><span class="badge badge-important badge-join menu-alert"></span></a>
             {{??}}
               {{? it.is_game}}
                 <a class="btn" href="/game/?gid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
@@ -139,7 +139,6 @@ $(window).bind 'page_startup', () ->
           data:			data
           handlers:
             h200:		(response, ajax) ->
-              console.log 'joined, show info and update'
               window.hlib.INFO.show 'You have joined a game', ''
 
               __update = () ->
@@ -168,7 +167,11 @@ $(window).bind 'page_startup', () ->
     if p.has_password
       $('#' + p.eid + '_join').replaceWith(window.settlers.templates.recent_events.password p)
 
-    if p.is_present
+    if p.is_invited
+      window.settlers.show_menu_alert p.eid + ' #' + p.eid + '_join', '!', 'badge-join'
+      __join_click '#' + p.eid
+
+    else if p.is_present
       __generic_click()
 
     else
@@ -196,21 +199,7 @@ $(window).bind 'page_startup', () ->
   render_playable = (eid, p) ->
     p.eid = 'playable_' + (if p.is_game then 'game' else 'tournament') + '_' + p.id
 
-    __fmt_player = (player) ->
-      s = player.user.name
-
-      if player.user.is_online == true
-        s = '<span class=\'user-online\'>' + s + '</span>'
-
-      if player.is_confirmed != true
-        s = '<span class=\'user-invited\'>' + s + '</span>'
-
-      if player.is_on_turn == true
-        s = '<span class=\'user-onturn\'>' + s + '</span>'
-
-      return s
-
-    p.players_list = (__fmt_player player for player in p.players).join ', '
+    p.players_list = (window.settlers.fmt_player player for player in p.players).join ', '
 
     $(eid).append window.settlers.templates.recent_events.playable p
     decorate_playable p
