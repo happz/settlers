@@ -63,6 +63,10 @@ config_defaults = {
   'cache':			{
     'enabled':			False,
     'dont_cache':		''
+  },
+  'stats':			{
+    'games.window':		31449600,
+    'games.threshold':		20
   }
 }
 
@@ -107,6 +111,11 @@ def main():
       addresses = config.get('hosts', option)
 
       app_config['hosts'][option] = [(ipaddr.IPNetwork(addr.strip()) if '/' in addr else ipaddr.IPAddress(addr.strip())) for addr in addresses.strip().split(',')]
+
+  app_config['stats'] = {}
+  if config.has_section('stats'):
+    for option in config.options('stats'):
+      app_config['stats.' + option] = config.get('stats', option)
 
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
 

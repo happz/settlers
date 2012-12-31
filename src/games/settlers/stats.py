@@ -40,8 +40,6 @@ class UserStats(object):
     }
 
 class Stats(games.stats.Stats):
-  WINDOW			= 86400 * 7 * 52
-
   def get_records(self, start, length):
     records = []
 
@@ -84,32 +82,31 @@ class Stats(games.stats.Stats):
               s.forhont += 1
 
       for g in hruntime.dbroot.games.values():
-        if hruntime.time - self.WINDOW > g.last_pass:
+        if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
           continue
 
         __process_game(g)
 
       for g in hruntime.dbroot.games_archived.values():
-        if hruntime.time - self.WINDOW > g.last_pass:
+        if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
           continue
 
         __process_game(g)
 
-      for s in new_stats.values():
-        if s.finished > 0:
-          s.points_per_game = float(s.finished_points) / float(s.finished)
+      keys_to_remove = []
+
+      for user, stats in new_stats.items():
+        if stats.finished < 20:
+          keys_to_remove.append(user)
+
+        if stats.finished > 0:
+          stats.points_per_game = float(stats.finished_points) / float(stats.finished)
+
+      for user in keys_to_remove:
+        del new_stats[user]
 
       self.stats = sorted(new_stats.values(), key = lambda x: x.points_per_game, reverse = True)
 
-      self.last_update = hruntime.time
-
-#    for s in hruntime.dbroot.stats.settlers.values():
-#      if s.games < 20:
-#        to_delete.append(s)
-#
-#      s.points_per_game = float(s.points) / float(s.games)
-#
-#    for s in to_delete:
-#      del hruntime.dbroot.stats.settlers[s.user]
+      super(Stats, self).refresh_stats()
 
 stats = Stats()
