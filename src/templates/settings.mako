@@ -141,8 +141,8 @@ ${ui_section_header('api', 'API')}
   ${ui_form_start(id = 'api_token', action = '/settings/api', legend = 'API token')}
     <div class="control-group">
       <div class="controls">
-        <input type="button" id="api_token_new" value="${_('New token')}" class="btn" />
-        <input type="button" id="api_token_download" value="${_('Download token')}" class="btn" />
+        <input type="button" id="api_token_new" value="${_('New API key')}" class="btn" />
+        <input type="button" id="api_token_download" value="${_('Download API key')}" class="btn" />
       </div>
     </div>
   ${ui_form_end()}
@@ -153,7 +153,7 @@ ${ui_section_header('api', 'API')}
         ${hruntime.user.api_tokens[0]}
       </code>
   % else:
-    <strong>${_('You have no API token yet. If you need one click "New token" button')}</strong>
+    <strong>${_('You have no API key yet. If you need one click "New API key" button')}</strong>
   % endif
 
   <hr />
