@@ -17,4 +17,4 @@ class Stats(hlib.pageable.Pageable):
   def refresh_stats(self):
     with self.lock:
       self.last_update = hruntime.time
-      hruntime.cache.remove(lib.datalayer.SystemUser(), 'stats')
+      hruntime.cache.remove_for_all_users('stats')
