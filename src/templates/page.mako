@@ -50,6 +50,7 @@
 
   <script type="text/javascript" src="/static/script/jquery.form.js"></script>
   <script type="text/javascript" src="/static/script/jquery.timers.js"></script>
+  <script type="text/javascript" src="/static/script/jquery.sound.js"></script>
   <script type="text/javascript" src="/static/script/stacktrace.js"></script>
 
   <script type="text/javascript" src="/static/script/doT.min.js"></script>
@@ -100,7 +101,8 @@
 
     % if hruntime.user != None:
       window.settlers.user = {
-        name:			"${hruntime.user.name}"
+        name:			"${hruntime.user.name}",
+        sound:			${'true' if hruntime.user.sound == True else 'false'}
       };
     % endif
   </script>

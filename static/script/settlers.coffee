@@ -10,14 +10,18 @@ window.settlers.templates = window.settlers.templates or {}
 #
 class window.settlers.PullNotify
   constructor:	() ->
-    pull_notify = @
+    @sound_notified = false
+
+    _pn = @
 
     __call_update = () ->
-      pull_notify.update()
+      _pn.update()
 
     $('.win-commandlayout').everyTime '300s', __call_update
 
   update:		() ->
+    _pn = @
+
     new window.hlib.Ajax
       url:			'/pull_notify'
       keep_focus:		true
@@ -44,6 +48,14 @@ class window.settlers.PullNotify
 
           if to_title > 0
             window.hlib.setTitle window.settlers.title + ' (' + to_title + ')'
+
+            if window.settlers.user.sound and _pn.sound_notified != true
+              $.fn.soundPlay
+                url:		'/static/sound/cartoon008.wav'
+                playerId:	'player1'
+                command:	'play'
+
+              _pn.sound_notified = true
 
           if response.events.trumpet != false
             $('#trumpet_board_dialog p').html response.events.trumpet
