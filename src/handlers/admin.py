@@ -114,6 +114,8 @@ class I18NHandler(handlers.GenericHandler):
 
     lang[name] = value
 
+    hruntime.cache.remove(lib.datalayer.SystemUser(), 'i18n')
+
   #
   # Add
   #
@@ -131,6 +133,8 @@ class I18NHandler(handlers.GenericHandler):
 
     lang[name] = value
 
+    hruntime.cache.remove(lib.datalayer.SystemUser(), 'i18n')
+
   #
   # Remove
   #
@@ -146,6 +150,8 @@ class I18NHandler(handlers.GenericHandler):
     lang = require_lang(lang)
 
     del lang[name]
+
+    hruntime.cache.remove(lib.datalayer.SystemUser(), 'i18n')
 
   #
   # Unused
