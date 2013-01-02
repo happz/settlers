@@ -1,7 +1,7 @@
 window.settlers.templates.recent_events = {}
 window.settlers.templates.recent_events.playable = doT.template '
-  <div id="{{= it.eid}}" class="mediumListIconTextItem" data-placement="top" data-content="{{= it.limit}} {{= window.hlib._g("players")}}<br />{{= it.players_list}}" data-title="{{= it.name}}">
-    <div class="icon-grid-view mediumListIconTextItem-Image" />
+  <div id="{{= it.eid}}" class="mediumListIconTextItem" data-placement="right" data-content="<div><div style=\'background-image: url(/static/images/gamepreview/{{= it.id}}.gif); background-repeat: no-repeat; width: 161px; height: 178px;\'></div><div>{{= it.limit}} {{= window.hlib._g("players")}}<br />{{= it.players_list}}{{? it.is_finished}}<br />{{= window.hlib._g(\'Winner is\')}} {{= window.settlers.fmt_player({user: it.forhont})}}{{?}}</div></div>" data-title="{{= it.name}}">
+    <div class="mediumListIconTextItem-Image pull-left" style="background-image: url(\'/static/images/gamepreview/{{= it.id}}.gif\')"></div>
     <div class="mediumListIconTextItem-Detail">
       <h4 title="{{= it.name}}">
         {{? it.is_game}}
