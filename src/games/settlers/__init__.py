@@ -585,6 +585,8 @@ class Board(games.Board):
     for i in range(1, 73):
       self.paths.push(BoardPath(self, BoardPath.TYPE_FREE, games.DummyOwner()))
 
+    self.render_preview()
+
   def __getattr__(self, name):
     if name == 'thief_field':
       for f in self.fields.values():
@@ -597,6 +599,36 @@ class Board(games.Board):
       return dict([(f.id, f.thief != True) for f in self.fields.values()])
 
     return games.Board.__getattr__(self, name)
+
+  def render_preview(self):
+    import PIL.Image
+    import ImageDraw
+
+    offset = (59 + 29, 102)
+
+    preview = PIL.Image.new('RGBA', (645, 714), (255, 255, 255, 255))
+    preview_draw = ImageDraw.Draw(preview)
+
+    save_info = None
+
+    for field in self.fields.values():
+      field_img = PIL.Image.open('../static/images/games/settlers/board/real/field/' + Resource.map_resource2str[field.resource] + '.gif')
+      field_img_conv = field_img.convert('RGBA')
+
+      if not save_info:
+        save_info = field_img_conv.info
+
+      preview.paste(field_img_conv, (int(board_def.COORS['field'][field.id][0]) + offset[0], int(board_def.COORS['field'][field.id][1]) + offset[1]), field_img_conv)
+
+    for sea in board_def.COORS['sea'].values():
+      sea_img = PIL.Image.open('../static/images/games/settlers/board/real/field/sea.gif')
+      sea_img_conv = sea_img.convert('RGBA')
+      preview.paste(sea_img_conv, (int(sea[0]) + offset[0], int(sea[1]) + offset[1]), sea_img_conv)
+
+    del preview_draw
+
+    preview = preview.resize((161, 178))
+    preview.save('../static/images/gamepreview/' + str(self.game.id) + '.gif', 'GIF', transparency = 255)
 
   def active_nodes_map(self, player = None):
     player = player or self.game.my_player

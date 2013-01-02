@@ -644,6 +644,9 @@ class Board(hlib.database.DBObject):
     self.render_offset = None
     self.controls = None
 
+  def render_preview(self):
+    pass
+
 def create_system_game(kind, label = None, owner = None, **kwargs):
   gm = games.game_module(kind)
 
