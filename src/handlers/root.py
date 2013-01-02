@@ -113,8 +113,8 @@ class Handler(hlib.handlers.root.Handler):
       pn.chat = cnt
 
     # Are there any free games?
-    cnt  = len([g for g in games.f_active(hruntime.user) if g.is_free and not g.is_personal_free(hruntime.user)])
-    cnt += len([t for t in tournaments.f_active(hruntime.user) if t.is_active and not t.has_player(hruntime.user)])
+    cnt  = sum([1 for g in games.f_active(hruntime.user) if g.is_free and not g.is_personal_free(hruntime.user)])
+    cnt += sum([1 for t in tournaments.f_active(hruntime.user) if t.is_active and not t.has_player(hruntime.user)])
     if cnt > 0:
       pn.free_games = cnt
 
@@ -135,9 +135,14 @@ class Handler(hlib.handlers.root.Handler):
           cnt += 1
           continue
 
-    for g in games.f_inactive(hruntime.user):
-      if g.my_player.chat.unread > 0:
-        cnt += 1
+    # Do I have unread posts in inactive games?
+    cnt += sum([1 for g in games.f_inactive(hruntime.user) if g.my_player.chat.unread > 0])
+
+    # Do I have unread posts in tournaments' chat?
+    cnt += sum([1 for t in tournaments.f_active(hruntime.user) if t.my_player.chat.unread > 0])
+
+    # Do I have unread posts in inactive tournaments?
+    cnt += sum([1 for t in tournaments.f_inactive(hruntime.user) if t.my_player.chat.unread > 0])
 
     if cnt > 0:
       pn.on_turn = cnt
