@@ -158,6 +158,7 @@ window.settlers.fmt_player = (player) ->
 $(window).bind 'hlib_startup', () ->
   window.hlib.setup
     message_dialog:		'#message_dialog'
+    i18n_table:			window.settlers.i18n_table
 
   window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
 
