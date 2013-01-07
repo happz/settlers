@@ -31,7 +31,7 @@ class Handler(handlers.GenericHandler):
   @require_login
   @page
   def index(self):
-    return hruntime.cache.test_and_set(hruntime.user, 'chat', self.generate, 'chat.mako')
+    return self.generate('chat.mako')
 
   #
   # Add

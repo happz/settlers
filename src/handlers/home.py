@@ -78,4 +78,4 @@ class Handler(handlers.GenericHandler):
 
       return hlib.api.Reply(200, events = re).dump()
 
-    return hruntime.cache.test_and_set(hruntime.user, 'recent_events', __recent_events)
+    return __recent_events()

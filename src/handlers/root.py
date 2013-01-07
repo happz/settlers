@@ -83,7 +83,7 @@ class Handler(hlib.handlers.root.Handler):
   @page
   def i18n(self, lang = None):
     hruntime.response.headers['Content-Type'] = 'text/javascript'
-    return hruntime.cache.test_and_set(lib.datalayer.SystemUser(), 'i18n', self.generate, 'i18n.mako', params = {'lang': hruntime.dbroot.localization.languages[lang]})
+    return self.generate('i18n.mako', params = {'lang': hruntime.dbroot.localization.languages[lang]})
 
   class ValidateUsersByName(hlib.input.SchemaValidator):
     term = hlib.input.Username()

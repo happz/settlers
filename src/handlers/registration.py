@@ -34,7 +34,7 @@ class WrongEmailError(hlib.error.InvalidInputError):
 class RecoveryHandler(handlers.GenericHandler):
   @page
   def index(self):
-    return hruntime.cache.test_and_set(lib.datalayer.SystemUser(), 'password_recovery', self.generate, 'password_recovery.mako')
+    return self.generate('password_recovery.mako')
 
   class ValidatePasswordRecovery(hlib.input.SchemaValidator):
     username = hlib.input.Username()
@@ -70,7 +70,7 @@ class Handler(handlers.GenericHandler):
   #
   @page
   def index(self):
-    return hruntime.cache.test_and_set(lib.datalayer.SystemUser(), 'registration', self.generate, 'registration.mako')
+    return self.generate('registration.mako')
 
   #
   # Checkin

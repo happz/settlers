@@ -79,7 +79,7 @@ class Handler(handlers.GenericHandler):
   def index(self, tid = None):
     t = require_presence_in_tournament(tid)
 
-    return hruntime.cache.test_and_set(hruntime.user, 'tournament-%s' % t.id, self.generate, 'tournament.mako', params = {'tournament': t})
+    return self.generate('tournament.mako', params = {'tournament': t})
 
   #
   # State
