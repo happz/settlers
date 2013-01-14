@@ -33,9 +33,33 @@ window.settlers.templates.tournament.player = doT.template '
     </div>
 
     <table class="table table-condensed">
-      <tr class="info"><td><strong>{{= window.hlib._g("Points")}}:</strong></td><td><strong>{{= it.points}}</strong></td></tr>
+      <tr class="info"><td><strong>{{= it.points}} {{= window.hlib._g("points")}}</strong></td></tr>
     </table>
   </div>
+'
+window.settlers.templates.rounds = doT.template '
+  {{~ it.rounds :round:round_index}}
+    <h3>{{= window.hlib._g("Round")}} #{{= round_index + 1}}</h3>
+    <table class="table">
+      {{~ round :group:group_index}}
+        {{ num_players = group.players.length; }}
+        <tr class="info">
+          <td colspan="{{= num_players}}"><h4>{{= window.hlib._g("Group")}} #{{= group_index + 1}}</h4></td>
+        </tr>
+        {{~ group.games :game:game_index}}
+          <tr>
+            <td colspan="{{= num_players}}"><h5>{{= window.hlib._g("Game")}} {{= game.id}} ({{= game.round}}. {{= window.hlib._g("round")}})</h5></td>
+          </tr>
+          <tr>
+            {{~ game.players :player:pindex}}
+              <td>{{= window.settlers.fmt_player(player)}} ({{= player.points}} {{= window.hlib._g("points")}})</td>
+            {{~}}
+          </tr>
+        {{~}}
+      {{~}}
+    </table>
+    <hr />
+  {{~}}
 '
 window.settlers.templates.tournament.events = doT.template '
   {{~ it.events :event:index}}
@@ -87,6 +111,9 @@ window.settlers.update_tournament_ui_players = () ->
 
   window.settlers.update_tournament_ui_player p for p in window.settlers.tournament.players
 
+window.settlers.update_tournament_ui_rounds = () ->
+  $('#rounds').html window.settlers.templates.rounds window.settlers.tournament
+
 window.settlers.update_tournament_ui_history = () ->
   $('#history_events').html window.settlers.templates.tournament.events window.settlers.tournament
 
@@ -103,6 +130,7 @@ window.settlers.update_tournament_ui = () ->
   window.settlers.update_tournament_ui_info()
   window.settlers.update_tournament_ui_status()
   window.settlers.update_tournament_ui_players()
+  window.settlers.update_tournament_ui_rounds()
   window.settlers.update_tournament_ui_history()
   window.settlers.update_tournament_ui_buttons()
 

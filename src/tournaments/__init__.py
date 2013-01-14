@@ -1,6 +1,7 @@
 import collections
 import threading
 
+import hlib.api
 import hlib.event
 import hlib.input
 import hlib.error
@@ -92,6 +93,20 @@ class Group(hlib.database.DBObject):
 
     return hlib.database.DBObject.__getattr__(self, name)
 
+  def to_state(self):
+    def __game_to_state(g):
+      return {
+        'id':			g.id,
+        'round':		g.round,
+        'players':		[{'user': hlib.api.User(p.user), 'points': p.points} for p in g.players.values()]
+      }
+
+    return {
+      'id':			self.id,
+      'players':		[{'user': hlib.api.User(p.user)} for p in self.players],
+      'games':			[__game_to_state(g) for g in self.games]
+    }
+
 class Tournament(lib.play.Playable):
   STAGE_FREE     = 0
   STAGE_RUNNING  = 1
@@ -147,31 +162,36 @@ class Tournament(lib.play.Playable):
     d['stage']			= self.stage
     d['num_players']		= self.num_players
 
+    d['rounds'] = [[g.to_state() for g in self.rounds[round]] for round in sorted(self.rounds.keys())]
+
     return d
 
   def create_games(self):
+    self.rounds[self.round] = hlib.database.SimpleList()
     player_groups = self.engine.create_groups()
 
     group_id = 0
     for group in player_groups:
       group_id += 1
+      self.rounds[self.round].append(group)
 
       kwargs = {'limit':		self.flags.limit,
                 'turn_limit':		self.flags.turn_limit,
                 'dont_shuffle':		True,
                 'owner':		group.players[0].user,
-                'label':		'Turnajovka \'%s\' - %i-%i' % (self.name, self.round, group_id),
-                'data':			{
-                  'tournament':		self,
-                  'tournament_group':	group
-                  }
+                'label':		'Turnajovka \'%s\' - %i-%i' % (self.name, self.round, group_id)
                 }
 
       # player_id 0 is game owner
       for player_id in range(1, self.flags.limit):
-        kwargs['opponent' + str(player_id)] = group.players[player_id].user
+        kwargs['opponent' + str(player_id)] = group.players[player_id].user.name
 
-      games.create_system_game(self.flags.kind, **kwargs)
+      g = games.create_system_game(self.flags.kind, **kwargs)
+
+      g.tournament = self
+      g.tournament_group = group
+
+      group.games.append(g)
 
   def next_round(self):
     self.engine.rank_players(self.get_games())
