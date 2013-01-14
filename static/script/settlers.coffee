@@ -28,7 +28,7 @@ class window.settlers.PullNotify
       handlers:
         h200:			(response, ajax) ->
           # Reset all widgets
-          window.hlib.setTitle 'Osadnici'
+          window.hlib.setTitle window.settlers.title
           window.settlers.hide_menu_alert 'menu_chat'
           window.settlers.hide_menu_alert 'menu_home', 'badge-important'
           window.settlers.hide_menu_alert 'menu_home', 'badge-info'

@@ -97,7 +97,7 @@
   <script type="text/javascript">
     window.settlers = window.settlers || {};
 
-    window.settlers.title = window.hlib._g("${hruntime.app.config['label']}");
+    window.settlers.title = "${hlib.unescape(_(hruntime.app.config['label']))}";
 
     % if hruntime.user != None:
       window.settlers.user = {
