@@ -36,7 +36,6 @@
   <link rel="stylesheet" type="text/css" href="/static/metro/css/metro-ui-light.css">
   <link rel="stylesheet" type="text/css" href="/static/metro/css/icomoon.css">
   <link rel="stylesheet" type="text/css" href="/static/metro/css/datepicker.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/daterangepicker.css">
 
   <script src="/static/metro/scripts/modernizr-2.6.1.min.js"></script>
 
