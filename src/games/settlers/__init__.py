@@ -1229,7 +1229,7 @@ class Game(games.Game):
 
       elif node.type == BoardNode.TYPE_VILLAGE:
         if not self.my_player.has_free_town:
-          TooManyTownsError()
+          raise TooManyTownsError()
 
         self.build_object(node, self.my_player, BoardNode.TYPE_TOWN, 'town')
         hlib.event.trigger('game.settlers.TownBuilt', self, hidden = True, game = self, user = self.my_player.user, node = node)
