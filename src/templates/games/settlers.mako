@@ -72,7 +72,7 @@
     <div id="empty" class="hide" ></div>
 
     <div id="chat" class="hide">
-      <div style="height: 798px; overflow: auto">
+      <div class="settlers-view-list">
         <div class="span6">
         ${ui_form_start(action = '/game/chat/add?gid=' + str(game.id), legend = 'New message', id = 'chat_post')}
           ${ui_textarea(form_name = 'text', size = 'xlarge')}
@@ -85,7 +85,7 @@
     </div>
 
     <div id="history" class="hide">
-      <div style="height: 798px; overflow: auto">
+      <div class="settlers-view-list">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -153,7 +153,7 @@
         ${ui_form_end()}
       </div>
 
-      <div id="cards_list" style="height: 798px; overflow: auto"></div>
+      <div id="cards_list" class="settlers-view-list"></div>
     </div>
 
     <div id="exchange" class="hide">

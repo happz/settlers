@@ -1,5 +1,10 @@
 @import "lib.scss";
 
+.settlers-view-list {
+    max-height:			600px;
+    overflow:			auto;
+}
+
 .settlers-game-player-header-red {
   background:			red !important;
 }
