@@ -32,10 +32,10 @@
       <ul class="hide">
         <li><a href="#empty">Empty</a></li>
         <li><a href="#players">Players</a></li>
-        <li><a href="#chat">Chat</a></li>
-        <li><a href="#history">History</a></li>
-        <li><a href="#rounds">Rounds</a></li>
-        <li><a href="#stats">Statistics</a></li>
+        <li><a href="#chat" location-hash="#chat">Chat</a></li>
+        <li><a href="#history" location-hash="#history">History</a></li>
+        <li><a href="#rounds" location-hash="#rounds">Rounds</a></li>
+        <li><a href="#stats" location-hash="#stats">Statistics</a></li>
       </ul>
 
       <div id="empty" class="hide">
