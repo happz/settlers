@@ -166,6 +166,7 @@ window.settlers.i18n_table = {
     'Grain:': 'Obilí:',
     'Grant': 'Přidat',
     'Green': 'Zelená',
+    'Group': 'Skupina',
     'Help': 'Nápověda',
     'Home': 'Domů',
     'If it takes too long, poke our admins <a href="irc://ellen.czn.cz/osadnici">here</a>.': 'Pokud tuto zprávu vidíte už moc dlouho, šťouchněte prosím do adminů <a href="irc://ellen.czn.cz/osadnici">tady</a>.',
