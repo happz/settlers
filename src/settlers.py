@@ -117,6 +117,11 @@ def main():
     for option in config.options('stats'):
       app_config['stats.' + option] = config.get('stats', option)
 
+  app_config['issues'] = {
+    'token':			config.get('issues', 'token'),
+    'repository':		config.get('issues', 'repository')
+  }
+
   app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
 
   app.sessions = hlib.http.session.FileStorage(config.get('session', 'storage_path'), app)

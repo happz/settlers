@@ -7,6 +7,7 @@ import handlers.admin
 import handlers.home
 import handlers.chat
 import handlers.game
+import handlers.issues
 import handlers.login
 import handlers.maint
 import handlers.maintenance
@@ -50,6 +51,7 @@ class PullNotify(hlib.api.ApiJSON):
 class Handler(hlib.handlers.root.Handler):
   admin		= handlers.admin.Handler()
   home		= handlers.home.Handler()
+  issues	= handlers.issues.Handler()
   maintenance	= handlers.maintenance.Handler()
   new		= handlers.new.Handler()
 

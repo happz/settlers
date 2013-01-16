@@ -180,6 +180,10 @@
             <hr class="win-command" />
           % endif
           ${menu_entry('&#xe040;', 'Log out', href = '/logout', id = 'menu_logout')}
+
+          <hr class="win-command" />
+
+          ${menu_entry('&#xe126;', 'Report issue', href = '/issues/')}
         </div>
       </div>
     </div>
