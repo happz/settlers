@@ -133,7 +133,7 @@ window.settlers.setup_chat = (opts) ->
     after_refresh:	(response, pager) ->
       __mark_unread = (post) ->
         if post.id > response.last_board
-          $('#chat_post_' + post.id + ' .chat-post-unread-badge').show()
+          $('#chat_post_' + post.id + ' .chat-post-unread').show()
 
       __mark_unread post for post in response.page.records
 
