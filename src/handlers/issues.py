@@ -24,6 +24,7 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidateCreate)
   @api
   def create(self, title = None, body = None):
+    title = title + (u' (%s)' % hruntime.user.name)
     body = (u'Reported by: %s\n\n' % hruntime.user.name) + body
 
     repo = hlib.issues.Repository(hruntime.app.config['issues']['token'], hruntime.app.config['issues']['repository'])
