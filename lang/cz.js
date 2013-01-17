@@ -307,6 +307,7 @@ window.settlers.i18n_table = {
     'Remove token': 'Odebrat řetězec',
     'Removed': 'Odebráno',
     'Report issue': 'Nahlásit chybu',
+    'Report new issue': 'Nahlásit chybu',
     'Resource': 'Surovina',
     'Resource exchange': 'Výměna surovin',
     'Resources': 'Suroviny',
