@@ -50,7 +50,7 @@ window.settlers.templates.game.cards = doT.template '
             {{? card.used}}
               <div class="icon-document mediumListIconTextItem-Image card-used" />
             {{??}}
-              <div class="icon-document mediumListIconTextItem-Image card-available" />
+              <div class="icon-document mediumListIconTextItem-Image card-unused" />
             {{?}}
             <div class="mediumListIconTextItem-Detail">
               <h4>{{= window.hlib._g(window.settlers.game.card_type_to_name[card.type])}}</h4>
