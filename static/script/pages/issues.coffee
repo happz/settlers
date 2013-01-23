@@ -12,3 +12,5 @@ $(window).bind 'page_startup', () ->
 
       s401:			(response, form) ->
         form.info.error window.hlib.format_error response.error
+
+  $('.accordion-body').collapse 'hide'

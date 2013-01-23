@@ -14,7 +14,9 @@ class Handler(handlers.GenericHandler):
   @require_login
   @page
   def index(self):
-    return self.generate('issues.mako')
+    repo = hlib.issues.Repository(hruntime.app.config['issues']['token'], hruntime.app.config['issues']['repository'])
+
+    return self.generate('issues.mako', params = {'repository': repo})
 
   class ValidateCreate(SchemaValidator):
     title = hlib.input.CommonString()

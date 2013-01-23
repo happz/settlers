@@ -18,3 +18,22 @@ ${ui_page_header('New issue')}
     ${ui_form_end()}
   </div>
 </div>
+
+<div class="row-fluid">
+  <div class="offset2 span10">
+    <div class="accordion" id="accordion">
+      % for issue in repository.get_issues():
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" href="#ticket${issue.number}">${issue.title}</a>
+          </div>
+          <div id="ticket${issue.number}" class="accordion-body collapse in">
+            <div class="accordion-inner">
+              ${issue.body.replace('\n', '<br />')}
+            </div>
+          </div>
+        </div>
+      % endfor
+    </div>
+  </div>
+</div>
