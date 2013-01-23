@@ -186,9 +186,9 @@
         </div>
       </%def>
 
-      ${exchange_form(4)}
-      ${exchange_form(3)}
       ${exchange_form(2)}
+      ${exchange_form(3)}
+      ${exchange_form(4)}
     </div>
 
     <div id="stats" class="hide">
