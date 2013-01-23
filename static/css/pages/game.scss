@@ -23,10 +23,12 @@
 .game-board {
 }
 
-.game-cards {
-    li:hover {
-        background:			$color_background none;
-    }
+.card-used {
+    color:				red;
+}
+
+.card-available {
+    color:				green;
 }
 
 .card-menu {

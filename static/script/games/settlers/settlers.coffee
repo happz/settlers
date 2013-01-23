@@ -47,11 +47,15 @@ window.settlers.templates.game.cards = doT.template '
       <tr>
         <td>
           <div id="card_{{= card.id}}" class="mediumListIconTextItem">
-            <div class="icon-grid-view mediumListIconTextItem-Image" />
+            {{? card.used}}
+              <div class="icon-document mediumListIconTextItem-Image card-used" />
+            {{??}}
+              <div class="icon-document mediumListIconTextItem-Image card-available" />
+            {{?}}
             <div class="mediumListIconTextItem-Detail">
               <h4>{{= window.hlib._g(window.settlers.game.card_type_to_name[card.type])}}</h4>
               {{? card.used}}
-                <p>Used in round #{{= card.used}}.</p>
+                <p>{{= window.hlib._g("Used in round")}} #{{= card.used}}.</p>
               {{?}}
             </div>
           </div>
@@ -920,7 +924,7 @@ window.settlers.update_game_ui_cards = () ->
   window.settlers.hide_menu_alert 'show_cards', 'badge-info'
   $('#new_card_form').hide()
 
-  if G.state == 1
+  if G.state == 1 and G.my_player.resources.rock >= 1 and G.my_player.resources.grain >= 1 and G.my_player.resources.sheep >= 1
     $('#new_card_form').show()
 
   $('#cards_list').html window.settlers.templates.game.cards G.my_player.cards
@@ -963,8 +967,12 @@ window.settlers.update_game_ui_buttons = () ->
   window.hlib.disableIcon '#pass_turn'
   window.hlib.disableIcon '#roll_dice'
   window.hlib.disableIcon '#show_stats'
+  window.hlib.disableIcon '#buy_card'
 
   G = window.settlers.game
+
+  if G.state == 1 and G.my_player.resources.rock >= 1 and G.my_player.resources.grain >= 1 and G.my_player.resources.sheep >= 1
+    window.hlib.enableIcon '#buy_card', window.settlers.buy_card
 
   if G.state == 10 or G.state == 11
     if G.current_node and G.current_path
@@ -1001,6 +1009,9 @@ window.settlers.update_game_ui = () ->
 
   else
     window.settlers.show_game_board()
+
+window.settlers.buy_card = () ->
+  $('#new_card_form').submit()
 
 window.settlers.show_stats = () ->
   $('#views').tabs 'select', 6
