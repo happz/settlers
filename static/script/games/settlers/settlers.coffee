@@ -65,7 +65,13 @@ window.settlers.templates.game.cards = doT.template '
   </table>
 '
 window.settlers.templates.game.events = doT.template '
+  {{ prev_round = null; }}
   {{~ it.events :event:index}}
+    {{ if (prev_round == null) { prev_round = event.round; }; }}
+    {{? prev_round != event.round}}
+      <tr><td colspan="3"><hr /></td></tr>
+      {{ prev_round = event.round; }}
+    {{?}}
     {{? !event.hidden}}
       <tr>
         <td class="event-stamp">{{= new Date(event.stamp * 1000).strftime("%d/%m %H:%M")}}</td>
