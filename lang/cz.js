@@ -38,6 +38,7 @@ window.settlers.i18n_table = {
     'Admin login': 'Adminské přihlášení',
     'Administration': 'Administrace',
     'After pass turn do what?': 'Co udělat po předání tahu?',
+    'Apply': 'Použít',
     'Apply Point cards to win': 'Použít všechny karty Bod k výhře',
     'Archived games': 'Archivované hry',
     'Archived tournaments': 'Archivované turnaje',
