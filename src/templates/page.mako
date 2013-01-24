@@ -18,6 +18,8 @@
 <%def name="page_header()">
   <meta charset="utf-8" />
 
+  ${parent.page_favicon(path_prefix = '/static/images/favicon', tile_background = '#36932A')}
+
   <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
   <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> -->
   <!-- Mobile viewport optimized: h5bp.com/viewport -->
