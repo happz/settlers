@@ -455,7 +455,6 @@ class Card(games.Card):
     return games.Card.__getattr__(self, name)
 
 COLOR_SPACE = games.color.ColorSpace('settlers', colors = [
-  ('light_blue', games.color.Color('light_blue', 'Light blue', '#00CCCC')),
   ('red', games.color.Color('red', 'Red', '#CC0000')),
   ('orange', games.color.Color('orange', 'Orange', '#FF9900')),
   ('pink', games.color.Color('pink', 'Pink', '#DD21D4')),
@@ -464,7 +463,8 @@ COLOR_SPACE = games.color.ColorSpace('settlers', colors = [
   ('purple', games.color.Color('purple', 'Purple', '#990099')),
   ('dark_blue', games.color.Color('dark_blue', 'Dark blue', '#000099')),
   ('brown', games.color.Color('brown', 'Brown', '#663300')),
-  ('dark_green', games.color.Color('dark_green', 'Dark green', '#347235'))
+  ('dark_green', games.color.Color('dark_green', 'Dark green', '#347235')),
+  ('light_blue', games.color.Color('light_blue', 'Light blue', '#00CCCC'))
 ])
 
 class Board(games.Board):
