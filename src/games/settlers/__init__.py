@@ -1279,7 +1279,7 @@ class Game(games.Game):
 
     dice = self.get_next_dice()
 
-    hlib.event.trigger('game.settlers.DiceRolled', self, hidden = True, game = self, user = self.my_player.user, dice = dice)
+    hlib.event.trigger('game.settlers.DiceRolled', self, game = self, user = self.my_player.user, dice = dice)
 
     if dice == 7:
       self.type = Game.TYPE_PREPARE_THIEF

@@ -144,7 +144,8 @@ window.settlers.events['game.settlers.ResourcesStolen']			= (e) ->
   return ''
 
 window.settlers.events['game.settlers.DiceRolled']			= (e) ->
-  return 'game.settlers.DiceRolled'
+  return (window.hlib._g '{0} rolled a dice').format e.user.name
+
 window.settlers.events['game.settlers.VillageBuilt']			= (e) ->
   return 'game.settlers.VillageBuilt'
 window.settlers.events['game.settlers.TownBuild']			= (e) ->
