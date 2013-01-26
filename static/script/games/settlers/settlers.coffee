@@ -69,11 +69,26 @@ window.settlers.templates.game.events = doT.template '
   {{~ it.events :event:index}}
     {{ if (prev_round == null) { prev_round = event.round; }; }}
     {{? prev_round != event.round}}
-      <tr><td colspan="3"><hr /></td></tr>
+      <tr><td colspan="4"><hr /></td></tr>
       {{ prev_round = event.round; }}
     {{?}}
     {{? !event.hidden}}
       <tr>
+        {{
+          var color_by = null;
+          if (event.user) {
+            color_by = event.user;
+          } else if (event.thief) {
+            color_by = event.thief;
+          } else if (event.prev) {
+            color_by = event.prev;
+          }
+        }}
+        {{? color_by}}
+          <td class="event-player-color settlers-game-player-header-{{= window.settlers.game.username_to_color[color_by.name].name}}">&nbsp;</td>
+        {{??}}
+          <td class="event-player-color">&nbsp;</td>
+        {{?}}
         <td class="event-stamp">{{= new Date(event.stamp * 1000).strftime("%d/%m %H:%M")}}</td>
         <td class="event-round">{{= event.round}}.</td>
         <td class="event-message">{{= window.settlers.events[event.ename](event)}}</td>
@@ -156,6 +171,8 @@ class window.settlers.GameObject
     @my_player = @players[@my_player]
     @forhont_player = @players[@forhont_player]
 
+    @username_to_color = {}
+
     G = @
 
     __per_player = (p) ->
@@ -164,6 +181,8 @@ class window.settlers.GameObject
 
       if p.second_village
         p.second_village = G.board.nodes[p.second_village - 1]
+
+      G.username_to_color[p.user.name] = p.color
 
     __per_player p for p in @players
 

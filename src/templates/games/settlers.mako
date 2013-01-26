@@ -89,6 +89,7 @@
         <table class="table table-hover">
           <thead>
             <tr>
+              <th></th>
               <th>${_('Time')}</th>
               <th>${_('Round')}</th>
               <th>${_('Event')}</th>
