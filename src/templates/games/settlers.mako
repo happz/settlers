@@ -158,9 +158,7 @@
     </div>
 
     <div id="exchange" class="hide">
-      <div id="exchange_no">
-        <h3>Das ist nich moeglich!</h3>
-      </div>
+      <div id="exchange_no"></div>
 
       <%def name="exchange_form(ratio)">
         <div id="exchange_${ratio}" class="hide">
