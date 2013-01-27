@@ -6,7 +6,7 @@
 
 <%namespace file="hlib_ui.mako" import="*" />
 
-${ui_page_header('Sponsoring')}
+${ui_page_header('About')}
 
 <div class="row-fluid">
   <div class="offset2 span10">
