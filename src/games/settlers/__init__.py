@@ -456,7 +456,6 @@ class Card(games.Card):
 
 COLOR_SPACE = games.color.ColorSpace('settlers', colors = [
   ('red', games.color.Color('red', 'Red', '#CC0000')),
-  ('orange', games.color.Color('orange', 'Orange', '#FF9900')),
   ('pink', games.color.Color('pink', 'Pink', '#DD21D4')),
   ('black', games.color.Color('black', 'Black', '#000000')),
   ('green', games.color.Color('green', 'Green', '#33FF00')),
@@ -464,6 +463,7 @@ COLOR_SPACE = games.color.ColorSpace('settlers', colors = [
   ('dark_blue', games.color.Color('dark_blue', 'Dark blue', '#000099')),
   ('brown', games.color.Color('brown', 'Brown', '#663300')),
   ('dark_green', games.color.Color('dark_green', 'Dark green', '#347235')),
+  ('orange', games.color.Color('orange', 'Orange', '#FF9900')),
   ('light_blue', games.color.Color('light_blue', 'Light blue', '#00CCCC'))
 ])
 
