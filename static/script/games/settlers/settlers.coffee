@@ -613,31 +613,12 @@ window.settlers.update_game_ui_board = () ->
 
   $(eid).html ''
 
-  # experimental - resize to fit to height...
-  resize_ratio = (window.screen.height - 20) / $('body').height()
-  if resize_ratio > 1.0
-    resize_ratio = false
-
-  __resize_piece = (piece_eid) ->
-    if not resize_ratio
-      return
-
-    l = $(piece_eid).css 'left'
-    t = $(piece_eid).css 'top'
-
-    $(piece_eid).css 'left', (parseFloat(l) * resize_ratio) + 'px'
-    $(piece_eid).css 'top', (parseFloat(t) * resize_ratio) + 'px'
-
-    $(piece_eid).css 'max-width', ($(piece_eid).width() * resize_ratio)
-    $(piece_eid).css 'max-height', ($(piece_eid).height() * resize_ratio)
-
   __add_field = (f) ->
     attrs =
       id:		'settlers_board_field_' + f.id
       class:		'settlers-board-piece settlers-board-field settlers-board-field-' + f.id + ' settlers-board-field-' + bs + '-' + map_resource_to_str[f.resource + 2]
 
     $(eid).append window.settlers.render_board_piece attrs
-    __resize_piece '#settlers_board_field_' + f.id
 
     if f.thief == true
       attrs =
@@ -645,7 +626,6 @@ window.settlers.update_game_ui_board = () ->
         class:		'settlers-board-piece settlers-board-thief settlers-board-thief-' + bs + ' settlers-board-thief-' + f.id
 
       $(eid).append window.settlers.render_board_piece attrs
-      __resize_piece '#settlers_board_thief'
 
   __add_number = (f) ->
     attrs =
@@ -656,7 +636,6 @@ window.settlers.update_game_ui_board = () ->
       attrs.class += ' settlers-board-number-active'
 
     $(eid).append window.settlers.render_board_piece attrs
-    __resize_piece '#settlers_board_number_' + f.id
 
     if (G.state == 13 or G.state == 15 or G.state == 19) and f.thief != true
       $('#' + attrs.id).click () ->
@@ -691,7 +670,6 @@ window.settlers.update_game_ui_board = () ->
       attrs.class += ' settlers-board-path-active settlers-board-path-' + bs + '-free-' + map_pathid_to_position[p.id] + '-active'
 
     $(eid).append window.settlers.render_board_piece attrs
-    __resize_piece '#settlers_board_path_' + p.id
 
     if G.current_active_paths_map[p.id] == true
       if G.state == 1
@@ -767,7 +745,6 @@ window.settlers.update_game_ui_board = () ->
 
     s = '<span ' +  ((attr_name + '="' + attr_value + '"' for own attr_name, attr_value of attrs).join ' ') + '></span>'
     $(eid).append(s)
-    __resize_piece '#settlers_board_node_' + n.id
 
     if G.current_active_nodes_map[n.id] == true
       if G.state == 1
@@ -870,13 +847,11 @@ window.settlers.update_game_ui_board = () ->
     classes = 'settlers-board-piece settlers-board-sea settlers-board-sea-' + (2 * p.id + 1) + ' settlers-board-port-' + map_resource_to_str[p.resource + 2] + '-' + p.clock + '-' + bs
     s = '<span id="settlers_board_port_' + p.id + '" class="' + classes + '"></span>'
     $(eid).append(s)
-    __resize_piece '#settlers_board_port_' + p.id
 
   __add_sea = (i) ->
     classes = 'settlers-board-piece settlers-board-sea settlers-board-sea-' + (2 * i) + ' settlers-board-sea-' + bs
     s = '<span id="settlers_board_sea_' + i + '" class="' + classes + '"></span>'
     $(eid).append(s)
-    __resize_piece '#settlers_board_sea_' + i
 
   __add_field f for f in G.board.fields
   __add_number f for f in G.board.fields
