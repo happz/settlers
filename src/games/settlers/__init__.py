@@ -1011,6 +1011,14 @@ class Game(games.Game):
       'board':			ApiBoard(self.board)
     })
 
+    if self.type == games.Game.TYPE_FINISHED:
+      drs = self.dice_rolls_stats
+
+      d['dice_rolls'] = {
+        'with':			[(k, v) for k, v in drs['with']['numbers'].items()],
+        'without':		[(k, v) for k, v in drs['without']['numbers'].items()]
+      }
+
     return d
 
   def begin(self):

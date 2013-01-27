@@ -432,7 +432,7 @@ window.settlers.refresh_game_state = (response) ->
   window.settlers.update_game_ui()
   window.hlib.MESSAGE.hide()
 
-window.settlers.update_game_state = () ->
+window.settlers.update_game_state = (after_update) ->
   gid = window.settlers.game.gid
 
   req = window.hlib.Ajax
@@ -442,6 +442,9 @@ window.settlers.update_game_state = () ->
     handlers:
       h200:		(response, ajax) ->
         window.settlers.refresh_game_state response
+
+        if after_update
+          after_update(window.settlers.game)
 
 window.settlers.__refresh_game_ui_exchange = (i) ->
   eid_prefix = '#exchange_' + i
@@ -1040,6 +1043,84 @@ window.settlers.buy_card = () ->
   $('#new_card_form').submit()
 
 window.settlers.show_stats = () ->
+  G = window.settlers.game
+
+  serie_with =
+    color:			'#4E9258'
+    data:			G.dice_rolls.with
+    label:			window.hlib._g 'With first 3 rounds'
+    points:
+      show:			true
+
+  serie_without =
+    color:			'#5E767E'
+    data:			G.dice_rolls.without
+    label:			window.hlib._g 'Without first 3 rounds'
+    points:
+      show:			true
+
+  options =
+    xaxis:
+      min:			2
+      max:			12
+      ticks:			11
+      tickDecimals:		0
+    yaxis:
+      min:			0
+      tickDecimals:		0
+    grid:
+      hoverable:		true
+
+  $.plot $('#stats_dice_rolls'), [serie_with, serie_without], options
+
+  __show_tooltip = (x, y, dice_value, rolled) ->
+    dice_value = parseInt dice_value
+    rolled = parseInt rolled
+
+    G = window.settlers.game
+
+    if G.dice_rolls.with[dice_value - 2][1] == G.dice_rolls.without[dice_value - 2][1]
+      contents = (window.hlib._g '{0} was rolled {1} times').format dice_value, rolled
+      bgcolor = '#bfbfbf'
+
+    else if G.dice_rolls.with[dice_value - 2][1] == rolled
+      contents = (window.hlib._g 'With first 3 rounds') + ': ' + ((window.hlib._g '{0} was rolled {1} times').format dice_value, rolled)
+      bgcolor = '#4E9258'
+
+    else if G.dice_rolls.without[dice_value - 2][1] == rolled
+      contents = (window.hlib._g 'Without first 3 rounds') + ': ' + ((window.hlib._g '{0} was rolled {1} times').format dice_value, rolled)
+      bgcolor = '#5E767E'
+
+    else
+      contents = 'Missing values?'
+
+    $('<div id="stats_dice_roll_tooltip" class="tooltip">' + contents + '</div>').css({
+      position:			'absolute'
+      display:			'none'
+      top:			y + 5
+      left:			x + 5
+      'background-color':	bgcolor
+      opacity:			1
+    }).appendTo('body').fadeIn(200)
+
+  previousPoint = null
+
+  $('#stats_dice_rolls').unbind 'plothover'
+  $('#stats_dice_rolls').bind 'plothover', (event, pos, item) ->
+    if item
+      if previousPoint != item.dataIndex
+        previousPoint = item.dataIndex
+
+        x = item.datapoint[0].toFixed(0)
+        y = item.datapoint[1].toFixed(0)
+
+        $('#stats_dice_roll_tooltip').remove()
+        __show_tooltip item.pageX, item.pageY, x, y
+
+    else
+      $('#stats_dice_roll_tooltip').remove()
+      previousPoint = null
+
   $('#views').tabs 'select', 6
   window.location.hash = '#stats'
 
@@ -1188,7 +1269,29 @@ $(window).bind 'page_startup', () ->
       h200:		() ->
         chat_pager.refresh()
 
-  window.settlers.update_game_state()
+  window.settlers.update_game_state (G) ->
+    console.log G
+
+    if window.location.hash == '#chat'
+      show_chat()
+
+    else if window.location.hash == '#board'
+      window.settlers.show_board()
+
+    else if window.location.hash == '#cards'
+      show_cards()
+
+    else if window.location.hash == '#history'
+      show_history()
+
+    else if window.location.hash == '#exchange'
+      window.settlers.show_exchange()
+
+    else if window.location.hash == '#stats' and G and G.state == 2
+      window.settlers.show_stats()
+
+    else
+      window.settlers.show_board()
 
   $('#refresh').click () ->
     window.settlers.update_game_state()
@@ -1217,27 +1320,6 @@ $(window).bind 'page_startup', () ->
   $('#show_stats').click () ->
     window.hlib.show_stats()
     return false
-
-  if window.location.hash == '#chat'
-    show_chat()
-
-  else if window.location.hash == '#board'
-    window.settlers.show_board()
-
-  else if window.location.hash == '#cards'
-    show_cards()
-
-  else if window.location.hash == '#history'
-    show_history()
-
-  else if window.location.hash == '#exchange'
-    window.settlers.show_exchange()
-
-  else if window.location.hash == '#stats' and G.state == 2
-    window.settlers.show_stats()
-
-  else
-    window.settlers.show_board()
 
 window.settlers.templates.chat_post = doT.template '
  <tr id="chat_post_{{= it.id}}">

@@ -1,22 +1,5 @@
 <%!
-  import pygooglechart
-
   import hlib
-
-  def dice_rolls_chart(game):
-    c = pygooglechart.GroupedVerticalBarChart(510, 150)
-
-    c.set_bar_width(19)
-    c.set_bar_spacing(0)
-    c.set_colours(['4E9258', '5E767E'])
-    c.fill_solid(pygooglechart.Chart.BACKGROUND, 'ddddbb')
-
-    c.add_data(game.dice_rolls_stats['with']['numbers'].values())
-    c.add_data(game.dice_rolls_stats['without']['numbers'].values())
-
-    c.set_axis_range(pygooglechart.Axis.BOTTOM, 2, 12)
-
-    return c.get_url().replace('&', '&amp;')
 %>
 
 <%namespace file="../hlib_ui.mako" import="*" />
@@ -30,6 +13,9 @@
 
 <%def name="page_header()">
   ${parent.page_header()}
+
+  <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/static/script/flot/excanvas.min.js"></script><![endif]-->
+  <script language="javascript" type="text/javascript" src="/static/script/flot/jquery.flot.js"></script>
 
   <script type="text/javascript">
     $(window).bind('hlib_prestartup', function () {
@@ -191,38 +177,8 @@
     </div>
 
     <div id="stats" class="hide">
-      <table class="table table-striped">
-        <tr>
-          <th />
-          % for i in range(2, 13):
-            <th>${i}</th>
-          % endfor
-        </tr>
-        <tr>
-          <td style="background-color: #4E9258">${_('With first 3 rounds')}</td>
-          % for i in range(2, 13):
-            <td class="align-center">
-              ${game.dice_rolls_stats['with']['numbers'][i]}
-              <hr />
-              ${int((float(game.dice_rolls_stats['with']['numbers'][i]) / float(game.dice_rolls_stats['with']['sum'])) * 100)}%
-            </td>
-          % endfor
-        </tr>
-        <tr>
-          <td style="background-color: #5e767e">${_('Without first 3 rounds')}</td>
-          % for i in range(2, 13):
-            <td>
-              ${game.dice_rolls_stats['without']['numbers'][i]}
-              <hr />
-              ${int((float(game.dice_rolls_stats['without']['numbers'][i]) / float(game.dice_rolls_stats['without']['sum'])) * 100)}%
-            </td>
-          % endfor
-        </tr>
-      </table>
-
-      <div style="text-align: center">
-        <img src="${dice_rolls_chart(game)}" style="height: 150px"/>
-      </div>
+      <div id="stats_dice_rolls" style="width: 510px; height: 200px; margin-left: auto; margin-right: auto;"></div>
+      <p style="text-align: center">${_('Dice rolls')}</p>
     </div>
 
     </div>
