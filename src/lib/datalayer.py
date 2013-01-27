@@ -95,6 +95,8 @@ class Root(hlib.datalayer.Root):
     self.stats   = Stats()
     self.trumpet = Trumpet()
 
+    self.donors			= hlib.database.SimpleList()
+
     self.counters		= Counters()
     self.dummy_owner = None
 

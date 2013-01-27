@@ -1,3 +1,39 @@
+window.settlers.refresh_donations_list = () ->
+  new window.hlib.Ajax
+    url:			'/admin/donations/list_full'
+    handlers:
+      h200:			(response, ajax) ->
+        tmpl = doT.template '
+          {{~ it.donations :donation:index}}
+            <div class="mediumListIconTextItem">
+              <div class="mediumListIconTextItem-Image icon-user"></div>
+              <div class="mediumListIconTextItem-Detail">
+                <h4>{{= donation.user.name}} - {{= donation.amount}} {{= window.hlib._g("_currency_")}}</h4>
+                <div class="btn-toolbar">
+                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="donation_remove_{{= donation.user.name}}"><i class="icon-remove"></i></a>
+                </div>
+              </div>
+            </div>
+          {{~}}'
+
+        $('#donations_list').html tmpl response
+
+        __per_donation = (d) ->
+          $('#donation_remove_' + d.user.name).click () ->
+            new window.hlib.Ajax
+              url:			'/admin/donations/remove'
+              data:
+                username:		d.user.name
+              handlers:
+                h200:			(response, ajax) ->
+                  window.settlers.refresh_donations_list()
+                  window.hlib.MESSAGE.hide()
+            return false
+
+        __per_donation d for d in response.donations
+
+        window.hlib.MESSAGE.hide()
+
 window.settlers.refresh_maintenance_access_list = () ->
   new window.hlib.Ajax
     url:		'/maintenance/granted_full'
@@ -6,7 +42,7 @@ window.settlers.refresh_maintenance_access_list = () ->
         tmpl = doT.template '
           {{~ it.users :user:index}}
             <div class="mediumListIconTextItem">
-              <img src="holder.js/60x60" class="mediumListIconTextItem-Image" />
+              <div class="mediumListIconTextItem-Image icon-user"></div>
               <div class="mediumListIconTextItem-Detail">
                 <h4>{{= user.name}}</h4>
                 <div class="btn-toolbar">
@@ -213,6 +249,17 @@ window.settlers.setup_forms = () ->
 
     return false
 
+  # Donations
+  new window.hlib.Form
+    fid:			'donations_add'
+    clear_fields:		['username', 'amount']
+    handlers:
+      s200:			(response, form) ->
+        window.settlers.refresh_donations_list()
+        window.hlib.form_default_handlers.s200 response, form
+
+  $('#donations_add_username').typeahead window.settlers.autocomplete_options()
+
   # Maintenance mode
   new window.hlib.Form
     fid:		'maintenance_mode'
@@ -232,4 +279,5 @@ window.settlers.setup_forms = () ->
 
 $(window).bind 'page_startup', () ->
   window.settlers.setup_forms()
+  window.settlers.refresh_donations_list()
   window.settlers.refresh_maintenance_access_list()

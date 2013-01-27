@@ -186,6 +186,7 @@
           <hr class="win-command" />
 
           ${menu_entry('&#xe126;', 'Report issue', href = '/issues/')}
+          ${menu_entry('&#xe12a;', 'About ...', href = '/about/')}
         </div>
       </div>
     </div>

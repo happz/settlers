@@ -76,6 +76,19 @@ ${ui_section_header('language', 'Language')}
 
 </section>
 
+<!-- "Donations" section -->
+${ui_section_header('donations', 'Donations')}
+  <!-- Add donor -->
+  ${ui_form_start(action = '/admin/donations/add', legend = 'Add donation', id = 'donations_add')}
+    ${ui_input(form_name = 'username', type = 'text', label = 'Username')}
+    ${ui_input(form_name = 'amount', type = 'text', label = 'Amount')}
+
+    ${ui_submit(value = 'Add')}
+  ${ui_form_end()}
+
+  <div id="donations_list" class="listview-container grid-layout"></div>
+</section>
+
 <!-- "Maintenance" section -->
 ${ui_section_header('maintenance', 'Maintenance')}
 

@@ -74,6 +74,11 @@ class Handler(hlib.handlers.root.Handler):
 
     raise hlib.http.Redirect('/home/')
 
+  @page
+  @require_login
+  def about(self):
+    return self.generate('about.mako')
+
   @survive_vacation
   @require_login
   @api

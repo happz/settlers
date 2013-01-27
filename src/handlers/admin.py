@@ -183,9 +183,52 @@ class I18NHandler(handlers.GenericHandler):
 
     return hlib.api.Reply(200, tokens = [{'name': name} for name in coverage[1].keys()])
 
+class DonationsHandler(handlers.GenericHandler):
+  @require_login
+  @require_admin
+  @api
+  def list_full(self):
+    return hlib.api.Reply(200, donations = [{'user': hlib.api.User(donor), 'amount': amount} for donor, amount in hruntime.dbroot.donors])
+
+  class ValidateAdd(hlib.input.SchemaValidator):
+    username = hlib.input.Username()
+    amount = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Number())
+
+  @require_login
+  @require_admin
+  @require_write
+  @validate_by(schema = ValidateAdd)
+  @api
+  def add(self, username = None, amount = None):
+    if username not in hruntime.dbroot.users:
+      user = hlib.database.DummyUser(username)
+    else:
+      user = hruntime.dbroot.users[username]
+
+    hruntime.dbroot.donors.append((user, amount))
+
+  class ValidateRemove(hlib.input.SchemaValidator):
+    username = hlib.input.Username()
+
+  @require_login
+  @require_admin
+  @require_write
+  @validate_by(schema = ValidateRemove)
+  @api
+  def remove(self, username = None):
+    donors_updated = hlib.database.SimpleList()
+
+    for e in hruntime.dbroot.donors:
+      if e[0].name == username:
+        continue
+      donors_updated.append(e)
+
+    hruntime.dbroot.donors = donors_updated
+
 class Handler(handlers.GenericHandler):
   i18n		= I18NHandler()
   trumpet	= TrumpetHandler()
+  donations			= DonationsHandler()
 
   @require_admin
   @require_login
