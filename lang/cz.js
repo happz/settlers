@@ -494,5 +494,6 @@ window.settlers.i18n_table = {
     '{0} stole 1 piece of {1} from you': '{0} vám ukradl 1 kus {1}',
     '{0} stole resources from {1}: {2}': '{0} ukradl suroviny {1}: {2}',
     '{0} used card {1} from round {2}': '{0} použil kartu {1}, koupenou v {2}. kole',
+    '{0} was rolled {1} times': '{0} padla {1}krát',
     '{0} wood, {1} clay, {2} sheep, {3} grain, {4} rock': '{0} dřevo, {1} hlína, {2} ovce, {3} obilí, {4} kámen',
 };
