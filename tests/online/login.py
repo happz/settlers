@@ -1,13 +1,11 @@
-import tests.handlers
-import sys
+from tests.online import TestCase
+from tests import cmp_json_dicts
 
-from tests import query, check_json_reply
-
-class login(tests.handlers.TestCase):
+class login(TestCase):
   def test_empty_submit(self):
-    reply = query('/login/login')
+    reply = self.query('/login/login')
 
-    check_json_reply(reply, {
+    cmp_json_dicts(reply, {
       'status':			400,
       'form':			{
         'updated_fields':	None,
@@ -21,15 +19,15 @@ class login(tests.handlers.TestCase):
     })
 
   def test_empty_password(self):
-    reply = query('/login/login', data = {'username': tests.USERNAME})
+    reply = self.query('/login/login', data = {'username': self.config.get('online', 'username')})
 
-    check_json_reply(reply, {
+    cmp_json_dicts(reply, {
       'status':			400,
       'form':			{
         'updated_fields':	None,
         'invalid_field':	'password',
         'orig_fields':		{
-          'username':		tests.USERNAME
+          'username':		self.config.get('online', 'username')
         }
       },
       'error':			{
@@ -39,9 +37,9 @@ class login(tests.handlers.TestCase):
     })
 
   def test_empty_username(self):
-    reply = query('/login/login', data = {'password': tests.PASSWORD})
+    reply = self.query('/login/login', data = {'password': self.config.get('online', 'password')})
 
-    check_json_reply(reply, {
+    cmp_json_dicts(reply, {
       'status':			400,
       'form':			{
         'updated_fields':	None,
@@ -55,9 +53,9 @@ class login(tests.handlers.TestCase):
     })
 
   def test_wrong_username(self):
-    reply = query('/login/login', data = {'username': 'foobar', 'password': 'foobar'})
+    reply = self.query('/login/login', data = {'username': 'foobar', 'password': 'foobar'})
 
-    check_json_reply(reply, {
+    cmp_json_dicts(reply, {
       'status':			401,
       'error':			{
         'message':		'Invalid username or password',
@@ -66,9 +64,9 @@ class login(tests.handlers.TestCase):
     })
 
   def test_wrong_password(self):
-    reply = query('/login/login', data = {'username': tests.USERNAME, 'password': 'foobar'})
+    reply = self.query('/login/login', data = {'username': self.config.get('online', 'username'), 'password': 'foobar'})
 
-    check_json_reply(reply, {
+    cmp_json_dicts(reply, {
       'status':			401,
       'error':			{
         'message':		'Invalid username or password',
@@ -77,18 +75,14 @@ class login(tests.handlers.TestCase):
     })
 
   def test_correct(self):
-    reply = query('/login/login', data = {'username': tests.USERNAME, 'password': tests.PASSWORD})
-    check_json_reply(reply, {
+    reply = self.query('/login/login', data = {'username': self.config.get('online', 'username'), 'password': self.config.get('online', 'password')})
+
+    cmp_json_dicts(reply, {
       'status':			303,
       'redirect':		{
-        'url':			'http://osadnici-test.happz.cz/home/'
+        'url':			self.config.get('online', 'root_url') + '/home/'
       }
     })
 
 if __name__ == '__main__':
   unittest.main()
-
-
-"""
-        Q(label + 'correct', url = URL, data = {'username': 'happz', 'password': 'heslo'}, check = {"status": 200, "message": None, 'form_info': None})
-        """
