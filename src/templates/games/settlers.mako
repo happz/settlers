@@ -148,7 +148,7 @@
 
       <%def name="exchange_form(ratio)">
         <div id="exchange_${ratio}" class="hide">
-          ${ui_form_start(action = '/game/settlers/exchange', legend = 'Exchange ' + str(ratio) + ':1', id = 'exchange_' + str(ratio))}
+          ${ui_form_start(action = '/game/settlers/exchange', legend = 'Exchange ' + str(ratio) + ':1', id = 'exchange_' + str(ratio), horizontal = False, classes = ['form-inline'])}
             ${ui_input(form_name = 'gid', type = 'hidden')}
             ${ui_input(form_name = 'ratio', type = 'hidden')}
 
