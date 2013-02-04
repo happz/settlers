@@ -1,7 +1,0 @@
-#!/bin/bash
-
-. ../conf/tools.sh
-
-for package in $PACKAGES; do
-  find $ROOT_DIR/src/$package | egrep '[\.py|\.mako]$' | egrep -v \.svn | egrep -v \~ | egrep -v \.pyc | egrep -v '.*templates.*\.py$'
-done;
