@@ -30,6 +30,13 @@ ${ui_page_header('New issue')}
           <div id="ticket${issue.number}" class="accordion-body collapse in">
             <div class="accordion-inner">
               ${issue.body.replace('\n', '<br />')}
+
+              % for comment in issue.comments:
+                <div class="well well-large">
+                  <b>${comment.user}:</b>
+                  <p>${comment.body.replace('\n', '<br />')}</p>
+                </div>
+              % endfor
             </div>
           </div>
         </div>
