@@ -1,9 +1,44 @@
 <%!
+  import os
   import os.path
   import sys
 
   import hlib
   import hruntime
+
+  import lib.datalayer
+
+  def check_static_file_cache(path):
+    while path[0] == '/':
+      path = path[1:]
+
+    path = os.path.join(hruntime.app.config['dir'], path)
+    cache_key = 'scripts.' + path
+
+    cached_stamp = hruntime.cache.get(lib.datalayer.SystemUser(), cache_key)
+
+    try:
+      stat = os.stat(path)
+    except OSError:
+      print >> sys.stderr, 'Missing file: "%s"' % path
+      version_stamp = -1
+    else:
+      version_stamp = int(stat.st_mtime)
+
+    if not cached_stamp:
+      hruntime.cache.set(lib.datalayer.SystemUser(), cache_key, version_stamp)
+      return version_stamp
+
+    if cached_stamp < version_stamp:
+      hruntime.cache.set(lib.datalayer.SystemUser(), cache_key, version_stamp)
+      return version_stamp
+
+    return cached_stamp
+
+  def version_stamp(path):
+    stamp_postfix = check_static_file_cache(path)
+    return ('?_version_stamp=' + str(stamp_postfix)) if stamp_postfix else ''
+
 %>
 
 <%namespace file="hlib_ui.mako" import="*" />
@@ -12,7 +47,11 @@
 <%inherit file="hlib_page.mako" />
 
 <%def name="script(path)">
-  <script src="/static/script/${path}.js"></script>
+  <script type="text/javascript" src="${path}${version_stamp(path)}"></script>
+</%def>
+
+<%def name="style(path)">
+  <link rel="stylesheet" href="${path}${version_stamp(path)}" type="text/css" />
 </%def>
 
 <%def name="page_header()">
@@ -41,7 +80,7 @@
 
   <script src="/static/metro/scripts/modernizr-2.6.1.min.js"></script>
 
-  <link rel="stylesheet" href="/static/css/settlers.css" type="text/css" />
+  ${style('/static/css/settlers.css')}
 
   <!-- Scripts -->
   <script src="https://www.google.com/jsapi?key=ABQIAAAAnT7bvt5eCgJnKE_9xHtWrRQL0gKz-n891IYmna21nNIOzPZZixRfXXTxioGg6bd4WAedyIJq9y470A" type="text/javascript"></script>
@@ -57,8 +96,8 @@
   <script type="text/javascript" src="/static/script/doT.min.js"></script>
   <script type="text/javascript" src="/static/script/strftime.js"></script>
 
-  <script type="text/javascript" src="/static/script/hlib.js"></script>
-  <script type="text/javascript" src="/static/script/settlers.js"></script>
+  ${script('/static/script/hlib.js')}
+  ${script('/static/script/settlers.js')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
@@ -67,13 +106,13 @@
       kind = self.uri.split('/')[1].split('.')[0]
     %>
 
-    <link rel="stylesheet" href="/static/css/pages/game.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/games/${kind}/${kind}.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/games/${kind}/${kind}-board.css" type="text/css" />
+    ${style('/static/css/pages/game.css')}
+    ${style('/static/css/games/' + kind + '/' + kind + '.css')}
+    ${style('/static/css/games/' + kind + '/' + kind + '-board.css')}
 
-    <script type="text/javascript" src="/static/script/pages/game.js"></script>
-    <script type="text/javascript" src="/static/script/games/${kind}/${kind}.js"></script>
-    <script type="text/javascript" src="/static/script/games/${kind}/${kind}-board.js"></script>
+    ${script('/static/script/pages/game.js')}
+    ${script('/static/script/games/' + kind + '/' + kind + '.js')}
+    ${script('/static/script/games/' + kind + '/' + kind + '-board.js')}
   % endif
 
   <%
@@ -84,11 +123,11 @@
   %>
 
   % if os.path.exists(page_style_file):
-    <link rel="stylesheet" href="/static/css/pages/${current_page_name}.css" type="text/css" />
+    ${style('/static/css/pages/' + current_page_name + '.css')}
   % endif
 
   % if os.path.exists(page_script_file):
-    <script type="text/javascript" src="/static/script/pages/${current_page_name}.js"></script>
+    ${script('/static/script/pages/' + current_page_name + '.js')}
   % endif
 
   <script src="/i18n?lang=${hruntime.i18n.name}" type="text/javascript"></script>
