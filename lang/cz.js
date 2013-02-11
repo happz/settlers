@@ -24,7 +24,7 @@ window.settlers.i18n_table = {
     'API': 'API',
     'API token': 'Klíč API',
     'About': 'O Osadnících',
-    'About ...': 'O Osadnících ...',
+    'About ...': 'O Osadnících',
     'Access limitations': 'Omezení hráčů',
     'Account': 'Účet',
     'Action': 'Akce',
