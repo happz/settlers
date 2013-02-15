@@ -1,0 +1,87 @@
+#!/usr/bin/python
+
+import collections
+import json
+import os
+import os.path
+import sys
+import urllib2
+
+STATUS_URL = os.environ.get('statusurl', 'http://osadnici.happz.cz/monitor/snapshot_stats')
+
+NORMALIZER = 1000.0
+
+_Graph = collections.namedtuple('_Graph', ['title', 'vlabel', 'info', 'datasets'])
+_DataSet = collections.namedtuple('_DataSet', ['label', 'filter'])
+
+Graph = lambda *args: _Graph._make(list(args))
+DataSet = lambda *args: _DataSet._make(list(args))
+
+PARAMS = {
+  'cache':			Graph('Cache', 'events', 'Cache events and size', {
+                                  'hits':	DataSet('Hits', lambda data: data['snapshot']['Cache (settlers - Global)']['Hits']),
+                                  'misses':	DataSet('Misses', lambda data: data['snapshot']['Cache (settlers - Global)']['Misses']),
+                                  'inserts':	DataSet('Inserts', lambda data: data['snapshot']['Cache (settlers - Global)']['Inserts']),
+                                  'size':	DataSet('Size', lambda data: data['snapshot']['Cache (settlers - Global)']['Total size'])
+                                }),
+  'db':				Graph('Database', 'events/sec * %s' % NORMALIZER, 'Database session closures per second', {
+                                  'commits':	DataSet('Commits', lambda data: float(data['snapshot']['Database (main db)']['Commits']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER),
+                                  'rollbacks':	DataSet('Rollbacks', lambda data: float(data['snapshot']['Database (main db)']['Rollbacks']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER)
+                                }),
+  'requests':			Graph('Requests', 'requests/sec * %s' % NORMALIZER, 'Requests per second', {
+                                  'ro':		DataSet('RO', lambda data: float(data['snapshot']['Engine']['RO requests']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER),
+                                  'total':	DataSet('Total', lambda data: float(data['snapshot']['Engine']['Total requests']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER),
+                                  'current':	DataSet('Current', lambda data: data['snapshot']['Engine']['Current requests'])
+                                }),
+  'online':			Graph('Online players', 'players', 'Online players', {
+                                  'online':	DataSet('Online', lambda data: len(data['snapshot']['Sessions (settlers)']['Active'].split(',')))
+                                }),
+  'threads':			Graph('Thread pool', 'threads', 'Thread pool and queue stats', {
+                                  'current':	DataSet('Current', lambda data: data['snapshot']['Pool (server-0)']['Current threads']),
+                                  'free':	DataSet('Free', lambda data: data['snapshot']['Pool (server-0)']['Free threads']),
+                                  'queue':	DataSet('Queue size', lambda data: data['snapshot']['Pool (server-0)']['Queue size'])
+                                })
+}
+
+def fetch_data():
+  return json.loads(urllib2.urlopen(STATUS_URL).read())
+
+def print_config(param):
+  param = PARAMS[param]
+
+  print """graph_title %s
+graph_vlabel %s
+graph_category settlers
+graph_info %s""" % (param.title, param.vlabel, param.info)
+
+  for dataset_name, dataset in param.datasets.items():
+    print '%s.label %s' % (dataset_name, dataset.label)
+
+if __name__ == '__main__':
+  if len(sys.argv) > 1:
+    if sys.argv[1] == 'suggest':
+      print '\n'.join(PARAMS.keys())
+      sys.exit(0)
+
+    elif sys.argv[1] == 'autoconf':
+      print 'yes'
+      sys.exit(0)
+
+  try:
+    param = os.path.split(sys.argv[0])[-1].split('_')[1]
+
+  except IndexError:
+    param = 'cache'
+
+  if param not in PARAMS.keys():
+    print 'unknown parameter "%s"' % (param)
+    sys.exit(1)
+
+  if len(sys.argv) > 1 and sys.argv[1] == 'config':
+    print_config(param)
+    sys.exit(0)
+
+  data = fetch_data()
+
+  for dataset_name, dataset in PARAMS[param].datasets.items():
+    print '%s.value %s' % (dataset_name, dataset.filter(data))
