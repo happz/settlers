@@ -5,9 +5,11 @@ import json
 import os
 import os.path
 import sys
+import time
 import urllib2
 
 STATUS_URL = os.environ.get('statusurl', 'http://osadnici.happz.cz/monitor/snapshot_stats')
+STATUS_CACHE = os.environ.get('statuscache', '/tmp/settlers-status.json')
 
 NORMALIZER = 1000.0
 
@@ -44,7 +46,39 @@ PARAMS = {
 }
 
 def fetch_data():
-  return json.loads(urllib2.urlopen(STATUS_URL).read())
+  def __fetch_from_url():
+    return urllib2.urlopen(STATUS_URL).read()
+
+  def __fetch_from_cache():
+    with open(STATUS_CACHE, 'r') as f:
+      return f.read()
+
+  def __refetch_from_cache():
+    data = __fetch_from_url()
+
+    try:
+      with open(STATUS_CACHE, 'w') as f:
+        f.write(data)
+
+    except OSError, e:
+      print >> sys.stderr, 'Unabel to write into cache file'
+      pass
+
+    return data
+
+  data = None
+
+  if not os.path.exists(STATUS_CACHE):
+    data = __refetch_from_cache()
+
+  else:
+    if os.stat(STATUS_CACHE).st_mtime < int(time.time()) - 4 * 60:
+      data = __refetch_from_cache()
+
+    else:
+      data = __fetch_from_cache()
+
+  return json.loads(data)
 
 def print_config(param):
   param = PARAMS[param]
