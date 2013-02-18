@@ -222,7 +222,7 @@ window.settlers.i18n_table = {
     'Name is used': 'Jméno již někdo použil',
     'Name:': 'Jméno:',
     'New': 'Nový',
-    'New ...': 'Nové ...',
+    'New ...': 'Nové',
     'New API key': 'Nový klíč API',
     'New account': 'Nový hráč',
     'New dice line created': 'Nově naházené kostky',
