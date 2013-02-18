@@ -168,6 +168,25 @@ $(window).bind 'hlib_startup', () ->
         url:			'/logout/'
       return false
 
+  # needed for iOS mobile devices (well, afaik...)
+  adapt_to_orientation = () ->
+    if window.orientation == 0 or window.orientation == 180
+      content_width = 758
+      screen_dimension = screen.width * 0.98
+
+    else if window.orientation == 90 or window.orientation == -90
+      content_width = 1024
+      screen_dimension = screen.height
+
+    viewport_scale = screen_dimension / content_width
+
+    $('meta[name=viewport]').attr 'content', ('width=' + content_width + ', minimum-scale=' + viewport_scale + ', maximum-scale=' + viewport_scale)
+
+  adapt_to_orientation()
+
+  window.addEventListener 'orientationchange', () ->
+    adapt_to_orientation()
+
 $(window).bind 'hlib_poststartup', () ->
   $('a[rel=tooltip]').tooltip()
   $('button[rel=tooltip]').tooltip()
