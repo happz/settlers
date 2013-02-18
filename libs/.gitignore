@@ -2,6 +2,7 @@ coffee-script.js
 flot
 jquery.form.js
 jquery.form.min.js
+jquery.json.min.js
 jquery.qtip.css
 jquery.qtip.js
 jquery.qtip.min.css
