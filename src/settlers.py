@@ -49,6 +49,7 @@ config_defaults = {
   'server':			{
     'host':			'127.0.0.1',
     'port':			8082,
+    'pool.max':			10
   },
   'log':			{
     'access_format':		'{date} {time} - {tid} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
@@ -94,7 +95,7 @@ def main():
   hlib.config['log.channels.error'] = stderr
 
   db_address = hlib.database.DBAddress(config.get('database', 'address'))
-  db = hlib.database.DB('main db', db_address, cache_size = 35000)
+  db = hlib.database.DB('main db', db_address, cache_size = 35000, pool_size = int(config.get('server', 'pool.max')) + 2)
   db.open()
 
   app_config			= hlib.engine.Application.default_config(config.get('server', 'path'))
@@ -139,6 +140,7 @@ def main():
   server_config['server']	= config.get('server', 'host')
   server_config['port']		= int(config.get('server', 'port'))
   server_config['app']		= app
+  server_config['pool.max']	= int(config.get('server', 'pool.max'))
 
   engine = hlib.engine.Engine([server_config])
 
