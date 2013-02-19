@@ -8,36 +8,21 @@
 
   import lib.datalayer
 
-  def check_static_file_cache(path):
+  def version_stamp(path):
     while path[0] == '/':
       path = path[1:]
 
     path = os.path.join(hruntime.app.config['dir'], path)
-    cache_key = 'scripts.' + path
-
-    cached_stamp = hruntime.cache.get(lib.datalayer.SystemUser(), cache_key)
 
     try:
       stat = os.stat(path)
+
     except OSError:
       print >> sys.stderr, 'Missing file: "%s"' % path
-      version_stamp = -1
+      return ''
+
     else:
-      version_stamp = int(stat.st_mtime)
-
-    if not cached_stamp:
-      hruntime.cache.set(lib.datalayer.SystemUser(), cache_key, version_stamp)
-      return version_stamp
-
-    if cached_stamp < version_stamp:
-      hruntime.cache.set(lib.datalayer.SystemUser(), cache_key, version_stamp)
-      return version_stamp
-
-    return cached_stamp
-
-  def version_stamp(path):
-    stamp_postfix = check_static_file_cache(path)
-    return ('?_version_stamp=' + str(stamp_postfix)) if stamp_postfix else ''
+      return '?_version_stamp=' + str(int(stat.st_mtime))
 
 %>
 
