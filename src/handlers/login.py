@@ -22,6 +22,15 @@ class LoginHandler(handlers.GenericHandler):
   def index(self):
     return self.generate('login.mako')
 
+  class ValidateCheck(hlib.input.SchemaValidator):
+    username = hlib.input.Username()
+
+  @api
+  @validate_by(schema = ValidateCheck)
+  def check(self, username = None):
+    if username not in hruntime.dbroot.users:
+      raise hlib.error.NoSuchUserError(username = username)
+
   #
   # Login
   #
