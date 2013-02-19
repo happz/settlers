@@ -220,12 +220,12 @@
     <div class="win-commandlayout" style="text-align: center">
       ${menu_entry('show_board',    '&#xe1a5;', 'Show board')}
       ${menu_entry('show_chat',     '&#x005a;', 'Show chat')}
+      ${menu_entry('roll_dice',     '&#xe017;', 'Roll dice')}
+      ${menu_entry('pass_turn',     '&#x0060;', 'Pass turn')}
       ${menu_entry('buy_card',      '&#xe11b;', 'Buy card')}
       ${menu_entry('show_cards',    '&#xe11a;', 'Show cards', content = '<span class="badge badge-info menu-alert"></span>')}
       ${menu_entry('show_exchange', '&#xe1d4;', 'Exchange resources')}
       ${menu_entry('refresh',       '&#xe124;', 'Refresh')}
-      ${menu_entry('roll_dice',     '&#xe017;', 'Roll dice')}
-      ${menu_entry('pass_turn',     '&#x0060;', 'Pass turn')}
       ${menu_entry('show_history',  '&#xe015;', 'Show history')}
       ${menu_entry('show_stats',    '&#x0072;', 'Show stats')}
     </div>
