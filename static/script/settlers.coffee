@@ -168,6 +168,18 @@ $(window).bind 'hlib_startup', () ->
         url:			'/logout/'
       return false
 
+  else
+    new window.hlib.Ajax
+      url:			'/trumpet'
+      keep_focus:		true
+      handlers:
+        h200:			(response, ajax) ->
+          if response.trumpet != false
+            $('#trumpet_board_dialog p').html response.trumpet
+            $('#trumpet_board_dialog').show()
+            $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
+            window.hlib.MESSAGE.hide()
+
   # needed for iOS mobile devices (well, afaik...)
   adapt_to_orientation = () ->
     if window.orientation == 0 or window.orientation == 180
@@ -183,6 +195,9 @@ $(window).bind 'hlib_startup', () ->
     $('meta[name=viewport]').attr 'content', ('width=' + content_width + ', minimum-scale=' + viewport_scale + ', maximum-scale=' + viewport_scale)
 
   adapt_to_orientation()
+
+  window.addEventListener 'resize', () ->
+    $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
 
   window.addEventListener 'orientationchange', () ->
     adapt_to_orientation()
