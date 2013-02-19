@@ -105,7 +105,7 @@ class Handler(hlib.handlers.root.Handler):
   @api
   def trumpet(self):
     txt = lib.trumpet.Board().text
-    if len(txt) <= 0
+    if len(txt) <= 0:
       txt = False
 
     return hlib.api.Reply(200, trumpet = txt)
