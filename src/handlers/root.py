@@ -104,7 +104,11 @@ class Handler(hlib.handlers.root.Handler):
 
   @api
   def trumpet(self):
-    return {'message': lib.trumpet.Board.text}
+    txt = lib.trumpet.Board().text
+    if len(txt) <= 0
+      txt = False
+
+    return hlib.api.Reply(200, trumpet = txt)
 
   def prepare_notify_events(self, no_trumpet = False):
     pn = PullNotify()
