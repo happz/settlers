@@ -159,6 +159,7 @@ $(window).bind 'hlib_startup', () ->
   window.hlib.setup
     message_dialog:		'#message_dialog'
     i18n_table:			window.settlers.i18n_table
+    visibility_check_eid:	'#visibility_check_mobile'
 
   window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
 
@@ -178,7 +179,8 @@ $(window).bind 'hlib_startup', () ->
             $('#trumpet_board_dialog p').html response.trumpet
             $('#trumpet_board_dialog').show()
             $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
-            window.hlib.MESSAGE.hide()
+
+          window.hlib.MESSAGE.hide()
 
   # needed for iOS mobile devices (well, afaik...)
   adapt_to_orientation = () ->
@@ -203,8 +205,10 @@ $(window).bind 'hlib_startup', () ->
     adapt_to_orientation()
 
 $(window).bind 'hlib_poststartup', () ->
-  $('a[rel=tooltip]').tooltip()
-  $('button[rel=tooltip]').tooltip()
+  if window.hlib.mobile == false
+    $('a[rel=tooltip]').tooltip()
+    $('button[rel=tooltip]').tooltip()
+
   $('body').css 'margin-bottom', ($('footer').height() + 'px')
 
   if window.settlers.user

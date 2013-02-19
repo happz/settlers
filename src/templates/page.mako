@@ -268,6 +268,8 @@ ${next.body()}
   </div>
 </div>
 
+<div id="visibility_check_mobile" class="hidden-phone hidden-tablet"></div>
+
 <script src="/static/metro/scripts/jquery.mousewheel.js"></script>
 <script src="/static/metro/scripts/jquery.scrollTo.js"></script>
 <script src="/static/metro/scripts/bootstrap.js"></script>

@@ -596,8 +596,9 @@ window.settlers.update_game_ui_player = (player) ->
 window.settlers.update_game_ui_players = () ->
   window.settlers.update_game_ui_player p for p in window.settlers.game.players
 
-  $('tr[rel=tooltip]').tooltip
-    html:			true
+  if window.hlib.mobile == false
+    $('tr[rel=tooltip]').tooltip
+      html:			true
 
 window.settlers.update_game_ui_board = () ->
   eid = '.game-board'
@@ -1245,8 +1246,6 @@ $(window).bind 'page_startup', () ->
         chat_pager.refresh()
 
   window.settlers.update_game_state (G) ->
-    console.log G
-
     if window.location.hash == '#chat'
       show_chat()
 
