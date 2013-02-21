@@ -45,7 +45,7 @@
   ${parent.page_favicon(path_prefix = '/static/images/favicon', tile_background = '#36932A')}
 
   <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
-  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <!-- Mobile viewport optimized: h5bp.com/viewport -->
   <meta name="viewport" content="width=device-width">
   <!-- Enable responsive design -->

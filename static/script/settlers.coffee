@@ -198,10 +198,10 @@ $(window).bind 'hlib_startup', () ->
 
   adapt_to_orientation()
 
-  window.addEventListener 'resize', () ->
+  $(window).on 'resize', () ->
     $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
 
-  window.addEventListener 'orientationchange', () ->
+  $(window).on 'orientationchange', () ->
     adapt_to_orientation()
 
 $(window).bind 'hlib_poststartup', () ->
