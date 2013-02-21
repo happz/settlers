@@ -191,9 +191,9 @@ class PlayableLists(object):
     self._archived      = {}
 
   def __get_f_list(self, name, user):
-    cache = getattr(self, '_' + name)
-
     with self._lock:
+      cache = getattr(self, '_' + name)
+
       if user not in cache:
         update = getattr(self, 'get_' + name)
         cache[user] = update(user)
