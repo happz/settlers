@@ -195,6 +195,21 @@ class window.settlers.GameObject
 
     @events.reverse()
 
+  has_enough_resources:		(what) ->
+    if what == 'card'
+      return (@my_player.resources.rock >= 1 and @my_player.resources.grain >= 1 and @my_player.resources.sheep >= 1)
+
+    if what == 'village'
+      return (@my_player.resources.wood >= 1 and @my_player.resources.clay >= 1 and @my_player.resources.grain >= 1 and @my_player.resources.sheep >= 1)
+
+    if what == 'town'
+      return (@my_player.resources.grain >= 2 and @my_player.resources.rock >= 3)
+
+    if what == 'path'
+      return (@my_player.resources.wood >= 1 and @my_player.resources.clay >= 1)
+
+    return true
+
   get_thief_field:	() ->
     fields = @board.fields.filter (f) -> f.thief == true
     return fields[0]
@@ -275,17 +290,40 @@ class window.settlers.GameObject
 
     if @state == 1
       G = @
+
+      if not @has_enough_resources('village') and not @has_enough_resources('town')
+        return jQuery.extend {}, window.settlers.board_defs.active_nodes_map_negative
+
       m = jQuery.extend {}, window.settlers.board_defs.active_nodes_map_positive
 
       __per_node = (node) ->
         if m[node.id] == false
           return
 
-        if node.type != 1
+        if node.type == 1
+          # empty node, do we have resources for village?
+          if not G.has_enough_resources('village')
+            m[node.id] = false
+            return
+
+        else
+          # node is not empty, disable all adjacent nodes
           m[neighbour_id] = false for neighbour_id in window.settlers.board_defs.nodes[node.id].neighbours
 
-          if node.type != 2 or node.owner != P.id
+          # owner is not current player
+          if node.owner != P.id
             m[node.id] = false
+            return
+
+          # node is town
+          if node.type == 3
+            m[node.id] = false
+            return
+
+          # OK, it's a village, we own it, but do we have enough resources?
+          if not G.has_enough_resources('town')
+            m[node.id] = false
+            return
 
           return
 
@@ -327,6 +365,10 @@ class window.settlers.GameObject
 
       __per_path = (path) ->
         if path.type != 1
+          return
+
+        if G.state == 1 and not G.has_enough_resources('path')
+          m[path.id] = false
           return
 
         node1 = G.board.nodes[window.settlers.board_defs.paths[path.id].nodes[0] - 1]
@@ -976,7 +1018,7 @@ window.settlers.update_game_ui_buttons = () ->
 
   G = window.settlers.game
 
-  if G.state == 1 and G.my_player.resources.rock >= 1 and G.my_player.resources.grain >= 1 and G.my_player.resources.sheep >= 1
+  if G.state == 1 and G.has_enough_resources('card')
     window.hlib.enableIcon '#buy_card', window.settlers.buy_card
 
   if G.state == 10 or G.state == 11
