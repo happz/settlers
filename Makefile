@@ -28,7 +28,10 @@ doc:
 pylint:
 	@PYTHONPATH=$(ROOT_DIR)/src/ pylint $(PYLINT_OPTIONS) $(PYLINT_PACKAGES) 2> /dev/null | grep -v 'Locally disabling'
 
+coffeelint:
+	@coffeelint -f $(CONF_DIR)/coffeelint.json `find $(ROOT_DIR)/static/script/ -name '*.coffee'`
+
 tests:
 	@nosetests $(NOSE_OPTIONS)
 
-test_all: pylint tests
+test_all: pylint coffeelint tests

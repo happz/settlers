@@ -6,5 +6,5 @@ SCRIPTS = hlib.js settlers.js \
 all: $(SCRIPTS)
 
 %.js: %.coffee
-	/data/settlers/osadnici/tools/coffee-compile.py $< > $@
+	coffee -c --bare $<
 #	/data/osadnici/tools/coffee-compile.py $< | slimit > $@
