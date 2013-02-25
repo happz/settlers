@@ -162,6 +162,9 @@ $(window).bind 'page_startup', () ->
               window.hlib.error 'Unauthorized', response.error, () ->
                 field.unmark_error()
 
+            h402:		(response, ajax) ->
+              window.hlib.error 'Error!', response.error
+
         return false
 
     if p.has_password
