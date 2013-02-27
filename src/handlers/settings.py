@@ -98,7 +98,6 @@ class OpponentsHandler(handlers.GenericHandler):
       hruntime.user.colors[kind] = hlib.database.StringMapping()
 
     hruntime.user.colors[kind][opponent.name] = color.name
-    hruntime.user._v_used_colors = None
 
   class ValidateRemove(GenericValidateKind):
     username = hlib.input.Username()
@@ -112,7 +111,6 @@ class OpponentsHandler(handlers.GenericHandler):
       raise hlib.error.InconsistencyError(msg = 'There is no such colorized opponent')
 
     del hruntime.user.colors[kind][username]
-    hruntime.user._v_used_colors = None
 
 class VacationHandler(handlers.GenericHandler):
   @require_write
@@ -212,6 +210,7 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidatePassword)
   @api
   def password(self, password1 = None, password2 = None):
+    # pylint: disable-msg=W0613
     hruntime.user.password = lib.pwcrypt(password1)
 
   #
@@ -239,10 +238,10 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidateMyColor)
   @api
   def color(self, kind = None, color = None):
-    gm = games.settlers
+    gm = games.game_module(kind)
 
     if color not in gm.COLOR_SPACE.colors:
-      raise NoSuchColorError(color)
+      raise hlib.error.InconsistencyError(msg = 'No such color')
 
     color = gm.COLOR_SPACE.colors[color]
 

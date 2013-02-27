@@ -7,7 +7,7 @@ import hlib.log
 import hlib.error
 import hlib.event
 import events.game
-import tournament
+import tournaments
 
 import hlib.event
 
@@ -36,7 +36,8 @@ class Handler(handlers.GenericHandler):
         try:
           if p.archive_deadline >= hruntime.time:
             continue
-        except lib.play.CannotBeArchivedError, e:
+
+        except lib.play.CannotBeArchivedError:
           continue
 
         archived.append(p)
@@ -46,8 +47,8 @@ class Handler(handlers.GenericHandler):
 
         playable_archived_list[p.id] = p
 
-        kwargs = {handle_name: p}
-        hlib.event.trigger(event_name, p, **kwargs)
+        # pylint: disable-msg=W0142
+        hlib.event.trigger(event_name, p, **{handle_name: p})
 
       return [p.id for p in archived]
 
@@ -67,14 +68,16 @@ class Handler(handlers.GenericHandler):
   @api
   def create_system_games(self):
     def __create_games(count, limit):
-      for i in range(0, count):
-        g = games.create_system_game('settlers', limit = limit, turn_limit = 604800)
+      for _ in range(0, count):
+        games.create_system_game('settlers', limit = limit, turn_limit = 604800)
         time.sleep(5)
         hruntime.time = None
 
     cnt = hruntime.app.config['system_games.limit'] - hruntime.dbroot.counters.games_free()
     if cnt > 0:
       __create_games(cnt, hruntime.app.config['system_games.sleep'])
+
+      # pylint: disable-msg=W0212
       games._game_lists.inval_all('active')
 
     else:

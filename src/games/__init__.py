@@ -614,6 +614,9 @@ class Resources(hlib.database.DBObject):
   def __setitem__(self, key, value):
     setattr(self, key, value)
 
+  def __delitem__(self, key):
+    raise AttributeError('Resources can not be deleted')
+
   def add(self, key, value):
     self[key] += value
 

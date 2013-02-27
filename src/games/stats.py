@@ -4,6 +4,7 @@ import hlib.pageable
 
 import lib.datalayer
 
+# pylint: disable-msg=F0401
 import hruntime
 
 class Stats(hlib.pageable.Pageable):

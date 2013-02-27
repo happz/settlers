@@ -141,7 +141,7 @@ class Playable(hlib.database.DBObject):
         if hruntime.time > self.archive_deadline:
           return True
 
-      except CannotBeArchivedError, e:
+      except CannotBeArchivedError:
         return False
 
       return False
@@ -201,15 +201,19 @@ class PlayableLists(object):
       return self.get_objects(cache[user])
 
   def get_objects(self, l):
+    # pylint: disable-msg=W0613
     return []
 
   def get_active(self, user):
+    # pylint: disable-msg=W0613
     return []
 
   def get_inactive(self, user):
+    # pylint: disable-msg=W0613
     return []
 
   def get_archived(self, user):
+    # pylint: disable-msg=W0613
     return []
 
   def f_active(self, user):
@@ -262,11 +266,13 @@ class PlayableLists(object):
 
   # Shortcuts
   def created(self, p):
+    # pylint: disable-msg=W0613
     self.inval_all('active')
 
     return True
 
   def started(self, p):
+    # pylint: disable-msg=W0613
     self.inval_all('active')
 
     return True

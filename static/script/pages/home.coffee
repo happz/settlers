@@ -74,7 +74,7 @@ $(window).bind 'page_startup', () ->
       else
         return -1
     if y.chat_posts and y.chat_posts > 0
-       return 1
+      return 1
 
     if x.is_present == true
       if y.is_present == true

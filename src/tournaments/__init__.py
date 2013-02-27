@@ -74,10 +74,10 @@ class Player(lib.play.Player):
     return d
 
 class Group(hlib.database.DBObject):
-  def __init__(self, id, tournament, round, players):
+  def __init__(self, gid, tournament, round, players):
     hlib.database.DBObject.__init__(self)
 
-    self.id			= id
+    self.id			= gid
     self.tournament		= tournament
     self.round			= round
     self.players		= players
@@ -186,6 +186,7 @@ class Tournament(lib.play.Playable):
       for player_id in range(1, self.flags.limit):
         kwargs['opponent' + str(player_id)] = group.players[player_id].user.name
 
+      # pylint: disable-msg=W0142
       g = games.create_system_game(self.flags.kind, **kwargs)
 
       g.tournament = self

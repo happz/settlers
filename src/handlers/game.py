@@ -186,6 +186,4 @@ class Handler(handlers.GenericHandler):
   def state(self, gid = None):
     g = require_presence_in_game(gid)
 
-    state = g.to_state()
-
     return hlib.api.Reply(200, game = g.to_state())

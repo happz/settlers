@@ -8,6 +8,8 @@ import lib.trumpet
 
 import hlib
 import hlib.api
+import hlib.database
+import hlib.datalayer
 import hlib.input
 
 # Shortcuts
@@ -201,7 +203,7 @@ class DonationsHandler(handlers.GenericHandler):
   @api
   def add(self, username = None, amount = None):
     if username not in hruntime.dbroot.users:
-      user = hlib.database.DummyUser(username)
+      user = hlib.datalayer.DummyUser(username)
     else:
       user = hruntime.dbroot.users[username]
 

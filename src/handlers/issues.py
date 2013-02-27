@@ -8,6 +8,7 @@ from hlib.input import validate_by, SchemaValidator
 
 from handlers import page, require_login
 
+# pylint: disable-msg=F0401
 import hruntime
 
 class Handler(handlers.GenericHandler):

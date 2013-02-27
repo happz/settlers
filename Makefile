@@ -2,6 +2,7 @@ ROOT_DIR=$(CURDIR)
 
 CONF_DIR := $(ROOT_DIR)/conf/
 DOC_DIR := $(ROOT_DIR)/doc/
+SCRIPT_DIR := $(ROOT_DIR)/static/script/
 
 CLOC_OPTIONS := --read-lang-def=$(CONF_DIR)/cloc.langs --exclude-dir=$(ROOT_DIR)/compiled/ --exclude-ext=js,css --skip-uniqueness $(ROOT_DIR)/src $(ROOT_DIR)/static/script/ $(ROOT_DIR)/static/css/
 
@@ -19,19 +20,39 @@ clean:
 	@rm -f `find $(ROOT_DIR) -name '*~'`
 
 cloc:
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
+	@echo "Cloc status"
 	@cloc $(CLOC_OPTIONS)
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 
 doc:
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
+	@echo "Documentation"
 	@rm -rf $(DOC_DIR)
 	@epydoc -v -o $(DOC_DIR) $(EPYDOC_OPTIONS) $(shell find $(EPYDOC_PACKAGES) -name '*.py')
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 
 pylint:
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
+	@echo "Pylint checks"
+	@echo
 	@PYTHONPATH=$(ROOT_DIR)/src/ pylint $(PYLINT_OPTIONS) $(PYLINT_PACKAGES) 2> /dev/null | grep -v 'Locally disabling'
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 
 coffeelint:
-	@coffeelint -f $(CONF_DIR)/coffeelint.json `find $(ROOT_DIR)/static/script/ -name '*.coffee'`
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
+	@echo "CoffeeLint checks"
+	@echo
+	@coffeelint -f $(CONF_DIR)/coffeelint.json --nocolor `find $(SCRIPT_DIR) -name '*.coffee'`
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 
 tests:
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
+	@echo "Nose tests"
+	@echo
 	@nosetests $(NOSE_OPTIONS)
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 
 test_all: pylint coffeelint tests
+
+checksupdate: pylint coffeelint tests doc cloc

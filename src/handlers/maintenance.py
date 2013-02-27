@@ -51,20 +51,10 @@ class Handler(handlers.GenericHandler):
 
     return hlib.api.Reply(200, updated_fields = {'mode': 1 if hruntime.dbroot.server.maintenance_mode == True else 0})
 
-  class ValidateGranted(hlib.input.SchemaValidator):
-    term = hlib.input.CommonString()
-
-  @require_admin
-  @require_login
-  @validate_by(schema = ValidateGranted)
-  @page
-  def granted(self, term = None, full = False):
-    return '\n'.join([k for k in hruntime.dbroot.users.keys() if term in k])
-
   @require_admin
   @require_login
   @api
-  def granted_full(self, term = None, full = False):
+  def granted(self):
     return hlib.api.Reply(200, users = [hlib.api.User(user) for user in hruntime.dbroot.users.values() if user.maintenance_access == True])
 
   class ValidateGrant(hlib.input.SchemaValidator):

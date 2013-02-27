@@ -132,4 +132,4 @@ class Handler(handlers.GenericHandler):
     flags = gm.GameCreationFlags(**kwargs)
     flags.owner = hruntime.user
 
-    t = tournaments.Tournament.create_tournament(flags, kwargs['num_players'], kwargs['engine'])
+    tournaments.Tournament.create_tournament(flags, kwargs['num_players'], kwargs['engine'])

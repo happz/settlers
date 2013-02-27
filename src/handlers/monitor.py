@@ -3,6 +3,7 @@ import handlers
 import hlib.api
 import hlib.stats
 
+# pylint: disable-msg=F0401
 import hruntime
 
 from handlers import page, require_login

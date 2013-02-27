@@ -36,7 +36,7 @@ window.settlers.refresh_donations_list = () ->
 
 window.settlers.refresh_maintenance_access_list = () ->
   new window.hlib.Ajax
-    url:		'/maintenance/granted_full'
+    url:		'/maintenance/granted'
     handlers:
       h200:		(response, ajax) ->
         tmpl = doT.template '

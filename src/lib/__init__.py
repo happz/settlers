@@ -24,6 +24,15 @@ class UserToPlayerMap(object):
 
     return None
 
+  def __delitem__(self, key):
+    raise AttributeError('UserToPlayerMap is read-only instance')
+
+  def __setitem__(self, key, value):
+    raise AttributeError('UserToPlayerMap is read-only instance')
+
+  def __len__(self):
+    return len(self.container.players)
+
   def __contains__(self, key):
     return self[key] != None
 

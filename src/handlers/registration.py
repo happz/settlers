@@ -87,7 +87,7 @@ class Handler(handlers.GenericHandler):
   @validate_by(schema = ValidateRegistration)
   @api
   def checkin(self, username = None, password1 = None, password2 = None, email = None):
-    # pylint: disable-msg=R0201
+    # pylint: disable-msg=R0201,W0613
     if username in hruntime.dbroot.users:
       raise UserExistsError(invalid_field = 'username')
 
