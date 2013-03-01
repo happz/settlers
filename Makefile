@@ -32,6 +32,12 @@ doc:
 	@epydoc -v -o $(DOC_DIR) $(EPYDOC_OPTIONS) $(shell find $(EPYDOC_PACKAGES) -name '*.py')
 	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 
+doccheck:
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
+	@echo "Documentation check"
+	@epydoc -v --check hlib
+	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
+
 pylint:
 	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 	@echo "Pylint checks"
@@ -55,4 +61,4 @@ tests:
 
 test_all: pylint coffeelint tests
 
-checksupdate: pylint coffeelint tests doc cloc
+checksupdate: pylint coffeelint tests doccheck doc cloc
