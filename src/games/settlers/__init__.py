@@ -198,6 +198,9 @@ class Player(games.Player):
     })
 
     if self.id == self.game.my_player.id:
+      d['has_free_village'] = self.has_free_village
+      d['has_free_town'] = self.has_free_town
+
       d['cards']['cards'] = [c.to_api() for c in self.cards.values()]
 
       for k in self.resources.keys():

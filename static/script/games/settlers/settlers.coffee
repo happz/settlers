@@ -306,6 +306,11 @@ class window.settlers.GameObject
             m[node.id] = false
             return
 
+          # can we build another village?
+          if not P.has_free_village
+            m[node.id] = false
+            return
+
         else
           # node is not empty, disable all adjacent nodes
           m[neighbour_id] = false for neighbour_id in window.settlers.board_defs.nodes[node.id].neighbours
@@ -322,6 +327,11 @@ class window.settlers.GameObject
 
           # OK, it's a village, we own it, but do we have enough resources?
           if not G.has_enough_resources('town')
+            m[node.id] = false
+            return
+
+          # can we build another town?
+          if not P.has_free_town
             m[node.id] = false
             return
 
