@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/data/virtualenv/settlers/bin/python
 
 import ConfigParser
 import formencode
