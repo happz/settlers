@@ -131,6 +131,8 @@ class User(hlib.datalayer.User):
     self.vacations      = hlib.database.IndexedMapping()
     self.colors		= hlib.database.SimpleMapping()
 
+    self.seen_board	= False
+
   def __getattr__(self, name):
     if name == 'is_autoplayer':
       return self.autoplayer == True

@@ -8,6 +8,36 @@ window.settlers.templates = window.settlers.templates or {}
 #
 # Classes
 #
+class window.settlers.Trumpet
+  constructor:                  () ->
+    _trumpet = @
+
+    @eid = '#trumpet_board_dialog'
+
+    $(@eid + ' .modal-footer a').click () ->
+      new window.hlib.Ajax
+        url:                    '/confirm_trumpet'
+        handlers:
+          h200:                 (response, ajax) ->
+            console.log 'hiding trumpet'
+            _trumpet.hide()
+            window.hlib.MESSAGE.hide()
+
+  update_offset:                () ->
+    if $(@eid).css('display') == 'block'
+      $('body').css 'margin-top', ($(@eid).height() + 'px')
+    else
+      $('body').css 'margin-top', '0px'
+
+  hide:                         () ->
+    $(@eid).hide()
+    @update_offset()
+
+  show:                         (message) ->
+    $(@eid + ' p').html message
+    $(@eid).show()
+    @update_offset()
+
 class window.settlers.PullNotify
   constructor:	() ->
     @sound_notified = false
@@ -33,8 +63,7 @@ class window.settlers.PullNotify
           window.settlers.hide_menu_alert 'menu_home', 'badge-important'
           window.settlers.hide_menu_alert 'menu_home', 'badge-info'
 
-          $('#trumpet_board').hide()
-          $('body').css 'margin-top', '0'
+          window.settlers.TRUMPET.hide()
 
           to_title = 0
 
@@ -58,10 +87,7 @@ class window.settlers.PullNotify
               _pn.sound_notified = true
 
           if response.events.trumpet != false
-            $('#trumpet_board_dialog p').html response.events.trumpet
-            $('#trumpet_board_dialog').show()
-
-            $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
+            window.settlers.TRUMPET.show response.events.trumpet
 
           if response.events.free_games != false
             $('#menu_home .menu-alert.badge-info').html response.events.free_games
@@ -162,6 +188,7 @@ $(window).bind 'hlib_startup', () ->
     visibility_check_eid:	'#visibility_check_mobile'
 
   window.settlers.PULL_NOTIFY = new window.settlers.PullNotify
+  window.settlers.TRUMPET = new window.settlers.Trumpet
 
   if window.settlers.user
     $('#menu_logout').click () ->
@@ -176,9 +203,9 @@ $(window).bind 'hlib_startup', () ->
       handlers:
         h200:			(response, ajax) ->
           if response.trumpet != false
-            $('#trumpet_board_dialog p').html response.trumpet
-            $('#trumpet_board_dialog').show()
-            $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
+            window.settlers.TRUMPET.show response.trumpet
+          else
+            window.settlers.TRUMPET.hide()
 
           window.hlib.MESSAGE.hide()
 
@@ -199,7 +226,7 @@ $(window).bind 'hlib_startup', () ->
   adapt_to_orientation()
 
   $(window).on 'resize', () ->
-    $('body').css 'margin-top', ($('#trumpet_board_dialog').height() + 'px')
+    window.settlers.TRUMPET.update_offset()
 
   $(window).on 'orientationchange', () ->
     adapt_to_orientation()

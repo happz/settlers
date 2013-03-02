@@ -110,10 +110,16 @@ class Handler(hlib.handlers.root.Handler):
 
     return hlib.api.Reply(200, trumpet = txt)
 
+  @require_login
+  @require_write
+  @api
+  def confirm_trumpet(self):
+    hruntime.user.seen_board = True
+
   def prepare_notify_events(self, no_trumpet = False):
     pn = PullNotify()
 
-    if not no_trumpet:
+    if not no_trumpet and hruntime.user.seen_board != True:
       txt = lib.trumpet.Board().text
       if len(txt) > 0:
         pn.trumpet = txt

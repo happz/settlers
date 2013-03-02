@@ -69,6 +69,9 @@ class TrumpetHandler(handlers.GenericHandler):
   def change_board(self, text = None):
     self.board.text = text
 
+    for user in hruntime.dbroot.users.values():
+      user.seen_board = False
+
     return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'text': self.board.text}))
 
 class I18NHandler(handlers.GenericHandler):

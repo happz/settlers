@@ -237,6 +237,9 @@
   <div class="modal-body">
     <p></p>
   </div>
+  <div class="modal-footer">
+    <a href="#" class="btn">${_('Hide')}</a>
+  </div>
 </div>
 
 % if hruntime.user != None:
