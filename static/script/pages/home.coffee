@@ -1,36 +1,42 @@
 window.settlers.templates.recent_events = {}
 window.settlers.templates.recent_events.playable = doT.template '
-  <div id="{{= it.eid}}" class="mediumListIconTextItem" data-placement="right" data-content="<div><div style=\'background-image: url(/static/images/gamepreview/{{= it.id}}.gif); background-repeat: no-repeat; width: 161px; height: 178px;\'></div><div>{{= it.limit}} {{= window.hlib._g("players")}}<br />{{= it.players_list}}{{? it.is_finished}}<br />{{= window.hlib._g(\'Winner is\')}} {{= window.settlers.fmt_player({user: it.forhont})}}{{?}}</div></div>" data-title="{{= it.name}}">
-    <div class="mediumListIconTextItem-Image pull-left" style="background-image: url(\'/static/images/gamepreview/{{= it.id}}.gif\')"></div>
-    <div class="mediumListIconTextItem-Detail">
-      <h4 title="{{= it.name}}">
-        {{? it.is_game}}
-          {{= window.hlib._g("Game")}}
-        {{?? it.is_game == false}}
-          {{= window.hlib._g("Tournament")}}
-        {{?}}
-        &nbsp;{{= it.id}} - {{= it.name}}
-      </h4>
+  <tr id="{{= it.eid}}">
+    <td>
+      {{? it.is_game}}
+        {{= window.hlib._g("Game")}}
+      {{?? it.is_game == false}}
+        {{= window.hlib._g("Tournament")}}
+      {{?}}
+      &nbsp;#{{= it.id}} - {{= it.name}}
+    </td>
+    <td>{{= it.limit}} {{= window.hlib._g("players")}}</td>
+    <td>{{= it.players_list}}</td>
+    <td>
+      {{? it.is_finished}}
+        {{= window.hlib._g(\'Winner is\')}} {{= window.settlers.fmt_player({user: it.forhont})}}
+      {{?}}
+    </td>
+    <td>
       <div class="btn-toolbar">
-        <div class="btn-group">
+        <div>
           {{? it.is_present}}
             {{? it.is_invited}}
-              <a class="btn" href="#" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i><span class="badge badge-important badge-join menu-alert"></span></a>
+              <a class="btn" href="#" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top" style="position: relative"><i class="icon-checkmark"></i><span class="badge badge-important badge-join menu-alert"></span></a>
             {{??}}
               {{? it.is_game}}
-                <a class="btn" href="/game/?gid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
-                <a class="btn" href="/game/?gid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history"><i class="icon-clipboard-2"></i></a>
-                <a class="btn" href="/game/?gid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history" style="position: relative"><i class="icon-clipboard-2"></i></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
                 {{? it.is_finished}}
-                  <a class="btn" href="/game/?gid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats"><i class="icon-bars"></i></a>
+                  <a class="btn" href="/game/?gid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><i class="icon-bars"></i></a>
                 {{?}}
               {{??}}
-                <a class="btn" href="/tournament/?tid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
-                <a class="btn" href="/tournament/?tid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history"><i class="icon-clipboard-2"></i></a>
-                <a class="btn" href="/tournament/?tid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
-                <a class="btn" href="/tournament/?tid={{= it.id}}#rounds" title="{{= window.hlib._g("Show rounds")}}" rel="tooltip" data-placement="top"><i class="icon-clipboard-2"></i></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history" style="position: relative"><i class="icon-clipboard-2"></i></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#rounds" title="{{= window.hlib._g("Show rounds")}}" rel="tooltip" data-placement="top"><i class="icon-clipboard-2" style="position: relative"></i></a>
                 {{? it.is_finished}}
-                  <a class="btn" href="/tournament/?tid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats"><i class="icon-bars"></i></a>
+                  <a class="btn" href="/tournament/?tid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><i class="icon-bars"></i></a>
                 {{?}}
               {{?}}
             {{?}}
@@ -39,8 +45,8 @@ window.settlers.templates.recent_events.playable = doT.template '
           {{?}}
         </div>
       </div>
-    </div>
-  </div>
+    </td>
+  </tr>
 '
 
 window.settlers.templates.recent_events.password = doT.template '
@@ -172,13 +178,9 @@ $(window).bind 'page_startup', () ->
 
     if p.is_invited
       window.settlers.show_menu_alert p.eid + ' #' + p.eid + '_join', '!', 'badge-join'
-      __join_click '#' + p.eid
-
-    else if p.is_present
-      __generic_click()
-
+      __join_click '#' +  p.eid + '_join'
     else
-      __join_click '#' + p.eid
+      __join_click '#' + p.eid + '_join'
 
     __generic_click 'board'
     __generic_click 'history', 'history'
@@ -193,7 +195,6 @@ $(window).bind 'page_startup', () ->
 
     if p.archive_deadline
       d = new Date (p.archive_deadline * 1000)
-      console.log d.strftime '%d/%m %H:%M'
 
     $('#' + p.eid).popover
       html:			true

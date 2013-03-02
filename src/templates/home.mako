@@ -12,16 +12,34 @@ ${ui_page_header('Home')}
 <div class="row-fluid">
   <div class="span12">
 
-    <%def name="ui_section(id, label)">
-      <!-- "${label}" section -->
-      ${ui_section_header('s' + id, label)}
-        <div id="${id}" class="listview-container grid-layout"></div>
-      </section>
-    </%def>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th>${_('Active')}</th>
+          <th colspan="3">${_('Players')}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="active"></tbody>
 
-    ${ui_section('active', 'Active')}
-    ${ui_section('free', 'Free')}
-    ${ui_section('finished', 'Finished')}
+      <thead>
+        <tr>
+          <th>${_('Free')}</th>
+          <th colspan="3">${_('Players')}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="free"></tbody>
+
+      <thead>
+        <tr>
+          <th>${_('Finished')}</th>
+          <th colspan="3">${_('Players')}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="finished"></tbody>
+    </table>
 
   </div>
 </div>
