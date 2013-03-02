@@ -80,6 +80,7 @@
 
   <script type="text/javascript" src="/static/script/doT.min.js"></script>
   <script type="text/javascript" src="/static/script/strftime.js"></script>
+  <script type="text/javascript" src="/static/script/parsley/parsley.js"></script>
 
   ${script('/static/script/hlib.js')}
   ${script('/static/script/settlers.js')}
@@ -132,18 +133,17 @@
     % endif
   </script>
 
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-615278-7']);
-  _gaq.push(['_trackPageview']);
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-615278-7']);
+    _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
 </%def>
 
 <%def name="page_title()">

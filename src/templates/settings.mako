@@ -29,20 +29,20 @@ ${ui_page_header('Settings')}
 ${ui_section_header('account', 'Account')}
 
   <!-- Change email -->
-  ${ui_form_start(action = '/settings/email', id = 'email', legend = 'Change e-mail')}
+  ${ui_form_start(action = '/settings/email', id = 'email', legend = 'Change e-mail', validate = True)}
     <!-- Email -->
-    ${ui_input(type = 'text', label = 'New e-mail', form_name = 'email', value = hruntime.user.email)}
+    ${ui_input(type = 'text', label = 'New e-mail', form_name = 'email', value = hruntime.user.email, validators = 'required notblank rangelength="[6,256]" type="email"')}
 
     ${ui_submit(value = 'Set')}
   ${ui_form_end()}
 
   <!-- Change password -->
-  ${ui_form_start(action = '/settings/password', id = 'password', legend = 'Change password')}
+  ${ui_form_start(action = '/settings/password', id = 'password', legend = 'Change password', validate = True)}
     <!-- Password -->
-    ${ui_input(type = 'password', label = 'Password', form_name = 'password1')}
+    ${ui_input(type = 'password', label = 'Password', form_name = 'password1', validators = 'required notblank rangelength="[2,256]"')}
 
     <!-- Password verification -->
-    ${ui_input(type = 'password', label = 'Password verification', form_name = 'password2')}
+    ${ui_input(type = 'password', label = 'Password verification', form_name = 'password2', validators = 'required notblank rangelength="[2,256]" equalto="#password_password1"')}
 
     ${ui_submit(value = 'Set')}
   ${ui_form_end()}
