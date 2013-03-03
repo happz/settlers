@@ -19,7 +19,7 @@ ${ui_page_header('Stats')}
     ${ui_section_header('stats_settlers', 'Settlers stats')}
       <div>
         % if gs_settlers.last_update != None:
-          <p>${_('Stats since')} ${time.strftime('%d. %m. %Y', time.localtime(gs_settlers.last_update - int(hruntime.app.config['stats.games.window'])))}</p>
+	<p>${_('Stats since')} ${time.strftime('%d. %m. %Y', time.localtime(gs_settlers.last_update - int(hruntime.app.config['stats.games.window'])))}, ${_('last update')} ${time.strftime('%H:%M %d. %m', time.localtime(gs_settlers.last_update))}</p>
         % endif
       </div>
 
