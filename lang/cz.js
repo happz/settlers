@@ -1,7 +1,6 @@
 window.settlers = window.settlers || {};
 
 window.settlers.i18n_table = {
-    '# pieces of ...': 'Počet kusů ...',
     '%(count)s unused cards': '%(count)s nepoužitých karet',
     '%(wood)i wood, %(clay)i clay, %(sheep)i sheep, %(grain)i grain, %(rock)i rock': '%(wood)i dřevo, %(clay)i hlína, %(sheep)i ovce, %(grain)i obilí, %(rock)i kámen',
     '1 day': '1 den',
@@ -72,6 +71,7 @@ window.settlers.i18n_table = {
     'Change password': 'Změnit heslo',
     'Changed': 'Uloženo',
     'Chat': 'Chat',
+    'Check': 'Ověřit',
     'Check if your accout exists': 'Ověřte si, že váš účet existuje',
     'Check in': 'Registrovat',
     'Choose': 'Vybrat',
@@ -177,6 +177,7 @@ window.settlers.i18n_table = {
     'Green': 'Zelená',
     'Group': 'Skupina',
     'Help': 'Nápověda',
+    'Hide': 'Schovat',
     'Home': 'Domů',
     'If it takes too long, poke our admins <a href="irc://ellen.czn.cz/osadnici">here</a>.': 'Pokud tuto zprávu vidíte už moc dlouho, šťouchněte prosím do adminů <a href="irc://ellen.czn.cz/osadnici">tady</a>.',
     'If you want to create game with secret password just for people who know password, fill in this field': 'Pokud chcete vytvořit hru s heslem jen pro některé hráče, vyplňte heslo',
@@ -307,7 +308,6 @@ window.settlers.i18n_table = {
     'Preview': 'Náhled',
     'Previous': 'Předchozí',
     'Processing...': 'Zpracovávám...',
-    'Purple': 'Fialová',
     'RSS feed': 'RSS feed',
     'RSS feed URL:': 'URL RSS feedu:',
     'Realistic': 'Realistická',
@@ -472,6 +472,7 @@ window.settlers.i18n_table = {
     'games': 'hry',
     'grain': 'obilí',
     'group': 'skupina',
+    'last update': 'poslední aktualizace',
     'on turn': 'na tahu',
     'pieces of': 'kusů',
     'players': 'hráči',
@@ -499,5 +500,4 @@ window.settlers.i18n_table = {
     '{0} stole resources from {1}: {2}': '{0} ukradl suroviny {1}: {2}',
     '{0} used card {1} from round {2}': '{0} použil kartu {1}, koupenou v {2}. kole',
     '{0} was rolled {1} times': '{0} padla {1}krát',
-    '{0} wood, {1} clay, {2} sheep, {3} grain, {4} rock': '{0} dřevo, {1} hlína, {2} ovce, {3} obilí, {4} kámen',
 };
