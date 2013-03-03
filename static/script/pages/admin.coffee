@@ -164,6 +164,9 @@ window.settlers.setup_forms = () ->
             {{~}}
           </ul>'
 
+        response.tokens.sort (x, y) ->
+          return x.name.localeCompare y.name
+
         f.content(tmpl response).show()
 
   (form_i18n_edit.field 'unused').disable (f) ->
@@ -225,9 +228,11 @@ window.settlers.setup_forms = () ->
   $((form_i18n_edit.field 'name').fid).change () ->
     if (form_i18n_edit.field 'name').value()
       (form_i18n_edit.field 'value').enable()
+      (form_i18n_edit.field 'remove').enable()
 
     else
       (form_i18n_edit.field 'value').disable()
+      (form_i18n_edit.field 'remove').disable()
 
     return false
 

@@ -69,9 +69,13 @@ ${ui_section_header('language', 'Language')}
     ${ui_select_end()}
 
     ${ui_textarea(form_name = 'value', size = 'xxlarge', disabled = True, placeholder = _('Choose language first...'))}
-    <a href="#" id="i18n_edit_remove" title="${_('Remove token')}" rel="tooltip" data-placement="top" class="hide"><span class="icon-remove"></span></a>
 
-    ${ui_submit(value = 'Change', id = 'i18n_edit_submit', disabled = True)}
+    <div class="control-group">
+      <div class="controls">
+        <input id="i18n_edit_submit" class="btn" type="submit" value="Upravit">
+        <button id="i18n_edit_remove" class="btn btn-danger hide" disabled="disabled">${_('Remove token')}</button>
+      </div>
+    </div>
   ${ui_form_end()}
 
 </section>
