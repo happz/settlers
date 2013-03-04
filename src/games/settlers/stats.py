@@ -41,71 +41,66 @@ class UserStats(object):
 
 class Stats(games.stats.Stats):
   def get_records(self, start, length):
-    records = []
+    records = self.records
 
-    with self.lock:
-      if self.stats == None:
-        self.refresh_stats()
-
-      records = self.stats[start:max(start + length, len(self.stats) - 1)]
-
-      return (records, len(self.stats))
+    return (records[start:max(start + length, len(records) - 1)], len(records))
 
   def refresh_stats(self):
+    new_stats = {}
+
+    def __process_game(g):
+      for p in g.players.values():
+        if p.user not in new_stats:
+          s = UserStats(p.user)
+          new_stats[p.user] = s
+
+        else:
+          s = new_stats[p.user]
+
+        s.points += p.points
+        s.games += 1
+
+        if g.is_finished:
+          s.finished += 1
+          s.finished_points += p.points
+
+          if g.winner_player == p:
+            s.wons += 1
+
+        elif g.is_canceled or g.is_suspended:
+          pass
+
+        else:
+          if p.id == g.forhont:
+            s.forhont += 1
+
+    for g in hruntime.dbroot.games.values():
+      if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
+        continue
+
+      __process_game(g)
+
+    for g in hruntime.dbroot.games_archived.values():
+      if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
+        continue
+
+      __process_game(g)
+
+    keys_to_remove = []
+
+    for user, stats in new_stats.items():
+      if stats.finished < 20:
+        keys_to_remove.append(user)
+
+      if stats.finished > 0:
+        stats.points_per_game = float(stats.finished_points) / float(stats.finished)
+
+    for user in keys_to_remove:
+      del new_stats[user]
+
     with self.lock:
-      new_stats = {}
-
-      def __process_game(g):
-        for p in g.players.values():
-          if p.user not in new_stats:
-            s = UserStats(p.user)
-            new_stats[p.user] = s
-
-          else:
-            s = new_stats[p.user]
-
-          s.points += p.points
-          s.games += 1
-
-          if g.is_finished:
-            s.finished += 1
-            s.finished_points += p.points
-
-            if g.winner_player == p:
-              s.wons += 1
-
-          elif g.is_canceled or g.is_suspended:
-            pass
-
-          else:
-            if p.id == g.forhont:
-              s.forhont += 1
-
-      for g in hruntime.dbroot.games.values():
-        if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
-          continue
-
-        __process_game(g)
-
-      for g in hruntime.dbroot.games_archived.values():
-        if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
-          continue
-
-        __process_game(g)
-
-      keys_to_remove = []
-
-      for user, stats in new_stats.items():
-        if stats.finished < 20:
-          keys_to_remove.append(user)
-
-        if stats.finished > 0:
-          stats.points_per_game = float(stats.finished_points) / float(stats.finished)
-
-      for user in keys_to_remove:
-        del new_stats[user]
-
-      self.stats = sorted(new_stats.values(), key = lambda x: x.points_per_game, reverse = True)
+      self._player_stats = new_stats
+      self._records = sorted(new_stats.values(), key = lambda x: x.points_per_game, reverse = True)
 
       super(Stats, self).refresh_stats()
 
