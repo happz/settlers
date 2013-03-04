@@ -19,7 +19,6 @@ class window.settlers.Trumpet
         url:                    '/confirm_trumpet'
         handlers:
           h200:                 (response, ajax) ->
-            console.log 'hiding trumpet'
             _trumpet.hide()
             window.hlib.MESSAGE.hide()
 
