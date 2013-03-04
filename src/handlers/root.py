@@ -1,4 +1,5 @@
 import re
+import urllib
 
 import games
 import tournaments
@@ -85,6 +86,22 @@ class Handler(hlib.handlers.root.Handler):
   def logout(self):
     # pylint: disable-msg=R0201
     hlib.auth.logout()
+
+  @api
+  def submit_error(self, **kwargs):
+    if 'error_msg' in kwargs:
+      if kwargs['error_msg'] == 'Unknown token' and 'token' in kwargs:
+        hruntime.i18n.coverage.miss(kwargs['token'])
+        return
+
+    data = {}
+    for k, v in kwargs.items():
+      k = urllib.unquote(k).encode('ascii', 'replace')
+      v = urllib.unquote(v).encode('ascii', 'xmlcharrefreplace')
+      data[k] = v
+
+    e = hlib.error.ClientSideError(msg = data['error_msg'], params = data)
+    hlib.log.log_error(e)
 
   @validate_by(schema = handlers.admin.ValidateLangSchema)
   @page
