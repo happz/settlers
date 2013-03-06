@@ -4,6 +4,7 @@ import lib.datalayer
 import hlib.auth
 import hlib.event
 import hlib.error
+import hlib.http
 import hlib.log
 
 # Shortcuts
@@ -20,6 +21,16 @@ class LoginHandler(handlers.GenericHandler):
   #
   @page
   def index(self):
+    try:
+      hlib.auth.check_session()
+
+    except hlib.http.Redirect, e:
+      if e.location != '/login/':
+        raise e
+
+    else:
+      raise hlib.http.Redirect('/home/')
+
     return self.generate('login.mako')
 
   class ValidateCheck(hlib.input.SchemaValidator):
