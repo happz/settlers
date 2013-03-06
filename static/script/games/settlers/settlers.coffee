@@ -964,7 +964,7 @@ window.settlers.update_game_ui_status = () ->
     $(eid).html window.hlib._g 'Play ;)'
 
   else if G.state == 17
-    $(eid).html window.hlib._g 'Roll the dice'
+    $(eid).html window.hlib._g 'Roll dice'
 
   else if G.state == 18
     $(eid).html window.hlib._g 'Choose what resource to steal'
