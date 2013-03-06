@@ -142,7 +142,7 @@ ${ui_section_header('api', 'API')}
     <div class="control-group">
       <div class="controls">
         <input type="button" id="api_token_new" value="${_('New API key')}" class="btn" />
-        <input type="button" id="api_token_download" value="${_('Download API key')}" class="btn" />
+        <input type="button" id="api_token_download" value="${_('Download API key')}" class="btn" ${'disabled="disabled"' if len(hruntime.user.api_tokens) <= 0 else ''}/>
       </div>
     </div>
   ${ui_form_end()}

@@ -40,6 +40,9 @@ class ApiTokenHandler(handlers.GenericHandler):
   @require_login
   @api
   def download(self):
+    if len(hruntime.user.api_tokens) <= 0:
+      return hlib.api.Reply(400)
+
     hruntime.response.headers['Content-Type'] = 'application/force-download'
     hruntime.response.headers['Content-Disposition'] = 'attachment; filename=settlers.conf'
 
