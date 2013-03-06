@@ -50,10 +50,12 @@ window.settlers.templates.recent_events.playable = doT.template '
 '
 
 window.settlers.templates.recent_events.password = doT.template '
-  <input type="text" id="{{= it.id}}_join_password" />
-  <button class="btn" id="{{= it.id}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top">
-    <i class="icon-checkmark"></i>
-  </button>
+  <div class="input-append">
+    <input type="text" id="{{= it.id}}_join_password" />
+    <button class="btn" id="{{= it.id}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top">
+      <i class="icon-checkmark"></i>
+    </button>
+  </div>
 '
 
 $(window).bind 'page_startup', () ->
@@ -241,6 +243,7 @@ $(window).bind 'page_startup', () ->
           if response.events.finished_chat
             window.settlers.show_menu_alert 'finished_header', response.events.finished_chat
 
+          window.hlib.bind_tooltips()
           window.hlib.MESSAGE.hide()
 
 #  $(eid).everyTime '20s', update_events
