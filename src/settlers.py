@@ -12,6 +12,7 @@ import traceback
 import types
 import syslog
 import time
+import os
 import os.path
 
 import hlib
@@ -145,6 +146,7 @@ def main():
   engine = hlib.engine.Engine([server_config])
 
   print 'Starting...'
+  print 'PID = %i' % os.getpid()
   engine.start()
 
 def usage():
