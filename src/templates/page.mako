@@ -76,13 +76,18 @@
   <script type="text/javascript" src="/static/script/jquery.form.js"></script>
   <script type="text/javascript" src="/static/script/jquery.timers.js"></script>
   <script type="text/javascript" src="/static/script/jquery.sound.js"></script>
-  <script type="text/javascript" src="/static/script/stacktrace.js"></script>
+  ${script('/static/script/stacktrace.js')}
 
   <script type="text/javascript" src="/static/script/doT.min.js"></script>
   <script type="text/javascript" src="/static/script/strftime.js"></script>
   <script type="text/javascript" src="/static/script/parsley/parsley.js"></script>
 
-  ${script('/static/script/hlib.js')}
+  ${script('/static/script/hlib/ajax.js')}
+  ${script('/static/script/hlib/pager.js')}
+  ${script('/static/script/hlib/form.js')}
+  ${script('/static/script/hlib/tabs.js')}
+  ${script('/static/script/hlib/message.js')}
+  ${script('/static/script/hlib/hlib.js')}
   ${script('/static/script/settlers.js')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
