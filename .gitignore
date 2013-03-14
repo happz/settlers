@@ -11,3 +11,5 @@ lib/*
 
 # Compiled Mako templates
 *.mako.py
+
+*.map
