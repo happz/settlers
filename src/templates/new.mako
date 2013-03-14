@@ -40,7 +40,7 @@ ${ui_section_header('game', 'Game')}
       </fieldset>
 
       <fieldset>
-        <legend>Access control</legend>
+        <legend>${_('Access control')}</legend>
 
         ${ui_input(form_name = 'opponent1', type = 'text', label = 'Opponent #1')}
         ${ui_input(form_name = 'opponent2', type = 'text', label = 'Opponent #2')}
@@ -50,7 +50,7 @@ ${ui_section_header('game', 'Game')}
       </fieldset>
 
       <fieldset>
-        <legend>Additional game rules</legend>
+        <legend>${_('Additional game rules')}</legend>
 
         <!-- Turn limit -->
         ${ui_select_start(form_name = 'turn_limit', label = 'Turn limit', default = False)}
@@ -109,13 +109,13 @@ ${ui_section_header('tournament', 'Tournament')}
       </fieldset>
 
       <fieldset>
-        <legend>Access control</legend>
+        <legend>${_('Access control')}</legend>
 
         ${ui_input(type = 'password', form_name = 'password', label = 'Password', help = 'If you want to create game with secret password just for people who know password, fill in this field')}
       </fieldset>
 
       <fieldset>
-        <legend>Additional game rules</legend>
+        <legend>${_('Additional game rules')}</legend>
 
         <!-- Turn limit -->
         ${ui_select_start(form_name = 'turn_limit', label = 'Turn limit', default = False)}
