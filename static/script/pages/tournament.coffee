@@ -52,7 +52,7 @@ $(window).on 'page_startup', () ->
   $('body').on 'hlib_update', (event, startup_check) ->
     tid = window.settlers.tournament.tid
 
-    req = window.hlib.Ajax
+    req = new window.hlib.Ajax
       url:			'/tournament/state'
       data:
         tid:			tid

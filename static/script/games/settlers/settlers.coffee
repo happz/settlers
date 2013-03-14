@@ -167,7 +167,7 @@ class window.settlers.GameObject
   card_type_to_name:		['undefined', 'Knight', 'Monopoly', 'Paths', 'Invention', 'Point']
 
   constructor:		(data) ->
-    jQuery.extend true, @, data
+    $.extend true, @, data
 
     @my_player = @players[@my_player]
     @forhont_player = @players[@forhont_player]
@@ -487,7 +487,7 @@ window.settlers.refresh_game_state = (response) ->
 window.settlers.update_game_state = (after_update) ->
   gid = window.settlers.game.gid
 
-  req = window.hlib.Ajax
+  req = new window.hlib.Ajax
     url:		'/game/state'
     data:
       gid:		gid
@@ -694,7 +694,7 @@ window.settlers.update_game_ui_board = () ->
       $('#' + attrs.id).click () ->
         window.hlib.WORKING.show()
 
-        window.hlib.Ajax
+        new window.hlib.Ajax
           url:			'/game/settlers/number_click'
           data:
             gid:		G.gid
@@ -729,7 +729,7 @@ window.settlers.update_game_ui_board = () ->
         $('#' + attrs.id).click () ->
           window.hlib.WORKING.show()
 
-          window.hlib.Ajax
+          new window.hlib.Ajax
             url:		'/game/settlers/path_click'
             data:
               gid:		G.gid
@@ -764,7 +764,7 @@ window.settlers.update_game_ui_board = () ->
         $('#' + attrs.id).click () ->
           window.hlib.WORKING.show()
 
-          window.hlib.Ajax
+          new window.hlib.Ajax
             url:		'/game/settlers/path_click'
             data:
               gid:		G.gid
@@ -804,7 +804,7 @@ window.settlers.update_game_ui_board = () ->
         $('#' + attrs.id).click () ->
           window.hlib.WORKING.show()
 
-          window.hlib.Ajax
+          new window.hlib.Ajax
             url:		'/game/settlers/node_click'
             data:
               gid:		G.gid
@@ -885,7 +885,7 @@ window.settlers.update_game_ui_board = () ->
 
       else
         $('#settlers_board_node_' + n.id).click () ->
-          window.hlib.Ajax
+          new window.hlib.Ajax
             url:			'/game/settlers/node_click'
             data:
               gid:		G.gid
@@ -991,7 +991,7 @@ window.settlers.update_game_ui_cards = () ->
       return
 
     $('#card_' + c.id).click () ->
-      window.hlib.Ajax
+      new window.hlib.Ajax
         url:			'/game/card_click'
         data:
           gid:			G.gid

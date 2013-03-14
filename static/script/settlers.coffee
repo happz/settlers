@@ -232,8 +232,7 @@ $(window).bind 'hlib_startup', () ->
 
 $(window).bind 'hlib_poststartup', () ->
   if window.hlib.mobile == false
-    $('a[rel=tooltip]').tooltip()
-    $('button[rel=tooltip]').tooltip()
+    window.hlib.bind_tooltips()
 
   $('body').css 'margin-bottom', ($('footer').height() + 'px')
 

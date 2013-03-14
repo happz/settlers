@@ -46,11 +46,8 @@ window.settlers.setup_forms = () ->
 
         (form.field 'color').disable()
 
-      s400:     (response, form) ->
-        window.hlib.form_default_handlers.s400 response, form
-
   (form_color.field 'color').enable (f) ->
-    window.hlib.Ajax
+    new window.hlib.Ajax
       url:			'/settings/unused_colors'
       data:
         kind:			(form_color.field 'kind').value()
@@ -98,7 +95,7 @@ window.settlers.setup_forms = () ->
 
   # color
   (form_opponent_color.field 'color').enable (f) ->
-    window.hlib.Ajax
+    new window.hlib.Ajax
       url:			'/settings/unused_colors'
       data:
         kind:			(form_opponent_color.field 'kind').value()

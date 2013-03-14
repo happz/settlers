@@ -5,10 +5,10 @@ $(window).bind 'page_startup', () ->
     timeout:			30000
     handlers:
       s200:			(response, form) ->
-        form.info.success 'Issue successfully reported, thank you.'
+        form.info.success window.hlib._g 'Issue successfully reported, thank you.'
 
       s503:			(response, form) ->
-        form.info.error 'Bohuzel, nelze pridat novou chybu. Zkuste to prosim pozdeji.'
+        form.info.error window.hlib._g 'Bohuzel, nelze pridat novou chybu. Zkuste to prosim pozdeji.'
 
       s401:			(response, form) ->
         form.info.error window.hlib.format_error response.error

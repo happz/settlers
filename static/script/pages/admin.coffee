@@ -147,7 +147,7 @@ window.settlers.setup_forms = () ->
     clear_fields:		['name', 'value']
     handlers:
       s200:			(response, form) ->
-        window.hlib.form_default_handlers.s200 response, form
+        form.default_options.handlers.h200 response, form
         (form_i18n_edit.field 'value').disable()
 
   # unused
@@ -261,7 +261,7 @@ window.settlers.setup_forms = () ->
     handlers:
       s200:			(response, form) ->
         window.settlers.refresh_donations_list()
-        window.hlib.form_default_handlers.s200 response, form
+        form.default_options.handlers.h200 response, form
 
   $('#donations_add_username').typeahead window.settlers.autocomplete_options()
 
@@ -277,7 +277,7 @@ window.settlers.setup_forms = () ->
     handlers:
       s200:		(response, form) ->
         window.settlers.refresh_maintenance_access_list()
-        window.hlib.form_default_handlers.s200 response, form
+        form.default_options.handlers.h200 response, form
 
   window.settlers.setup_i18n_add_form()
   window.settlers.setup_i18n_edit_form()

@@ -12,7 +12,7 @@ $(window).bind 'page_startup', () ->
     clear_fields:		'username'
     handlers:
       s200:			(response, form) ->
-        form.info.success 'Yahoo! Your username has been transfered to betatest version, you may log in and have fun.'
+        form.info.success window.hlib._g 'Yahoo! Your username has been transfered to betatest version, you may log in and have fun.'
 
       s403:			(response, form) ->
-        form.info.error 'We are sorry, your username has not been transfered to betatest version. Please register first.'
+        form.info.error window.hlib._g 'We are sorry, your username has not been transfered to betatest version. Please register first.'
