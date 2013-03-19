@@ -34,11 +34,8 @@
 <div class="row" style="overflow: visible">
   <div class="span2">
     <div id="game-player-0-placeholder"></div>
-    <hr />
     <div id="game-player-1-placeholder"></div>
-    <hr />
     <div id="game-player-2-placeholder"></div>
-    <hr />
     <div id="game-player-3-placeholder"></div>
   </div>
 
