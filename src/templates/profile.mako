@@ -1,41 +1,42 @@
 <%!
   import time
+  import hruntime
 %>
 
-<%namespace file="hlib_header.mako" import="*" />
-<%namespace file="header.mako"   import="*" />
+<%namespace file="hlib_ui.mako" import="*" />
 
-${header(plugins = 'accordion', functions = ['start_game_on_turn_timer'])}
+<%inherit file="page.mako" />
 
-${error_msg()}
-${menu_level1()}
-<br />
+${ui_page_header(player.name + ('&nbsp;<span class="user-online">(online)</span>' if player.is_online else ''))}
 
-<b>Player ${profile_user.name}</b>
+<div class="row-fluid">
+  <div class="offset2 span10">
 
-<table>
-  <tr>
-    <td>Last online:</td>
-    <td>${time.strftime(user.date_format, time.localtime(profile_user.atime))}</td>
-  </tr>
+    ${ui_section_header('stats_settlers', 'Settlers stats')}
+      <table class="table table-hover">
+        <tr>
+          <td>${_('Total games')}</td>
+          <td>${player_stats.games}</td>
+        </tr>
+        <tr>
+          <td>${_('Won games')}</td>
+          <td>${player_stats.wons}</td>
+        </tr>
+        <tr>
+          <td>${_('Finished games')}</td>
+          <td>${player_stats.finished}</td>
+        </tr>
+        <tr>
+          <td>${_('Points')}</td>
+          <td>${player_stats.points}</td>
+        </tr>
+        <tr>
+          <td>${_('Points per game')}</td>
+          <td>${'%.3f' % player_stats.points_per_game}</td>
+        </tr>
+      </table>
+    </section>
 
-  <tr>
-    <td>Free games:</td>
-    <td>${profile_user.free_games_count}</td>
-  </tr>
-  <tr>
-    <td>Current games:</td>
-    <td>${profile_user.current_games_count}</td>
-  </tr>
-  <tr>
-    <td>Finished games:</td>
-    <td>${profile_user.finished_games_count}</td>
-  </tr>
-  <tr>
-    <td>Canceled games:</td>
-    <td>${profile_user.canceled_games_count}</td>
-  </tr>
-</table>
+  </div>
+</div>
 
-<%include file="footer.mako" />
-<%include file="hlib_footer.mako" />
