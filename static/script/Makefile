@@ -1,5 +1,4 @@
-SCRIPTS = hlib.js \
-          hlib/hlib.js hlib/ajax.js hlib/pager.js hlib/form.js hlib/tabs.js hlib/message.js \
+SCRIPTS = hlib/hlib.js hlib/ajax.js hlib/pager.js hlib/form.js hlib/tabs.js hlib/message.js \
           settlers.js \
           pages/game.js \
           pages/issues.js pages/home.js pages/login.js pages/chat.js pages/settings.js pages/admin.js pages/monitor.js pages/loginas.js pages/registration.js pages/password_recovery.js pages/new.js pages/maintenance.js pages/stats.js pages/tournament.js \
