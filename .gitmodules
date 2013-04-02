@@ -1,0 +1,18 @@
+[submodule "libs/Parsley.js"]
+	path = libs/Parsley.js
+	url = https://github.com/guillaumepotier/Parsley.js.git
+[submodule "libs/flot"]
+	path = libs/flot
+	url = https://github.com/flot/flot.git
+[submodule "libs/doT"]
+	path = libs/doT
+	url = https://github.com/olado/doT.git
+[submodule "libs/jquery.form"]
+	path = libs/jquery.form
+	url = https://github.com/malsup/form.git
+[submodule "libs/stacktrace"]
+	path = libs/stacktrace
+	url = https://github.com/eriwen/javascript-stacktrace.git
+[submodule "libs/bootmetro"]
+	path = libs/bootmetro
+	url = https://github.com/aozora/bootmetro.git

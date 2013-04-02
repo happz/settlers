@@ -2,7 +2,9 @@ ROOT_DIR=$(CURDIR)
 
 CONF_DIR := $(ROOT_DIR)/conf/
 DOC_DIR := $(ROOT_DIR)/doc/
-SCRIPT_DIR := $(ROOT_DIR)/static/script/
+SCRIPT_DIR := $(ROOT_DIR)/static/script
+LIB_DIR := $(ROOT_DIR)/libs
+CSS_DIR := $(ROOT_DIR)/static/css
 
 CLOC_OPTIONS := --read-lang-def=$(CONF_DIR)/cloc.langs --exclude-dir=$(ROOT_DIR)/compiled/ --exclude-ext=js,css --skip-uniqueness $(ROOT_DIR)/src $(ROOT_DIR)/static/script/ $(ROOT_DIR)/static/css/
 
@@ -62,3 +64,48 @@ tests:
 test_all: pylint coffeelint tests
 
 checksupdate: pylint coffeelint tests doccheck doc cloc
+
+SCRIPTS := $(SCRIPT_DIR)/hlib/hlib.js $(SCRIPT_DIR)/hlib/ajax.js $(SCRIPT_DIR)/hlib/pager.js $(SCRIPT_DIR)/hlib/form.js $(SCRIPT_DIR)/hlib/tabs.js $(SCRIPT_DIR)/hlib/message.js \
+           $(SCRIPT_DIR)/settlers.js \
+					 $(SCRIPT_DIR)/pages/game.js \
+					 $(SCRIPT_DIR)/pages/issues.js $(SCRIPT_DIR)/pages/home.js $(SCRIPT_DIR)/pages/login.js $(SCRIPT_DIR)/pages/chat.js $(SCRIPT_DIR)/pages/settings.js \
+					 $(SCRIPT_DIR)/pages/admin.js $(SCRIPT_DIR)/pages/monitor.js $(SCRIPT_DIR)/pages/loginas.js $(SCRIPT_DIR)/pages/registration.js $(SCRIPT_DIR)/pages/password_recovery.js \
+					 $(SCRIPT_DIR)/pages/new.js $(SCRIPT_DIR)/pages/maintenance.js $(SCRIPT_DIR)/pages/stats.js $(SCRIPT_DIR)/pages/tournament.js \
+					 $(SCRIPT_DIR)/games/settlers/settlers.js $(SCRIPT_DIR)/games/settlers/settlers-board.js
+
+LIB_SCRIPTS := $(LIB_DIR)/jquery.form/jquery.form.js $(LIB_DIR)/jquery.sound.js $(LIB_DIR)/jquery.timers.js \
+               $(LIB_DIR)/stacktrace/stacktrace.js $(LIB_DIR)/Parsley.js/parsley.js $(LIB_DIR)/strftime.js
+
+MINIFIED_SCRIPTS := $(patsubst %.js,%.min.js,$(SCRIPTS)) $(patsubst %.js,%.min.js,$(LIB_SCRIPTS))
+
+scripts_compile: $(SCRIPTS)
+scripts_minify: $(MINIFIED_SCRIPTS)
+scripts_clean:
+	rm -f $(SCRIPTS) $(MINIFIED_SCRIPTS)
+
+scripts: scripts_compile scripts_minify
+
+%.js: %.coffee
+	coffee -c --bare -m $<
+
+%.min.js: %.js
+	-cat $< | slimit > $@
+
+STYLES = $(CSS_DIR)/settlers.css $(CSS_DIR)/pages/settings.css $(CSS_DIR)/pages/game.css $(CSS_DIR)/pages/admin.css $(CSS_DIR)/pages/maintenance.css \
+         $(CSS_DIR)/pages/monitor.css $(CSS_DIR)/pages/home.css \
+				 $(CSS_DIR)/games/settlers/settlers.css
+
+styles_compile: $(STYLES)
+styles: styles_compile
+styles_clean:
+	rm -f $(STYLES)
+
+$(CSS_DIR)/games/settlers/settlers.css: $(CSS_DIR)/lib.scss
+$(CSS_DIR)/pages/admin.css: $(CSS_DIR)/lib.scss
+$(CSS_DIR)/pages/game.css: $(CSS_DIR)/lib.scss
+$(CSS_DIR)/pages/monitor.css: $(CSS_DIR)/lib.scss
+$(CSS_DIR)/pages/settings.css: $(CSS_DIR)/lib.scss
+$(CSS_DIR)/settlers.css: $(CSS_DIR)/lib.scss
+
+%.css: %.scss
+	/usr/lib/python2.7/site-packages/pyScss-1.1.3-py2.7-linux-x86_64.egg/scss/__init__.py -C -I $(CSS_DIR) --output=$@ $<

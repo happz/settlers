@@ -1,1 +1,1 @@
-../../libs/jquery.sound.js
+../../libs/jquery.sound.min.js

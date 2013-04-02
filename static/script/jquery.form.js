@@ -1,1 +1,1 @@
-../../libs/jquery.form.min.js
+../../libs/jquery.form/jquery.form.min.js

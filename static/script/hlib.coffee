@@ -1,1 +1,0 @@
-/data/settlers/hlib/static/script/hlib.coffee

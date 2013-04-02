@@ -54,16 +54,16 @@
   <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' /> -->
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootstrap-responsive.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/static/metro/css/bootstrap.css"> -->
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-icons.css">
   <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-tiles.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-charms.css">
+  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-responsive.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-tiles.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-charms.css"> -->
   <link rel="stylesheet" type="text/css" href="/static/metro/css/metro-ui-light.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/icomoon.css">
   <link rel="stylesheet" type="text/css" href="/static/metro/css/datepicker.css">
 
-  <script src="/static/metro/scripts/modernizr-2.6.1.min.js"></script>
+  ${script('/static/metro/scripts/modernizr-2.6.2.min.js')}
 
   ${style('/static/css/settlers.css')}
 
@@ -73,22 +73,22 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js" type="text/javascript"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.min.js" type="text/javascript"></script>
 
-  <script type="text/javascript" src="/static/script/jquery.form.js"></script>
-  <script type="text/javascript" src="/static/script/jquery.timers.js"></script>
-  <script type="text/javascript" src="/static/script/jquery.sound.js"></script>
+  ${script('/static/script/jquery.form.js')}
+  ${script('/static/script/jquery.timers.js')}
+  ${script('/static/script/jquery.sound.js')}
   ${script('/static/script/stacktrace.js')}
 
-  <script type="text/javascript" src="/static/script/doT.min.js"></script>
-  <script type="text/javascript" src="/static/script/strftime.js"></script>
-  <script type="text/javascript" src="/static/script/parsley/parsley.js"></script>
+  ${script('/static/script/doT.js')}
+  ${script('/static/script/strftime.js')}
+  ${script('/static/script/parsley/parsley.js')}
 
-  ${script('/static/script/hlib/ajax.js')}
-  ${script('/static/script/hlib/pager.js')}
-  ${script('/static/script/hlib/form.js')}
-  ${script('/static/script/hlib/tabs.js')}
-  ${script('/static/script/hlib/message.js')}
-  ${script('/static/script/hlib/hlib.js')}
-  ${script('/static/script/settlers.js')}
+  ${script('/static/script/hlib/ajax.min.js')}
+  ${script('/static/script/hlib/pager.min.js')}
+  ${script('/static/script/hlib/form.min.js')}
+  ${script('/static/script/hlib/tabs.min.js')}
+  ${script('/static/script/hlib/message.min.js')}
+  ${script('/static/script/hlib/hlib.min.js')}
+  ${script('/static/script/settlers.min.js')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
@@ -102,14 +102,14 @@
     ${style('/static/css/games/' + kind + '/' + kind + '-board.css')}
 
     ${script('/static/script/pages/game.js')}
-    ${script('/static/script/games/' + kind + '/' + kind + '.js')}
-    ${script('/static/script/games/' + kind + '/' + kind + '-board.js')}
+    ${script('/static/script/games/' + kind + '/' + kind + '.min.js')}
+    ${script('/static/script/games/' + kind + '/' + kind + '-board.min.js')}
   % endif
 
   <%
     current_page_name = next.name.split(':')[1].split('.')[0]
 
-    page_script_file = os.path.join(hruntime.app.config['dir'], 'static', 'script', 'pages', current_page_name + '.js')
+    page_script_file = os.path.join(hruntime.app.config['dir'], 'static', 'script', 'pages', current_page_name + '.min.js')
     page_style_file = os.path.join(hruntime.app.config['dir'], 'static', 'css', 'pages', current_page_name + '.css')
   %>
 
@@ -118,7 +118,7 @@
   % endif
 
   % if os.path.exists(page_script_file):
-    ${script('/static/script/pages/' + current_page_name + '.js')}
+    ${script('/static/script/pages/' + current_page_name + '.min.js')}
   % endif
 
   <script src="/i18n?lang=${hruntime.i18n.name}" type="text/javascript"></script>
@@ -283,7 +283,7 @@ ${next.body()}
 <script src="/static/metro/scripts/jquery.mousewheel.js"></script>
 <script src="/static/metro/scripts/jquery.scrollTo.js"></script>
 <script src="/static/metro/scripts/bootstrap.js"></script>
-<script src="/static/metro/scripts/bootmetro.js"></script>
+<script src="/static/metro/scripts/bootmetro-panorama.js"></script>
 <script src="/static/metro/scripts/bootmetro-charms.js"></script>
 <script src="/static/metro/scripts/holder.js"></script>
 <script src="/static/metro/scripts/bootstrap-datepicker.js"></script>

@@ -1,1 +1,1 @@
-../../libs/stacktrace.js
+../../libs/stacktrace/stacktrace.min.js
