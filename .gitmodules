@@ -1,18 +1,24 @@
-[submodule "libs/Parsley.js"]
-	path = libs/Parsley.js
-	url = https://github.com/guillaumepotier/Parsley.js.git
 [submodule "libs/flot"]
 	path = libs/flot
 	url = https://github.com/flot/flot.git
+  ignore = dirty
 [submodule "libs/doT"]
 	path = libs/doT
 	url = https://github.com/olado/doT.git
+  ignore = dirty
 [submodule "libs/jquery.form"]
 	path = libs/jquery.form
 	url = https://github.com/malsup/form.git
+  ignore = dirty
 [submodule "libs/stacktrace"]
 	path = libs/stacktrace
 	url = https://github.com/eriwen/javascript-stacktrace.git
+  ignore = dirty
 [submodule "libs/bootmetro"]
 	path = libs/bootmetro
 	url = https://github.com/aozora/bootmetro.git
+  ignore = dirty
+[submodule "libs/Parsley.js"]
+	path = libs/Parsley.js
+	url = https://github.com/guillaumepotier/Parsley.js.git
+  ignore = dirty
