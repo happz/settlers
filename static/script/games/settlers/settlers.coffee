@@ -1178,13 +1178,21 @@ $(window).bind 'page_startup', () ->
     f = new window.hlib.Form
       fid:		'exchange_' + ratio
       handlers:
-        s200:		(response, form) ->
+        h200:		(response, form) ->
           form.info.success 'Exchanged'
           window.settlers.refresh_game_state response
+        after: (response, form) ->
+          if form.opts.saved_h200_handler
+            form.opts.handlers.h200 = form.opts.saved_h200_handler
+            form.opts.saved_h200_handler = null
 
     $('#exchange_' + ratio + '_submit_board').click () ->
+      f.opts.saved_h200_handler = f.opts.handlers.h200
+      f.opts.handlers.h200 = (response, form) ->
+        f.opts.saved_h200_handler response, form
+        window.settlers.show_board()
+
       f.submit()
-      window.settlers.show_board()
       return false
 
   exchange_form '4'
@@ -1194,7 +1202,7 @@ $(window).bind 'page_startup', () ->
   new window.hlib.Form
     fid:		'new_card'
     handlers:
-      s200:		(response, form) ->
+      h200:		(response, form) ->
         form.info.success 'Bought'
         window.settlers.refresh_game_state response
         show_cards()
@@ -1202,7 +1210,7 @@ $(window).bind 'page_startup', () ->
   new window.hlib.Form
     fid:		'apply_points'
     handlers:
-      s200:		(response, form) ->
+      h200:		(response, form) ->
         form.info.success 'Applied'
         window.settlers.update_game_state()
         show_cards()
@@ -1210,7 +1218,7 @@ $(window).bind 'page_startup', () ->
   form_invention = new window.hlib.Form
     fid:		'invention'
     handlers:
-      s200:		(response, form) ->
+      h200:		(response, form) ->
         form.info.success 'Received'
         window.settlers.refresh_game_state response
         window.settlers.show_board()
@@ -1220,7 +1228,7 @@ $(window).bind 'page_startup', () ->
   form_monopoly = new window.hlib.Form
     fid:		'monopoly'
     handlers:
-      s200:		(response, form) ->
+      h200:		(response, form) ->
         form.info.success 'Stolen'
         window.settlers.refresh_game_state response
         window.settlers.show_board()
