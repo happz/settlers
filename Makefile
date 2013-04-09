@@ -74,7 +74,14 @@ SCRIPTS := $(SCRIPT_DIR)/hlib/hlib.js $(SCRIPT_DIR)/hlib/ajax.js $(SCRIPT_DIR)/h
 					 $(SCRIPT_DIR)/games/settlers/settlers.js $(SCRIPT_DIR)/games/settlers/settlers-board.js
 
 LIB_SCRIPTS := $(LIB_DIR)/jquery.form/jquery.form.js $(LIB_DIR)/jquery.sound.js $(LIB_DIR)/jquery.timers.js \
-               $(LIB_DIR)/stacktrace/stacktrace.js $(LIB_DIR)/Parsley.js/parsley.js $(LIB_DIR)/strftime.js
+               $(LIB_DIR)/stacktrace/stacktrace.js $(LIB_DIR)/Parsley.js/parsley.js $(LIB_DIR)/strftime.js \
+							 $(LIB_DIR)/bootmetro/content/scripts/jquery.mousewheel.js \
+							 $(LIB_DIR)/bootmetro/content/scripts/jquery.scrollTo.js \
+							 $(LIB_DIR)/bootmetro/content/scripts/bootstrap.js \
+							 $(LIB_DIR)/bootmetro/content/scripts/bootmetro-panorama.js \
+							 $(LIB_DIR)/bootmetro/content/scripts/bootmetro-charms.js \
+							 $(LIB_DIR)/bootmetro/content/scripts/holder.js \
+							 $(LIB_DIR)/bootmetro/content/scripts/bootstrap-datepicker.js
 
 MINIFIED_SCRIPTS := $(patsubst %.js,%.min.js,$(SCRIPTS)) $(patsubst %.js,%.min.js,$(LIB_SCRIPTS))
 
