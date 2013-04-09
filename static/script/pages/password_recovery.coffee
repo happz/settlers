@@ -4,7 +4,7 @@ $(window).bind 'page_startup', () ->
     focus:                      'username'
     clear_fields:		['username', 'email']
     handlers:
-      s200:			(response, form) ->
+      h200:			(response, form) ->
         form.info.success 'New password was sent to your e-mail', true
 
         redirect = () ->

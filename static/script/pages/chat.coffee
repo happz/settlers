@@ -3,13 +3,7 @@ window.settlers.templates.chat_post = doT.template '
     <td>
       <h3>
         <span class="chat-post-unread label label-important hide">{{= window.hlib._g("Unread")}}</span>
-        {{? it.user.is_online}}
-          <span class="user-online">
-        {{?}}
-        {{= it.user.name}}
-        {{? it.user.is_online}}
-          </span>
-        {{?}} - {{= it.time}}
+        {{= window.settlers.fmt_player(it) }} - {{= it.time}}
       </h3>
 
       <div>

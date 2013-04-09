@@ -142,7 +142,7 @@ window.settlers.setup_chat_form = (opts) ->
     fid:			'chat_post'
     clear_fields:		['text']
     handlers:
-      s200:   (response, form) ->
+      h200:   (response, form) ->
         form.info.success 'Posted'
         opts.handlers.h200()
 
@@ -167,18 +167,20 @@ window.settlers.setup_chat = (opts) ->
   return pager
 
 window.settlers.fmt_player = (player) ->
-  s = player.user.name
+  classes = []
 
   if player.user.is_online == true
-    s = '<span class=\'user-online\'>' + s + '</span>'
+    classes.push 'user-online'
 
-  if player.is_confirmed != true
-    s = '<span class=\'user-invited\'>' + s + '</span>'
+  if player.hasOwnProperty('is_confirmed') and player.is_confirmed != true
+    classes.push 'user-invited'
 
-  if player.is_on_turn == true
-    s = '<span class=\'user-onturn\'>' + s + '</span>'
+  if player.hasOwnProperty('is_on_turn') and player.is_on_turn == true
+    classes.push 'user-onturn'
 
-  return s
+  classes.push 'user-name'
+
+  return '<a href="/profile/?username=' + player.user.name + '"><span class="' + classes.join(' ') + '">' + player.user.name + '</span></a>'
 
 $(window).bind 'hlib_startup', () ->
   window.hlib.setup

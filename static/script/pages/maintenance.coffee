@@ -13,9 +13,9 @@ $(window).bind 'page_startup', () ->
     fid:                        'login'
     focus:                      'username'
     handlers:
-      s200:			(response, form) ->
+      h200:			(response, form) ->
         window.hlib.redirect '/home/'
-      s403:			(response, form) ->
+      h403:			(response, form) ->
         window.hlib.redirect '/vacation/'
 
   $('.container').everyTime '60s', window.settlers.check_status

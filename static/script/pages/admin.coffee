@@ -113,7 +113,7 @@ window.settlers.setup_forms = () ->
     fid:		'i18n_add'
     clear_fields:	['name', 'value']
     handlers:
-      s200:	(response, form) ->
+      h200:	(response, form) ->
         form.info.success 'Added'
 
         refresh_missing_list()
@@ -146,7 +146,7 @@ window.settlers.setup_forms = () ->
     fid:			'i18n_edit'
     clear_fields:		['name', 'value']
     handlers:
-      s200:			(response, form) ->
+      h200:			(response, form) ->
         form.default_options.handlers.h200 response, form
         (form_i18n_edit.field 'value').disable()
 
@@ -259,7 +259,7 @@ window.settlers.setup_forms = () ->
     fid:			'donations_add'
     clear_fields:		['username', 'amount']
     handlers:
-      s200:			(response, form) ->
+      h200:			(response, form) ->
         window.settlers.refresh_donations_list()
         form.default_options.handlers.h200 response, form
 
@@ -275,7 +275,7 @@ window.settlers.setup_forms = () ->
     fid:		'maintenance_access'
     clear_fields:	['username']
     handlers:
-      s200:		(response, form) ->
+      h200:		(response, form) ->
         window.settlers.refresh_maintenance_access_list()
         form.default_options.handlers.h200 response, form
 

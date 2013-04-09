@@ -1,5 +1,12 @@
 @import "lib.scss";
 
+/*
+ * Libraries fixes
+ */
+ul.parsley-error-list {
+    display:        none !important;
+}
+
 .trumpet-board {
     position:                           fixed;
     top:                                0px;
@@ -13,8 +20,14 @@
     position:                           absolute !important;
     right:                              1px;
     top:                                3px;
+    min-width:  10px;
 
     display:                            none;
+
+    &.badge {
+        padding-left:  5px;
+        padding-right: 5px;
+    }
 
     &.badge-info {
         left:				-3px;
@@ -25,19 +38,20 @@
 /*
  * ----- ----- User names
  */
+.user-name {
+    color: #333333;
+    cursor: pointer !important;
+}
+
 .user-online {
-    font-weight:                        bold;
-    color:                              darkgreen;
+    font-weight:                        bold !important;
+    color:                              darkgreen !important;
 }
 
 .user-invited {
-    color:                              red;
+    color:                              red !important;
 }
 
 .user-onturn {
-    color:                              darkblue;
-}
-
-ul.parsley-error-list {
-    display:				none !important;
+    color:                              darkblue !important;
 }

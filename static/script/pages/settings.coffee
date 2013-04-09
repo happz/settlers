@@ -29,7 +29,7 @@ window.settlers.setup_forms = () ->
     fid:			'password'
     clear_fields:		['password1', 'password2']
     handlers:
-      s200:			(response, form) ->
+      h200:			(response, form) ->
         form.info.success 'Password successfuly changed'
 
   # After "Pass turn"
@@ -41,7 +41,7 @@ window.settlers.setup_forms = () ->
     fid:			'color'
     clear_fields:		['kind', 'color']
     handlers:
-      s200:     (response, form) ->
+      h200:     (response, form) ->
         form.info.success 'Successfuly changed'
 
         (form.field 'color').disable()
@@ -87,7 +87,7 @@ window.settlers.setup_forms = () ->
     fid:			'opponent_colors'
     clear_fields:		['color', 'username']
     handlers:
-      s200:			(response, form) ->
+      h200:			(response, form) ->
         form.info.success 'Successfuly changed'
 
         (form.field 'color').on_enable(form_opponent_color.field 'color')

@@ -13,7 +13,7 @@ window.settlers.setup_forms = () ->
     clear_fields:	['kind', 'name', 'limit', 'desc', 'password', 'opponent1', 'opponent2', 'opponent3', 'turn_limit', 'floating_desert']
     refill:		true
     handlers:
-      s200:     (response, form) ->
+      h200:     (response, form) ->
         form.info.success 'Successfuly created'
 
   $('#new_game_submit').click () ->
@@ -25,7 +25,7 @@ window.settlers.setup_forms = () ->
     clear_fields:	['engine', 'kind', 'name', 'num_players', 'limit', 'desc', 'password', 'turn_limit', 'floating_desert']
     refill:             true
     handlers:
-      s200:     (response, form) ->
+      h200:     (response, form) ->
         form.info.success 'Successfuly created'
 
 $(window).bind 'page_startup', () ->

@@ -4,7 +4,7 @@ window.settlers.templates.record = doT.template '
   {{??}}
     <tr>
   {{?}}
-    <td>{{= it.user.name}}</td>
+    <td>{{= window.settlers.fmt_player(it)}}</td>
     <td>{{= it.games}}</td>
     <td>{{= it.wons}}</td>
     <td>{{= it.finished}}</td>

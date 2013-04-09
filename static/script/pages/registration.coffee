@@ -5,7 +5,7 @@ $(window).bind 'page_startup', () ->
     refill:                     true
     clear_fields:		['username', 'password1', 'password2', 'email']
     handlers:
-      s200:     (response, form) ->
+      h200:     (response, form) ->
         form.info.success 'New account created, you may log in', true
 
         redirect = () ->
