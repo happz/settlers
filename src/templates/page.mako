@@ -54,18 +54,15 @@
   <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' /> -->
 
   <!-- Stylesheets -->
-  <!-- <link rel="stylesheet" type="text/css" href="/static/metro/css/bootstrap.css"> -->
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-icons.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-responsive.css">
-  <!-- <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-tiles.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="/static/metro/css/bootmetro-charms.css"> -->
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/metro-ui-light.css">
-  <link rel="stylesheet" type="text/css" href="/static/metro/css/datepicker.css">
-
-  ${script('/static/metro/scripts/modernizr-2.6.2.min.js')}
+  ${style('/static/metro/css/bootmetro-icons.css')}
+  ${style('/static/metro/css/bootmetro.css')}
+  ${style('/static/metro/css/bootmetro-responsive.css')}
+  ${style('/static/metro/css/metro-ui-light.css')}
+  ${style('/static/metro/css/datepicker.css')}
 
   ${style('/static/css/settlers.css')}
+
+  ${script('/static/metro/scripts/modernizr-2.6.2.min.js')}
 
   <!-- Scripts -->
   <script src="https://www.google.com/jsapi?key=ABQIAAAAnT7bvt5eCgJnKE_9xHtWrRQL0gKz-n891IYmna21nNIOzPZZixRfXXTxioGg6bd4WAedyIJq9y470A" type="text/javascript"></script>
@@ -77,7 +74,6 @@
   ${script('/static/script/jquery.timers.js')}
   ${script('/static/script/jquery.sound.js')}
   ${script('/static/script/stacktrace.js')}
-
   ${script('/static/script/doT.js')}
   ${script('/static/script/strftime.js')}
   ${script('/static/script/parsley/parsley.js')}
@@ -280,10 +276,10 @@ ${next.body()}
 
 <div id="visibility_check_mobile" class="hidden-phone hidden-tablet"></div>
 
-<script src="/static/metro/scripts/jquery.mousewheel.js"></script>
-<script src="/static/metro/scripts/jquery.scrollTo.js"></script>
-<script src="/static/metro/scripts/bootstrap.js"></script>
-<script src="/static/metro/scripts/bootmetro-panorama.js"></script>
-<script src="/static/metro/scripts/bootmetro-charms.js"></script>
-<script src="/static/metro/scripts/holder.js"></script>
-<script src="/static/metro/scripts/bootstrap-datepicker.js"></script>
+${script('/static/metro/scripts/jquery.mousewheel.min.js')}
+${script('/static/metro/scripts/jquery.scrollTo.min.js')}
+${script('/static/metro/scripts/bootstrap.min.js')}
+${script('/static/metro/scripts/bootmetro-panorama.min.js')}
+${script('/static/metro/scripts/bootmetro-charms.js')}
+${script('/static/metro/scripts/holder.min.js')}
+${script('/static/metro/scripts/bootstrap-datepicker.js')}
