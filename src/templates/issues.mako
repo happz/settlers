@@ -1,3 +1,7 @@
+<%!
+  import sys
+%>
+
 <%namespace file="hlib_ui.mako" import="*" />
 <%namespace file="lib.mako" import="*" />
 
@@ -23,9 +27,18 @@ ${ui_page_header('New issue')}
   <div class="offset2 span10">
     <div class="accordion" id="accordion">
       % for issue in repository.get_issues():
+        <%
+          if 'tracked' in issue.labels:
+            continue
+        %>
         <div class="accordion-group">
           <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" href="#ticket${issue.number}">${issue.title}</a>
+            <a class="accordion-toggle" data-toggle="collapse" href="#ticket${issue.number}">
+              ${issue.title}
+              % for label in issue.labels.values():
+                <span class="label label-info">${label.name}</span>
+              % endfor
+            </a>
           </div>
           <div id="ticket${issue.number}" class="accordion-body collapse in">
             <div class="accordion-inner">
