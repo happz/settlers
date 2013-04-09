@@ -67,15 +67,15 @@ class Handler(handlers.GenericHandler):
   @require_write
   @api
   def create_system_games(self):
-    def __create_games(count, limit):
+    def __create_games(count, limit, sleep = 5):
       for _ in range(0, count):
         games.create_system_game('settlers', limit = limit, turn_limit = 604800)
-        time.sleep(5)
+        time.sleep(sleep)
         hruntime.time = None
 
     cnt = hruntime.app.config['system_games.limit'] - hruntime.dbroot.counters.games_free()
     if cnt > 0:
-      __create_games(cnt, hruntime.app.config['system_games.sleep'])
+      __create_games(cnt, 3, sleep = hruntime.app.config['system_games.sleep'])
 
       # pylint: disable-msg=W0212
       games._game_lists.inval_all('active')
