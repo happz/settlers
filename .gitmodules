@@ -22,3 +22,6 @@
 	path = libs/Parsley.js
 	url = https://github.com/guillaumepotier/Parsley.js.git
   ignore = dirty
+[submodule "libs/intro"]
+	path = libs/intro
+	url = https://github.com/usablica/intro.js.git
