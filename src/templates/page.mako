@@ -6,24 +6,8 @@
   import hlib
   import hruntime
 
+  import lib
   import lib.datalayer
-
-  def version_stamp(path):
-    while path[0] == '/':
-      path = path[1:]
-
-    path = os.path.join(hruntime.app.config['dir'], path)
-
-    try:
-      stat = os.stat(path)
-
-    except OSError:
-      print >> sys.stderr, 'Missing file: "%s"' % path
-      return ''
-
-    else:
-      return '?_version_stamp=' + str(int(stat.st_mtime))
-
 %>
 
 <%namespace file="hlib_ui.mako" import="*" />
@@ -32,11 +16,11 @@
 <%inherit file="hlib_page.mako" />
 
 <%def name="script(path)">
-  <script type="text/javascript" src="${path}${version_stamp(path)}"></script>
+  <script type="text/javascript" src="${path}${lib.version_stamp(path)}"></script>
 </%def>
 
 <%def name="style(path)">
-  <link rel="stylesheet" href="${path}${version_stamp(path)}" type="text/css" />
+  <link rel="stylesheet" href="${path}${lib.version_stamp(path)}" type="text/css" />
 </%def>
 
 <%def name="page_header()">
@@ -85,6 +69,7 @@
   ${script('/static/script/hlib/message.min.js')}
   ${script('/static/script/hlib/hlib.min.js')}
   ${script('/static/script/settlers.min.js')}
+  ${script('/static/script/validators.js')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
@@ -129,7 +114,8 @@
     % if hruntime.user != None:
       window.settlers.user = {
         name:			"${hruntime.user.name}",
-        sound:			${'true' if hruntime.user.sound == True else 'false'}
+        sound:			${'true' if hruntime.user.sound == True else 'false'},
+        avatar_name: "${hruntime.user.avatar_name}"
       };
     % endif
   </script>

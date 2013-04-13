@@ -9,7 +9,11 @@ Simple and common functions
 """
 
 import hashlib
+import os
+import os.path
 import sys
+
+import hruntime
 
 class UserToPlayerMap(object):
   def __init__(self, container):
@@ -39,3 +43,19 @@ class UserToPlayerMap(object):
 def pwcrypt(passwd):
   # pylint: disable-msg=E1101
   return hashlib.md5(passwd.encode('ascii', 'replace')).hexdigest()
+
+def version_stamp(path):
+  while path[0] == '/':
+    path = path[1:]
+
+  path = os.path.join(hruntime.app.config['dir'], path)
+
+  try:
+    stat = os.stat(path)
+
+  except OSError:
+    print >> sys.stderr, 'Missing file: "%s"' % path
+    return ''
+
+  else:
+    return '?_version_stamp=' + str(int(stat.st_mtime))
