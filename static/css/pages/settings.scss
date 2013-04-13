@@ -1,5 +1,25 @@
 @import "lib.scss";
 
+.avatar-image {
+  max-width: 160px;
+  max-height: 160px;
+}
+
+#avatar_preview_valid {
+    display: inline-block;
+
+    span.icon-checkmark {
+        color: green;
+    }
+}
+
+#avatar_preview_invalid {
+    display: inline-block;
+    span.icon-cancel-2 {
+        color: red;
+    }
+}
+
 .colors {
     background: {
         repeat:					no-repeat;

@@ -286,3 +286,13 @@ class Handler(handlers.GenericHandler):
     hruntime.user.sound = (sound == 1)
 
     return hlib.api.Reply(200, form = hlib.api.Form(updated_fields = {'sound': hruntime.user.sound == True and 1 or 0}))
+
+  @require_write
+  @require_login
+  @api
+  def avatar(self, **kwargs):
+    if len(hruntime.request.parts) != 1:
+      raise hlib.error.InvalidInputError(invalid_field = 'filemane')
+
+    with open(hruntime.user.avatar_filename, 'w') as f:
+      f.write(hruntime.request.parts[0].data)

@@ -1,4 +1,5 @@
 <%!
+  import os.path
   import time
   import hlib
   import lib.datalayer
@@ -6,6 +7,7 @@
 
   import games
   import games.settlers
+  import lib
 
   import hruntime
 %>
@@ -80,6 +82,43 @@ ${ui_section_header('account', 'Account')}
     ${ui_submit(value = 'Set')}
   ${ui_form_end()}
 
+  <!-- Avatar -->
+  ${ui_form_start(id = 'avatar', action = '/settings/avatar', legend = 'Avatar', enctype = 'multipart/form-data', validate = True)}
+    <div>
+      <p>Min 64x64 pixels - Max 160x160 pixels - Max 100kB - JPG or PNG format</p>
+    </div>
+
+    % if os.path.exists(hruntime.user.avatar_filename):
+      <div class="control-group">
+        <label class="control-label" for="avatar_image_current">${_('Current avatar')}</label>
+        <div class="controls">
+          <%
+            avatar_image = '/static/images/avatars/' + hruntime.user.avatar_name + '.jpg'
+          %>
+          <img class="img-polaroid avatar-image" src="${avatar_image}${lib.version_stamp(avatar_image)}" id="avatar_image_current" name="avatar_image_current" />
+        </div>
+      </div>
+    % endif
+
+    <div class="control-group hide" id="avatar_preview">
+      <label class="control-label" for="avatar_preview">${_('New avatar')}</label>
+      <div class="controls">
+        <img class="img-polaroid avatar-image" name="avatar_preview" src="" />
+        <div id="avatar_preview_valid">
+          <span class="icon-checkmark"></span>
+          ${_('Image can be used as an avatar')}
+        </div>
+        <div id="avatar_preview_invalid">
+          <span class="icon-cancel-2"></span>
+          ${_('Image CAN NOT be used as an avatar.')}
+        </div>
+      </div>
+    </div>
+
+    ${ui_input(type = 'file', label = 'Avatar image', form_name = 'filename', accept = 'image/jpeg,image/png', validators = 'required notblank filedimensionsmax="#avatar_preview img,160,160" filedimensionsmin="#avatar_preview img,64,64" filesize="1024000" filetype="image/jpeg,image/png"')}
+
+    ${ui_submit(value = 'Upload')}
+  ${ui_form_end()}
 </section>
 
 <!-- "Colors" section -->

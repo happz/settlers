@@ -6,7 +6,9 @@ Data layer objects and method
 @license:			DPL (U{http://www.php-suit.com/dpl})
 """
 
+import os.path
 import threading
+import urllib
 
 import hlib
 import hlib.database
@@ -148,6 +150,12 @@ class User(hlib.datalayer.User):
 
     if name == 'is_on_vacation':
       return self.has_vacation and self.last_vacation.killed == None and self.last_vacation.start <= hruntime.time and hruntime.time <= self.last_vacation.start + self.last_vacation.length
+
+    if name == 'avatar_name':
+      return urllib.quote(self.name)
+
+    if name == 'avatar_filename':
+      return os.path.join(hruntime.app.config['dir'], 'static', 'images', 'avatars', self.avatar_name + '.jpg')
 
     return hlib.datalayer.User.__getattr__(self, name)
 

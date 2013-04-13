@@ -182,6 +182,53 @@ window.settlers.setup_forms = () ->
   new window.hlib.Form
     fid:		'email'
 
+  # Avatar
+  avatar_form = new window.hlib.Form
+    fid: 'avatar'
+    clear_fields: ['filename']
+    handlers:
+      h200: (response, form) ->
+        form.info.success 'Successfully changed'
+        $('#avatar_preview').hide()
+        $('#avatar_image').attr 'src', ('/static/images/avatars/' + window.settlers.user.avatar_name + '.jpg?_client_version_stamp=' + new Date().getTime())
+
+  $('#avatar_filename').change () ->
+    if avatar_form.last_invalid_field
+      avatar_form.last_invalid_field.unmark_error()
+      avatar_form.info._hide()
+
+    file = window.settlers.parsley_validators.file = $('#avatar_filename')[0].files[0]
+    if not file
+      return
+
+    reader = new FileReader()
+    if not reader
+      return
+
+    reader.onload = (e) ->
+      $('#avatar_preview img').remove()
+      $('#avatar_preview div.controls').prepend '<img class="img-polaroid avatar-image" name="avatar_preview" src="" />'
+
+      $('#avatar_preview img').load () ->
+        $('#avatar_preview_valid').hide()
+        $('#avatar_preview_invalid').hide()
+
+        dummy_field =
+          $element: $('#avatar_filename')
+
+        if    not window.ParsleyConfig.validators.filedimensionsmax(null, '#avatar_preview img,160,160') \
+           or not window.ParsleyConfig.validators.filedimensionsmin(null, '#avatar_preview img,160,160') \
+           or not window.ParsleyConfig.validators.filesize(null, '1024000', dummy_field) \
+           or not window.ParsleyConfig.validators.filetype(null, 'image/jpeg,image/png', dummy_field)
+          $('#avatar_preview_invalid').show()
+        else
+          $('#avatar_preview_valid').show()
+
+      $('#avatar_preview').show()
+      $('#avatar_preview img').attr 'src', e.target.result
+
+    reader.readAsDataURL file
+
   # Per page
   new window.hlib.Form
     fid:                'per_page'
