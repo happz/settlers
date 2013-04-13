@@ -1,6 +1,9 @@
 <%!
   import time
+  import os.path
   import hruntime
+
+  import lib
 %>
 
 <%namespace file="hlib_ui.mako" import="*" />
@@ -10,8 +13,16 @@
 ${ui_page_header(player.name + ('&nbsp;<span class="user-online">(online)</span>' if player.is_online else ''))}
 
 <div class="row-fluid">
-  <div class="offset2 span10">
+  <div class="span2">
+    % if os.path.exists(player.avatar_filename):
+      <%
+        avatar_image = '/static/images/avatars/' + player.avatar_name + '.jpg'
+      %>
+      <img class="img-polaroid" src="${avatar_image}${lib.version_stamp(avatar_image)}" />
+    % endif
+  </div>
 
+  <div class="span10">
     ${ui_section_header('stats_settlers', 'Settlers stats')}
       <table class="table table-hover">
         <tr>
@@ -36,7 +47,6 @@ ${ui_page_header(player.name + ('&nbsp;<span class="user-online">(online)</span>
         </tr>
       </table>
     </section>
-
   </div>
 </div>
 
