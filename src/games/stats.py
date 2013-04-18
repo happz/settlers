@@ -1,3 +1,4 @@
+import UserDict
 import threading
 
 import hlib.pageable
@@ -6,6 +7,16 @@ import lib.datalayer
 
 # pylint: disable-msg=F0401
 import hruntime
+
+class PlayerStatsWrapper(UserDict.UserDict):
+  def default(self, key):
+    return None
+
+  def __getitem__(self, key):
+    if key not in self.data:
+      return self.default(key)
+
+    return UserDict.UserDict.__getitem__(self, key)
 
 class Stats(hlib.pageable.Pageable):
   def __init__(self, *args, **kwargs):

@@ -39,6 +39,10 @@ class UserStats(object):
       'forhont':		self.forhont
     }
 
+class PlayerStatsWrapper(games.stats.PlayerStatsWrapper):
+  def default(self, key):
+    return UserStats(hruntime.dbroot.users[key])
+
 class Stats(games.stats.Stats):
   def get_records(self, start, length):
     records = self.records
@@ -46,16 +50,16 @@ class Stats(games.stats.Stats):
     return (records[start:max(start + length, len(records) - 1)], len(records))
 
   def refresh_stats(self):
-    new_stats = {}
+    new_stats = PlayerStatsWrapper()
 
     def __process_game(g):
       for p in g.players.values():
-        if p.user not in new_stats:
+        if p.user.name not in new_stats:
           s = UserStats(p.user)
-          new_stats[p.user] = s
+          new_stats[p.user.name] = s
 
         else:
-          s = new_stats[p.user]
+          s = new_stats[p.user.name]
 
         s.points += p.points
         s.games += 1
@@ -88,15 +92,15 @@ class Stats(games.stats.Stats):
 
     keys_to_remove = []
 
-    for user, stats in new_stats.items():
+    for username, stats in new_stats.items():
       if stats.finished < 20:
-        keys_to_remove.append(user)
+        keys_to_remove.append(username)
 
       if stats.finished > 0:
         stats.points_per_game = float(stats.finished_points) / float(stats.finished)
 
-    for user in keys_to_remove:
-      del new_stats[user]
+    for username in keys_to_remove:
+      del new_stats[username]
 
     with self.lock:
       self._player_stats = new_stats
