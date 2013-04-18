@@ -94,6 +94,33 @@ class window.settlers.PullNotify
 
           window.hlib.MESSAGE.hide()
 
+class window.settlers.Preview
+  constructor: (preview_space_eid, source_eid, control_eid) ->
+    __preview =
+      nop: () ->
+        return
+
+      render: () ->
+        marked.setOptions()
+        $(preview_space_eid).html marked($(source_eid).val())
+
+      update: () ->
+        __preview.render()
+
+      show: (e) ->
+        __preview.render()
+        $(preview_space_eid).show()
+        $(control_eid).click __preview.hide
+
+      hide: (e) ->
+        $(preview_space_eid).hide()
+        $(control_eid).click __preview.show
+
+    @preview = __preview
+
+    $(control_eid).click __preview.show
+    $(source_eid).keyup __preview.update
+
 #
 # Methods
 #
@@ -146,6 +173,8 @@ window.settlers.setup_chat_form = (opts) ->
         form.info.success 'Posted'
         opts.handlers.h200()
 
+  return new window.settlers.Preview '#chat_post_form #preview', '#chat_post_form #chat_post_text', '#chat_post_form .btn-preview'
+
 window.settlers.setup_chat = (opts) ->
   pager = new window.hlib.Pager
     id_prefix:		opts.id_prefix
@@ -156,11 +185,35 @@ window.settlers.setup_chat = (opts) ->
     start:		0
     length:		20
     after_refresh:	(response, pager) ->
-      __mark_unread = (post) ->
+      N = String.fromCharCode 10
+      raw_message_tmpl = doT.template "> **{{= it.user.name}} - {{= it.time }}**{{= String.fromCharCode(10)}}>{{= String.fromCharCode(10)}}{{= it.prefixed_message}}"
+
+      window.settlers.chat_posts = {}
+
+      __process_post = (post) ->
+        window.settlers.chat_posts[post.id] = post for post in response.page.records
+
+        $('a[data-chat-post]').click (e) ->
+          e.preventDefault()
+
+          _post = window.settlers.chat_posts[$(e.currentTarget).attr 'data-chat-post']
+
+          # split and prefix lines
+          lines = _post.raw_message.split '\n'
+          _post.prefixed_message = []
+          _post.prefixed_message.push ('> ' + line.trim()) for line in lines
+          _post.prefixed_message = _post.prefixed_message.join N
+
+          s = raw_message_tmpl _post
+          $(opts.editor_eid).val s
+          opts.preview.preview.render()
+
         if post.id > response.last_board
           $('#chat_post_' + post.id + ' .chat-post-unread').show()
 
-      __mark_unread post for post in response.page.records
+      __process_post post for post in response.page.records
+
+      window.hlib.bind_tooltips()
 
   pager.refresh()
 

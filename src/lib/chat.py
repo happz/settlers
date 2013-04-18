@@ -53,7 +53,8 @@ class ChatPost(hlib.database.DBObject):
       'user':			hlib.api.User(self.user),
       'stamp':			self.stamp,
       'time':			time.strftime(self.user.date_format, time.localtime(self.stamp)),
-      'message':		self.formatted
+      'message':		self.formatted,
+      'raw_message': self.message
     }
 
 class ChatPosts(hlib.database.IndexedMapping):
