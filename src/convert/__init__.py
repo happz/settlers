@@ -41,8 +41,4 @@ class Convertor(object):
       self.convert_item(r)
 
 import convert.root
-import convert.i18n
-import convert.trumpet
 import convert.user
-import convert.global_chat
-import convert._games

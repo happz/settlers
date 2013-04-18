@@ -15,19 +15,15 @@ class Convertor(convert.Convertor):
 
   def convert_item(self, record):
     u = lib.datalayer.User(record.name, record.password, record.email)
+
     u.sound		= (record.sound == '1')
-#    u.color		= record.color
     u.after_pass_turn	= int(record.after_pass_turn)
     u.date_format	= unicode(record.date_format)
-    u.atime		= int(record.atime)
-    u.last_board	= 0
     u.admin		= (record.admin == 'true')
     u.table_length	= int(record.tablesort_length)
     u.board_skin	= unicode(record.board_skin)
     u.vacation		= int(record.vacation)
     u.registered	= int(record.registered)
-
-    hruntime.dbroot.users[u.name] = u
 
     convert.map_uid_to_user[int(record.id)] = u
 
