@@ -41,27 +41,45 @@ window.settlers.templates.game.player = doT.template '
     </table>
   </div>
 '
+window.settlers.templates.game.cards_can_be_used_cell = doT.template '
+  <td {{? it.length > 0}}id="card_{{= it[0].id}}"{{?}}>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-documents{{??}}icon-document{{?}} card card-unused" />{{= it.length}}x{{?}}</td>
+'
+window.settlers.templates.game.cards_free_cell = doT.template '
+  <td>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-documents{{??}}icon-document{{?}} card card-free" />{{= it.length}}x{{?}}</td>
+'
+window.settlers.templates.game.cards_used_cell = doT.template '
+  <td>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-documents{{??}}icon-document{{?}} card card-used" />{{= it.length}}x{{?}}</td>
+'
 window.settlers.templates.game.cards = doT.template '
-  <table class="table">
-    {{~ it.cards :card:index}}
-      <tr>
-        <td>
-          <div id="card_{{= card.id}}" class="mediumListIconTextItem">
-            {{? card.used}}
-              <div class="icon-document mediumListIconTextItem-Image card-used" />
-            {{??}}
-              <div class="icon-document mediumListIconTextItem-Image card-unused" />
-            {{?}}
-            <div class="mediumListIconTextItem-Detail">
-              <h4>{{= window.hlib._g(window.settlers.game.card_type_to_name[card.type])}}</h4>
-              {{? card.used}}
-                <p>{{= window.hlib._g("Used in round")}} #{{= card.used}}.</p>
-              {{?}}
-            </div>
-          </div>
-        </td>
-      </tr>
-    {{~}}
+  <table class="table cards">
+    <tr>
+      <th>{{= window.hlib._g("Knight")}}</th>
+      <th>{{= window.hlib._g("Monopoly")}}</th>
+      <th>{{= window.hlib._g("Paths")}}</th>
+      <th>{{= window.hlib._g("Invention")}}</th>
+      <th>{{= window.hlib._g("Point")}}</th>
+    </tr>
+    <tr>
+      {{= window.settlers.templates.game.cards_can_be_used_cell(it.can_be_used.Knight)}}
+      {{= window.settlers.templates.game.cards_can_be_used_cell(it.can_be_used.Monopoly)}}
+      {{= window.settlers.templates.game.cards_can_be_used_cell(it.can_be_used.Paths)}}
+      {{= window.settlers.templates.game.cards_can_be_used_cell(it.can_be_used.Invention)}}
+      {{= window.settlers.templates.game.cards_can_be_used_cell(it.can_be_used.Point)}}
+    </tr>
+    <tr>
+      {{= window.settlers.templates.game.cards_free_cell(it.free.Knight)}}
+      {{= window.settlers.templates.game.cards_free_cell(it.free.Monopoly)}}
+      {{= window.settlers.templates.game.cards_free_cell(it.free.Paths)}}
+      {{= window.settlers.templates.game.cards_free_cell(it.free.Invention)}}
+      {{= window.settlers.templates.game.cards_free_cell(it.free.Point)}}
+    </tr>
+    <tr>
+      {{= window.settlers.templates.game.cards_used_cell(it.used.Knight)}}
+      {{= window.settlers.templates.game.cards_used_cell(it.used.Monopoly)}}
+      {{= window.settlers.templates.game.cards_used_cell(it.used.Paths)}}
+      {{= window.settlers.templates.game.cards_used_cell(it.used.Invention)}}
+      {{= window.settlers.templates.game.cards_used_cell(it.used.Point)}}
+    </tr>
   </table>
 '
 window.settlers.templates.game.events = doT.template '
@@ -984,12 +1002,56 @@ window.settlers.update_game_ui_cards = () ->
   if G.state == 1 and G.my_player.resources.rock >= 1 and G.my_player.resources.grain >= 1 and G.my_player.resources.sheep >= 1
     $('#new_card_form').show()
 
-  $('#cards_list').html window.settlers.templates.game.cards G.my_player.cards
+  # precrunch cards a bit
+  cards_to_decorate =
+    Knight: null
+    Monopoly: null
+    Paths: null
+    Invention: null
+    Point: null
+
+  cards =
+    can_be_used:
+      Knight:    []
+      Monopoly:  []
+      Paths:     []
+      Invention: []
+      Point:     []
+    free:
+      Knight:    []
+      Monopoly:  []
+      Paths:     []
+      Invention: []
+      Point:     []
+    used:
+      Knight:    []
+      Monopoly:  []
+      Paths:     []
+      Invention: []
+      Point:     []
+
+  __crunch_card = (card) ->
+    type_name = window.settlers.game.card_type_to_name[card.type]
+    console.log type_name
+    if card.can_be_used
+      if cards_to_decorate[type_name] == null
+        cards_to_decorate[type_name] = card
+
+      cards.can_be_used[type_name].push card
+
+    else if card.used
+      cards.used[type_name].push card
+
+    else
+      cards.free[type_name].push card
+
+  __crunch_card c for c in G.my_player.cards.cards
+
+  console.log cards
+  console.log cards_to_decorate
+  $('#cards_list').html window.settlers.templates.game.cards cards
 
   decorate_card = (c) ->
-    if not c.can_be_used
-      return
-
     $('#card_' + c.id).click () ->
       new window.hlib.Ajax
         url:			'/game/card_click'
@@ -1002,7 +1064,16 @@ window.settlers.update_game_ui_cards = () ->
             window.settlers.show_board()
       return false
 
-  decorate_card c for c in G.my_player.cards.cards
+  if cards_to_decorate.Knight
+    decorate_card cards_to_decorate.Knight
+  if cards_to_decorate.Monopoly
+    decorate_card cards_to_decorate.Monopoly
+  if cards_to_decorate.Paths
+    decorate_card cards_to_decorate.Paths
+  if cards_to_decorate.Invention
+    decorate_card cards_to_decorate.Invetion
+  if cards_to_decorate.Point
+    decorate_card cards_to_decorate.Point
 
   if G.my_player.cards.unused_cards > 0
     window.settlers.show_menu_alert 'show_cards', G.my_player.cards.unused_cards, 'badge-info', (window.hlib.format_string (window.hlib._g '%(count)s unused cards'), {count: G.my_player.cards.unused_cards})
