@@ -1,5 +1,13 @@
 @import "lib.scss";
 
+.board-preview {
+  -moz-box-sizing: border-box;
+  background-color: #0177DB !important;
+  color: #FFFFFF;
+  padding: 15px;
+  width: 100%;
+}
+
 @mixin token-list() {
     height:			15em;
     overflow:			auto;

@@ -21,7 +21,18 @@ ${ui_section_header('trumpet', 'Trumpet')}
   <!-- Change board -->
   ${ui_form_start(action = '/admin/trumpet/change_board', legend = 'Change board', id = 'board')}
     ${ui_textarea(form_name = 'text', label = 'Text', value = lib.trumpet.Board().text, size = 'xxlarge')}
-    ${ui_submit(value = 'Set')}
+
+    <div class="control-group">
+      <div class="hide board-preview offset1 span7" id="preview">
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <input class="btn" type="submit" value="${_('Set')}">
+        <input class="btn btn-info btn-preview" type="button" value="${_('Preview')}">
+      </div>
+    </div>
   ${ui_form_end()}
 
   <!-- Change password recovery mail -->

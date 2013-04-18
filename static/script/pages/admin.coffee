@@ -84,6 +84,7 @@ window.settlers.setup_i18n_add_form = () ->
 
 window.settlers.setup_forms = () ->
   # Board
+  board_preview = window.settlers.Preview '#board_form #preview', '#board_form #board_text', '#board_form .btn-preview'
   new window.hlib.Form
     fid:                'board'
 
