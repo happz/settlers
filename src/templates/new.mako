@@ -70,6 +70,8 @@ ${ui_section_header('game', 'Game')}
       ${ui_form_end()}
 </section>
 
+<%
+  unused = """
 <!-- "Tournament" section -->
 ${ui_section_header('tournament', 'Tournament')}
       ${ui_form_start(action = '/tournament/new', legend = 'New tournament', id = 'new_tournament')}
@@ -134,6 +136,8 @@ ${ui_section_header('tournament', 'Tournament')}
         ${ui_select_end()}
       ${ui_form_end()}
 </section>
+"""
+%>
 
   </div>
 </div>
