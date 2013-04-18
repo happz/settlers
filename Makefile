@@ -66,7 +66,7 @@ test_all: pylint coffeelint tests
 checksupdate: pylint coffeelint tests doccheck doc cloc
 
 SCRIPTS := $(SCRIPT_DIR)/hlib/hlib.js $(SCRIPT_DIR)/hlib/ajax.js $(SCRIPT_DIR)/hlib/pager.js $(SCRIPT_DIR)/hlib/form.js $(SCRIPT_DIR)/hlib/tabs.js $(SCRIPT_DIR)/hlib/message.js \
-           $(SCRIPT_DIR)/settlers.js $(SCRIPT_DIR)/validators.js $(SCRIPT_DIR)/intro.js \
+           $(SCRIPT_DIR)/settlers.js $(SCRIPT_DIR)/validators.js \
 					 $(SCRIPT_DIR)/pages/game.js \
 					 $(SCRIPT_DIR)/pages/issues.js $(SCRIPT_DIR)/pages/home.js $(SCRIPT_DIR)/pages/login.js $(SCRIPT_DIR)/pages/chat.js $(SCRIPT_DIR)/pages/settings.js \
 					 $(SCRIPT_DIR)/pages/admin.js $(SCRIPT_DIR)/pages/monitor.js $(SCRIPT_DIR)/pages/loginas.js $(SCRIPT_DIR)/pages/registration.js $(SCRIPT_DIR)/pages/password_recovery.js \
@@ -75,7 +75,7 @@ SCRIPTS := $(SCRIPT_DIR)/hlib/hlib.js $(SCRIPT_DIR)/hlib/ajax.js $(SCRIPT_DIR)/h
 
 LIB_SCRIPTS := $(LIB_DIR)/jquery.form/jquery.form.js $(LIB_DIR)/jquery.sound.js $(LIB_DIR)/jquery.timers.js \
                $(LIB_DIR)/stacktrace/stacktrace.js $(LIB_DIR)/Parsley.js/parsley.js $(LIB_DIR)/strftime.js \
-							 $(LIB_DIR)/marked/lib/marked.js $(LIB_DIR)/jquery.base64/jquery.base64.js \
+							 $(LIB_DIR)/marked/lib/marked.js \
 							 $(LIB_DIR)/bootmetro/content/scripts/jquery.mousewheel.js \
 							 $(LIB_DIR)/bootmetro/content/scripts/jquery.scrollTo.js \
 							 $(LIB_DIR)/bootmetro/content/scripts/bootstrap.js \
