@@ -1032,7 +1032,6 @@ window.settlers.update_game_ui_cards = () ->
 
   __crunch_card = (card) ->
     type_name = window.settlers.game.card_type_to_name[card.type]
-    console.log type_name
     if card.can_be_used
       if cards_to_decorate[type_name] == null
         cards_to_decorate[type_name] = card
@@ -1047,8 +1046,6 @@ window.settlers.update_game_ui_cards = () ->
 
   __crunch_card c for c in G.my_player.cards.cards
 
-  console.log cards
-  console.log cards_to_decorate
   $('#cards_list').html window.settlers.templates.game.cards cards
 
   decorate_card = (c) ->
@@ -1071,7 +1068,7 @@ window.settlers.update_game_ui_cards = () ->
   if cards_to_decorate.Paths
     decorate_card cards_to_decorate.Paths
   if cards_to_decorate.Invention
-    decorate_card cards_to_decorate.Invetion
+    decorate_card cards_to_decorate.Invention
   if cards_to_decorate.Point
     decorate_card cards_to_decorate.Point
 
