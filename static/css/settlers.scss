@@ -1,5 +1,14 @@
 @import "lib.scss";
 
+a {
+    color: #2E8BCC;
+
+    &:hover {
+        color: #2E8BCC;
+        text-decoration: none;
+    }
+}
+
 .trumpet-board {
     position:                           fixed;
     top:                                0px;
