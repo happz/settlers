@@ -70,6 +70,7 @@
   ${script('/static/script/hlib/hlib.min.js')}
   ${script('/static/script/settlers.min.js')}
   ${script('/static/script/validators.js')}
+  ${script('/static/script/marked.js')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
