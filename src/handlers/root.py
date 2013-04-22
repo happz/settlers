@@ -26,6 +26,7 @@ import hlib
 import hlib.api
 import hlib.auth
 import hlib.error
+import hlib.format
 import hlib.http
 import hlib.stats
 import lib.chat
@@ -55,6 +56,7 @@ class Handler(hlib.handlers.root.Handler):
   issues	= handlers.issues.Handler()
   maintenance	= handlers.maintenance.Handler()
   new		= handlers.new.Handler()
+  profile = handlers.profile.Handler()
 
   login        = handlers.login.LoginHandler()
   loginas      = handlers.login.LoginAsHandler()
@@ -88,15 +90,16 @@ class Handler(hlib.handlers.root.Handler):
     hlib.auth.logout()
 
   @api
-  def submit_error(self, **kwargs):
-    if 'error_msg' in kwargs:
-      if kwargs['error_msg'] == 'Unknown token' and 'token' in kwargs:
+  def submit_error(self, error_msg = None, **kwargs):
+    if error_msg:
+      if error_msg == 'Unknown token' and 'token' in kwargs:
         hruntime.i18n.coverage.miss(kwargs['token'])
         return
 
+    kwargs['error_msg'] = error_msg
     data = {}
     for k, v in kwargs.items():
-      k = urllib.unquote(k).encode('ascii', 'replace')
+      k = urllib.unquote(k).encode('ascii', 'replace').replace('%5B', '[').replace('%5D', ']')
       v = urllib.unquote(v).encode('ascii', 'xmlcharrefreplace')
       data[k] = v
 
@@ -124,6 +127,8 @@ class Handler(hlib.handlers.root.Handler):
     txt = lib.trumpet.Board().text
     if len(txt) <= 0:
       txt = False
+    else:
+      txt = hlib.format.tagize(txt)
 
     return hlib.api.Reply(200, trumpet = txt)
 
@@ -139,7 +144,7 @@ class Handler(hlib.handlers.root.Handler):
     if not no_trumpet and hruntime.user.seen_board != True:
       txt = lib.trumpet.Board().text
       if len(txt) > 0:
-        pn.trumpet = txt
+        pn.trumpet = hlib.format.tagize(txt)
 
     # Do I have unread posts on global chat?
     cnt = lib.chat.ChatPagerGlobal().unread
