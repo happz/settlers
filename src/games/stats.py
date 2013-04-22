@@ -24,7 +24,7 @@ class Stats(hlib.pageable.Pageable):
 
     self.lock		= threading.RLock()
 
-    self._stats		= None
+    self._records		= None
     self._player_stats	= None
 
     self.last_update	= None
@@ -32,7 +32,7 @@ class Stats(hlib.pageable.Pageable):
   def __getattr__(self, name):
     if name == 'records' or name == 'player_stats':
       with self.lock:
-        if not self._stats:
+        if not self._records:
           self.refresh_stats()
 
         if name == 'records':
