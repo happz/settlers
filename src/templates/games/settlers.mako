@@ -57,10 +57,21 @@
     <div id="chat" class="hide">
       <div class="settlers-view-list">
         <div class="span6">
-        ${ui_form_start(action = '/game/chat/add?gid=' + str(game.id), legend = 'New message', id = 'chat_post')}
-          ${ui_textarea(form_name = 'text', size = 'xlarge')}
-          ${ui_submit(value = 'Add')}
-        ${ui_form_end()}
+          ${ui_form_start(action = '/game/chat/add?gid=' + str(game.id), legend = 'New message', id = 'chat_post')}
+            ${ui_textarea(form_name = 'text', size = 'xlarge')}
+
+            <div class="control-group">
+              <div class="hide chat-preview well" id="preview"></div>
+            </div>
+
+            <div class="control-group">
+              <div class="controls">
+                <input class="btn" type="submit" value="${_('Add')}">
+                <input class="btn btn-info btn-preview" type="button" value="${_('Preview')}">
+                <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" rel="tooltip" data-placement="right" title="${_('Syntax help')}" target="_new"><i class="icon-help-4"></i></a>
+              </div>
+            </div>
+          ${ui_form_end()}
         </div>
 
         ${chat_table()}
