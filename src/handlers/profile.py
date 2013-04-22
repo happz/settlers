@@ -19,7 +19,7 @@ class Handler(handlers.GenericHandler):
     if username not in hruntime.dbroot.users:
       raise hlib.error.NoSuchUserError(username)
 
+    user = hruntime.dbroot.users[username]
     gm = games.game_module('settlers', submodule = 'stats')
 
-    return self.generate('profile.mako', params = {'player': hruntime.dbroot.users[username], 'player_stats': gm.stats.player_stats[hruntime.user]})
-
+    return self.generate('profile.mako', params = {'player': user, 'player_stats': gm.stats.player_stats[user.name]})
