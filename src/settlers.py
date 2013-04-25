@@ -131,7 +131,7 @@ def main():
   app.config['sessions.cookie_name']	= config.get('session', 'cookie_name')
 
   app.config['log.access.format']	= config.get('log', 'access_format')
-  app.channels.access = [stderr, access]
+  app.channels.access = [access]
   app.channels.error  = [stderr, error]
 
   app.config['system_games.limit']	= int(config.get('system_games', 'limit'))
