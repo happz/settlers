@@ -51,8 +51,12 @@
   <!-- Scripts -->
   <script src="https://www.google.com/jsapi?key=ABQIAAAAnT7bvt5eCgJnKE_9xHtWrRQL0gKz-n891IYmna21nNIOzPZZixRfXXTxioGg6bd4WAedyIJq9y470A" type="text/javascript"></script>
 
+  ${script('/static/script/jquery.js')}
+  ${script('/static/script/jquery-ui.js')}
+<!--
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js" type="text/javascript"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.min.js" type="text/javascript"></script>
+-->
 
   ${script('/static/script/jquery.form.js')}
   ${script('/static/script/jquery.timers.js')}
@@ -64,7 +68,7 @@
 
   ${script('/static/script/hlib/ajax.min.js')}
   ${script('/static/script/hlib/pager.min.js')}
-  ${script('/static/script/hlib/form.min.js')}
+  ${script('/static/script/hlib/form.js')}
   ${script('/static/script/hlib/tabs.min.js')}
   ${script('/static/script/hlib/message.min.js')}
   ${script('/static/script/hlib/hlib.min.js')}

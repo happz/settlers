@@ -83,6 +83,7 @@ ${ui_section_header('account', 'Account')}
   ${ui_form_end()}
 
   <!-- Avatar -->
+<!--
   ${ui_form_start(id = 'avatar', action = '/settings/avatar', legend = 'Avatar', enctype = 'multipart/form-data', validate = True)}
     <div>
       <p>Min 64x64 pixels - Max 160x160 pixels - Max 100kB - JPG or PNG format</p>
@@ -119,6 +120,7 @@ ${ui_section_header('account', 'Account')}
 
     ${ui_submit(value = 'Upload')}
   ${ui_form_end()}
+-->
 </section>
 
 <!-- "Colors" section -->
