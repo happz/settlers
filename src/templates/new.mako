@@ -17,9 +17,10 @@ ${ui_section_header('game', 'Game')}
       ${ui_form_start(legend = 'New game', id = 'new_game')}
 
         <!-- Game -->
-        ${ui_select_start(form_name = 'kind', label = 'Game kind', default = 'Choose...', required = True)}
+        ${ui_select_start(form_name = 'kind', label = 'Game kind', required = True)}
+        <!-- ${ui_select_start(form_name = 'kind', label = 'Game kind', default = 'Choose...', required = True)} -->
           % for kind in games.GAME_KINDS:
-            ${ui_select_option(value = kind, selected = False, label = kind)}
+            ${ui_select_option(value = kind, selected = (True if kind == 'settlers' else False), label = kind)}
           % endfor
         ${ui_select_end()}
 
