@@ -19,20 +19,17 @@ window.settlers.templates.game.player = doT.template '
     </div>
 
     <table class="table table-condensed">
+      <tr><td><strong>{{= window.hlib._g("Points")}}:</strong></td><td><strong>{{= it.points}}</strong></td></tr>
+      <tr><td><strong>{{= window.hlib._g("Resources")}}:</td><td><strong>{{= it.resources.total}}<strong></td></tr>
+
       {{? it.my_player}}
-        <tr class="info"><td colspan="2"><strong>{{= it.points}} {{= window.hlib._g("points")}}</strong></td></tr>
+        <tr><td colspan="2"><hr class="my-player-separator"/></td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/wood.gif" />{{= window.hlib._g("Wood")}}:</td><td>{{= it.resources.wood}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/clay.gif" />{{= window.hlib._g("Clay")}}:</td><td>{{= it.resources.clay}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/sheep.gif" />{{= window.hlib._g("Sheep")}}:</td><td>{{= it.resources.sheep}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/grain.gif" />{{= window.hlib._g("Grain")}}:</td><td>{{= it.resources.grain}}</td></tr>
         <tr><td><img src="/static/images/games/settlers/board/{{= window.settlers.game.render_info.board_skin}}/icons/rock.gif" />{{= window.hlib._g("Rock")}}:</td><td>{{= it.resources.rock}}</td></tr>
-        <tr class="info"><td colspan="2"><strong>{{= it.resources.total}} {{= window.hlib._g("resources totally")}}</strong></td></tr>
-      {{??}}
-        <tr class="info"><td><strong>{{= window.hlib._g("Points")}}:</strong></td><td><strong>{{= it.points}}</strong></td></tr>
-        <tr class="info"><td><strong>{{= window.hlib._g("Resources")}}:</td><td><strong>{{= it.resources.total}}</td></tr>
-      {{?}}
-
-      {{? it.my_player}}
+        <tr><td colspan="2"><hr class="my-player-separator"/></td></tr>
         <tr rel="tooltip" data-placement="right" title="{{= it.cards.unused_cards_str}}"><td>{{= window.hlib._g("Cards")}}:</td><td>{{= it.cards.unused_cards}}</td></tr>
       {{??}}
         <tr><td>{{= window.hlib._g("Cards")}}:</td><td>{{= it.cards.unused_cards}}</td></tr>
@@ -146,7 +143,7 @@ window.settlers.events['game.settlers.ResourceStolen']			= (e) ->
     return (window.hlib._g 'You stole 1 piece of {0} from {1}').format (window.hlib._g window.settlers.game.resource_id_to_name[e.resource]), e.victim.name
 
   if e.am_i_victim == true
-    return (window.hlib._g '{0} stole 1 piece of {1} from you').format e.thief.name, e.resource
+    return (window.hlib._g '{0} stole 1 piece of {1} from you').format e.thief.name, (window.hlib._g window.settlers.game.resource_id_to_name[e.resource])
 
   return (window.hlib._g '{0} stole 1 piece of resources from {1}').format e.thief.name, e.victim.name
 

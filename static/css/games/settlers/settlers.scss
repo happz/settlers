@@ -91,6 +91,20 @@
   z-index:			20;
 }
 
+div.playable-player {
+    img {
+        margin-right: 5px;
+    }
+    table {
+        margin-bottom: 0px;
+    }
+
+    hr.my-player-separator {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+}
+
 /*
  * Common setup for all board pieces
  */
