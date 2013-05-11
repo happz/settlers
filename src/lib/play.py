@@ -161,7 +161,8 @@ class Playable(hlib.database.DBObject):
       'is_present':		self.has_player(hruntime.user),
       'has_password':		self.is_password_protected,
       'chat_posts':		self.chat.unread if self.chat.unread > 0 else False,
-      'players':		[p.to_api() for p in self.players.values()]
+      'players':		[p.to_api() for p in self.players.values()],
+      'last_pass': self.last_pass
     }
 
     try:

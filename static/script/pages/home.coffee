@@ -84,6 +84,11 @@ $(window).bind 'page_startup', () ->
     if y.chat_posts and y.chat_posts > 0
       return 1
 
+    if x.last_pass > y.last_pass
+      return -1
+    if x.last_pass < y.last_pass
+      return 1
+
     if x.is_present == true
       if y.is_present == true
         return 0
