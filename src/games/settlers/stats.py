@@ -82,10 +82,16 @@ class Stats(games.stats.Stats):
       if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
         continue
 
+      if g.is_canceled:
+        continue
+
       __process_game(g)
 
     for g in hruntime.dbroot.games_archived.values():
       if hruntime.time - int(hruntime.app.config['stats.games.window']) > g.last_pass:
+        continue
+
+      if g.is_canceled:
         continue
 
       __process_game(g)
