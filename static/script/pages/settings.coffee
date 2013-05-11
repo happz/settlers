@@ -83,6 +83,7 @@ window.settlers.setup_forms = () ->
       (form_color.field 'submit').disable()
 
   # Opponent color
+  free_colors_count = null
   form_opponent_color = new window.hlib.Form
     fid:			'opponent_colors'
     clear_fields:		['color', 'username']
@@ -101,20 +102,33 @@ window.settlers.setup_forms = () ->
         kind:			(form_opponent_color.field 'kind').value()
       handlers:
         h200:			(response, ajax) ->
-          c.label = window.hlib._g c.label for c in response.colors
-          response._g = window.hlib._g
+          free_colors_count = response.colors.length
+          if free_colors_count <= 3
+            (form_opponent_color.field 'color').disable()
+            (form_opponent_color.field 'username').disable()
+            (form_opponent_color.field 'submit').disable()
 
-          tmpl = doT.template '
-            <option value="">{{= window.hlib._g("Choose...")}}</option>
-            {{~ it.colors :color:index}}
-              <option value="{{= color.name}}" class="colors" style="background-image: url(/static/images/games/settlers/board/real/players/{{= color.name}}/node/village.gif)">{{= color.label}}</option>
-            {{~}}'
-          f.content tmpl response
+          else
+            (form_opponent_color.field 'username').enable()
+            (form_opponent_color.field 'submit').enable()
+
+            c.label = window.hlib._g c.label for c in response.colors
+            response._g = window.hlib._g
+
+            tmpl = doT.template '
+              <option value="">{{= window.hlib._g("Choose...")}}</option>
+              {{~ it.colors :color:index}}
+                <option value="{{= color.name}}" class="colors" style="background-image: url(/static/images/games/settlers/board/real/players/{{= color.name}}/node/village.gif)">{{= color.label}}</option>
+              {{~}}'
+            f.content tmpl response
 
           window.hlib.MESSAGE.hide()
 
   (form_opponent_color.field 'color').disable (f) ->
-    f.placeholder 'Choose game kind first...'
+    if free_colors_count <= 3
+      f.placeholder 'You have no free colors to use'
+    else
+      f.placeholder 'Choose game kind first...'
 
   # list
   (form_opponent_color.field 'list').enable (f) ->
@@ -152,7 +166,8 @@ window.settlers.setup_forms = () ->
                   username:	u.user.name
                 handlers:
                   h200:	(response, ajax) ->
-                    (form_opponent_color.field 'color').on_enable(form_opponent_color.field 'color')
+                    (form_opponent_color.field 'color').enable()
+                    #(form_opponent_color.field 'color').on_enable(form_opponent_color.field 'color')
                     (form_opponent_color.field 'list').on_enable(form_opponent_color.field 'list')
 
                     window.hlib.MESSAGE.hide()
