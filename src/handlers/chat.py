@@ -53,4 +53,14 @@ class Handler(handlers.GenericHandler):
     last_board = hruntime.user.last_board
     return hlib.api.Reply(200, page = self.chat.get_page(start = start, length = length), last_board = last_board)
 
+  class ValidateLastAccess(hlib.input.SchemaValidator):
+    last_access = validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
+
+  @require_login
+  @require_write
+  @validate_by(schema = ValidateLastAccess)
+  @api
+  def last_access(self, last_access = None):
+    self.chat.update_last_access(last_access)
+
 hlib.event.Hook('system.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_all_users('recent_events'))
