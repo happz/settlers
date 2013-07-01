@@ -92,6 +92,7 @@ def main():
   stderr = hlib.log.channels.stderr.Channel()
   access = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'access.log'))
   error  = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'error.log'))
+  transactions = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'transactions.log'))
 
   hlib.config['log.channels.error'] = stderr
 
@@ -131,8 +132,9 @@ def main():
   app.config['sessions.cookie_name']	= config.get('session', 'cookie_name')
 
   app.config['log.access.format']	= config.get('log', 'access_format')
-  app.channels.access = [access]
-  app.channels.error  = [stderr, error]
+  app.channels.add('access', access)
+  app.channels.add('error', stderr, error)
+  app.channels.add('transactions', transactions)
 
   app.config['system_games.limit']	= int(config.get('system_games', 'limit'))
   app.config['system_games.sleep']	= int(config.get('system_games', 'sleep'))
