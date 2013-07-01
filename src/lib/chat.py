@@ -107,10 +107,6 @@ class ChatPager(hlib.pageable.Pageable):
     self.trigger_event()
 
   def update_last_access(self, new_last):
-    # pylint: disable-msg=W0621
-    import hlib.handlers
-    hlib.handlers.enable_write()
-
     self.accessed_by.last_board = new_last
 
   # Pageable interface implementation
@@ -118,10 +114,11 @@ class ChatPager(hlib.pageable.Pageable):
     records = self.entity.chat_posts.get_posts(start, length)
     records = [cp for cp in reversed(records)]
 
+    last_access = None
     if len(records) > 0 and self.accessed_by.last_board < records[0].id:
-      self.update_last_access(records[0].id)
+      last_access = records[0].id
 
-    return (records, self.length)
+    return (records, self.length, last_access)
 
 class ChatPagerGame(ChatPager):
   def __init__(self, game, accessed_by = None):
