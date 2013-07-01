@@ -1,1 +1,1 @@
-../../libs/strftime-min.js
+../../libs/strftime.min.js
