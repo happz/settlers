@@ -82,7 +82,9 @@ LIB_SCRIPTS := $(LIB_DIR)/jquery.form/jquery.form.js $(LIB_DIR)/jquery.sound.js 
 							 $(LIB_DIR)/bootmetro/content/scripts/bootmetro-panorama.js \
 							 $(LIB_DIR)/bootmetro/content/scripts/bootmetro-charms.js \
 							 $(LIB_DIR)/bootmetro/content/scripts/holder.js \
-							 $(LIB_DIR)/bootmetro/content/scripts/bootstrap-datepicker.js
+							 $(LIB_DIR)/bootmetro/content/scripts/bootstrap-datepicker.js \
+							 $(LIB_DIR)/Parsley.js/parsley.js \
+							 $(LIB_DIR)/flot/jquery.flot.canvas.js $(LIB_DIR)/flot/jquery.flot.js
 
 MINIFIED_SCRIPTS := $(patsubst %.js,%.min.js,$(SCRIPTS)) $(patsubst %.js,%.min.js,$(LIB_SCRIPTS))
 
@@ -97,7 +99,7 @@ scripts: scripts_compile scripts_minify
 	coffee -c --bare -m $<
 
 %.min.js: %.js
-	-cat $< | slimit > $@
+	-cat $< | /data/virtualenv/settlers/bin/slimit > $@
 
 STYLES = $(CSS_DIR)/settlers.css $(CSS_DIR)/pages/settings.css $(CSS_DIR)/pages/game.css $(CSS_DIR)/pages/admin.css $(CSS_DIR)/pages/maintenance.css \
          $(CSS_DIR)/pages/monitor.css $(CSS_DIR)/pages/home.css \
@@ -116,4 +118,4 @@ $(CSS_DIR)/pages/settings.css: $(CSS_DIR)/lib.scss
 $(CSS_DIR)/settlers.css: $(CSS_DIR)/lib.scss
 
 %.css: %.scss
-	/usr/lib/python2.7/site-packages/pyScss-1.1.3-py2.7-linux-x86_64.egg/scss/__init__.py -C -I $(CSS_DIR) --output=$@ $<
+	/data/virtualenv/settlers/bin/python -mscss -C -I $(CSS_DIR) --output=$@ $<
