@@ -6,6 +6,7 @@ import lib.datalayer
 
 import hlib.api
 import hlib.error
+import hlib.event
 import hlib.input
 import hlib.mail
 
@@ -93,3 +94,7 @@ class Handler(handlers.GenericHandler):
 
     u = lib.datalayer.User(username, lib.pwcrypt(password1), email)
     hruntime.dbroot.users[u.name] = u
+
+    hlib.event.trigger('system.UserRegistered', hruntime.dbroot.server, user = hruntime.dbroot.users[u.name])
+
+hlib.event.Hook('system.UserRegistered', 'notify_admins', lambda e: hlib.mail.send_email(hruntime.app, 'osadnici@happz.cz', 'osadnici@happz.cz', 'Novy hrac', 'Novy hrac: %s (%s)' % (e.user.name, e.user.email)))
