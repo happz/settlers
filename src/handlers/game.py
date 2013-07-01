@@ -9,6 +9,7 @@ import lib.datalayer
 
 import hlib.api
 import hlib.error
+import hlib.input
 import hlib.pageable
 
 # Shortcuts
@@ -81,6 +82,18 @@ class ChatHandler(handlers.GenericHandler):
     g = require_presence_in_game(gid)
 
     return hlib.api.Reply(200, page = g.chat.get_page(start = start, length = length))
+
+  class ValidateLastAccess(hlib.input.SchemaValidator):
+    gid = games.ValidateGID()
+    last_access = validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
+
+  @require_login
+  @require_write
+  @validate_by(schema = ValidateLastAccess)
+  @api
+  def last_access(self, gid = None, last_access = None):
+    g = require_presence_in_game(gid)
+    g.chat.update_last_access(last_access)
 
 class Handler(handlers.GenericHandler):
   chat = ChatHandler()
