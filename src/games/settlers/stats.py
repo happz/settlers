@@ -47,19 +47,22 @@ class Stats(games.stats.Stats):
   def get_records(self, start, length):
     records = self.records
 
-    return (records[start:max(start + length, len(records) - 1)], len(records))
+    return (records[start:max(start + length, len(records) - 1)], len(records), None)
 
   def refresh_stats(self):
     new_stats = PlayerStatsWrapper()
 
     def __process_game(g):
       for p in g.players.values():
-        if p.user.name not in new_stats:
-          s = UserStats(p.user)
-          new_stats[p.user.name] = s
+        try:
+          if p.user.name not in new_stats:
+            s = UserStats(p.user)
+            new_stats[p.user.name] = s
 
-        else:
-          s = new_stats[p.user.name]
+          else:
+            s = new_stats[p.user.name]
+        except AttributeError:
+          continue
 
         s.points += p.points
         s.games += 1
