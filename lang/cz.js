@@ -462,6 +462,7 @@ window.settlers.i18n_table = {
     'You do not have enough resources': 'Nemáš dostatek surovin',
     'You have joined a game': 'Přidal jste se do hry',
     'You have no API key yet. If you need one click "New API key" button': 'Nemáte zatím žádný klíč API. Pokud jej budete potřebovat, klikněte na tlačítko "Nový klíč API"',
+    'You have no free colors to use': 'Nemáte žádné volné barvy',
     'You have no way to exchange resources': 'Nemůžeš měnit suroviny',
     'You have to choose closing hour': 'Musíš vybrat konec dovolené',
     'You have to choose opening hour': 'Není vybrán začátek dovolené',
