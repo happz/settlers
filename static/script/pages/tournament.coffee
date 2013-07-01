@@ -145,7 +145,7 @@ $(window).on 'page_startup', () ->
   chat_pager = window.settlers.setup_chat
     id_prefix:                  'chat'
     eid:                        '#chat_posts'
-    url:                        '/tournament/chat/page'
+    url:                        '/tournament/chat/'
     data:
       tid:                      window.settlers.tournament.tid
 

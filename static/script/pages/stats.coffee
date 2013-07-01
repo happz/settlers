@@ -16,7 +16,7 @@ window.settlers.templates.record = doT.template '
 $(window).bind 'page_startup', () ->
   pager = new window.hlib.Pager
     id_prefix:          'stats'
-    url:                '/stats/page'
+    url:                '/stats/'
     template:           window.settlers.templates.record
     eid:                '#stats_records'
     start:              0

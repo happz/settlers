@@ -1370,7 +1370,7 @@ $(window).bind 'page_startup', () ->
   chat_pager = window.settlers.setup_chat
     id_prefix: 'chat'
     eid: '#chat_posts'
-    url: '/game/chat/page'
+    url: '/game/chat/'
     editor_eid: '#chat_post_text'
     preview: chat_preview
     data:
