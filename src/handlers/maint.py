@@ -28,6 +28,39 @@ class Handler(handlers.GenericHandler):
   @require_hosts(get_hosts = maint_require_hosts)
   @require_write
   @api
+  def process_free_deadlines(self):
+    canceled = []
+
+    for g in hruntime.dbroot.games.values():
+      if not g.is_waiting_begin or g.deadline > hruntime.time:
+        continue
+
+      t = (g.id, g.type, hruntime.time - g.deadline)
+      g.cancel(reason = events.game.GameCanceled.REASON_EMPTY, user = None)
+      canceled.append(t)
+
+    return hlib.api.Reply(200, canceled_games = canceled)
+
+  @require_hosts(get_hosts = maint_require_hosts)
+  @require_write
+  @api
+  def process_active_deadlines(self):
+    canceled = []
+
+    for g in hruntime.dbroot.games.values():
+      if not g.is_waiting_turn or g.deadline > hruntime.time:
+        continue
+
+      d = [g.id, hruntime.time - g.deadline, [p.user.name for p in g.players.values()], g.forhont_player.user.name]
+
+      g.cancel(reason = events.game.GameCanceled.REASON_ABSENTEE, user = g.forhont_player.user)
+      canceled.append(d)
+
+    return hlib.api.Reply(200, canceled_games = canceled)
+
+  @require_hosts(get_hosts = maint_require_hosts)
+  @require_write
+  @api
   def process_archive_deadlines(self):
     def __process_list(playable_list, playable_archived_list, event_name, handle_name):
       archived = []

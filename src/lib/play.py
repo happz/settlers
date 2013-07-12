@@ -289,3 +289,9 @@ class PlayableLists(object):
       self.inval_players(p)
 
     return True
+
+  def canceled(self, p):
+    with self._lock:
+      self.inval_all('active')
+
+    return True

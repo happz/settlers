@@ -678,6 +678,7 @@ hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.
 hlib.event.Hook('game.GameStarted', 'invalidate_caches',  lambda e: _game_lists.started(e.game))
 hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.finished(e.game))
 hlib.event.Hook('game.GameArchived', 'invalidate_caches', lambda e: _game_lists.archived(e.game))
+hlib.event.Hook('game.GameCanceled', 'invalidate_caches', lambda e: _game_lists.canceled(e.game))
 hlib.event.Hook('game.PlayerJoined', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
 hlib.event.Hook('game.PlayerInvited', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
 hlib.event.Hook('game.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_users([p.user for p in e.game.players.values()], 'recent_events'))
