@@ -73,7 +73,8 @@ SCRIPTS := $(SCRIPT_DIR)/hlib/hlib.js $(SCRIPT_DIR)/hlib/ajax.js $(SCRIPT_DIR)/h
 					 $(SCRIPT_DIR)/pages/new.js $(SCRIPT_DIR)/pages/maintenance.js $(SCRIPT_DIR)/pages/stats.js $(SCRIPT_DIR)/pages/tournament.js \
 					 $(SCRIPT_DIR)/games/settlers/settlers.js $(SCRIPT_DIR)/games/settlers/settlers-board.js
 
-LIB_SCRIPTS := $(LIB_DIR)/jquery.form/jquery.form.js $(LIB_DIR)/jquery.sound.js $(LIB_DIR)/jquery.timers.js \
+LIB_SCRIPTS := $(LIB_DIR)/jquery.js $(LIB_DIR)/jquery-ui.js \
+               $(LIB_DIR)/jquery.form/jquery.form.js $(LIB_DIR)/jquery.sound.js $(LIB_DIR)/jquery.timers.js \
                $(LIB_DIR)/stacktrace/stacktrace.js $(LIB_DIR)/Parsley.js/parsley.js $(LIB_DIR)/strftime.js \
 							 $(LIB_DIR)/marked/lib/marked.js \
 							 $(LIB_DIR)/bootmetro/content/scripts/jquery.mousewheel.js \

@@ -1,1 +1,1 @@
-../../libs/jquery.js
+../../libs/jquery.min.js

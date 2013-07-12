@@ -1,1 +1,1 @@
-../../libs/jquery-ui.js
+../../libs/jquery-ui.min.js
