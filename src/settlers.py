@@ -37,12 +37,6 @@ import events.system
 # pylint: disable-msg=F0401
 import hruntime
 
-#import thirdparty.dowser
-
-cmd_options = {
-  'config_file':	'settlers.conf'
-}
-
 #
 # Default values for config file options
 #
@@ -81,97 +75,9 @@ def on_request_started(e):
 
 hlib.event.Hook('engine.RequestStarted', 'settlers_generic', on_request_started)
 
-def main():
-  """
-  Main startup function of Settlers engine.
-  """
+def on_app_config(app, config):
+  app.config['system_games.limit']  = int(config.get('system_games', 'limit'))
+  app.config['system_games.sleep']  = int(config.get('system_games', 'sleep'))
 
-  config = hlib.ConfigFile(default = config_defaults)
-  config.read(cmd_options['config_file'])
-
-  stderr = hlib.log.channels.stderr.Channel()
-  access = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'access.log'))
-  error  = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'error.log'))
-  transactions = hlib.log.channels.file.Channel(os.path.join(config.get('server', 'path'), 'logs', 'transactions.log'))
-
-  hlib.config['log.channels.error'] = stderr
-
-  db_address = hlib.database.DBAddress(config.get('database', 'address'))
-  db = hlib.database.DB('main db', db_address, cache_size = 35000, pool_size = int(config.get('server', 'pool.max')) + 2)
-  db.open()
-
-  app_config			= hlib.engine.Application.default_config(config.get('server', 'path'))
-  app_config['title']		= config.get('web', 'title')
-  app_config['label']		= 'Settlers'
-
-  app_config['cache.enabled']	= bool(config.get('cache', 'enabled'))
-  for token in config.get('cache', 'dont_cache').split(','):
-    app_config['cache.dont_cache.' + token.strip()] = True
-
-  app_config['hosts']		= {}
-  if config.has_section('hosts'):
-    for option in config.options('hosts'):
-      addresses = config.get('hosts', option)
-
-      app_config['hosts'][option] = [(ipaddr.IPNetwork(addr.strip()) if '/' in addr else ipaddr.IPAddress(addr.strip())) for addr in addresses.strip().split(',')]
-
-  app_config['stats'] = {}
-  if config.has_section('stats'):
-    for option in config.options('stats'):
-      app_config['stats.' + option] = config.get('stats', option)
-
-  app_config['issues'] = {
-    'token':			config.get('issues', 'token'),
-    'repository':		config.get('issues', 'repository')
-  }
-
-  app = hlib.engine.Application('settlers', handlers.root.Handler(), db, app_config)
-
-  app.sessions = hlib.http.session.FileStorage(config.get('session', 'storage_path'), app)
-  app.config['sessions.time']		= config.get('session', 'time')
-  app.config['sessions.cookie_name']	= config.get('session', 'cookie_name')
-
-  app.config['log.access.format']	= config.get('log', 'access_format')
-  app.channels.add('access', access)
-  app.channels.add('error', stderr, error)
-  app.channels.add('transactions', transactions)
-
-  app.config['system_games.limit']	= int(config.get('system_games', 'limit'))
-  app.config['system_games.sleep']	= int(config.get('system_games', 'sleep'))
-
-  server_config			= hlib.server.Server.default_config()
-  server_config['server']	= config.get('server', 'host')
-  server_config['port']		= int(config.get('server', 'port'))
-  server_config['app']		= app
-  server_config['pool.max']	= int(config.get('server', 'pool.max'))
-
-  engine = hlib.engine.Engine([server_config])
-
-  print 'Starting...'
-  print 'PID = %i' % os.getpid()
-  engine.start()
-
-def usage():
-  print """settlers.py <options>
-
-where options can be:
-
-  -h			Print this message and quit
-  -c config_file	Specify different path to config file. Default is 'settlers.conf'
-
-"""
-  sys.exit(0)
-
-hruntime.tid = None
-
-optlist, args = getopt.getopt(sys.argv[1:], 'c:h')
-
-for o in optlist:
-  if o[0] == '-h':
-    usage()
-
-  elif o[0] == '-c':
-    cmd_options['config_file'] = o[1]
-
-if __name__ == '__main__':
-  main()
+import hlib.runners.standalone
+hlib.runners.standalone.main(handlers.root.Handler(), config_defaults, on_app_config)
