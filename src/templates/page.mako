@@ -38,6 +38,7 @@
   <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' /> -->
 
   <!-- Stylesheets -->
+  <!--[if lt IE 9]>${style('/static/metro/css/bootmetro-icons-ie7.css')}<![endif]-->
   ${style('/static/metro/css/bootmetro-icons.css')}
   ${style('/static/metro/css/bootmetro.css')}
   ${style('/static/metro/css/bootmetro-responsive.css')}
@@ -53,10 +54,6 @@
 
   ${script('/static/script/jquery.js')}
   ${script('/static/script/jquery-ui.js')}
-<!--
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.js" type="text/javascript"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.min.js" type="text/javascript"></script>
--->
 
   ${script('/static/script/jquery.form.js')}
   ${script('/static/script/jquery.timers.js')}
@@ -64,16 +61,24 @@
   ${script('/static/script/stacktrace.js')}
   ${script('/static/script/doT.js')}
   ${script('/static/script/strftime.js')}
-  ${script('/static/script/parsley/parsley.js')}
+  ${script('/static/script/parsley/parsley.min.js')}
+
+  ${script('/static/metro/scripts/jquery.mousewheel.min.js')}
+  ${script('/static/metro/scripts/jquery.scrollTo.min.js')}
+  ${script('/static/metro/scripts/bootstrap.min.js')}
+  ${script('/static/metro/scripts/bootmetro-panorama.min.js')}
+  ${script('/static/metro/scripts/bootmetro-charms.js')}
+  ${script('/static/metro/scripts/holder.min.js')}
+  ${script('/static/metro/scripts/bootstrap-datepicker.js')}
 
   ${script('/static/script/hlib/ajax.min.js')}
   ${script('/static/script/hlib/pager.min.js')}
-  ${script('/static/script/hlib/form.js')}
+  ${script('/static/script/hlib/form.min.js')}
   ${script('/static/script/hlib/tabs.min.js')}
   ${script('/static/script/hlib/message.min.js')}
   ${script('/static/script/hlib/hlib.min.js')}
   ${script('/static/script/settlers.min.js')}
-  ${script('/static/script/validators.js')}
+  ${script('/static/script/validators.min.js')}
   ${script('/static/script/marked.js')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
@@ -109,25 +114,22 @@
 
   <script src="/i18n?lang=${hruntime.i18n.name}" type="text/javascript"></script>
 
-  ${parent.page_header()}
-
   <script type="text/javascript">
     window.settlers = window.settlers || {};
-
     window.settlers.title = "${hlib.unescape(_(hruntime.app.config['label']))}";
 
     % if hruntime.user != None:
       window.settlers.user = {
-        name:			"${hruntime.user.name}",
-        sound:			${'true' if hruntime.user.sound == True else 'false'},
-        avatar_name: "${hruntime.user.avatar_name}"
+        name:                   "${hruntime.user.name}",
+        sound:                  ${'true' if hruntime.user.sound == True else 'false'},
+        name: "${hruntime.user.avatar_name}"
       };
     % endif
   </script>
 
   <script type="text/javascript">
     var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-615278-7']);
+    _gaq.push(['_setAccount', 'UA-615278-4']);
     _gaq.push(['_trackPageview']);
 
     (function() {
@@ -136,6 +138,8 @@
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
+
+  ${parent.page_header()}
 </%def>
 
 <%def name="page_title()">
@@ -266,11 +270,3 @@ ${next.body()}
 </div>
 
 <div id="visibility_check_mobile" class="hidden-phone hidden-tablet"></div>
-
-${script('/static/metro/scripts/jquery.mousewheel.min.js')}
-${script('/static/metro/scripts/jquery.scrollTo.min.js')}
-${script('/static/metro/scripts/bootstrap.min.js')}
-${script('/static/metro/scripts/bootmetro-panorama.min.js')}
-${script('/static/metro/scripts/bootmetro-charms.js')}
-${script('/static/metro/scripts/holder.min.js')}
-${script('/static/metro/scripts/bootstrap-datepicker.js')}
