@@ -8,9 +8,22 @@ import lib.datalayer
 # pylint: disable-msg=F0401
 import hruntime
 
+class PlayerStats(object):
+  def __init__(self, user, default = False):
+    super(PlayerStats, self).__init__()
+
+    self.user = user
+    self.default = default
+
+  def to_api(self):
+    return {}
+
 class PlayerStatsWrapper(UserDict.UserDict):
   def default(self, key):
     return None
+
+  def __contains__(self, key):
+    return key in self.data
 
   def __getitem__(self, key):
     if key not in self.data:

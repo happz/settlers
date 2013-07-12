@@ -11,12 +11,11 @@ import hlib.pageable
 # pylint: disable-msg=F0401
 import hruntime
 
-class UserStats(object):
-  def __init__(self, user):
+class PlayerStats(games.stats.PlayerStats):
+  def __init__(self, user, **kwargs):
     # pylint: disable-msg=E1002
-    super(UserStats, self).__init__()
+    super(PlayerStats, self).__init__(user, **kwargs)
 
-    self.user				= user
     self.points				= 0
     self.finished_points		= 0
     self.games				= 0
@@ -41,7 +40,7 @@ class UserStats(object):
 
 class PlayerStatsWrapper(games.stats.PlayerStatsWrapper):
   def default(self, key):
-    return UserStats(hruntime.dbroot.users[key])
+    return PlayerStats(hruntime.dbroot.users[key], default = True)
 
 class Stats(games.stats.Stats):
   def get_records(self, start, length):
@@ -56,7 +55,7 @@ class Stats(games.stats.Stats):
       for p in g.players.values():
         try:
           if p.user.name not in new_stats:
-            s = UserStats(p.user)
+            s = PlayerStats(p.user)
             new_stats[p.user.name] = s
 
           else:
