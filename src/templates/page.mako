@@ -194,7 +194,7 @@
 
           <hr class="win-command" />
 
-          ${menu_entry('&#xe1a4;', 'Help', href = '/help/')}
+          ${menu_entry('&#xe1a4;', 'Help', href = 'http://wiki.happz.cz/doku.php?id=settlers:start')}
 
           % if hruntime.user.is_admin:
             ${menu_entry('&#x006e;', 'Admin', href = '/admin/')}
