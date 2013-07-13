@@ -81,7 +81,7 @@ class ChatHandler(handlers.GenericHandler):
   def page(self, gid = None, start = None, length = None):
     g = require_presence_in_game(gid)
 
-    return hlib.api.Reply(200, page = g.chat.get_page(start = start, length = length))
+    return hlib.api.Reply(200, page = g.chat.get_page(start = start, length = length), last_board = g.my_player.last_board)
 
   class ValidateLastAccess(hlib.input.SchemaValidator):
     gid = games.ValidateGID()

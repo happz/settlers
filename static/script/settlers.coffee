@@ -101,8 +101,12 @@ class window.settlers.Preview
         return
 
       render: () ->
-        marked.setOptions()
-        $(preview_space_eid).html marked($(source_eid).val())
+        if marked
+          marked.setOptions()
+          preview_text = marked($(source_eid).val())
+        else
+          preview_text = $(source_eid).val()
+        $(preview_space_eid).html preview_text
 
       update: () ->
         __preview.render()
@@ -191,7 +195,7 @@ window.settlers.setup_chat = (opts) ->
       window.settlers.chat_posts = {}
 
       __process_post = (post) ->
-        window.settlers.chat_posts[post.id] = post for post in response.page.records
+        window.settlers.chat_posts[post.id] = post
 
         $('a[data-chat-post]').click (e) ->
           e.preventDefault()
