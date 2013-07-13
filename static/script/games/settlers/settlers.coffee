@@ -1214,11 +1214,11 @@ window.settlers.show_stats = () ->
       $('#stats_dice_roll_tooltip').remove()
       previousPoint = null
 
-  $('#views').tabs 'select', 6
+  $('#views').tabs 'option', 'active', 6
   window.location.hash = '#stats'
 
 window.settlers.show_board = () ->
-  $('#views').tabs 'select', 3
+  $('#views').tabs 'option', 'active', 3
   window.location.hash = '#board'
 
 window.settlers.hide_board_view_sections = () ->
@@ -1303,19 +1303,19 @@ $(window).bind 'page_startup', () ->
   $('#new_card_gid').val window.settlers.game.gid
 
   show_chat = () ->
-    $('#views').tabs 'select', 1
+    $('#views').tabs 'option', 'active', 1
     window.location.hash = '#chat'
 
   show_cards = () ->
-    $('#views').tabs 'select', 4
+    $('#views').tabs 'option', 'active', 4
     window.location.hash = '#cards'
 
   show_history = () ->
-    $('#views').tabs 'select', 2
+    $('#views').tabs 'option', 'active', 2
     window.location.hash = '#history'
 
   window.settlers.show_exchange = () ->
-    $('#views').tabs 'select', 5
+    $('#views').tabs 'option', 'active', 5
     window.location.hash = '#exchange'
 
   window.settlers.pass_turn = () ->
