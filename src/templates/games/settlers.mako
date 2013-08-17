@@ -15,7 +15,7 @@
   ${parent.page_header()}
 
   <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/static/script/flot/excanvas.min.js"></script><![endif]-->
-  <script language="javascript" type="text/javascript" src="/static/script/flot/jquery.flot.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/script/flot/jquery.flot.min.js"></script>
 
   <script type="text/javascript">
     $(window).bind('hlib_prestartup', function () {
@@ -71,7 +71,7 @@
               <div class="controls">
                 <input class="btn" type="submit" value="${_('Add')}">
                 <input class="btn btn-info btn-preview" type="button" value="${_('Preview')}">
-                <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" rel="tooltip" data-placement="right" title="${_('Syntax help')}" target="_new"><i class="icon-help-4"></i></a>
+                <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" rel="tooltip" data-placement="right" title="${_('Syntax help')}" target="_new"><span class="icon-question-mark"></i></a>
               </div>
             </div>
           ${ui_form_end()}
@@ -221,7 +221,7 @@
       %>
 
       <button class="win-command" title="${_(label)}" rel="tooltip" data-placement="left" id="${id}" style="position: relative">
-        <span class="win-commandimage win-commandring">${icon}</span>
+        <span class="win-commandicon win-commandring icon-${icon}"></span>
         ${content}
       </button>
     </%def>
@@ -229,16 +229,16 @@
     <hr />
 
     <div class="win-commandlayout" style="text-align: center">
-      ${menu_entry('show_board',    '&#xe1a5;', 'Show board')}
-      ${menu_entry('show_chat',     '&#x005a;', 'Show chat')}
-      ${menu_entry('roll_dice',     '&#xe017;', 'Roll dice')}
-      ${menu_entry('pass_turn',     '&#x0060;', 'Pass turn')}
-      ${menu_entry('buy_card',      '&#xe11b;', 'Buy card')}
-      ${menu_entry('show_cards',    '&#xe11a;', 'Show cards', content = '<span class="badge badge-info menu-alert"></span>')}
-      ${menu_entry('show_exchange', '&#xe1d4;', 'Exchange resources')}
-      ${menu_entry('refresh',       '&#xe124;', 'Refresh')}
-      ${menu_entry('show_history',  '&#xe015;', 'Show history')}
-      ${menu_entry('show_stats',    '&#x0072;', 'Show stats')}
+      ${menu_entry('show_board',    'info-7', 'Show board')}
+      ${menu_entry('show_chat',     'comment-3', 'Show chat')}
+      ${menu_entry('roll_dice',     'stop-5', 'Roll dice')}
+      ${menu_entry('pass_turn',     'user-5', 'Pass turn')}
+      ${menu_entry('buy_card',      'document', 'Buy card')}
+      ${menu_entry('show_cards',    'docs', 'Show cards', content = '<span class="badge badge-info menu-alert"></span>')}
+      ${menu_entry('show_exchange', 'transfer', 'Exchange resources')}
+      ${menu_entry('refresh',       'refresh', 'Refresh')}
+      ${menu_entry('show_history',  'clipboard', 'Show history')}
+      ${menu_entry('show_stats',    'bars-3', 'Show stats')}
     </div>
   </div>
 </div>

@@ -30,7 +30,7 @@
       <div class="controls">
         <input class="btn" type="submit" value="${_('Add')}">
         <input class="btn btn-info btn-preview" type="button" value="${_('Preview')}">
-        <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" rel="tooltip" data-placement="right" title="${_('Syntax help')}" target="_new"><i class="icon-help-4"></i></a>
+        <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" rel="tooltip" data-placement="right" title="${_('Syntax help')}" target="_new"><span class="icon-question-mark"></span></a>
       </div>
     </div>
   ${ui_form_end()}

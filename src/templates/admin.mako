@@ -101,7 +101,7 @@ ${ui_section_header('donations', 'Donations')}
     ${ui_submit(value = 'Add')}
   ${ui_form_end()}
 
-  <div id="donations_list" class="listview-container grid-layout"></div>
+  <div id="donations_list" class="listview grid-layout"></div>
 </section>
 
 <!-- "Maintenance" section -->
@@ -123,7 +123,7 @@ ${ui_section_header('maintenance', 'Maintenance')}
     ${ui_submit(value = 'Grant')}
   ${ui_form_end()}
 
-  <div id="maintenance_access_list" class="listview-container grid-layout"></div>
+  <div id="maintenance_access_list" class="listview grid-layout"></div>
 
 </section>
 

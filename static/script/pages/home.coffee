@@ -21,27 +21,27 @@ window.settlers.templates.recent_events.playable = doT.template '
         <div>
           {{? it.is_present}}
             {{? it.is_invited}}
-              <a class="btn" href="#" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top" style="position: relative"><i class="icon-checkmark"></i><span class="badge badge-important badge-join menu-alert"></span></a>
+              <a class="btn" href="#" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top" style="position: relative"><span class="icon-checkmark"></span><span class="badge badge-important badge-join menu-alert"></span></a>
             {{??}}
               {{? it.is_game}}
-                <a class="btn" href="/game/?gid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
-                <a class="btn" href="/game/?gid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history" style="position: relative"><i class="icon-clipboard-2"></i></a>
-                <a class="btn" href="/game/?gid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><span class="icon-info-7"></span><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history" style="position: relative"><span class="icon-clipboard"></span></a>
+                <a class="btn" href="/game/?gid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><span class="icon-comment-3"></i><span class="badge badge-important menu-alert"></span></a>
                 {{? it.is_finished}}
-                  <a class="btn" href="/game/?gid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><i class="icon-bars"></i></a>
+                  <a class="btn" href="/game/?gid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><span class="icon-bars-3"></span></a>
                 {{?}}
               {{??}}
-                <a class="btn" href="/tournament/?tid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><i class="icon-info-3"></i><span class="badge badge-important menu-alert"></span></a>
-                <a class="btn" href="/tournament/?tid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history" style="position: relative"><i class="icon-clipboard-2"></i></a>
-                <a class="btn" href="/tournament/?tid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><i class="icon-comments"></i><span class="badge badge-important menu-alert"></span></a>
-                <a class="btn" href="/tournament/?tid={{= it.id}}#rounds" title="{{= window.hlib._g("Show rounds")}}" rel="tooltip" data-placement="top"><i class="icon-clipboard-2" style="position: relative"></i></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#board" title="{{= window.hlib._g("Show board")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><span class="icon-info-3"></span><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history" style="position: relative"><span class="icon-clipboard"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><span class="icon-comment-3"></span><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#rounds" title="{{= window.hlib._g("Show rounds")}}" rel="tooltip" data-placement="top"><span class="icon-clipboard" style="position: relative"></span></a>
                 {{? it.is_finished}}
-                  <a class="btn" href="/tournament/?tid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><i class="icon-bars"></i></a>
+                  <a class="btn" href="/tournament/?tid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><i class="icon-bars-3"></span></a>
                 {{?}}
               {{?}}
             {{?}}
           {{??}}
-            <button class="btn" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top"><i class="icon-checkmark"></i></button>
+            <button class="btn" id="{{= it.eid}}_join" title="{{= window.hlib._g("Join")}}" rel="tooltip" data-placement="top"><span class="icon-checkmark"></span></button>
           {{?}}
         </div>
       </div>

@@ -42,10 +42,10 @@ window.settlers.templates.game.cards_can_be_used_cell = doT.template '
   <td {{? it.length > 0}}id="card_{{= it[0].id}}"{{?}}>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-documents{{??}}icon-document{{?}} card card-unused" />{{= it.length}}x{{?}}</td>
 '
 window.settlers.templates.game.cards_free_cell = doT.template '
-  <td>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-documents{{??}}icon-document{{?}} card card-free" />{{= it.length}}x{{?}}</td>
+  <td>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-docs{{??}}icon-document{{?}} card card-free" />{{= it.length}}x{{?}}</td>
 '
 window.settlers.templates.game.cards_used_cell = doT.template '
-  <td>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-documents{{??}}icon-document{{?}} card card-used" />{{= it.length}}x{{?}}</td>
+  <td>{{? it.length > 0}}<div class="{{? it.length > 1}}icon-docs{{??}}icon-document{{?}} card card-used" />{{= it.length}}x{{?}}</td>
 '
 window.settlers.templates.game.cards = doT.template '
   <table class="table cards">

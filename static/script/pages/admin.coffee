@@ -5,12 +5,14 @@ window.settlers.refresh_donations_list = () ->
       h200:			(response, ajax) ->
         tmpl = doT.template '
           {{~ it.donations :donation:index}}
-            <div class="mediumListIconTextItem">
-              <div class="mediumListIconTextItem-Image icon-user"></div>
-              <div class="mediumListIconTextItem-Detail">
-                <h4>{{= donation.user.name}} - {{= donation.amount}} {{= window.hlib._g("_currency_")}}</h4>
+            <div class="listview-item bg-color-green">
+              <div class="pull-left" href="#">
+                <img class="listview-item-object" data-src="/static/script/holde.js/60x60">
+              </div>
+              <div class="listview-item-body">
+                <h4 class="listview-item-heading">{{= donation.user.name}} - {{= donation.amount}} {{= window.hlib._g("_currency_")}}</h4>
                 <div class="btn-toolbar">
-                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="donation_remove_{{= donation.user.name}}"><i class="icon-remove"></i></a>
+                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="donation_remove_{{= donation.user.name}}"><span class="icon-remove"></span></a>
                 </div>
               </div>
             </div>
@@ -41,12 +43,14 @@ window.settlers.refresh_maintenance_access_list = () ->
       h200:		(response, ajax) ->
         tmpl = doT.template '
           {{~ it.users :user:index}}
-            <div class="mediumListIconTextItem">
-              <div class="mediumListIconTextItem-Image icon-user"></div>
-              <div class="mediumListIconTextItem-Detail">
-                <h4>{{= user.name}}</h4>
+            <div class="listview-item bg-color-green">
+              <div class="pull-left" href="#">
+                <img class="listview-item-object" data-src="/static/script/holde.js/60x60">
+              </div>
+              <div class="listview-item-body">
+                <h4 class="listview-item-heading">{{= user.name}}</h4>
                 <div class="btn-toolbar">
-                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="user_maintenance_access_revoke_{{= name}}"><i class="icon-remove"></i></a>
+                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="user_maintenance_access_revoke_{{= name}}"><span class="icon-remove"></span></a>
                 </div>
               </div>
             </div>

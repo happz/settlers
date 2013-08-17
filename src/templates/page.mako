@@ -38,38 +38,44 @@
   <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' /> -->
 
   <!-- Stylesheets -->
-  <!--[if lt IE 9]>${style('/static/metro/css/bootmetro-icons-ie7.css')}<![endif]-->
-  ${style('/static/metro/css/bootmetro-icons.css')}
   ${style('/static/metro/css/bootmetro.css')}
   ${style('/static/metro/css/bootmetro-responsive.css')}
-  ${style('/static/metro/css/metro-ui-light.css')}
+  ${style('/static/metro/css/bootmetro-icons.css')}
+  ${style('/static/metro/css/bootmetro-ui-light.css')}
   ${style('/static/metro/css/datepicker.css')}
 
   ${style('/static/css/settlers.css')}
 
-  ${script('/static/metro/scripts/modernizr-2.6.2.min.js')}
+  ${script('/static/metro/js/modernizr-2.6.2.min.js')}
 
   <!-- Scripts -->
   <script src="https://www.google.com/jsapi?key=ABQIAAAAnT7bvt5eCgJnKE_9xHtWrRQL0gKz-n891IYmna21nNIOzPZZixRfXXTxioGg6bd4WAedyIJq9y470A" type="text/javascript"></script>
 
-  ${script('/static/script/jquery.js')}
+  ${script('/static/metro/js/jquery-1.10.0.min.js')}
   ${script('/static/script/jquery-ui.js')}
 
   ${script('/static/script/jquery.form.js')}
   ${script('/static/script/jquery.timers.js')}
   ${script('/static/script/jquery.sound.js')}
-  ${script('/static/script/stacktrace.js')}
-  ${script('/static/script/doT.js')}
-  ${script('/static/script/strftime.js')}
-  ${script('/static/script/parsley/parsley.min.js')}
 
-  ${script('/static/metro/scripts/jquery.mousewheel.min.js')}
-  ${script('/static/metro/scripts/jquery.scrollTo.min.js')}
-  ${script('/static/metro/scripts/bootstrap.min.js')}
-  ${script('/static/metro/scripts/bootmetro-panorama.min.js')}
-  ${script('/static/metro/scripts/bootmetro-charms.js')}
-  ${script('/static/metro/scripts/holder.min.js')}
-  ${script('/static/metro/scripts/bootstrap-datepicker.js')}
+  ${script('/static/script/doT.js')}
+  ${script('/static/script/holder.js')}
+  ${script('/static/script/marked.js')}
+  ${script('/static/script/parsley/parsley.min.js')}
+  ${script('/static/script/stacktrace.js')}
+  ${script('/static/script/strftime.js')}
+
+  ${script('/static/metro/js/jquery.mousewheel.min.js')}
+  ${script('/static/metro/js/jquery.touchSwipe.min.js')}
+
+  <!--[if IE 7]>
+    ${script('/static/metro/js/min/bootmetro-icons-ie7.min.js')}
+  <![endif]-->
+  ${script('/static/metro/js/min/bootstrap.min.js')}
+  ${script('/static/metro/js/min/bootmetro-panorama.min.js')}
+  ${script('/static/metro/js/min/bootmetro-pivot.min.js')}
+  ${script('/static/metro/js/min/bootmetro-charms.min.js')}
+  ${script('/static/metro/js/min/bootstrap-datepicker.min.js')}
 
   ${script('/static/script/hlib/ajax.min.js')}
   ${script('/static/script/hlib/pager.min.js')}
@@ -79,7 +85,6 @@
   ${script('/static/script/hlib/hlib.min.js')}
   ${script('/static/script/settlers.min.js')}
   ${script('/static/script/validators.min.js')}
-  ${script('/static/script/marked.js')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
@@ -162,7 +167,7 @@
   %>
 
   <a class="win-command" href="${href}" title="${_(label)}" rel="tooltip" data-placement="top" ${id} style="position: relative">
-    <span class="win-commandimage win-commandring">${icon}</span>
+    <span class="win-commandicon win-commandring icon-${icon}"></span>
     <span class="win-label">${_(label)}</span>
     % if len(id) > 0:
       <span class="badge badge-important menu-alert"></span>
@@ -186,27 +191,27 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12" style="text-align: center">
-          ${menu_entry('&#x0021;', 'Home', href = '/home/', id = 'menu_home', content = '<span class="badge badge-info menu-alert"></span>')}
-          ${menu_entry('&#xe03e;', 'New ...', href = '/new/')}
-          ${menu_entry('&#xe20d;', 'Board', href = '/chat/', id = 'menu_chat')}
-          ${menu_entry('&#x0072;', 'Stats', href = '/stats/')}
-          ${menu_entry('&#x0070;', 'Settings', href = '/settings/')}
+          ${menu_entry('home', 'Home', href = '/home/', id = 'menu_home', content = '<span class="badge badge-info menu-alert"></span>')}
+          ${menu_entry('plus-5', 'New ...', href = '/new/')}
+          ${menu_entry('comment-3', 'Board', href = '/chat/', id = 'menu_chat')}
+          ${menu_entry('bars-3', 'Stats', href = '/stats/')}
+          ${menu_entry('cog-6', 'Settings', href = '/settings/')}
 
           <hr class="win-command" />
 
-          ${menu_entry('&#xe1a4;', 'Help', href = 'http://wiki.happz.cz/doku.php?id=settlers:start')}
+          ${menu_entry('question-mark', 'Help', href = 'http://wiki.happz.cz/doku.php?id=settlers:start')}
 
           % if hruntime.user.is_admin:
-            ${menu_entry('&#x006e;', 'Admin', href = '/admin/')}
-            ${menu_entry('&#xe037;', 'Monitor', href = '/monitor/')}
+            ${menu_entry('tools', 'Admin', href = '/admin/')}
+            ${menu_entry('info-5', 'Monitor', href = '/monitor/')}
             <hr class="win-command" />
           % endif
-          ${menu_entry('&#xe040;', 'Log out', href = '/logout', id = 'menu_logout')}
+          ${menu_entry('logout', 'Log out', href = '/logout', id = 'menu_logout')}
 
           <hr class="win-command" />
 
-          ${menu_entry('&#xe126;', 'Report issue', href = '/issues/')}
-          ${menu_entry('&#xe12a;', 'About ...', href = '/about/')}
+          ${menu_entry('warning-4', 'Report issue', href = '/issues/')}
+          ${menu_entry('info', 'About ...', href = '/about/')}
         </div>
       </div>
     </div>
