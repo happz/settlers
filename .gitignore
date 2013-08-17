@@ -6,6 +6,8 @@ DEADJOE
 *.pyc
 *.pyo
 
+db.backup
+
 doc/*
 lib/*
 
