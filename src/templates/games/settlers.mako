@@ -231,7 +231,7 @@
     <div class="win-commandlayout" style="text-align: center">
       ${menu_entry('show_board',    'info-7', 'Show board')}
       ${menu_entry('show_chat',     'comment-3', 'Show chat')}
-      ${menu_entry('roll_dice',     'stop-5', 'Roll dice')}
+      ${menu_entry('roll_dice',     'windows8', 'Roll dice')}
       ${menu_entry('pass_turn',     'user-5', 'Pass turn')}
       ${menu_entry('buy_card',      'document', 'Buy card')}
       ${menu_entry('show_cards',    'docs', 'Show cards', content = '<span class="badge badge-info menu-alert"></span>')}
