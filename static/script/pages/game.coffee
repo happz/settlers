@@ -4,6 +4,9 @@ window.settlers.events['game.GameCreated']              = (e) ->
 window.settlers.events['game.GameFinished']             = (e) ->
   window.hlib._g 'Game has been finished'
 
+window.settlers.events['game.GameArchived']             = (e) ->
+  window.hlib._g 'Game has been archived'
+
 window.settlers.events['game.GameCanceled']             = (e) ->
   if e.reason == 1
     return window.hlib._g 'Game has been canceled due to massive timeouts'
