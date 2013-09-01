@@ -14,10 +14,10 @@ ${ui_page_header('New ...')}
 
 <!-- "Game" section -->
 ${ui_section_header('game', 'Game')}
-      ${ui_form_start(legend = 'New game', id = 'new_game')}
+      ${ui_form_start(legend = 'New game', id = 'new_game', validate = True)}
 
         <!-- Game -->
-        ${ui_select_start(form_name = 'kind', label = 'Game kind', required = True)}
+        ${ui_select_start(form_name = 'kind', label = 'Game kind', required = True, validators = 'required notblank inlist="' + ', '.join(games.GAME_KINDS) + '"')}
         <!-- ${ui_select_start(form_name = 'kind', label = 'Game kind', default = 'Choose...', required = True)} -->
           % for kind in games.GAME_KINDS:
             ${ui_select_option(value = kind, selected = (True if kind == 'settlers' else False), label = kind)}
@@ -25,17 +25,17 @@ ${ui_section_header('game', 'Game')}
         ${ui_select_end()}
 
         <!-- Name -->
-        ${ui_input(form_name = 'name', type = 'text', label = 'Game name', required = True)}
+        ${ui_input(form_name = 'name', type = 'text', label = 'Game name', required = True, validators = 'required notblank minlength="2" maxlength="64"')}
 
         <!-- Number of players -->
-        ${ui_select_start(form_name = 'limit', label = 'Number of players', required = True)}
+        ${ui_select_start(form_name = 'limit', label = 'Number of players', required = True, validators = 'required notblank inlist="' + ', '.join(['3', '4']) + '" type="number"')}
           % for i in range(3, 5):
             ${ui_select_option(value = i, selected = False, label = str(i))}
           % endfor
         ${ui_select_end()}
 
         <!-- Description -->
-        ${ui_input(form_name = 'desc', type = 'text', label = 'Game description')}
+        ${ui_input(form_name = 'desc', type = 'text', label = 'Game description', validators = 'maxlength="64"')}
 
         ${ui_submit(value = 'Create', id = 'new_game_submit')}
       </fieldset>
