@@ -146,6 +146,9 @@ class Tournament(lib.play.Playable):
 
     return lib.play.Playable.__getattr__(self, name)
 
+  def get_type(self):
+    return 'tournament'
+
   def to_api(self):
     d = lib.play.Playable.to_api(self)
 

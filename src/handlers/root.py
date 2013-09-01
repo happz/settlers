@@ -5,6 +5,7 @@ import games
 import tournaments
 import handlers
 import handlers.admin
+import handlers.archive
 import handlers.home
 import handlers.chat
 import handlers.game
@@ -52,6 +53,7 @@ class PullNotify(hlib.api.ApiJSON):
 
 class Handler(hlib.handlers.root.Handler):
   admin		= handlers.admin.Handler()
+  archive     = handlers.archive.Handler()
   home		= handlers.home.Handler()
   issues	= handlers.issues.Handler()
   maintenance	= handlers.maintenance.Handler()
@@ -91,6 +93,8 @@ class Handler(hlib.handlers.root.Handler):
 
   @api
   def submit_error(self, error_msg = None, **kwargs):
+    return
+
     if error_msg:
       if error_msg == 'Unknown token' and 'token' in kwargs:
         hruntime.i18n.coverage.miss(kwargs['token'])

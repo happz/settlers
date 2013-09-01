@@ -46,7 +46,15 @@ class GenericValidateGID(hlib.input.SchemaValidator):
 # ----- Lists --------------------------------
 class GameLists(lib.play.PlayableLists):
   def get_objects(self, l):
-    return [hruntime.dbroot.games[gid] for gid in l]
+    ret = []
+
+    for gid in l:
+      if gid in hruntime.dbroot.games:
+        ret.append(hruntime.dbroot.games[gid])
+      if gid in hruntime.dbroot.games_archived:
+        ret.append(hruntime.dbroot.games_archived[gid])
+
+    return ret
 
   def get_active(self, user):
     return [g.id for g in hruntime.dbroot.games.values() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))]
@@ -55,7 +63,16 @@ class GameLists(lib.play.PlayableLists):
     return [g.id for g in hruntime.dbroot.games.values() if not g.is_active and g.has_player(user)]
 
   def get_archived(self, user):
-    return [g.id for g in hruntime.dbroot.games_archived.values() if user.name in g.players]
+    ret = []
+    for g in hruntime.dbroot.games_archived.values():
+      try:
+        if g.has_player(user):
+          ret.append(g.id)
+      except AttributeError, e:
+        print >> sys.stderr, ('Game %i caused AttributeError when accessed in archive' % g.id)
+        continue
+
+    return ret
 
   # Shortcuts
   def created(self, g):
@@ -361,6 +378,9 @@ class Game(lib.play.Playable):
       return d
 
     return lib.play.Playable.__getattr__(self, name)
+
+  def get_type(self):
+    return 'game'
 
   def to_api(self):
     d = lib.play.Playable.to_api(self)

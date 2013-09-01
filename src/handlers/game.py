@@ -24,10 +24,15 @@ from lib.chat import ValidateChatPost
 import hruntime
 
 def require_presence_in_game(gid):
-  if gid not in hruntime.dbroot.games:
+  if gid in hruntime.dbroot.games:
+    g = hruntime.dbroot.games[gid]
+
+  elif gid in hruntime.dbroot.games_archived:
+    g = hruntime.dbroot.games_archived[gid]
+
+  else:
     raise hlib.error.AccessDeniedError()
 
-  g = hruntime.dbroot.games[gid]
   if not g.has_player(hruntime.user):
     raise hlib.error.AccessDeniedError()
 

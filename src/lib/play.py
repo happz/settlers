@@ -148,6 +148,9 @@ class Playable(hlib.database.DBObject):
 
     return hlib.database.DBObject.__getattr__(self, name)
 
+  def get_type(self):
+    return None
+
   def has_player(self, user):
     return user in self.user_to_player
 
