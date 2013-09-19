@@ -40,11 +40,17 @@
   <!-- Stylesheets -->
   ${style('/static/metro/css/bootmetro.css')}
   ${style('/static/metro/css/bootmetro-responsive.css')}
-  ${style('/static/metro/css/bootmetro-icons.css')}
+  % if True:
+    <link rel="stylesheet" href="http://osadnici.happz.cz/static/metro/css/bootmetro-icons.css" type="text/css" />
+  % else:
+    ${style('/static/metro/css/bootmetro-icons2.css')}
+  % endif
   ${style('/static/metro/css/bootmetro-ui-light.css')}
   ${style('/static/metro/css/datepicker.css')}
 
   ${style('/static/css/settlers.css')}
+
+  <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
   ${script('/static/metro/js/modernizr-2.6.2.min.js')}
 
@@ -75,7 +81,6 @@
   ${script('/static/metro/js/min/bootmetro-panorama.min.js')}
   ${script('/static/metro/js/min/bootmetro-pivot.min.js')}
   ${script('/static/metro/js/min/bootmetro-charms.min.js')}
-  ${script('/static/metro/js/min/bootstrap-datepicker.min.js')}
 
   ${script('/static/script/hlib/ajax.min.js')}
   ${script('/static/script/hlib/pager.min.js')}
@@ -85,8 +90,6 @@
   ${script('/static/script/hlib/hlib.min.js')}
   ${script('/static/script/settlers.min.js')}
   ${script('/static/script/validators.min.js')}
-
-  <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
 
   % if self.uri.startswith('games/'):
     <%
@@ -192,6 +195,7 @@
       <div class="row-fluid">
         <div class="span12" style="text-align: center">
           ${menu_entry('home', 'Home', href = '/home/', id = 'menu_home', content = '<span class="badge badge-info menu-alert"></span>')}
+          ${menu_entry('archive', 'Archive', href = '/archive/')}
           ${menu_entry('plus-5', 'New ...', href = '/new/')}
           ${menu_entry('comment-3', 'Board', href = '/chat/', id = 'menu_chat')}
           ${menu_entry('bars-3', 'Stats', href = '/stats/')}
@@ -210,7 +214,7 @@
 
           <hr class="win-command" />
 
-          ${menu_entry('warning-4', 'Report issue', href = '/issues/')}
+          ${menu_entry('bug', 'Report issue', href = '/issues/')}
           ${menu_entry('info', 'About ...', href = '/about/')}
         </div>
       </div>
