@@ -6,6 +6,8 @@ __license__                     = 'http://www.php-suit.com/dpl'
 import os.path
 import handlers
 
+import hlib.event
+
 from handlers import page, require_login, require_write
 
 # pylint: disable-msg=F0401
@@ -19,3 +21,9 @@ class Handler(handlers.GenericHandler):
   @page
   def index(self):
     return hruntime.cache.test_and_set(hruntime.user, 'archive-page', self.generate, 'archive.mako')
+
+def __invalidate_render_cache(e):
+  for p in e.game.players.values():
+    hruntime.cache.remove(p.user, 'archive-page')
+
+hlib.event.Hook('game.GameArchived', 'invalidate_rendered', __invalidate_render_cache)
