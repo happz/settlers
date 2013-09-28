@@ -1503,6 +1503,7 @@ class Game(games.Game):
 
 class GameCreationFlags(games.GameCreationFlags):
   FLAGS = games.GameCreationFlags.FLAGS + ['floating_desert']
+  MAX_OPPONENTS = 3
 
 import events.game.settlers
 

@@ -126,7 +126,8 @@ def game_module(k, submodule = None):
   return sys.modules['games.' + k + ('.' + submodule if submodule != None else '')]
 
 class GameCreationFlags(hlib.database.DBObject):
-  FLAGS = ['name', 'limit', 'turn_limit', 'password', 'desc', 'kind', 'opponent1', 'opponent2', 'opponent3', 'tournament_players', 'dont_shuffle', 'owner']
+  FLAGS = ['name', 'limit', 'turn_limit', 'password', 'desc', 'kind', 'dont_shuffle', 'owner']
+  MAX_OPPONENTS = 1
 
   def __init__(self, **kwargs):
     hlib.database.DBObject.__init__(self)
@@ -134,17 +135,19 @@ class GameCreationFlags(hlib.database.DBObject):
     for f in self.FLAGS:
       setattr(self, f, None)
 
+    self.opponents = []
+
     for k, v in kwargs.iteritems():
       if k not in self.FLAGS:
         raise AttributeError(k)
 
       setattr(self, k, v)
 
-  def __getattr__(self, name):
-    if name == 'opponents':
-      return [self.opponent1, self.opponent2, self.opponent3]
-
-    return hlib.database.DBObject.__getattr__(self, name)
+    for i in range(0, MAX_OPPONENTS):
+      k = 'opponent' + str(i + 1)
+      if k not in kwargs:
+        continue
+      self.opponents.append(kwargs[k])
 
 class Card(hlib.database.DBObject):
   def __init__(self, game, player, typ, bought):

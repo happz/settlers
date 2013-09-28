@@ -50,6 +50,10 @@ hlib.stats.init_namespace('Tournaments lists', {
   'Archived':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('archived').items() ])
 })
 
+class TournamentCreationFlags(games.GameCreationFlags):
+  FLAGS = ['name', 'desc', 'kind', 'owner', 'limit', 'engine']
+  MAX_OPPONENTS = 16
+
 class Player(lib.play.Player):
   def __init__(self, tournament, user):
     lib.play.Player.__init__(self, user)
@@ -252,7 +256,9 @@ hlib.event.Hook('tournament.Created', 'invalidate_caches',  lambda e: _tournamen
 hlib.event.Hook('torunament.Started', 'invalidate_caches',  lambda e: _tournament_lists.started(e.tournament))
 hlib.event.Hook('tournament.Finished', 'invalidate_caches', lambda e: _tournament_lists.finished(e.tournament))
 hlib.event.Hook('tournament.Archived', 'invalidate_caches', lambda e: _tournament_lists.archived(e.tournament))
+hlib.event.Hook('tournament.Canceled', 'invalidate_caches', lambda e: _tournament_lists.canceled(e.tournament))
 hlib.event.Hook('tournament.PlayerJoined', 'invalidate_caches', lambda e: _tournament_lists.inval_players(e.tournament))
+hlib.event.Hook('tournament.PlayerInvited', 'invalidate_caches', lambda e: _tournament_lists.inval_players(e.tournament))
 hlib.event.Hook('tournament.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_users([p.user for p in e.tournament.players.values()], 'recent_events'))
 
 import events.tournament
