@@ -29,3 +29,6 @@
 [submodule "libs/holder"]
 	path = libs/holder
 	url = https://github.com/imsky/holder.git
+[submodule "libs/offline"]
+	path = libs/offline
+	url = https://github.com/HubSpot/offline.git
