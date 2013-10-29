@@ -41,7 +41,8 @@ class UserEvent(Event):
   def to_api(self):
     d = Event.to_api(self)
 
-    d['user'] = hlib.api.User(self.user)
+    if self.user:
+      d['user'] = hlib.api.User(self.user)
 
     return d
 
