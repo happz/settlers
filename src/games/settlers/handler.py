@@ -143,6 +143,7 @@ class Handler(handlers.GenericHandler):
 
   class ValidateNew(ValidateNew):
     floating_desert = validator_factory(hlib.input.NotEmpty(), hlib.input.Bool())
+    spread_fields   = validator_factory(hlib.input.NotEmpty(), hlib.input.Bool())
 
   @require_login
   @require_write

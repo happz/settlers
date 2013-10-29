@@ -138,12 +138,12 @@ class GameCreationFlags(hlib.database.DBObject):
     self.opponents = []
 
     for k, v in kwargs.iteritems():
-      if k not in self.FLAGS:
+      if k not in self.FLAGS and not k.startswith('opponent'):
         raise AttributeError(k)
 
       setattr(self, k, v)
 
-    for i in range(0, MAX_OPPONENTS):
+    for i in range(0, self.MAX_OPPONENTS):
       k = 'opponent' + str(i + 1)
       if k not in kwargs:
         continue

@@ -22,7 +22,7 @@ window.settlers.setup_forms = () ->
 
   new window.hlib.Form
     fid:                'new_tournament'
-    clear_fields:	['engine', 'kind', 'name', 'num_players', 'limit', 'desc', 'password', 'turn_limit', 'floating_desert']
+    clear_fields:	['engine', 'kind', 'name', 'num_players', 'limit', 'desc', 'password', 'turn_limit', 'floating_desert', 'spread_fields']
     refill:             true
     handlers:
       h200:     (response, form) ->

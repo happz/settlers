@@ -68,6 +68,12 @@ ${ui_section_header('game', 'Game')}
           ${ui_select_option(value = 1, selected = True, label = 'Yes')}
           ${ui_select_option(value = 0, selected = False, label = 'No')}
         ${ui_select_end()}
+
+        <!-- Spread fields -->
+        ${ui_select_start(form_name = 'spread_fields', label = 'Spread 6/8 fields', default = False)}
+          ${ui_select_option(value = 1, selected = True, label = 'Yes')}
+          ${ui_select_option(value = 0, selected = False, label = 'No')}
+        ${ui_select_end()}
       ${ui_form_end()}
 </section>
 

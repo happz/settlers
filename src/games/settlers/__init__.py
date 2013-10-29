@@ -539,48 +539,76 @@ class Board(games.Board):
       self.ports.push(BoardPort(self.game, clock, resource, nodes))
 
     # create fields
-    resources = [Resource.RESOURCE_SHEEP,
-                 Resource.RESOURCE_SHEEP,
-                 Resource.RESOURCE_SHEEP,
-                 Resource.RESOURCE_SHEEP,
-                 Resource.RESOURCE_ROCK,
-                 Resource.RESOURCE_ROCK,
-                 Resource.RESOURCE_ROCK,
-                 Resource.RESOURCE_CLAY,
-                 Resource.RESOURCE_CLAY,
-                 Resource.RESOURCE_CLAY,
-                 Resource.RESOURCE_WOOD,
-                 Resource.RESOURCE_WOOD,
-                 Resource.RESOURCE_WOOD,
-                 Resource.RESOURCE_WOOD,
-                 Resource.RESOURCE_GRAIN,
-                 Resource.RESOURCE_GRAIN,
-                 Resource.RESOURCE_GRAIN,
-                 Resource.RESOURCE_GRAIN]
+    while True:
+      resources = [Resource.RESOURCE_SHEEP,
+                   Resource.RESOURCE_SHEEP,
+                   Resource.RESOURCE_SHEEP,
+                   Resource.RESOURCE_SHEEP,
+                   Resource.RESOURCE_ROCK,
+                   Resource.RESOURCE_ROCK,
+                   Resource.RESOURCE_ROCK,
+                   Resource.RESOURCE_CLAY,
+                   Resource.RESOURCE_CLAY,
+                   Resource.RESOURCE_CLAY,
+                   Resource.RESOURCE_WOOD,
+                   Resource.RESOURCE_WOOD,
+                   Resource.RESOURCE_WOOD,
+                   Resource.RESOURCE_WOOD,
+                   Resource.RESOURCE_GRAIN,
+                   Resource.RESOURCE_GRAIN,
+                   Resource.RESOURCE_GRAIN,
+                   Resource.RESOURCE_GRAIN]
 
-    if self.game.flags.floating_desert == True:
-      resources.append(Resource.RESOURCE_DESERT)
+      if self.game.flags.floating_desert == True:
+        resources.append(Resource.RESOURCE_DESERT)
 
-    numbers = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12]
+      numbers = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12]
 
-    random.shuffle(resources)
-    random.shuffle(numbers)
+      random.shuffle(resources)
+      random.shuffle(numbers)
 
-    for i in range(1, 20):
-      if self.game.flags.floating_desert != True:
-        if i == 10:
-          field = (BoardField.TYPE_DESERT, 1, 7, Resource.RESOURCE_DESERT)
+      for i in range(1, 20):
+        if self.game.flags.floating_desert != True:
+          if i == 10:
+            field = (BoardField.TYPE_DESERT, 1, 7, Resource.RESOURCE_DESERT)
+          else:
+            field = (BoardField.TYPE_RESOURCE, 0, numbers.pop(0), resources.pop(0))
         else:
-          field = (BoardField.TYPE_RESOURCE, 0, numbers.pop(0), resources.pop(0))
-      else:
-        resource = resources.pop(0)
+          resource = resources.pop(0)
 
-        if resource == Resource.RESOURCE_DESERT:
-          field = (BoardField.TYPE_DESERT, 1, 7, resource)
-        else:
-          field = (BoardField.TYPE_RESOURCE, 0, numbers.pop(0), resource)
+          if resource == Resource.RESOURCE_DESERT:
+            field = (BoardField.TYPE_DESERT, 1, 7, resource)
+          else:
+            field = (BoardField.TYPE_RESOURCE, 0, numbers.pop(0), resource)
 
-      self.fields.push(BoardField(self.game, field[0], field[1], field[2], field[3]))
+        self.fields.push(BoardField(self.game, field[0], field[1], field[2], field[3]))
+
+      if self.game.flags.spread_fields != True:
+        break
+
+      too_close_cnt = 0
+
+      for field_id, field_neighbours in games.settlers.board_def.FIELD_NEIGHBOURS.items():
+        too_close_cnt = 0
+
+        if self.fields[field_id].number not in (6, 8):
+          continue
+
+        for field_neighbour_id in field_neighbours:
+          if self.fields[field_neighbour_id].number in (6, 8):
+            too_close_cnt += 1
+
+        if too_close_cnt >= 2:
+          break
+
+      break
+
+      if too_close_cnt >= 2:
+        hlib.log.log_dbg('New board: reroll fields, spread enabled')
+        continue
+
+      # There's no field with more than 1 (6, 8) neighbour, we're done
+      break
 
     for i in range(1, 55):
       self.nodes.push(BoardNode(self, BoardNode.TYPE_FREE, games.DummyOwner()))
@@ -1502,7 +1530,7 @@ class Game(games.Game):
     return g
 
 class GameCreationFlags(games.GameCreationFlags):
-  FLAGS = games.GameCreationFlags.FLAGS + ['floating_desert']
+  FLAGS = games.GameCreationFlags.FLAGS + ['floating_desert', 'spread_fields']
   MAX_OPPONENTS = 3
 
 import events.game.settlers
