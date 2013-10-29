@@ -35,7 +35,7 @@ class Handler(handlers.GenericHandler):
       if not g.is_waiting_begin or g.deadline > hruntime.time:
         continue
 
-      t = (g.id, g.type, hruntime.time - g.deadline)
+      t = (g.id, g.type, hruntime.time - g.deadline, [p.user.name for p in g.players.values()], g.forhont_player.user.name)
       g.cancel(reason = events.game.GameCanceled.REASON_EMPTY, user = None)
       canceled.append(t)
 
@@ -51,10 +51,9 @@ class Handler(handlers.GenericHandler):
       if not g.is_waiting_turn or g.deadline > hruntime.time:
         continue
 
-      d = [g.id, hruntime.time - g.deadline, [p.user.name for p in g.players.values()], g.forhont_player.user.name]
-
-      g.cancel(reason = events.game.GameCanceled.REASON_ABSENTEE, user = g.forhont_player.user)
-      canceled.append(d)
+      t = (g.id, g.type, hruntime.time - g.deadline, [p.user.name for p in g.players.values()], g.forhont_player.user.name)
+      #g.cancel(reason = events.game.GameCanceled.REASON_ABSENTEE, user = g.forhont_player.user)
+      canceled.append(t)
 
     return hlib.api.Reply(200, canceled_games = canceled)
 
