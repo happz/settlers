@@ -48,6 +48,7 @@
   ${style('/static/metro/css/bootmetro-ui-light.css')}
   ${style('/static/metro/css/datepicker.css')}
 
+  ${style('/static/css/offline-theme-default.css')}
   ${style('/static/css/settlers.css')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
@@ -70,6 +71,7 @@
   ${script('/static/script/parsley/parsley.min.js')}
   ${script('/static/script/stacktrace.js')}
   ${script('/static/script/strftime.js')}
+  ${script('/static/script/offline.js')}
 
   ${script('/static/metro/js/jquery.mousewheel.min.js')}
   ${script('/static/metro/js/jquery.touchSwipe.min.js')}
@@ -123,6 +125,22 @@
   <script src="/i18n?lang=${hruntime.i18n.name}" type="text/javascript"></script>
 
   <script type="text/javascript">
+    Offline.options = {
+      checkOnLoad: false,
+      interceptRequests: true,
+      reconnect: {
+        initialDelay: 60
+      },
+      requests: false,
+      game: false,
+      checks: {
+        active: 'xhr',
+        xhr: {
+          url: '/pull_notify'
+        }
+      }
+    };
+
     window.settlers = window.settlers || {};
     window.settlers.title = "${hlib.unescape(_(hruntime.app.config['label']))}";
 
