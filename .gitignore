@@ -16,3 +16,6 @@ lib/*
 
 *.map
 *.min.js
+
+# Per-instance HTML status pages
+static/status/*.html
