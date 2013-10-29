@@ -46,7 +46,7 @@ class Stats(games.stats.Stats):
   def get_records(self, start, length):
     records = self.records
 
-    return (records[start:max(start + length, len(records) - 1)], len(records), None)
+    return (records[start:start + max(length, len(records))], len(records), None)
 
   def refresh_stats(self):
     new_stats = PlayerStatsWrapper()
