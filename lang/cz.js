@@ -372,6 +372,7 @@ window.settlers.i18n_table = {
     'Something unexpected has happened. Error report has been sent to server. Please, reload page using F5 key': 'Stalo se něco nečekaného. Zpráva o chybě už byla zaslána na server. Obnovte si stránku klávesou F5',
     'Sound notification': 'Zvukové upozornění',
     'Sponsoring': 'Sponzoři',
+    'Spread 6/8 fields': 'Rozptýlit políčka s&nbsp;čísly&nbsp;6&nbsp;a&nbsp;8',
     'Start time can not be in past': 'Začátek dovolené nemůže být v minulosti',
     'Start vacation:': 'Dovolená:',
     'Statistics': 'Statistiky',
