@@ -23,7 +23,8 @@ EPYDOC_PACKAGES := $(ROOT_DIR)/src/events $(ROOT_DIR)/src/games $(ROOT_DIR)/src/
 
 NOSE_OPTIONS := -v -w $(ROOT_DIR)/tests/ --with-id --all-modules
 
-COFFEE := /usr/bin/coffee
+COFFEE := /home/mprchlik/.npm/coffee-script/1.6.3/package/bin/coffee
+SLIMIT := ~/virtualenv/settlers/bin/slimit
 
 .PHONY: clean cloc doc pylint tests test_all
 
@@ -103,7 +104,7 @@ scripts: scripts_compile scripts_minify
 	$(COFFEE) -c --bare -m $<
 
 %.min.js: %.js
-	-cat $< | /data/virtualenv/settlers/bin/slimit > $@
+	cat $< | $(SLIMIT) > $@
 
 STYLES = $(CSS_DIR)/settlers.css $(CSS_DIR)/pages/settings.css $(CSS_DIR)/pages/game.css $(CSS_DIR)/pages/admin.css $(CSS_DIR)/pages/maintenance.css \
          $(CSS_DIR)/pages/monitor.css $(CSS_DIR)/pages/home.css \

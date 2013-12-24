@@ -13,7 +13,7 @@ import time
 
 import hlib
 import hlib.error
-import hlib.event
+import hlib.events
 import hlib.i18n
 import hlib.input
 import hlib.log
@@ -24,7 +24,7 @@ import lib.datalayer
 import lib.play
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 GAME_KINDS = ['settlers']
 """
@@ -68,7 +68,7 @@ class GameLists(lib.play.PlayableLists):
       try:
         if g.has_player(user):
           ret.append(g.id)
-      except AttributeError, e:
+      except AttributeError:
         print >> sys.stderr, ('Game %i caused AttributeError when accessed in archive' % g.id)
         continue
 
@@ -88,16 +88,15 @@ f_active	= _game_lists.f_active
 f_inactive	= _game_lists.f_inactive
 f_archived	= _game_lists.f_archived
 
-import hlib.stats
-hlib.stats.init_namespace('Games lists', {
-  'Active':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('active').items() ]),
-  'Inactive':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('inactive').items() ]),
-  'Archived':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('archived').items() ])
-})
+from hlib.stats import stats as STATS
+with STATS:
+  STATS.set('Games lists', {
+    'Active':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('active').items() ]),
+    'Inactive':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('inactive').items() ]),
+    'Archived':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('archived').items() ])
+  })
 
 # ----- For handler -------------------------
-import hlib.input
-
 class ValidateNew(hlib.input.SchemaValidator):
   name                        = hlib.input.validator_factory(hlib.input.CommonString(), hlib.input.MinLength(2), hlib.input.MaxLength(64))
   limit                       = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([3, 4]))
@@ -459,7 +458,7 @@ class Game(lib.play.Playable):
       player.confirmed = False
 
     else:
-      hlib.event.trigger('game.PlayerJoined', self, game = self, user = player.user)
+      hlib.events.trigger('game.PlayerJoined', self, game = self, user = player.user)
 
       # pylint: disable-msg=W0201
       self.last_pass = hruntime.time
@@ -470,7 +469,7 @@ class Game(lib.play.Playable):
     return player
 
   def begin(self):
-    hlib.event.trigger('game.GameStarted', self, game = self)
+    hlib.events.trigger('game.GameStarted', self, game = self)
 
   def finish(self):
     self.type = Game.TYPE_FINISHED
@@ -479,16 +478,16 @@ class Game(lib.play.Playable):
     for p in self.players.values():
       p.user.vacation_add_game()
 
-    hlib.event.trigger('game.GameFinished', self, game = self)
+    hlib.events.trigger('game.GameFinished', self, game = self)
 
   def cancel(self, reason = None, user = None):
     self.type = Game.TYPE_CANCELED
 
     if reason == None:
-      hlib.event.trigger('game.GameCanceled', self, game = self)
+      hlib.events.trigger('game.GameCanceled', self, game = self)
 
     else:
-      hlib.event.trigger('game.GameCanceled', self, game = self, reason = reason, user = user)
+      hlib.events.trigger('game.GameCanceled', self, game = self, reason = reason, user = user)
 
   def do_pass_turn(self, forced = False):
     pass
@@ -499,7 +498,7 @@ class Game(lib.play.Playable):
       next_round = self.do_pass_turn(forced = forced)
       next_player = self.forhont_player
 
-      hlib.event.trigger('game.Pass', self, game = self, prev = prev_player.user, next = next_player.user)
+      hlib.events.trigger('game.Pass', self, game = self, prev = prev_player.user, next = next_player.user)
 
     else:
       next_round = self.do_pass_turn(forced = forced)
@@ -549,7 +548,7 @@ class Game(lib.play.Playable):
 
     g = game_class(flags)
 
-    hlib.event.trigger('game.GameCreated', g, game = g)
+    hlib.events.trigger('game.GameCreated', g, game = g)
 
     if flags.owner != hruntime.dbroot.users['SYSTEM']:
       g.join_player(flags.owner, flags.password)
@@ -560,7 +559,7 @@ class Game(lib.play.Playable):
 
       p = g.join_player(u, flags.password, invite = True)
 
-      hlib.event.trigger('game.PlayerInvited', g, game = g, user = p.user)
+      hlib.events.trigger('game.PlayerInvited', g, game = g, user = p.user)
 
     return g
 
@@ -697,15 +696,15 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
   return g
 
 # Event hooks
-hlib.event.Hook('game.GameCreated', 'invalidate_caches',  lambda e: _game_lists.created(e.game))
-hlib.event.Hook('game.GameStarted', 'invalidate_caches',  lambda e: _game_lists.started(e.game))
-hlib.event.Hook('game.GameFinished', 'invalidate_caches', lambda e: _game_lists.finished(e.game))
-hlib.event.Hook('game.GameArchived', 'invalidate_caches', lambda e: _game_lists.archived(e.game))
-hlib.event.Hook('game.GameCanceled', 'invalidate_caches', lambda e: _game_lists.canceled(e.game))
-hlib.event.Hook('game.PlayerJoined', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
-hlib.event.Hook('game.PlayerInvited', 'invalidate_caches', lambda e: _game_lists.inval_players(e.game))
-hlib.event.Hook('game.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_users([p.user for p in e.game.players.values()], 'recent_events'))
-hlib.event.Hook('game.Pass', 'invalidate_caches', lambda e: hruntime.cache.remove_for_users([p.user for p in e.game.players.values()], 'recent_events'))
+hlib.events.Hook('game.GameCreated',  lambda e: _game_lists.created(e.game))
+hlib.events.Hook('game.GameStarted',  lambda e: _game_lists.started(e.game))
+hlib.events.Hook('game.GameFinished', lambda e: _game_lists.finished(e.game))
+hlib.events.Hook('game.GameArchived', lambda e: _game_lists.archived(e.game))
+hlib.events.Hook('game.GameCanceled', lambda e: _game_lists.canceled(e.game))
+hlib.events.Hook('game.PlayerJoined', lambda e: _game_lists.inval_players(e.game))
+hlib.events.Hook('game.PlayerInvited', lambda e: _game_lists.inval_players(e.game))
+hlib.events.Hook('game.ChatPost', lambda e: hruntime.cache.remove_for_users([p.user for p in e.game.players.values()], 'recent_events'))
+hlib.events.Hook('game.Pass', lambda e: hruntime.cache.remove_for_users([p.user for p in e.game.players.values()], 'recent_events'))
 
 import games.settlers
 

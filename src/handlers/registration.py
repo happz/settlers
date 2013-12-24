@@ -1,12 +1,10 @@
 import random
 
 import handlers
-import lib
 import lib.datalayer
 
-import hlib.api
 import hlib.error
-import hlib.event
+import hlib.events
 import hlib.input
 import hlib.mail
 
@@ -16,7 +14,7 @@ from handlers import page, require_write
 from hlib.input import validate_by
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class UserExistsError(hlib.error.InvalidInputError):
   def __init__(self, **kwargs):
@@ -56,7 +54,7 @@ class RecoveryHandler(handlers.GenericHandler):
     new_password = ''
 
     # pylint: disable-msg=W0612
-    for i in range(0, 10):
+    for _ in range(0, 10):
       new_password = new_password + str(random.randint(0, 9))
 
     u.password = lib.pwcrypt(new_password)
@@ -95,6 +93,6 @@ class Handler(handlers.GenericHandler):
     u = lib.datalayer.User(username, lib.pwcrypt(password1), email)
     hruntime.dbroot.users[u.name] = u
 
-    hlib.event.trigger('system.UserRegistered', hruntime.dbroot.server, user = hruntime.dbroot.users[u.name])
+    hlib.events.trigger('system.UserRegistered', hruntime.dbroot.server, user = hruntime.dbroot.users[u.name])
 
-hlib.event.Hook('system.UserRegistered', 'notify_admins', lambda e: hlib.mail.send_email(hruntime.app, 'osadnici@happz.cz', 'osadnici@happz.cz', 'Novy hrac', 'Novy hrac: %s (%s)' % (e.user.name, e.user.email)))
+hlib.events.Hook('system.UserRegistered', lambda e: hlib.mail.send_email(hruntime.app, 'osadnici@happz.cz', 'osadnici@happz.cz', 'Novy hrac', 'Novy hrac: %s (%s)' % (e.user.name, e.user.email)))

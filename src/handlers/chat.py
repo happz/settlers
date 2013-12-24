@@ -4,11 +4,9 @@ __contact__			= 'happz@happz.cz'
 __license__			= 'http://www.php-suit.com/dpl'
 
 import handlers
-import lib.chat
-import lib.datalayer
 
 import hlib.api
-import hlib.event
+import hlib.events
 import hlib.input
 import hlib.pageable
 
@@ -20,7 +18,7 @@ from handlers import page, require_login, require_write
 from hlib.input import validator_factory, validate_by
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class Handler(handlers.GenericHandler):
   def __init__(self, chat):
@@ -63,4 +61,4 @@ class Handler(handlers.GenericHandler):
   def last_access(self, last_access = None):
     self.chat.update_last_access(last_access)
 
-hlib.event.Hook('system.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_all_users('recent_events'))
+hlib.events.Hook('system.ChatPost', lambda e: hruntime.cache.remove_for_all_users('recent_events'))

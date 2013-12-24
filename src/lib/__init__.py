@@ -13,7 +13,7 @@ import os
 import os.path
 import sys
 
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class UserToPlayerMap(object):
   def __init__(self, container):

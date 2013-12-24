@@ -11,6 +11,4 @@ from hlib.events.system import UserEvent
 class ChatPost(UserEvent):
   pass
 
-import hlib
-
-hlib.register_event(ChatPost)
+ChatPost.register()

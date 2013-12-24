@@ -4,19 +4,18 @@ import random
 import types
 
 import hlib
+import hlib.api
+import hlib.engine
+import hlib.events
+
 import lib.datalayer
 import hlib.log
 import games
+import games.color
 import games.settlers.board_def
 
-import hlib.api
-import hlib.engine
-import hlib.event
-
-import games.color
-
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 InactivePathError		= lambda: games.GameError(msg = 'This path is not active right now', reply_status = 402)
 InactiveNodeError		= lambda: games.GameError(msg = 'This node is not active right now', reply_status = 402)
@@ -239,7 +238,7 @@ class Player(games.Player):
       self.resources[r] -= 1
       stolen[r] += 1
 
-    hlib.event.trigger('game.settlers.ResourcesStolen', self.game, game = self.game, resources = stolen, victim = self.user)
+    hlib.events.trigger('game.settlers.ResourcesStolen', self.game, game = self.game, resources = stolen, victim = self.user)
 
   def apply_thief_to_one(self, thief):
     if self.resources.sum() <= 0:
@@ -254,7 +253,7 @@ class Player(games.Player):
     self.resources[r] -= 1
     thief.add_resource_raw(r, 1)
 
-    hlib.event.trigger('game.settlers.ResourceStolen', self.game, game = self.game, resource = r, thief = thief.user, victim = self.user)
+    hlib.events.trigger('game.settlers.ResourceStolen', self.game, game = self.game, resource = r, thief = thief.user, victim = self.user)
 
   def exchange_resources(self, t, src, dst, pieces):
     if not self.is_on_game:
@@ -293,7 +292,7 @@ class Player(games.Player):
     dst_c = Resources()
     dst_c[dst] = (pieces / k)
 
-    hlib.event.trigger('game.settlers.ResourcesExchanged', self.game, game = self.game, user = self.user, src = src_c, dst = dst_c)
+    hlib.events.trigger('game.settlers.ResourcesExchanged', self.game, game = self.game, user = self.user, src = src_c, dst = dst_c)
 
   def apply_monopoly(self, thief, resource):
     amount = self.resources[resource]
@@ -302,7 +301,7 @@ class Player(games.Player):
 
     rc = Resources()
     rc[resource] = amount
-    hlib.event.trigger('game.settlers.Monopoly', self.game, game = self.game, thief = thief.user, victim = self.user, resources = rc)
+    hlib.events.trigger('game.settlers.Monopoly', self.game, game = self.game, thief = thief.user, victim = self.user, resources = rc)
 
   def exchange_has_any_common(self):
     return self.game.type == games.Game.TYPE_GAME
@@ -1115,7 +1114,7 @@ class Game(games.Game):
     rc = Resources()
     rc[r1] += 1
     rc[r2] += 1
-    hlib.event.trigger('game.settlers.ResourcesReceived', self, hidden = True, game = self, user = self.my_player.user, resources = rc)
+    hlib.events.trigger('game.settlers.ResourcesReceived', self, hidden = True, game = self, user = self.my_player.user, resources = rc)
 
   def apply_points(self):
     if not self.type in [Game.TYPE_PREPARE_KNIGHT, Game.TYPE_GAME]:
@@ -1131,7 +1130,7 @@ class Game(games.Game):
     i = 10 - self.my_player.points
     for c in cards:
       c.used = self.round
-      hlib.event.trigger('game.CardUsed', self, game = self, user = self.my_player.user, card = c)
+      hlib.events.trigger('game.CardUsed', self, game = self, user = self.my_player.user, card = c)
 
       i -= 1
       if i == 0:
@@ -1169,7 +1168,7 @@ class Game(games.Game):
     elif card.type == Card.TYPE_INVENTION:
       self.type = Game.TYPE_FREE_RESOURCES
 
-    hlib.event.trigger('game.CardUsed', self, game = self, user = self.my_player.user, card = card)
+    hlib.events.trigger('game.CardUsed', self, game = self, user = self.my_player.user, card = card)
 
   def number_clicked(self, nid):
     if not self.my_player.is_on_turn:
@@ -1186,7 +1185,7 @@ class Game(games.Game):
 
     self.board.fields[nid].thief = True
 
-    hlib.event.trigger('game.settlers.ThiefPlaced', self, game = self, user = self.my_player.user, field = self.board.fields[nid])
+    hlib.events.trigger('game.settlers.ThiefPlaced', self, game = self, user = self.my_player.user, field = self.board.fields[nid])
 
     self.pass_turn(check = False)
 
@@ -1206,7 +1205,7 @@ class Game(games.Game):
 
     if self.type == Game.TYPE_FREE_PATHS_FIRST:
       self.build_object(path, self.my_player, BoardPath.TYPE_OWNED)
-      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
+      hlib.events.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
 
       if not self.my_player.has_free_path:
         self.type = Game.TYPE_GAME
@@ -1218,7 +1217,7 @@ class Game(games.Game):
 
     if self.type == Game.TYPE_FREE_PATHS_SECOND:
       self.build_object(path, self.my_player, BoardPath.TYPE_OWNED)
-      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
+      hlib.events.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
       self.type = Game.TYPE_GAME
       self.check_longest_path()
       return
@@ -1228,7 +1227,7 @@ class Game(games.Game):
         raise TooManyPathsError()
 
       self.build_object(path, self.my_player, BoardPath.TYPE_OWNED, 'path')
-      hlib.event.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
+      hlib.events.trigger('game.settlers.PathBuilt', self, hidden = True, game = self, user = self.my_player.user, path = path)
       self.check_longest_path()
 
   def node_clicked(self, nid):
@@ -1263,7 +1262,7 @@ class Game(games.Game):
           raise TooManyVillagesError()
 
         self.build_object(node, self.my_player, BoardNode.TYPE_VILLAGE, 'village')
-        hlib.event.trigger('game.settlers.VillageBuilt', self, hidden = True, game = self, user = self.my_player.user, node = node)
+        hlib.events.trigger('game.settlers.VillageBuilt', self, hidden = True, game = self, user = self.my_player.user, node = node)
         self.check_longest_path()
 
       elif node.type == BoardNode.TYPE_VILLAGE:
@@ -1271,7 +1270,7 @@ class Game(games.Game):
           raise TooManyTownsError()
 
         self.build_object(node, self.my_player, BoardNode.TYPE_TOWN, 'town')
-        hlib.event.trigger('game.settlers.TownBuilt', self, hidden = True, game = self, user = self.my_player.user, node = node)
+        hlib.events.trigger('game.settlers.TownBuilt', self, hidden = True, game = self, user = self.my_player.user, node = node)
         self.check_game_finalization()
 
   def buy_card(self):
@@ -1292,7 +1291,7 @@ class Game(games.Game):
     self.my_player.cards.push(c)
     self.card_index += 1
 
-    hlib.event.trigger('game.CardBought', self, game = self, user = self.my_player.user, card = c)
+    hlib.events.trigger('game.CardBought', self, game = self, user = self.my_player.user, card = c)
 
   def deal_resources(self, dice):
     per_owner = dict([(i, Resources()) for i in self.players.keys()])
@@ -1310,7 +1309,7 @@ class Game(games.Game):
     for p in self.players.values():
       r = per_owner[p.id]
       if r.sum() > 0:
-        hlib.event.trigger('game.settlers.ResourcesReceived', self, hidden = True, game = self, user = p.user, resources = per_owner[p.id])
+        hlib.events.trigger('game.settlers.ResourcesReceived', self, hidden = True, game = self, user = p.user, resources = per_owner[p.id])
 
   def roll_dice(self):
     if not self.my_player.can_roll_dice:
@@ -1318,7 +1317,7 @@ class Game(games.Game):
 
     dice = self.get_next_dice()
 
-    hlib.event.trigger('game.settlers.DiceRolled', self, game = self, user = self.my_player.user, dice = dice)
+    hlib.events.trigger('game.settlers.DiceRolled', self, game = self, user = self.my_player.user, dice = dice)
 
     if dice == 7:
       self.type = Game.TYPE_PREPARE_THIEF
@@ -1398,7 +1397,7 @@ class Game(games.Game):
           if rst != None:
             rc.add(rst[0], rst[1])
 
-        hlib.event.trigger('game.settlers.ResourcesReceived', self, hidden = False, game = self, user = self.my_player.user, resources = rc)
+        hlib.events.trigger('game.settlers.ResourcesReceived', self, hidden = False, game = self, user = self.my_player.user, resources = rc)
 
       if self.forhont == 0:
         next_round = True
@@ -1478,7 +1477,7 @@ class Game(games.Game):
         self.longest_length = linfo[2]
         if linfo[1] != self.longest_owner:
           self.longest_owner = linfo[1]
-          hlib.event.trigger('game.settlers.LongestPathBonusEarned', self, game = self, user = self.longest_owner.user)
+          hlib.events.trigger('game.settlers.LongestPathBonusEarned', self, game = self, user = self.longest_owner.user)
         self.longest_owner.longest_path = True
 
     self.check_game_finalization()
@@ -1518,7 +1517,7 @@ class Game(games.Game):
     max_player.mightest_chilvary = True
 
     if max_player != old_owner:
-      hlib.event.trigger('game.settlers.MightestChilvaryBonusEarned', self, game = self, user = max_player.user)
+      hlib.events.trigger('game.settlers.MightestChilvaryBonusEarned', self, game = self, user = max_player.user)
 
     self.check_game_finalization()
 

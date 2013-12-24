@@ -3,19 +3,15 @@ __copyright__                   = 'Copyright 2010 - 2012, Milos Prchlik'
 __contact__                     = 'happz@happz.cz'
 __license__                     = 'http://www.php-suit.com/dpl'
 
-import threading
-
 import hlib.api
 
 import handlers
-import lib.datalayer
 
 from hlib.api import api
-from handlers import page, require_login, require_write
-from hlib.input import validate_by
+from handlers import page, require_login
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 #
 # Api classes

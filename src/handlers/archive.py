@@ -3,15 +3,14 @@ __copyright__                   = 'Copyright 2013, Milos Prchlik'
 __contact__                     = 'happz@happz.cz'
 __license__                     = 'http://www.php-suit.com/dpl'
 
-import os.path
 import handlers
 
-import hlib.event
+import hlib.events
 
-from handlers import page, require_login, require_write
+from handlers import page, require_login
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class Handler(handlers.GenericHandler):
   #
@@ -26,4 +25,4 @@ def __invalidate_render_cache(e):
   for p in e.game.players.values():
     hruntime.cache.remove(p.user, 'archive-page')
 
-hlib.event.Hook('game.GameArchived', 'invalidate_rendered', __invalidate_render_cache)
+hlib.events.Hook('game.GameArchived', __invalidate_render_cache)

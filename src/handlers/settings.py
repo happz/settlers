@@ -1,25 +1,23 @@
 import calendar
 import time
 
-import hlib
 import hlib.api
 import hlib.database
 import hlib.error
 import hlib.input
 
-import games
+import games.settlers
 import handlers
-import lib
 import lib.datalayer
 
 # Handlers
 from handlers import require_login, require_write, page
 from hlib.api import api
-from hlib.input import Username, Password, CommonString, OneOf, SchemaValidator, NotEmpty, Int, FieldsMatch, validator_factory, validate_by
+from hlib.input import Password, CommonString, OneOf, SchemaValidator, NotEmpty, Int, FieldsMatch, validator_factory, validate_by
 from games import ValidateKind, GenericValidateKind
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 TABLE_ROW_COUNTS = range(10, 61, 10)
 

@@ -8,21 +8,18 @@ Chat object providing simple forum representation.
 
 import time
 
-import hlib
 import hlib.api
-import hlib.event
+import hlib.events
 import hlib.format
-import hlib.input
-import hlib.log
 import hlib.pageable
 
 import hlib.database
 
 # Validators
-from hlib.input import validator_factory, CommonString, MaxLength, Int
+from hlib.input import validator_factory, CommonString, MaxLength
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 ValidateChatPost = validator_factory(CommonString(), MaxLength(65535))
 
@@ -131,7 +128,7 @@ class ChatPagerGame(ChatPager):
     hruntime.cache.remove_for_users([p.user for p in self.accessed_by.game.players.values()], 'recent_events')
 
   def trigger_event(self):
-    hlib.event.trigger('game.ChatPost', self.entity, hidden = True, user = hruntime.user, game = self.entity)
+    hlib.events.trigger('game.ChatPost', self.entity, hidden = True, user = hruntime.user, game = self.entity)
 
 class ChatPagerTournament(ChatPager):
   def __init__(self, tour):
@@ -143,11 +140,11 @@ class ChatPagerTournament(ChatPager):
     hruntime.cache.remove_for_users([p.user for p in self.accessed_by.tournament.players.values()], 'recent_events')
 
   def trigger_event(self):
-    hlib.event.trigger('tournament.ChatPost', self.entity, hidden = True, user = hruntime.user, tournament = self.entity)
+    hlib.events.trigger('tournament.ChatPost', self.entity, hidden = True, user = hruntime.user, tournament = self.entity)
 
 class ChatPagerGlobal(ChatPager):
   def __init__(self):
     super(ChatPagerGlobal, self).__init__(None, None)
 
   def trigger_event(self):
-    hlib.event.trigger('system.ChatPost', self.entity, hidden = True, user = hruntime.user)
+    hlib.events.trigger('system.ChatPost', self.entity, hidden = True, user = hruntime.user)

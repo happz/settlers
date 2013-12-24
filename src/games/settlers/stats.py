@@ -1,15 +1,9 @@
-import threading
+import hlib.api
 
-import lib.datalayer
 import games.stats
 
-import hlib.api
-import hlib.database
-import hlib.log
-import hlib.pageable
-
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class PlayerStats(games.stats.PlayerStats):
   def __init__(self, user, **kwargs):

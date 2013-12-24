@@ -1,11 +1,11 @@
 import handlers
-import lib.datalayer
 
 import hlib.auth
-import hlib.event
+import hlib.events
 import hlib.error
 import hlib.http
-import hlib.log
+
+import lib
 
 # Shortcuts
 from handlers import page
@@ -13,7 +13,7 @@ from hlib.api import api
 from hlib.input import validate_by
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class LoginHandler(handlers.GenericHandler):
   #
@@ -68,7 +68,7 @@ class LoginHandler(handlers.GenericHandler):
 
     hlib.auth.start_session(user = u)
 
-    hlib.event.trigger('system.UserLoggedIn', hruntime.dbroot.server, user = u)
+    hlib.events.trigger('system.UserLoggedIn', hruntime.dbroot.server, user = u)
 
     if u.is_on_vacation:
       raise hlib.http.Redirect('/vacation/')

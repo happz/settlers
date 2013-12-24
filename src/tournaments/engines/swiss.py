@@ -7,7 +7,6 @@ import random
 
 import hlib.database
 
-import lib.datalayer
 import tournaments.engines
 
 __all__ = []

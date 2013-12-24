@@ -3,10 +3,8 @@ import threading
 
 import hlib.pageable
 
-import lib.datalayer
-
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class PlayerStats(object):
   def __init__(self, user, default = False):

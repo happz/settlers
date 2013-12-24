@@ -2,7 +2,7 @@ import handlers
 
 import hlib.api
 import hlib.error
-import hlib.event
+import hlib.events
 import hlib.input
 
 # Shortcuts
@@ -11,7 +11,7 @@ from hlib.api import api
 from hlib.input import validate_by, validator_factory
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class State(hlib.api.ApiJSON):
   def __init__(self):
@@ -97,4 +97,4 @@ class Handler(handlers.GenericHandler):
       del hruntime.dbroot.games[g.id]
 
       hruntime.dbroot.games_archived[g.id] = g
-      hlib.event.trigger('game.GameArchived', g, game = g)
+      hlib.events.trigger('game.GameArchived', g, game = g)

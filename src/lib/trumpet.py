@@ -7,7 +7,7 @@ Public and mass texts.
 """
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class TrumpetObject(object):
   subject		= property(lambda self: getattr(hruntime.dbroot.trumpet, self.__class__.__name__)['subject'], lambda self, subject: getattr(hruntime.dbroot.trumpet, self.__class__.__name__).update({'subject': subject}))

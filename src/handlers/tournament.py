@@ -5,24 +5,21 @@ __license__			= 'http://www.php-suit.com/dpl'
 
 import hlib.error
 import handlers
-import hlib.i18n
 
-import lib.datalayer
 import games
 import tournaments
 
 # Handlers
 from hlib.api import api
-from handlers import page, require_admin, require_login, require_write
+from handlers import page, require_login, require_write
 
 # Validators
 from hlib.input import validate_by, validator_factory, validator_optional
 from lib.chat import ValidateChatPost
 from games import ValidateKind
-from tournaments import ValidateTID
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 def require_presence_in_tournament(tid):
   if tid not in hruntime.dbroot.tournaments:

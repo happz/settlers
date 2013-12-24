@@ -9,19 +9,20 @@ import lib.datalayer
 
 import hlib.api
 import hlib.error
+import hlib.http
 import hlib.input
 import hlib.pageable
 
 # Shortcuts
-from handlers import page, require_admin, require_login, require_write
+from handlers import page, require_login, require_write
 from hlib.api import api
 from hlib.input import validator_factory, validate_by, validator_optional
 
-from games import GenericValidateGID, ValidateCardID, ValidateKind
+from games import GenericValidateGID, ValidateCardID
 from lib.chat import ValidateChatPost
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 def require_presence_in_game(gid):
   if gid in hruntime.dbroot.games:

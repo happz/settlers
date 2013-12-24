@@ -2,7 +2,7 @@ from events.game import Event, UserEvent
 import hlib.api
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 #
 # Base classes
@@ -154,18 +154,16 @@ class ThiefPlaced(UserEvent):
 class NewDiceLine(Event):
   pass
 
-import hlib
-
-hlib.register_event(LongestPathBonusEarned)
-hlib.register_event(MightestChilvaryBonusEarned)
-hlib.register_event(ResourceStolen)
-hlib.register_event(ResourcesStolen)
-hlib.register_event(DiceRolled)
-hlib.register_event(VillageBuilt)
-hlib.register_event(TownBuilt)
-hlib.register_event(PathBuilt)
-hlib.register_event(ResourcesReceived)
-hlib.register_event(ResourcesExchanged)
-hlib.register_event(Monopoly)
-hlib.register_event(ThiefPlaced)
-hlib.register_event(NewDiceLine)
+LongestPathBonusEarned.register()
+MightestChilvaryBonusEarned.register()
+ResourceStolen.register()
+ResourcesStolen.register()
+DiceRolled.register()
+VillageBuilt.register()
+TownBuilt.register()
+PathBuilt.register()
+ResourcesReceived.register()
+ResourcesExchanged.register()
+Monopoly.register()
+ThiefPlaced.register()
+NewDiceLine.register()

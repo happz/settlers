@@ -1,26 +1,20 @@
 import time
 import handlers
-import games
-import games.settlers.stats
-import hlib
-import hlib.log
-import hlib.error
-import hlib.event
 import events.game
-import tournaments
 
-import hlib.event
+import hlib.events
 
+import games
 import lib.play
 
 # Handlers
-from handlers import page, require_write, require_hosts
+from handlers import require_write, require_hosts
 from hlib.api import api
 
 from hlib.input import validate_by
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 maint_require_hosts = lambda: hruntime.app.config['hosts']['maint.*']
 
@@ -80,7 +74,7 @@ class Handler(handlers.GenericHandler):
         playable_archived_list[p.id] = p
 
         # pylint: disable-msg=W0142
-        hlib.event.trigger(event_name, p, **{handle_name: p})
+        hlib.events.trigger(event_name, p, **{handle_name: p})
 
       return [p.id for p in archived]
 

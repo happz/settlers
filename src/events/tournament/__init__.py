@@ -57,11 +57,9 @@ class PlayerJoined(UserEvent):
 class ChatPost(UserEvent):
   pass
 
-import hlib
-
-hlib.register_event(Created)
-hlib.register_event(Finished)
-hlib.register_event(Canceled)
-hlib.register_event(Started)
-hlib.register_event(PlayerJoined)
-hlib.register_event(ChatPost)
+Created.register()
+Finished.register()
+Canceled.register()
+Started.register()
+PlayerJoined.register()
+ChatPost.register()

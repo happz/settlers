@@ -132,17 +132,15 @@ class CardUsed(CardEvent):
 class CardBought(CardEvent):
   pass
 
-import hlib
-
-hlib.register_event(GameCreated)
-hlib.register_event(GameFinished)
-hlib.register_event(GameCanceled)
-hlib.register_event(GameArchived)
-hlib.register_event(GameStarted)
-hlib.register_event(PlayerJoined)
-hlib.register_event(ChatPost)
-hlib.register_event(PlayerMissed)
-hlib.register_event(Pass)
-hlib.register_event(PlayerInvited)
-hlib.register_event(CardUsed)
-hlib.register_event(CardBought)
+GameCreated.register()
+GameFinished.register()
+GameCanceled.register()
+GameArchived.register()
+GameStarted.register()
+PlayerJoined.register()
+ChatPost.register()
+PlayerMissed.register()
+Pass.register()
+PlayerInvited.register()
+CardUsed.register()
+CardBought.register()

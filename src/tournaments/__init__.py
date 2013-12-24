@@ -2,7 +2,7 @@ import collections
 import threading
 
 import hlib.api
-import hlib.event
+import hlib.events
 import hlib.input
 import hlib.error
 
@@ -12,7 +12,7 @@ import lib.chat
 import lib.play
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 ValidateTID = hlib.input.validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
 
@@ -43,12 +43,13 @@ f_active        = _tournament_lists.f_active
 f_inactive      = _tournament_lists.f_inactive
 f_archived      = _tournament_lists.f_archived
 
-import hlib.stats
-hlib.stats.init_namespace('Tournaments lists', {
-  'Active':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('active').items() ]),
-  'Inactive':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('inactive').items() ]),
-  'Archived':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('archived').items() ])
-})
+from hlib.stats import stats as STATS
+with STATS:
+  STATS.set('Tournaments lists', {
+    'Active':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('active').items() ]),
+    'Inactive':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('inactive').items() ]),
+    'Archived':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('archived').items() ])
+  })
 
 class TournamentCreationFlags(games.GameCreationFlags):
   FLAGS = ['name', 'desc', 'kind', 'owner', 'limit', 'engine']
@@ -211,13 +212,13 @@ class Tournament(lib.play.Playable):
     self.round = 1
     self.create_games()
 
-    hlib.event.trigger('tournament.Started', self, tournament = self)
+    hlib.events.trigger('tournament.Started', self, tournament = self)
 
   def finish(self):
-    hlib.event.trigger('tournament.Finished', self, tournament = self)
+    hlib.events.trigger('tournament.Finished', self, tournament = self)
 
   def cancel(self):
-    hlib.event.trigger('tournament.Canceled', self, tournament = self)
+    hlib.events.trigger('tournament.Canceled', self, tournament = self)
 
   def join_player(self, user, password):
     if self.stage != Tournament.STAGE_FREE:
@@ -232,7 +233,7 @@ class Tournament(lib.play.Playable):
     player = self.engine.player_class(self, user)
     self.players[user.name] = player
 
-    hlib.event.trigger('tournament.PlayerJoined', self, tournament = self, user = user)
+    hlib.events.trigger('tournament.PlayerJoined', self, tournament = self, user = user)
 
     if len(self.players) >= self.num_players:
       self.begin()
@@ -243,7 +244,7 @@ class Tournament(lib.play.Playable):
   def create_tournament(flags, num_players, engine_name):
     t = Tournament(flags, num_players, engine_name)
 
-    hlib.event.trigger('tournament.Created', t, tournament = t)
+    hlib.events.trigger('tournament.Created', t, tournament = t)
 
     t.join_player(flags.owner, flags.password)
 
@@ -252,14 +253,14 @@ class Tournament(lib.play.Playable):
 class TournamentError(hlib.error.BaseError):
   pass
 
-hlib.event.Hook('tournament.Created', 'invalidate_caches',  lambda e: _tournament_lists.created(e.tournament))
-hlib.event.Hook('torunament.Started', 'invalidate_caches',  lambda e: _tournament_lists.started(e.tournament))
-hlib.event.Hook('tournament.Finished', 'invalidate_caches', lambda e: _tournament_lists.finished(e.tournament))
-hlib.event.Hook('tournament.Archived', 'invalidate_caches', lambda e: _tournament_lists.archived(e.tournament))
-hlib.event.Hook('tournament.Canceled', 'invalidate_caches', lambda e: _tournament_lists.canceled(e.tournament))
-hlib.event.Hook('tournament.PlayerJoined', 'invalidate_caches', lambda e: _tournament_lists.inval_players(e.tournament))
-hlib.event.Hook('tournament.PlayerInvited', 'invalidate_caches', lambda e: _tournament_lists.inval_players(e.tournament))
-hlib.event.Hook('tournament.ChatPost', 'ivalidate_caches', lambda e: hruntime.cache.remove_for_users([p.user for p in e.tournament.players.values()], 'recent_events'))
+hlib.events.Hook('tournament.Created', lambda e: _tournament_lists.created(e.tournament))
+hlib.events.Hook('torunament.Started', lambda e: _tournament_lists.started(e.tournament))
+hlib.events.Hook('tournament.Finished', lambda e: _tournament_lists.finished(e.tournament))
+hlib.events.Hook('tournament.Archived', lambda e: _tournament_lists.archived(e.tournament))
+hlib.events.Hook('tournament.Canceled', lambda e: _tournament_lists.canceled(e.tournament))
+hlib.events.Hook('tournament.PlayerJoined', lambda e: _tournament_lists.inval_players(e.tournament))
+hlib.events.Hook('tournament.PlayerInvited', lambda e: _tournament_lists.inval_players(e.tournament))
+hlib.events.Hook('tournament.ChatPost', lambda e: hruntime.cache.remove_for_users([p.user for p in e.tournament.players.values()], 'recent_events'))
 
 import events.tournament
 

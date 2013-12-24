@@ -1,26 +1,21 @@
-import games.settlers
-import handlers
-import hlib
-import lib.chat
-
 import hlib.api
-import hlib.error
 import hlib.input
-import hlib.log
+
+import games
+import handlers
 
 # Shortcuts
-from handlers import page, require_login, require_write
+from handlers import require_login, require_write
 from hlib.api import api
 from hlib.input import validate_by, validator_factory
 
 # Validators
-from games import ValidateGID, ValidateNew
-from lib.chat import ValidateChatPost
-from handlers.game import require_presence_in_game, require_on_turn, require_on_game
+from games import ValidateNew
+from handlers.game import require_on_turn, require_on_game
 from games import GenericValidateGID
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 ValidateNID = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf(range(0, 128)))
 ValidatePID = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf(range(0, 128)))

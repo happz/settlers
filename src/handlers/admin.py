@@ -6,7 +6,6 @@ __license__			= 'http://www.php-suit.com/dpl'
 import handlers
 import lib.trumpet
 
-import hlib
 import hlib.api
 import hlib.database
 import hlib.datalayer
@@ -18,7 +17,7 @@ from hlib.api import api
 from hlib.input import validator_factory, validate_by
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 ValidateLang	= validator_factory(hlib.input.CommonString())
 ValidateName	= validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(256))

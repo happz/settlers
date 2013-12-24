@@ -6,7 +6,7 @@ import hlib.input
 
 from handlers import require_login, page
 
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class Handler(handlers.GenericHandler):
   class ValidateProfile(hlib.input.SchemaValidator):

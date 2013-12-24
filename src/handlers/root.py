@@ -3,7 +3,6 @@ import urllib
 
 import games
 import tournaments
-import handlers
 import handlers.admin
 import handlers.archive
 import handlers.home
@@ -23,16 +22,15 @@ import handlers.tournament
 import handlers.vacation
 import lib.trumpet
 
-import hlib
 import hlib.api
 import hlib.auth
 import hlib.error
 import hlib.format
-import hlib.http
-import hlib.stats
-import lib.chat
-
 import hlib.handlers.root
+import hlib.http
+import hlib.log
+
+import lib.chat
 
 # Shortcuts
 from hlib.api import api, api_token
@@ -40,7 +38,7 @@ from handlers import page, require_login, survive_vacation, require_write
 from hlib.input import validate_by
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class PullNotify(hlib.api.ApiJSON):
   def __init__(self):

@@ -1,7 +1,5 @@
 import collections
 
-import lib.datalayer
-
 class Color(object):
   def __init__(self, name, label, color):
     super(Color, self).__init__()

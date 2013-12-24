@@ -9,11 +9,10 @@ import hlib.api
 import hlib.database
 import hlib.error
 
-import lib
 import lib.chat
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class PlayableError(hlib.error.BaseError):
   pass

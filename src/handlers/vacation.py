@@ -5,7 +5,7 @@ from handlers import page, require_login, require_write, survive_vacation
 from hlib.api import api
 
 # pylint: disable-msg=F0401
-import hruntime
+import hruntime  # @UnresolvedImport
 
 class VacationHandler(handlers.GenericHandler):
   @survive_vacation
