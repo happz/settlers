@@ -145,9 +145,9 @@
       ${ui_form_end()}
 
       <div id="apply_points" class="hide">
-        ${ui_form_start(action = '/game/settlers/apply_points', legend = 'Apply Point cards to win', id = 'apply_points')}
+        ${ui_form_start(action = '/game/settlers/apply_points', id = 'apply_points')}
           ${ui_input(form_name = 'gid', type = 'hidden')}
-          ${ui_submit(value = 'Apply')}
+          ${ui_submit(value = 'Apply Point cards to win')}
         ${ui_form_end()}
       </div>
 

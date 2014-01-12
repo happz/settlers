@@ -27,13 +27,13 @@ PARAMS = {
                                   'size':	DataSet('Size', lambda data: data['snapshot']['Cache (settlers - Global)']['Total size'])
                                 }),
   'db':				Graph('Database', 'events/sec * %s' % NORMALIZER, 'Database session closures per second', {
-                                  'commits':	DataSet('Commits', lambda data: float(data['snapshot']['Database (main db)']['Commits']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER),
-                                  'rollbacks':	DataSet('Rollbacks', lambda data: float(data['snapshot']['Database (main db)']['Rollbacks']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER)
+                                  'commits':	DataSet('Commits', lambda data: float(data['snapshot']['Database (main db)']['Commits']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER),
+                                  'rollbacks':	DataSet('Rollbacks', lambda data: float(data['snapshot']['Database (main db)']['Rollbacks']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER)
                                 }),
   'requests':			Graph('Requests', 'requests/sec * %s' % NORMALIZER, 'Requests per second', {
-                                  'ro':		DataSet('RO', lambda data: float(data['snapshot']['Engine']['RO requests']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER),
-                                  'total':	DataSet('Total', lambda data: float(data['snapshot']['Engine']['Total requests']) / float(data['snapshot']['Engine']['Uptime']) * NORMALIZER),
-                                  'current':	DataSet('Current', lambda data: data['snapshot']['Engine']['Current requests'])
+                                  'ro':		DataSet('RO', lambda data: float(data['snapshot']['Engine #1']['RO requests']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER),
+                                  'total':	DataSet('Total', lambda data: float(data['snapshot']['Engine #1']['Total requests']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER),
+                                  'current':	DataSet('Current', lambda data: data['snapshot']['Engine #1']['Current requests'])
                                 }),
   'online':			Graph('Online players', 'players', 'Online players', {
                                   'online':	DataSet('Online', lambda data: len(data['snapshot']['Sessions (settlers)']['Active'].split(',')))
@@ -44,6 +44,10 @@ PARAMS = {
                                   'queue':	DataSet('Queue size', lambda data: data['snapshot']['Pool (server-0)']['Queue size'])
                                 })
 }
+
+#handler = urllib2.HTTPHandler(debuglevel = 1)
+#opener = urllib2.build_opener(handler)
+#urllib2.install_opener(opener)
 
 def fetch_data():
   def __fetch_from_url():

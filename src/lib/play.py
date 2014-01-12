@@ -8,6 +8,7 @@ import threading
 import hlib.api
 import hlib.database
 import hlib.error
+import hlib.locks
 
 import lib.chat
 
@@ -187,7 +188,7 @@ class PlayableLists(object):
   def __init__(self):
     super(PlayableLists, self).__init__()
 
-    self._lock          = threading.RLock()
+    self._lock          = hlib.locks.RLock(name = 'Playable lists')
 
     self._active        = {}
     self._inactive      = {}

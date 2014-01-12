@@ -13,6 +13,7 @@ import urllib
 import hlib.database
 import hlib.datalayer
 import hlib.events
+import hlib.locks
 
 import lib.chat
 
@@ -26,7 +27,7 @@ def SystemUser():
   return SystemUser.user_instance
 
 # --- Database records -----------------------------------------------
-counters_lock = threading.RLock()
+counters_lock = hlib.locks.RLock(name = 'Counters lock')
 
 class Counters(hlib.database.DBObject):
   def __init__(self):

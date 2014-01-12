@@ -1,6 +1,7 @@
 import UserDict
 import threading
 
+import hlib.locks
 import hlib.pageable
 
 # pylint: disable-msg=F0401
@@ -10,7 +11,7 @@ class PlayerStats(object):
   def __init__(self, user, default = False):
     super(PlayerStats, self).__init__()
 
-    self.user = user
+    self.username = user.name
     self.default = default
 
   def to_api(self):
@@ -33,19 +34,16 @@ class Stats(hlib.pageable.Pageable):
   def __init__(self, *args, **kwargs):
     super(Stats, self).__init__(*args, **kwargs)
 
-    self.lock		= threading.RLock()
+    self.lock		= hlib.locks.RLock(name = 'Game stats')
 
-    self._records		= None
-    self._player_stats	= None
+    self._records = []
+    self._player_stats = []
 
     self.last_update	= None
 
   def __getattr__(self, name):
     if name == 'records' or name == 'player_stats':
       with self.lock:
-        if not self._records:
-          self.refresh_stats()
-
         if name == 'records':
           return self._records
 

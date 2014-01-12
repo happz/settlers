@@ -1,4 +1,4 @@
-ENVDIR := /data/virtualenv/settlers/
+include Makefile.conf
 
 ROOT_DIR := $(CURDIR)
 CONF_DIR := $(ROOT_DIR)/conf/
@@ -10,21 +10,15 @@ CSS_DIR := $(ROOT_DIR)/static/css
 #
 # Tools
 #
-PYLINT := $(ENVDIR)/bin/pylint
-PYLINT_OPTIONS := --rcfile=$(CONF_DIR)/pylintrc
-PYLINT_PACKAGES := events games handlers lib tournaments
+PYLINT_OPTIONS := --rcfile=$(CONF_DIR)/pylintrc $(PYLINT_OPTIONS)
+PYLINT_PACKAGES := events games handlers lib tournaments $(PYLINT_PACKAGES)
 
-CLOC := /usr/bin/cloc
-CLOC_OPTIONS := --read-lang-def=$(CONF_DIR)/cloc.langs --exclude-dir=$(ROOT_DIR)/compiled/ --exclude-ext=js,css --skip-uniqueness $(ROOT_DIR)/src $(ROOT_DIR)/static/script/ $(ROOT_DIR)/static/css/
+CLOC_OPTIONS := --read-lang-def=$(CONF_DIR)/cloc.langs --exclude-dir=$(ROOT_DIR)/compiled/ --exclude-ext=js,css --skip-uniqueness $(CLOC_OPTIONS) $(ROOT_DIR)/src $(ROOT_DIR)/static/script/ $(ROOT_DIR)/static/css/
 
-EPYDOC := /usr/bin/epydoc
-EPYDOC_OPTIONS := --config $(CONF_DIR)/makedoc.conf -c static/css/epydoc.css
-EPYDOC_PACKAGES := $(ROOT_DIR)/src/events $(ROOT_DIR)/src/games $(ROOT_DIR)/src/handlers $(ROOT_DIR)/src/lib $(ROOT_DIR)/src/tournaments $(ROOT_DIR)/src/templates $(ROOT_DIR)/static/script/ $(ROOT_DIR)/static/css/
+EPYDOC_OPTIONS := --config $(CONF_DIR)/makedoc.conf -c static/css/epydoc.css $(EPYDOC_OPTIONS)
+EPYDOC_PACKAGES := $(ROOT_DIR)/src/events $(ROOT_DIR)/src/games $(ROOT_DIR)/src/handlers $(ROOT_DIR)/src/lib $(ROOT_DIR)/src/tournaments $(ROOT_DIR)/src/templates $(ROOT_DIR)/static/script/ $(ROOT_DIR)/static/css/ $(EPYDOC_PACKAGES)
 
-NOSE_OPTIONS := -v -w $(ROOT_DIR)/tests/ --with-id --all-modules
-
-COFFEE := /home/mprchlik/.npm/coffee-script/1.6.3/package/bin/coffee
-SLIMIT := ~/virtualenv/settlers/bin/slimit
+NOSE_OPTIONS := -v -w $(ROOT_DIR)/tests/ --with-id --all-modules $(NOSE_OPTIONS)
 
 .PHONY: clean cloc doc pylint tests test_all
 
@@ -68,7 +62,7 @@ tests:
 	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 	@echo "Nose tests"
 	@echo
-	@nosetests $(NOSE_OPTIONS)
+	@$(NOSE) $(NOSE_OPTIONS)
 	@echo "----- ----- ----- ----- ----- ----- ----- ----- -----"
 
 test_all: pylint coffeelint tests
@@ -107,7 +101,7 @@ scripts: scripts_compile scripts_minify
 	cat $< | $(SLIMIT) > $@
 
 STYLES = $(CSS_DIR)/settlers.css $(CSS_DIR)/pages/settings.css $(CSS_DIR)/pages/game.css $(CSS_DIR)/pages/admin.css $(CSS_DIR)/pages/maintenance.css \
-         $(CSS_DIR)/pages/monitor.css $(CSS_DIR)/pages/home.css \
+         $(CSS_DIR)/pages/monitor.css \
 				 $(CSS_DIR)/games/settlers/settlers.css
 
 styles_compile: $(STYLES)

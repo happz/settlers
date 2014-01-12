@@ -18,12 +18,9 @@ class PlayerStats(games.stats.PlayerStats):
     self.points_per_game		= 0.0
     self.forhont			= 0
 
-  def __str__(self):
-    return '%s: %i, %i, %f' % (self.user.name.encode('ascii', 'replace'), self.points, self.games, self.points_per_game)
-
   def to_api(self):
     return {
-      'user':                   hlib.api.User(self.user),
+      'user':                   hlib.api.User(hruntime.dbroot.users[self.username]),
       'points':                 self.finished_points,
       'games':                  self.games,
       'finished':               self.finished,

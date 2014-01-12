@@ -1,3 +1,5 @@
+PYTHON_PREFIX="/data/virtualenv/settlers/bin"
+
 ROOT_DIR="`(cd \"$(dirname $0)\" && pwd)`/../"
 
 # No need to change variables below this line...

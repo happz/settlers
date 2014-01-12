@@ -2,4 +2,4 @@
 
 . ../conf/tools.sh
 
-pylint $PYLINT_OPTIONS $1 2> /dev/null
+$PYTHON_PREFIX/pylint $PYLINT_OPTIONS $1 2> /dev/null

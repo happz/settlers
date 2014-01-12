@@ -3,7 +3,7 @@
   import pprint
   import types
 
-  import hlib.event
+  import hlib.events
   import hlib.stats
 
   import hruntime
@@ -161,7 +161,7 @@ ${pformat(server.config)}
     ${ui_section_header('event_hooks', 'Event hooks')}
       <pre class="sh_python">
 {
-% for ename, hooks in hlib.event._HOOKS.items():
+% for ename, hooks in hlib.events._HOOKS.items():
   ${ename}: {
     % for hname, hook in hooks.items():
       ${hname}: ${pformat_hook(hook)},

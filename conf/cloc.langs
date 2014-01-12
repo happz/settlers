@@ -372,11 +372,6 @@ Objective C++
     extension mm
     3rd_gen_scale 2.96
     end_of_line_continuation \\$
-Ocaml
-    filter call_regexp_common Pascal
-    extension ml
-    3rd_gen_scale 3.00
-    end_of_line_continuation \\$
 Octave
     filter remove_matches ^\s*#
     filter remove_inline #.*$
@@ -646,11 +641,3 @@ SCSS
     filter call_regexp_common C
     extension scss
     3rd_gen_scale 1.00
-Coffee
-    filter remove_matches ^\s*#
-    filter docstring_to_C
-    filter call_regexp_common C
-    filter remove_inline #.*$
-    extension coffee
-    3rd_gen_scale 4.20
-    end_of_line_continuation \\$
