@@ -22,6 +22,7 @@ ${ui_page_header(player.name + ('&nbsp;<span class="user-online">(online)</span>
     % endif
   </div>
 
+  % if player_stats != None:
   <div class="span10">
     ${ui_section_header('stats_settlers', 'Settlers stats')}
       <table class="table table-hover">
@@ -48,5 +49,6 @@ ${ui_page_header(player.name + ('&nbsp;<span class="user-online">(online)</span>
       </table>
     </section>
   </div>
+  % endif
 </div>
 

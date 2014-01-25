@@ -22,4 +22,4 @@ class Handler(handlers.GenericHandler):
     user = hruntime.dbroot.users[username]
     gm = games.game_module('settlers', submodule = 'stats')
 
-    return self.generate('profile.mako', params = {'player': user, 'player_stats': gm.stats.player_stats[user.name]})
+    return self.generate('profile.mako', params = {'player': user, 'player_stats': gm.stats.player_stats[user.name] if user.name in gm.stats.player_stats else None})
