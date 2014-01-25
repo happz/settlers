@@ -6,10 +6,32 @@ import hlib.pageable
 
 from handlers import page, require_login
 from hlib.api import api
+from hlib.stats import stats as STATS
 
 from hlib.input import validate_by
 
+import hruntime
+
 class StatsHandler(handlers.GenericHandler):
+  def __init__(self, *args, **kwargs):
+    super(StatsHandler, self).__init__(*args, **kwargs)
+
+    STATS.set('Playables - Games', {
+      'Active': lambda x: hruntime.dbroot.counters.games_active(),
+      'Free': lambda x: hruntime.dbroot.counters.games_free(),
+      'Inactive': lambda x: hruntime.dbroot.counters.games_inactive(),
+      'Archived': lambda x: hruntime.dbroot.counters.games_archived(),
+      'Total': lambda x: hruntime.dbroot.counters.games()
+    })
+
+    STATS.set('Playables - Tournaments', {
+      'Active': lambda x: hruntime.dbroot.counters.tournaments_active(),
+      'Free': lambda x: hruntime.dbroot.counters.tournaments_free(),
+      'Inactive': lambda x: hruntime.dbroot.counters.tournaments_inactive(),
+      'Archived': lambda x: hruntime.dbroot.counters.tournaments_archived(),
+      'Total': lambda x: hruntime.dbroot.counters.tournaments()
+    })
+
   #
   # Index
   #

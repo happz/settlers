@@ -14,35 +14,60 @@ STATUS_CACHE = os.environ.get('statuscache', '/tmp/settlers-status.json')
 NORMALIZER = 1000.0
 
 _Graph = collections.namedtuple('_Graph', ['title', 'vlabel', 'info', 'datasets'])
-_DataSet = collections.namedtuple('_DataSet', ['label', 'filter'])
+_DataSet = collections.namedtuple('_DataSet', ['label', 'type', 'max', 'filter'])
 
 Graph = lambda *args: _Graph._make(list(args))
 DataSet = lambda *args: _DataSet._make(list(args))
 
 PARAMS = {
-  'cache':			Graph('Cache', 'events', 'Cache events and size', {
-                                  'hits':	DataSet('Hits', lambda data: data['snapshot']['Cache (settlers - Global)']['Hits']),
-                                  'misses':	DataSet('Misses', lambda data: data['snapshot']['Cache (settlers - Global)']['Misses']),
-                                  'inserts':	DataSet('Inserts', lambda data: data['snapshot']['Cache (settlers - Global)']['Inserts']),
-                                  'size':	DataSet('Size', lambda data: data['snapshot']['Cache (settlers - Global)']['Total size'])
-                                }),
-  'db':				Graph('Database', 'events/sec * %s' % NORMALIZER, 'Database session closures per second', {
-                                  'commits':	DataSet('Commits', lambda data: float(data['snapshot']['Database (main db)']['Commits']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER),
-                                  'rollbacks':	DataSet('Rollbacks', lambda data: float(data['snapshot']['Database (main db)']['Rollbacks']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER)
-                                }),
-  'requests':			Graph('Requests', 'requests/sec * %s' % NORMALIZER, 'Requests per second', {
-                                  'ro':		DataSet('RO', lambda data: float(data['snapshot']['Engine #1']['RO requests']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER),
-                                  'total':	DataSet('Total', lambda data: float(data['snapshot']['Engine #1']['Total requests']) / float(data['snapshot']['Engine #1']['Uptime']) * NORMALIZER),
-                                  'current':	DataSet('Current', lambda data: data['snapshot']['Engine #1']['Current requests'])
-                                }),
-  'online':			Graph('Online players', 'players', 'Online players', {
-                                  'online':	DataSet('Online', lambda data: len(data['snapshot']['Sessions (settlers)']['Active'].split(',')))
-                                }),
-  'threads':			Graph('Thread pool', 'threads', 'Thread pool and queue stats', {
-                                  'current':	DataSet('Current', lambda data: data['snapshot']['Pool (server-0)']['Current threads']),
-                                  'free':	DataSet('Free', lambda data: data['snapshot']['Pool (server-0)']['Free threads']),
-                                  'queue':	DataSet('Queue size', lambda data: data['snapshot']['Pool (server-0)']['Queue size'])
-                                })
+  'cache': Graph('Cache', 'events/sec', 'Cache events and size', {
+    'hits':	DataSet('Hits', 'COUNTER', 10, lambda data: data['snapshot']['Cache (settlers - Global)']['Hits']),
+    'misses': DataSet('Misses', 'COUNTER', 10, lambda data: data['snapshot']['Cache (settlers - Global)']['Misses']),
+    'inserts': DataSet('Inserts', 'COUNTER', 10, lambda data: data['snapshot']['Cache (settlers - Global)']['Inserts']),
+    'size': DataSet('Size', 'GAUGE', None, lambda data: data['snapshot']['Cache (settlers - Global)']['Total size'])
+  }),
+
+  'online': Graph('Online players', 'players', 'Online players', {
+    'online': DataSet('Online', 'GAUGE', None, lambda data: len(data['snapshot']['Sessions (settlers)']['Active'].split(',')))
+  }),
+
+  'db': Graph('Database', 'events/sec', 'Database events per second', {
+    # Commits
+    'commits': DataSet('Commits', 'COUNTER', 10, lambda data: int(data['snapshot']['Database (main db)']['Commits'])),
+    # Rollbacks
+    'rollbacks': DataSet('Rollbacks', 'COUNTER', 10, lambda data: int(data['snapshot']['Database (main db)']['Rollbacks']))
+  }),
+
+  'requests': Graph('Requests', 'events/sec', 'Request events per second', {
+    # Requests per second
+    'requests_per_second': DataSet('Requests', 'COUNTER', 10, lambda data: int(data['snapshot']['Engine #1']['Total requests'])),
+    # RO requests per second
+    'ro_requests_per_second': DataSet('RO requests', 'COUNTER', 10, lambda data: int(data['snapshot']['Engine #1']['RO requests'])),
+    # Time per request
+    'time_per_request': DataSet('Time per request', 'GAUGE', None, lambda data: '%.5f' % (10.0 * sum([thread['Time per request'] for thread in data['snapshot']['Pool (server-0)']['Threads'].values()]) / len(data['snapshot']['Pool (server-0)']['Threads'])))
+  }),
+
+  'threads': Graph('Thread pool', 'threads', 'Thread pool and queue stats', {
+    # Number of currently awailable workers
+    'current': DataSet('Current', 'GAUGE', None, lambda data: data['snapshot']['Pool (server-0)']['Current threads']),
+    # Number of currently free workers
+    'free': DataSet('Free', 'GAUGE', None, lambda data: data['snapshot']['Pool (server-0)']['Free threads']),
+    # Length of requests in pool queue
+    'queue': DataSet('Queue size', 'GAUGE', None, lambda data: data['snapshot']['Pool (server-0)']['Queue size'])
+  }),
+
+  'games': Graph('Games', 'games', 'Game counts', {
+    # Number of active games
+    'active': DataSet('Active', 'GAUGE', None, lambda data: data['snapshot']['Playables - Games']['Active']),
+    # Number of archived games
+    'archived': DataSet('Archived', 'GAUGE', None, lambda data: data['snapshot']['Playables - Games']['Archived']),
+    # Number of inactive games
+    'inactive': DataSet('Inactive', 'GAUGE', None, lambda data: data['snapshot']['Playables - Games']['Inactive']),
+    # Number of free games
+    'free': DataSet('Free', 'GAUGE', None, lambda data: data['snapshot']['Playables - Games']['Free']),
+    # Number of games
+    'total': DataSet('Total', 'GAUGE', None, lambda data: data['snapshot']['Playables - Games']['Total']),
+  })
 }
 
 #handler = urllib2.HTTPHandler(debuglevel = 1)
@@ -65,22 +90,20 @@ def fetch_data():
         f.write(data)
 
     except OSError, e:
-      print >> sys.stderr, 'Unabel to write into cache file'
+      print >> sys.stderr, 'Unable to write into cache file'
       pass
 
     return data
 
   data = None
 
-  if not os.path.exists(STATUS_CACHE):
-    data = __refetch_from_cache()
-
-  else:
+  if os.path.exists(STATUS_CACHE):
     if os.stat(STATUS_CACHE).st_mtime < int(time.time()) - 4 * 60:
       data = __refetch_from_cache()
-
     else:
       data = __fetch_from_cache()
+  else:
+    data = __refetch_from_cache()
 
   return json.loads(data)
 
@@ -94,6 +117,9 @@ graph_info %s""" % (param.title, param.vlabel, param.info)
 
   for dataset_name, dataset in param.datasets.items():
     print '%s.label %s' % (dataset_name, dataset.label)
+    print '%s.type %s' % (dataset_name, dataset.type)
+    if dataset.max != None:
+      print '%s.max %s' % (dataset_name, dataset.max)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
