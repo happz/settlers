@@ -121,23 +121,36 @@ class Playable(hlib.database.DBObject):
     if name == 'is_password_protected':
       return self.password != None and len(self.password) > 0
 
+    if name == 'atime':
+      atime = self.last_pass
+
+      for p in self.players.values():
+        atime = max(atime, p.last_board)
+
+      return atime
+
     if name == 'archive_deadline':
       if self.is_active:
         raise CannotBeArchivedError()
-
-      atime = self.last_pass
 
       for p in self.players.values():
         chat_lister = self.chat_class(self, accessed_by = p)
         if chat_lister.unread > 0:
           raise CannotBeArchivedError()
 
-        atime = max(atime, p.last_board)
+      return self.atime + (86400 * 7)
 
-      return atime + (86400 * 7)
+    if name == 'archive_deadline_hard':
+      if self.is_active:
+        raise CannotBeArchivedError()
+
+      return self.atime + (864000 * 60)
 
     if name == 'can_be_archived':
       try:
+        if hruntime.time > self.archive_deadline_hard:
+          return True
+
         if hruntime.time > self.archive_deadline:
           return True
 
