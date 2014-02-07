@@ -180,7 +180,7 @@ class Handler(hlib.handlers.root.Handler):
     cnt += sum([1 for g in games.f_inactive(hruntime.user) if g.my_player.chat.unread > 0])
 
     # Do I have unread posts in tournaments' chat?
-    cnt += sum([1 for t in tournaments.f_active(hruntime.user) if t.my_player.chat.unread > 0])
+    cnt += sum([1 for t in tournaments.f_active(hruntime.user) if t.has_player(hruntime.user) and t.my_player.chat.unread > 0])
 
     # Do I have unread posts in inactive tournaments?
     cnt += sum([1 for t in tournaments.f_inactive(hruntime.user) if t.my_player.chat.unread > 0])

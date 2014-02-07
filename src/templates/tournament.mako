@@ -45,12 +45,22 @@
       </div>
 
       <div id="chat" class="hide">
-        <div style="height: 798px; overflow: auto">
+        <div class="settlers-view-list">
           <div class="span6">
-          ${ui_form_start(action = '/tournament/chat/add?tid=' + str(tournament.id), legend = 'New message', id = 'chat_post')}
-            ${ui_textarea(form_name = 'text', size = 'xlarge')}
-            ${ui_submit(value = 'Add')}
-          ${ui_form_end()}
+            ${ui_form_start(action = '/tournament/chat/add?tid=' + str(tournament.id), legend = 'New message', id = 'chat_post')}
+              ${ui_textarea(form_name = 'text', size = 'xlarge')}
+
+              <div class="control-group">
+                <div class="hide chat-preview well" id="preview"></div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <input class="btn" type="submit" value="${_('Add')}">
+                  <input class="btn btn-info btn-preview" type="button" value="${_('Preview')}">
+                  <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" rel="tooltip" data-placement="right" title="${_('Syntax help')}" target="_new"><span class="icon-question-mark"></i></a>
+                </div>
+              </div>
+            ${ui_form_end()}
           </div>
 
           ${chat_table()}
@@ -98,7 +108,7 @@
       <% content = content or '' %>
 
       <button class="win-command" title="${_(label)}" rel="tooltip" data-placement="left" id="${id}" style="position: relative">
-        <span class="win-commandimage win-commandring">${icon}</span>
+        <span class="win-commandicon win-commandring icon-${icon}"></span>
         ${content}
       </button>
     </%def>
@@ -106,12 +116,12 @@
     <hr />
 
     <div class="win-commandlayout" style="text-align: center">
-      ${menu_entry('show_players',  '&#x0060;', 'Show players')}
-      ${menu_entry('show_rounds',   '&#xe1a5;', 'Show rounds')}
-      ${menu_entry('show_chat',     '&#x005a;', 'Show chat')}
-      ${menu_entry('show_history',  '&#xe015;', 'Show history')}
-      ${menu_entry('refresh',       '&#xe124;', 'Refresh')}
-      ${menu_entry('show_stats',    '&#x0072;', 'Show stats')}
+      ${menu_entry('show_players', 'users', 'Show players')}
+      ${menu_entry('show_rounds', 'table-2', 'Show rounds')}
+      ${menu_entry('show_chat', 'comment-3', 'Show chat')}
+      ${menu_entry('show_history', 'clipboard', 'Show history')}
+      ${menu_entry('refresh', 'refresh', 'Refresh')}
+      ${menu_entry('show_stats', 'bars-3', 'Show stats')}
     </div>
   </div>
 

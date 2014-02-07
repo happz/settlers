@@ -1,17 +1,18 @@
 import hlib.database
+import hlib.error
 
-class Engine(hlib.database.DBObject):
+class Engine(object):
   player_class = None
 
   def __init__(self, tournament):
-    hlib.database.DBObject.__init__(self)
+    super(Engine, self).__init__()
 
     self.tournament		= tournament
 
   def create_groups(self):
-    pass
+    raise hlib.error.UnimplementedError(Engine)
 
-  def rate_group(self, group):
-    pass
+  def round_finished(self):
+    raise hlib.error.UnimplementedError(Engine)
 
 engines = {}

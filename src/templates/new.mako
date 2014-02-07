@@ -1,5 +1,6 @@
 <%!
   import games
+  import tournaments.engines
 %>
 
 <%namespace file="hlib_ui.mako" import="*" />
@@ -77,18 +78,18 @@ ${ui_section_header('game', 'Game')}
       ${ui_form_end()}
 </section>
 
-<%
-  unused = """
 <!-- "Tournament" section -->
 ${ui_section_header('tournament', 'Tournament')}
       ${ui_form_start(action = '/tournament/new', legend = 'New tournament', id = 'new_tournament')}
 
         <!-- Engine -->
-        ${ui_select_start(form_name = 'engine', label = 'Engine', required = True)}
-          ${ui_select_option(value = 'swiss', selected = False, label = 'swiss')}
+        ${ui_select_start(form_name = 'engine', label = 'Engine', required = True, default = 'Choose...')}
+          % for engine_name in tournaments.engines.engines.keys():
+            ${ui_select_option(value = engine_name, selected = False, label = engine_name)}
+          % endfor
         ${ui_select_end()}
 
-        <!-- Game -->
+        <!-- Kind -->
         ${ui_select_start(form_name = 'kind', label = 'Game kind', default = 'Choose...', required = True)}
           % for kind in games.GAME_KINDS:
             ${ui_select_option(value = kind, selected = False, label = kind)}
@@ -96,19 +97,22 @@ ${ui_section_header('tournament', 'Tournament')}
         ${ui_select_end()}
 
         <!-- Name -->
-        ${ui_input(form_name = 'name', type = 'text', label = 'Game name', required = True)}
+        ${ui_input(form_name = 'name', type = 'text', label = 'Tournament name', required = True)}
 
         <!-- Number of players -->
-        ${ui_select_start(form_name = 'num_players', label = 'Number of players in tournament', required = True)}
-          ${ui_select_option(value = 12, selected = False, label = '12')}
-          ${ui_select_option(value = 24, selected = False, label = '24')}
-        ${ui_select_end()}
+        ${ui_input(form_name = 'num_players', type = 'text', label = 'Number of players in tournament', required = True)}
 
         <!-- Number of players per game -->
         ${ui_select_start(form_name = 'limit', label = 'Number of players per game', required = True)}
           % for i in range(3, 5):
             ${ui_select_option(value = i, selected = False, label = str(i))}
           % endfor
+        ${ui_select_end()}
+
+        <!-- Number of rounds -->
+        ${ui_select_start(form_name = 'num_rounds', label = 'Number of rounds', required = True)}
+          ${ui_select_option(value = '4', selected = True, label = '4')}
+          ${ui_select_option(value = '5', selected = True, label = '5')}
         ${ui_select_end()}
 
         <!-- Description -->
@@ -141,10 +145,15 @@ ${ui_section_header('tournament', 'Tournament')}
           ${ui_select_option(value = 1, selected = True, label = 'Yes')}
           ${ui_select_option(value = 0, selected = False, label = 'No')}
         ${ui_select_end()}
+
+        <!-- Spread fields -->
+        ${ui_select_start(form_name = 'spread_fields', label = 'Spread 6/8 fields', default = False)}
+          ${ui_select_option(value = 1, selected = True, label = 'Yes')}
+          ${ui_select_option(value = 0, selected = False, label = 'No')}
+        ${ui_select_end()}
+
       ${ui_form_end()}
 </section>
-"""
-%>
 
   </div>
 </div>

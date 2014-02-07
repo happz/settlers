@@ -8,10 +8,11 @@ import handlers
 
 import games
 import tournaments
+import tournaments.engines
 
 # Handlers
 from hlib.api import api
-from handlers import page, require_login, require_write
+from handlers import page, require_login, require_write, require_admin
 
 # Validators
 from hlib.input import validate_by, validator_factory, validator_optional
@@ -64,6 +65,21 @@ class ChatHandler(handlers.GenericHandler):
 
     return hlib.api.Reply(200, page = t.chat.get_page(start = start, length = length))
 
+  #
+  # Last access
+  #
+  class ValidateLastAccess(hlib.input.SchemaValidator):
+    tid = games.ValidateGID()
+    last_access = validator_factory(hlib.input.NotEmpty(), hlib.input.Int())
+
+  @require_login
+  @require_write
+  @validate_by(schema = ValidateLastAccess)
+  @api
+  def last_access(self, tid = None, last_access = None):
+    t = require_presence_in_tournament(tid)
+    t.chat.update_last_access(last_access)
+
 class Handler(handlers.GenericHandler):
   chat = ChatHandler()
 
@@ -107,30 +123,44 @@ class Handler(handlers.GenericHandler):
   # New
   #
   class ValidateNew(hlib.input.SchemaValidator):
-    engine			= validator_factory(hlib.input.CommonString(), hlib.input.OneOf(['swiss']))
-    name			= validator_factory(hlib.input.CommonString(), hlib.input.MinLength(2), hlib.input.MaxLength(64))
-    limit			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([3, 4]))
-    num_players			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([12, 24]))
-    turn_limit			= validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
-    kind                        = ValidateKind()
-    password                    = validator_optional(hlib.input.Username())
-    desc                        = validator_optional(validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(64)))
+    engine = validator_factory(hlib.input.CommonString(), hlib.input.OneOf(tournaments.engines.engines.keys()))
+    name = validator_factory(hlib.input.CommonString(), hlib.input.MinLength(2), hlib.input.MaxLength(64))
+    limit = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([3, 4]))
+    num_players = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(min = 6, max = 24))
+    turn_limit = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
+    kind = ValidateKind()
+    password = validator_optional(hlib.input.Username())
+    desc = validator_optional(validator_factory(hlib.input.CommonString(), hlib.input.MaxLength(64)))
 
     allow_extra_fields          = True
     if_key_missing              = None
 
   @require_login
   @require_write
+  @require_admin
   @validate_by(schema = ValidateNew)
   @api
   def new(self, **kwargs):
     gm = games.game_module(kwargs['kind'])
 
-    gflags = gm.GameCreationFlags(**kwargs)
-    gflags.owner = hruntime.user
-    gflags.opponents = []
+    tkwargs = {}
+    for name in tournaments.TournamentCreationFlags.FLAGS:
+      if name in kwargs:
+        tkwargs[name] = kwargs[name]
 
-    tflags = tournaments.TournamentCreationFlags(**kwargs)
-    tflags.limit = kwargs['num_players']
+    gkwargs = {}
+    for name in gm.GameCreationFlags.FLAGS:
+      if name in kwargs:
+        gkwargs[name] = kwargs[name]
+
+    tflags = tournaments.TournamentCreationFlags(**tkwargs)
+    tflags.owner = hruntime.user
+    tflags.limit = int(kwargs['num_players'])
+
+    gflags = gm.GameCreationFlags(**gkwargs)
+    gflags.opponents = []
+    gflags.desc = ''
+    gflags.password = None
+    gflags.owner = None
 
     tournaments.Tournament.create_tournament(tflags, gflags)

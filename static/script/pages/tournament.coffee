@@ -25,6 +25,16 @@ class window.settlers.TournamentObject
 
     @events.reverse()
 
+window.settlers.templates.game_stage = doT.template '
+  {{? it.type == 0}}
+    {{= window.hlib._g("Not started yet")}}
+  {{?? it.type == 2 || it.type == 3}}
+    {{= window.hlib._g("Finished")}}
+  {{??}}
+    {{= window.hlib._g("Running")}}
+  {{?}}
+'
+
 window.settlers.templates.chat_post = doT.template '
  <tr id="chat_post_{{= it.id}}">
     <td>
@@ -71,7 +81,7 @@ $(window).on 'page_startup', () ->
     $('#tournament_id').html T.tid
     $('#tournament_name').html T.name
     $('#tournament_round').html T.round
-    $('#tournament_num_players').html T.num_players
+    $('#tournament_num_players').html T.limit
 
     $('#tournament_status').hide()
 
@@ -111,7 +121,7 @@ $(window).on 'page_startup', () ->
             </tr>
             {{~ group.games :game:game_index}}
               <tr>
-                <td colspan="{{= num_players}}"><h5>{{= window.hlib._g("Game")}} {{= game.id}} ({{= game.round}}. {{= window.hlib._g("round")}})</h5></td>
+                <td colspan="{{= num_players}}"><h5>{{= window.hlib._g("Game")}} {{= game.id}} ({{= game.round}}. {{= window.hlib._g("round")}}) - {{= window.settlers.templates.game_stage(game)}}</h5></td>
               </tr>
               <tr>
                 {{~ game.players :player:pindex}}
@@ -142,18 +152,24 @@ $(window).on 'page_startup', () ->
     $('#history_events').html tmpl window.settlers.tournament
     return false
 
-  chat_pager = window.settlers.setup_chat
-    id_prefix:                  'chat'
-    eid:                        '#chat_posts'
-    url:                        '/tournament/chat/'
-    data:
-      tid:                      window.settlers.tournament.tid
+  chat_preview = null
+  chat_pager = null
 
-  window.settlers.setup_chat_form
-    eid:                        '#chat_post'
+  chat_preview = window.settlers.setup_chat_form
+    eid: '#chat_post'
     handlers:
-      h200:             () ->
+      h200: () ->
         chat_pager.refresh()
+        chat_preview.preview.hide()
+
+  chat_pager = window.settlers.setup_chat
+    id_prefix: 'chat'
+    eid: '#chat_posts'
+    url: '/tournament/chat/'
+    editor_eid: '#chat_post_text'
+    preview: chat_preview
+    data:
+      tid: window.settlers.tournament.tid
 
   $('#chat').on 'hlib_render', (event) ->
     chat_pager.refresh()

@@ -21,11 +21,11 @@ window.settlers.setup_forms = () ->
     return true
 
   new window.hlib.Form
-    fid:                'new_tournament'
-    clear_fields:	['engine', 'kind', 'name', 'num_players', 'limit', 'desc', 'password', 'turn_limit', 'floating_desert', 'spread_fields']
-    refill:             true
+    fid: 'new_tournament'
+    clear_fields: ['name', 'desc', 'password', 'num_players']
+    refill: true
     handlers:
-      h200:     (response, form) ->
+      h200: (response, form) ->
         form.info.success 'Successfuly created'
 
 $(window).bind 'page_startup', () ->

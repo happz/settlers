@@ -1,3 +1,8 @@
+__author__ = 'Milos Prchlik'
+__copyright__ = 'Copyright 2010 - 2014, Milos Prchlik'
+__contact__ = 'happz@happz.cz'
+__license__ = 'http://www.php-suit.com/dpl'
+
 import collections
 import threading
 
@@ -52,15 +57,15 @@ with STATS:
   })
 
 class TournamentCreationFlags(games.GameCreationFlags):
-  FLAGS = ['name', 'desc', 'kind', 'owner', 'limit', 'engine']
-  MAX_OPPONENTS = 16
+  FLAGS = ['name', 'desc', 'kind', 'owner', 'engine', 'password', 'num_players', 'num_round']
+  MAX_OPPONENTS = 24
 
 class Player(lib.play.Player):
   def __init__(self, tournament, user):
     lib.play.Player.__init__(self, user)
 
-    self.tournament		= tournament
-    self.active			= True
+    self.tournament = tournament
+    self.active = True
 
   def __getattr__(self, name):
     if name == 'chat':
@@ -82,12 +87,12 @@ class Group(hlib.database.DBObject):
   def __init__(self, gid, tournament, round, players):
     hlib.database.DBObject.__init__(self)
 
-    self.id			= gid
-    self.tournament		= tournament
-    self.round			= round
-    self.players		= players
+    self.id = gid
+    self.tournament = tournament
+    self.round = round
+    self.players = players
 
-    self.games			= hlib.database.SimpleList()
+    self.games = hlib.database.SimpleList()
 
   def __getattr__(self, name):
     if name == 'finished_games':
@@ -101,15 +106,16 @@ class Group(hlib.database.DBObject):
   def to_state(self):
     def __game_to_state(g):
       return {
-        'id':			g.id,
-        'round':		g.round,
-        'players':		[{'user': hlib.api.User(p.user), 'points': p.points} for p in g.players.values()]
+        'id': g.id,
+        'round': g.round,
+        'type': g.type,
+        'players': [{'user': hlib.api.User(p.user), 'points': p.points} for p in g.players.values()]
       }
 
     return {
-      'id':			self.id,
-      'players':		[{'user': hlib.api.User(p.user)} for p in self.players],
-      'games':			[__game_to_state(g) for g in self.games]
+      'id': self.id,
+      'players': [{'user': hlib.api.User(p.user)} for p in self.players],
+      'games': [__game_to_state(g) for g in self.games]
     }
 
 class Tournament(lib.play.Playable):
@@ -118,20 +124,25 @@ class Tournament(lib.play.Playable):
   STAGE_FINISHED = 2
   STAGE_CANCELED = 3
 
-  def __init__(self, flags, num_players, engine_name):
-    lib.play.Playable.__init__(self, flags)
+  def __init__(self, tournament_flags, game_flags):
+    lib.play.Playable.__init__(self, tournament_flags)
 
-    self.chat_class		= lib.chat.ChatPagerTournament
+    if tournament_flags.limit % game_flags.limit != 0:
+      raise WrongNumberOfPlayers()
 
-    self.stage			= Tournament.STAGE_FREE
-    self.num_players		= num_players
+    self.game_flags = game_flags
 
-    self.players		= hlib.database.SimpleMapping()
+    self.chat_class = lib.chat.ChatPagerTournament
 
-    self._v_engine		= None
-    self.engine_name		= engine_name
+    self.stage = Tournament.STAGE_FREE
 
-    self.rounds			= hlib.database.SimpleMapping()
+    self.players = hlib.database.SimpleMapping()
+
+    self._v_engine = None
+    self.engine_class = tournaments.engines.engines[self.flags.engine]
+    self.engine_data = None
+
+    self.rounds = hlib.database.SimpleMapping()
 
   def __getattr__(self, name):
     if name == 'is_active':
@@ -142,7 +153,7 @@ class Tournament(lib.play.Playable):
 
     if name == 'engine':
       if not hasattr(self, '_v_engine') or not self._v_engine:
-        self._v_engine = tournaments.engines.engines[self.engine_name](self)
+        self._v_engine = self.engine_class(self)
 
       return self._v_engine
 
@@ -157,53 +168,62 @@ class Tournament(lib.play.Playable):
   def to_api(self):
     d = lib.play.Playable.to_api(self)
 
-    d['is_game']		= False
-    d['limit']			= self.flags.limit
-    d['num_players']		= self.num_players
+    d['is_game'] = False
+    d['limit'] = self.limit
+    d['limit_per_game'] = self.game_flags.limit
 
     return d
 
   def to_state(self):
     d = lib.play.Playable.to_state(self)
 
-    d['tid']			= self.id
-    d['stage']			= self.stage
-    d['num_players']		= self.num_players
+    d['tid'] = self.id
+    d['stage'] = self.stage
+    d['limit'] = self.limit
 
     d['rounds'] = [[g.to_state() for g in self.rounds[round]] for round in sorted(self.rounds.keys())]
 
     return d
 
   def create_games(self):
-    self.rounds[self.round] = hlib.database.SimpleList()
+    # Create new round - list of player groups
+    self.rounds[self.round] = ROUND = hlib.database.SimpleList()
+
+    # Ask engine to group players
     player_groups = self.engine.create_groups()
 
-    group_id = 0
-    for group in player_groups:
-      group_id += 1
-      self.rounds[self.round].append(group)
+    for group_id in range(0, len(player_groups)):
+      GROUP = player_groups[group_id]
 
-      kwargs = {'limit':		self.flags.limit,
-                'turn_limit':		self.flags.turn_limit,
-                'dont_shuffle':		True,
-                'owner':		group.players[0].user,
-                'label':		'Turnajovka \'%s\' - %i-%i' % (self.name, self.round, group_id)
-                }
+      ROUND.append(GROUP)
+
+      kwargs = {
+        'limit': self.game_flags.limit,
+        'turn_limit': self.game_flags.turn_limit,
+        'dont_shuffle': True,
+        'owner': GROUP.players[0].user,
+        'label': 'Turnajovka \'%s\' - %i-%i' % (self.name, self.round, group_id + 1)
+      }
 
       # player_id 0 is game owner
-      for player_id in range(1, self.flags.limit):
-        kwargs['opponent' + str(player_id)] = group.players[player_id].user.name
+      for player_id in range(1, self.game_flags.limit):
+        kwargs['opponent' + str(player_id)] = GROUP.players[player_id].user.name
 
       # pylint: disable-msg=W0142
       g = games.create_system_game(self.flags.kind, **kwargs)
 
       g.tournament = self
-      g.tournament_group = group
+      g.tournament_group = GROUP
 
-      group.games.append(g)
+      GROUP.games.append(g)
 
   def next_round(self):
-    self.engine.rank_players(self.get_games())
+    self.engine.round_finished()
+
+    if self.round == self.flags.num_rounds:
+      self.finish()
+      return
+
     self.round += 1
     self.create_games()
 
@@ -215,6 +235,8 @@ class Tournament(lib.play.Playable):
     hlib.events.trigger('tournament.Started', self, tournament = self)
 
   def finish(self):
+    self.stage = Tournament.STAGE_FINISHED
+
     hlib.events.trigger('tournament.Finished', self, tournament = self)
 
   def cancel(self):
@@ -230,28 +252,30 @@ class Tournament(lib.play.Playable):
     if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password) != self.password):
       raise lib.play.WrongPasswordError()
 
-    player = self.engine.player_class(self, user)
+    player = Player(self, user)
     self.players[user.name] = player
 
     hlib.events.trigger('tournament.PlayerJoined', self, tournament = self, user = user)
 
-    if len(self.players) >= self.num_players:
+    if len(self.players) >= self.flags.limit:
       self.begin()
 
     return player
 
   @staticmethod
-  def create_tournament(flags, num_players, engine_name):
-    t = Tournament(flags, num_players, engine_name)
+  def create_tournament(tournament_flags, game_flags):
+    t = Tournament(tournament_flags, game_flags)
 
     hlib.events.trigger('tournament.Created', t, tournament = t)
 
-    t.join_player(flags.owner, flags.password)
+    t.join_player(tournament_flags.owner, tournament_flags.password)
 
     return t
 
-class TournamentError(hlib.error.BaseError):
+class TournamentError(lib.play.PlayableError):
   pass
+
+WrongNumberOfPlayers = lambda: TournamentError(msg = 'Number of players of the tournament must be divisible by number of players per game', reply_status = 402)
 
 hlib.events.Hook('tournament.Created', lambda e: _tournament_lists.created(e.tournament))
 hlib.events.Hook('torunament.Started', lambda e: _tournament_lists.started(e.tournament))
@@ -266,3 +290,4 @@ import events.tournament
 
 import tournaments.engines
 import tournaments.engines.swiss
+import tournaments.engines.randomized
