@@ -148,6 +148,24 @@ class GameCreationFlags(hlib.database.DBObject):
         continue
       self.opponents.append(kwargs[k])
 
+  def __str__(self):
+    l = []
+
+    for name in self.FLAGS:
+      if hasattr(self, name):
+        l.append('%s=%s' % (name, getattr(self, name)))
+      else:
+        l.append('%s=<unknown>' % name)
+
+    for i in range(0, self.MAX_OPPONENTS):
+      name = 'opponent' + str(i + 1)
+      if hasattr(self, name):
+         l.append('%s=%s' % (name, getattr(self, name)))
+      else:
+        l.append('%s=<unknown>' % name)
+
+    return ', '.join(l)
+
 class Card(hlib.database.DBObject):
   def __init__(self, game, player, typ, bought):
     hlib.database.DBObject.__init__(self)
@@ -659,6 +677,28 @@ class Resources(hlib.database.DBObject):
 
   def __str__(self):
     return ', '.join([str(k) + '=' + str(self[k]) for k in self.keys()])
+
+  def clone(self):
+    r = self.__class__()
+
+    for k in self.keys():
+      r[k] = self[k]
+
+    return r
+
+  def deduct(self, other):
+    for k in self.keys():
+      if other[k] == 0:
+        continue
+
+      if other[k] <= self[k]:
+        self[k] -= other[k]
+
+      self[k] = 0
+
+  def ascribe(self, other):
+    for k in self.keys():
+      self[k] += other[k]
 
 class Board(hlib.database.DBObject):
   def __init__(self, game):

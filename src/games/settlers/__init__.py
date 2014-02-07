@@ -115,6 +115,8 @@ class Player(games.Player):
     self.first_village	= None
     self.second_village	= None
 
+    self.vault = None
+
   def __getattr__(self, name):
     if name == 'points':
       p = 0
@@ -190,6 +192,7 @@ class Player(games.Player):
       'resources':		{
         'total':		sum(self.resources.values())
       },
+      'vault': {},
       'cards':			{
         'unused_cards':		len([c for c in self.cards.values() if c.is_used != True]),
         'used_knights':		len([c for c in self.cards.values() if c.type == Card.TYPE_KNIGHT and c.is_used])
@@ -204,6 +207,10 @@ class Player(games.Player):
 
       for k in self.resources.keys():
         d['resources'][k] = self.resources[k]
+
+      if hasattr(self, 'vault') and self.vault != None:
+        for k in self.vault.keys():
+          d['vault'][k] = self.vault[k]
 
     return d
 
@@ -227,16 +234,49 @@ class Player(games.Player):
     stolen = Resources()
     howmany = int(math.ceil(self.resources.sum() / 2))
 
-    # pylint: disable-msg=W0612
-    for i in range(howmany):
+    #
+    # Steal one piece of any resource that's available in
+    # `search_set`. If `original_set` is not None, number
+    # of resources is decreased in `original_set` too.
+    # Stolen resource is marked in `stolen` set.
+    #
+    def __steal_one_piece(search_set, original_set = None):
       while True:
         r = random.randint(Resource.RESOURCE_MIN, Resource.RESOURCE_MAX)
-
-        if self.resources[r] > 0:
+        if search_set[r] > 0:
           break
 
-      self.resources[r] -= 1
+      search_set[r] -= 1
       stolen[r] += 1
+
+      if original_set:
+        original_set[r] -= 1
+
+    # Set with resources we can steal freely
+    unprotected_resources = self.resources.clone()
+
+    # Player has no vault yet, create an empty one
+    if not hasattr(self, 'vault') or self.vault == None:
+      self.vault = Resources()
+
+    # Remove from `unprotected_resources` those resources
+    # player want to keep for himself
+    unprotected_resources.deduct(self.vault)
+
+    if howmany >= unprotected_resources.sum():
+      # Not enough unprotected resources - we can safely steal all unprotected ones,
+      # and then cut deeper into player's stack
+      howmany -= unprotected_resources.sum()
+      self.resources.deduct(unprotected_resources)
+      stolen.ascribe(unprotected_resources)
+
+      for _ in range(0, howmany):
+        __steal_one_piece(self.resources)
+
+    else:
+      # Remove only from unprotcted stack, it has enough resources
+      for _ in range(0, howmany):
+        __steal_one_piece(unprotected_resources, original_set = self.resources)
 
     hlib.events.trigger('game.settlers.ResourcesStolen', self.game, game = self.game, resources = stolen, victim = self.user)
 
