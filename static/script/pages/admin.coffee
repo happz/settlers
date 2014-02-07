@@ -50,7 +50,7 @@ window.settlers.refresh_maintenance_access_list = () ->
               <div class="listview-item-body">
                 <h4 class="listview-item-heading">{{= user.name}}</h4>
                 <div class="btn-toolbar">
-                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="user_maintenance_access_revoke_{{= name}}"><span class="icon-remove"></span></a>
+                  <a class="btn" href="#" title="{{= window.hlib._g("Remove")}}" rel="tooltip" data-placement="right" id="user_maintenance_access_revoke_{{= user.name}}"><span class="icon-remove"></span></a>
                 </div>
               </div>
             </div>
