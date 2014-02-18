@@ -11,6 +11,8 @@ import sys
 import threading
 import time
 
+from collections import OrderedDict
+
 import hlib
 import hlib.error
 import hlib.events
@@ -89,12 +91,11 @@ f_inactive	= _game_lists.f_inactive
 f_archived	= _game_lists.f_archived
 
 from hlib.stats import stats as STATS
-with STATS:
-  STATS.set('Games lists', {
-    'Active':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('active').items() ]),
-    'Inactive':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('inactive').items() ]),
-    'Archived':			lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('archived').items() ])
-  })
+STATS.set('Games lists', OrderedDict([
+  ('Active', lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('active').items()])),
+  ('Inactive', lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('inactive').items()])),
+  ('Archived', lambda s: dict([ (k.name, dict(games = ', '.join([str(i) for i in v]))) for k, v in _game_lists.snapshot('archived').items()]))
+]))
 
 # ----- For handler -------------------------
 class ValidateNew(hlib.input.SchemaValidator):

@@ -3,6 +3,8 @@
   import pprint
   import types
 
+  from collections import OrderedDict
+
   import hlib.events
   import hlib.stats
 
@@ -69,7 +71,7 @@ ${ui_page_header('Monitor')}
   </tr>
 
   % for record_name, record_value in namespace.items():
-    % if type(record_value) not in [types.DictType, types.ListType]:
+    % if type(record_value) not in [types.DictType, OrderedDict, types.ListType]:
       <tr>
         <td>${record_name}</td>
         <td class="pull-right">

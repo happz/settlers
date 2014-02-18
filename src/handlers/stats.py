@@ -1,6 +1,8 @@
 import games
 import handlers
 
+from collections import OrderedDict
+
 import hlib.api
 import hlib.pageable
 
@@ -16,21 +18,21 @@ class StatsHandler(handlers.GenericHandler):
   def __init__(self, *args, **kwargs):
     super(StatsHandler, self).__init__(*args, **kwargs)
 
-    STATS.set('Playables - Games', {
-      'Active': lambda x: hruntime.dbroot.counters.games_active(),
-      'Free': lambda x: hruntime.dbroot.counters.games_free(),
-      'Inactive': lambda x: hruntime.dbroot.counters.games_inactive(),
-      'Archived': lambda x: hruntime.dbroot.counters.games_archived(),
-      'Total': lambda x: hruntime.dbroot.counters.games()
-    })
+    STATS.set('Playables - Games', OrderedDict([
+      ('Active', lambda x: hruntime.dbroot.counters.games_active()),
+      ('Free', lambda x: hruntime.dbroot.counters.games_free()),
+      ('Inactive', lambda x: hruntime.dbroot.counters.games_inactive()),
+      ('Archived', lambda x: hruntime.dbroot.counters.games_archived()),
+      ('Total', lambda x: hruntime.dbroot.counters.games())
+    ]))
 
-    STATS.set('Playables - Tournaments', {
-      'Active': lambda x: hruntime.dbroot.counters.tournaments_active(),
-      'Free': lambda x: hruntime.dbroot.counters.tournaments_free(),
-      'Inactive': lambda x: hruntime.dbroot.counters.tournaments_inactive(),
-      'Archived': lambda x: hruntime.dbroot.counters.tournaments_archived(),
-      'Total': lambda x: hruntime.dbroot.counters.tournaments()
-    })
+    STATS.set('Playables - Tournaments', OrderedDict([
+      ('Active', lambda x: hruntime.dbroot.counters.tournaments_active()),
+      ('Free', lambda x: hruntime.dbroot.counters.tournaments_free()),
+      ('Inactive', lambda x: hruntime.dbroot.counters.tournaments_inactive()),
+      ('Archived', lambda x: hruntime.dbroot.counters.tournaments_archived()),
+      ('Total', lambda x: hruntime.dbroot.counters.tournaments())
+    ]))
 
   #
   # Index
