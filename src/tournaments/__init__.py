@@ -6,6 +6,8 @@ __license__ = 'http://www.php-suit.com/dpl'
 import collections
 import threading
 
+from collections import OrderedDict
+
 import hlib.api
 import hlib.events
 import hlib.input
@@ -49,12 +51,11 @@ f_inactive      = _tournament_lists.f_inactive
 f_archived      = _tournament_lists.f_archived
 
 from hlib.stats import stats as STATS
-with STATS:
-  STATS.set('Tournaments lists', {
-    'Active':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('active').items() ]),
-    'Inactive':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('inactive').items() ]),
-    'Archived':			lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('archived').items() ])
-  })
+STATS.set('Tournaments lists', OrderedDict([
+  ('Active', lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('active').items() ])),
+  ('Inactive', lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('inactive').items() ])),
+  ('Archived', lambda s: dict([ (k.name, dict(tournaments = ', '.join([str(i) for i in v]))) for k, v in _tournament_lists.snapshot('archived').items() ]))
+]))
 
 class TournamentCreationFlags(games.GameCreationFlags):
   FLAGS = ['name', 'desc', 'kind', 'owner', 'engine', 'password', 'num_players', 'num_round']
@@ -75,6 +76,9 @@ class Player(lib.play.Player):
       return 0
 
     return lib.play.Player.__getattr__(self, name)
+
+  def __str__(self):
+    return 'Player(name = "%s", active = %s)' % (self.user.name, self.active)
 
   def to_state(self):
     d = lib.play.Player.to_state(self)
@@ -98,10 +102,23 @@ class Group(hlib.database.DBObject):
     if name == 'finished_games':
       return [g for g in self.games if g.type == games.Game.TYPE_FINISHED]
 
-    if name == 'closed_games':
+    if name == 'completed_games':
       return [g for g in self.games if g.type in [games.Game.TYPE_FINISHED, games.Game.TYPE_CANCELED]]
 
     return hlib.database.DBObject.__getattr__(self, name)
+
+  def __str__(self):
+    attrs = {
+      'tid': self.tournament.id,
+      'gid': self.id,
+      'players': [str(p) for p in self.players],
+      'games': self.games,
+      'completed_games': self.completed_games
+    }
+
+    attrs = ', '.join(['%s = "%s"' % (key, value) for key, value in attrs.items()])
+
+    return 'Group(%s)' % attrs
 
   def to_state(self):
     def __game_to_state(g):
@@ -159,6 +176,12 @@ class Tournament(lib.play.Playable):
 
     if name == 'chat':
       return lib.chat.ChatPagerTournament(self)
+
+    if name == 'groups':
+      return self.rounds[self.round]
+
+    if name == 'completed_groups':
+      return [group for group in self.groups if len(group.completed_games) == len(group.games)]
 
     return lib.play.Playable.__getattr__(self, name)
 
@@ -220,7 +243,7 @@ class Tournament(lib.play.Playable):
   def next_round(self):
     self.engine.round_finished()
 
-    if self.round == self.flags.num_rounds:
+    if self.round == self.limit:
       self.finish()
       return
 

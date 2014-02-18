@@ -18,11 +18,23 @@ class Engine(tournaments.engines.Engine):
     random.shuffle(players)
 
     for i in range(0, len(players), T.game_flags.limit):
-      groups.append(tournaments.Group(i, T, T.round, players[i:i + T.game_flags.limit]))
+      groups.append(tournaments.Group(i / 3, T, T.round, players[i:i + T.game_flags.limit]))
 
     return groups
 
-  def rank_players(self):
-    pass
+  def round_finished(self):
+    T = self.tournament
+
+    for group in T.groups:
+      for game in group.completed_games:
+        players = sorted(game.players.values()[:], key = lambda x: x.points, reverse = True)
+
+        points = T.game_flags.limit
+        for i, p in enumerate(players):
+          T.players[p.user.name].points += points
+          if i == len(players) - 1:
+            continue
+          if p.points != players[i + 1].points:
+            points -= 1
 
 tournaments.engines.engines['randomized'] = Engine

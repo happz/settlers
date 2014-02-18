@@ -7,6 +7,8 @@ import hlib.server
 
 import games
 import games.settlers.stats
+import tournaments
+
 import lib.play
 
 # Handlers
@@ -78,6 +80,24 @@ class FreeDeadlinesThread(hlib.server.Producer):
 
     return canceled
 
+class ActiveTournamentsThread(hlib.server.Producer):
+  def produce(self):
+    hruntime.dont_commit = False
+
+    pushed = []
+
+    for t in hruntime.dbroot.tournaments.values():
+      if t.stage != tournaments.Tournament.STAGE_RUNNING:
+        continue
+
+      if len(t.completed_groups) != len(t.groups):
+        continue
+
+      t.next_round()
+      pushed.append((t.id, t.round))
+
+    return pushed
+
 class ActiveDeadlinesThread(hlib.server.Producer):
   def produce(self):
     canceled = []
@@ -142,6 +162,11 @@ class Handler(handlers.GenericHandler):
     result = self.__run_thread(ArchiveDeadlinesThread, 'Archive deadlines')
 
     return hlib.api.Reply(200, archived_games = result[0], archived_tournaments = result[1])
+
+  @require_hosts(get_hosts = maint_require_hosts)
+  @api
+  def process_active_tournaments(self):
+    return hlib.api.Reply(200, tournaments = self.__run_thread(ActiveTournamentsThread, 'Active tournaments'))
 
   @require_hosts(get_hosts = maint_require_hosts)
   @validate_by(schema = games.GenericValidateKind)

@@ -31,7 +31,7 @@
     <div id="views">
       <ul class="hide">
         <li><a href="#empty">Empty</a></li>
-        <li><a href="#players">Players</a></li>
+        <li><a href="#players" location-hash="#players">Players</a></li>
         <li><a href="#chat" location-hash="#chat">Chat</a></li>
         <li><a href="#history" location-hash="#history">History</a></li>
         <li><a href="#rounds" location-hash="#rounds">Rounds</a></li>
@@ -42,6 +42,16 @@
       </div>
 
       <div id="players" class="hide">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th style="width: 25%;">${_('Name')}</th>
+              <th style="width: 15%;">${_('Points')}</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </div>
 
       <div id="chat" class="hide">

@@ -31,7 +31,7 @@ window.settlers.templates.recent_events.playable = doT.template '
                   <a class="btn" href="/game/?gid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><span class="icon-bars-3"></span></a>
                 {{?}}
               {{??}}
-                <a class="btn" href="/tournament/?tid={{= it.id}}#board" title="{{= window.hlib._g("Show players")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><span class="icon-users"></span><span class="badge badge-important menu-alert"></span></a>
+                <a class="btn" href="/tournament/?tid={{= it.id}}#players" title="{{= window.hlib._g("Show players")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_board" style="position: relative"><span class="icon-users"></span><span class="badge badge-important menu-alert"></span></a>
                 <a class="btn" href="/tournament/?tid={{= it.id}}#history" title="{{= window.hlib._g("Show history")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_history" style="position: relative"><span class="icon-clipboard"></span></a>
                 <a class="btn" href="/tournament/?tid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><span class="icon-comment-3"></span><span class="badge badge-important menu-alert"></span></a>
                 <a class="btn" href="/tournament/?tid={{= it.id}}#rounds" title="{{= window.hlib._g("Show rounds")}}" rel="tooltip" data-placement="top"><span class="icon-table-2" style="position: relative"></span></a>

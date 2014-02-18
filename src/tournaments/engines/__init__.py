@@ -10,9 +10,9 @@ class Engine(object):
     self.tournament		= tournament
 
   def create_groups(self):
-    raise hlib.error.UnimplementedError(Engine)
+    raise hlib.error.UnimplementedError(obj = self)
 
   def round_finished(self):
-    raise hlib.error.UnimplementedError(Engine)
+    raise hlib.error.UnimplementedError(obj = self)
 
 engines = {}

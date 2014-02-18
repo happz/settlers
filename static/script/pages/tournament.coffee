@@ -96,23 +96,27 @@ $(window).on 'page_startup', () ->
 
   $('#players').on 'hlib_render', (event) ->
     tmpl = doT.template '
-      <div class="playable-player">
-        <div class="tournament-player-header">
-          <h4>{{= it.user.name}}</h4>
-        </div>
-        <table class="table table-condensed">
-          <tr class="info"><td><strong>{{= it.points}} {{= window.hlib._g("points")}}</strong></td></tr>
-        </table>
-      </div>'
+      {{? it.user.name == window.settlers.user.name}}
+        <tr class="info">
+      {{??}}
+        <tr>
+      {{?}}
+        <td>{{= it.user.name}}</td>
+        <td>{{= it.points}}</td>
+      </tr>'
 
-    $('#players').html ''
-    $('#players').append(tmpl(player)) for player in window.settlers.tournament.players
+    window.settlers.tournament.players.sort (x, y) ->
+      return y.points - x.points
+
+    $('#players table tbody').html ''
+    $('#players table tbody').append(tmpl(player)) for player in window.settlers.tournament.players
     return false
 
   $('#rounds').on 'hlib_render', (event) ->
     tmpl = doT.template '
       {{~ it.rounds :round:round_index}}
-        <h3>{{= window.hlib._g("Round")}} #{{= round_index + 1}}</h3>
+        {{ round = it.rounds[it.rounds.length - 1 - round_index]; }}
+        <h3>{{= window.hlib._g("Round")}} #{{= it.rounds.length - round_index}}</h3>
         <table class="table">
           {{~ round :group:group_index}}
             {{ num_players = group.players.length; }}
