@@ -72,6 +72,6 @@ class Handler(handlers.GenericHandler):
         else:
           re.free.append(ta)
 
-      return hlib.api.Reply(200, events = re).dump()
+      return hlib.api.Reply(200, events = re)
 
     return __recent_events()
