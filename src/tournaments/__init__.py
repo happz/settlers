@@ -122,11 +122,16 @@ class Group(hlib.database.DBObject):
 
   def to_state(self):
     def __game_to_state(g):
+      if self.round == self.tournament.round:
+        __player_to_state = lambda x: {'user': hlib.api.User(x.user)}
+      else:
+        __player_to_state = lambda x: {'user': hlib.api.User(x.user), 'points': x.points}
+
       return {
         'id': g.id,
         'round': g.round,
         'type': g.type,
-        'players': [{'user': hlib.api.User(p.user), 'points': p.points} for p in g.players.values()]
+        'players': [__player_to_state(p) for p in g.players.values()]
       }
 
     return {

@@ -1,0 +1,12 @@
+@import "lib.scss";
+
+.game-running {
+    font-weight: bold !important;
+    color: darkblue !important;
+}
+
+.game-finished {
+    font-weight: bold !important;
+    color: darkgreen !important;
+}
+

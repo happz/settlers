@@ -27,11 +27,11 @@ class window.settlers.TournamentObject
 
 window.settlers.templates.game_stage = doT.template '
   {{? it.type == 0}}
-    {{= window.hlib._g("Not started yet")}}
+    <span class="game-running">{{= window.hlib._g("Not started yet")}}</span>
   {{?? it.type == 2 || it.type == 3}}
-    {{= window.hlib._g("Finished")}}
+    <span class="game-finished">{{= window.hlib._g("Finished")}}</span>
   {{??}}
-    {{= window.hlib._g("Running")}}
+    <span class="game-running">{{= window.hlib._g("Active")}}</span>
   {{?}}
 '
 
@@ -129,7 +129,12 @@ $(window).on 'page_startup', () ->
               </tr>
               <tr>
                 {{~ game.players :player:pindex}}
-                  <td>{{= window.settlers.fmt_player(player)}} ({{= player.points}} {{= window.hlib._g("points")}})</td>
+                  <td>
+                    {{= window.settlers.fmt_player(player)}}
+                    {{? player.hasOwnProperty("points")}}
+                      ({{= player.points}} {{= window.hlib._g("points")}})
+                    {{?}}
+                  </td>
                 {{~}}
               </tr>
             {{~}}

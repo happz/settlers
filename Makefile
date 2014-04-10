@@ -102,7 +102,7 @@ scripts: scripts_compile scripts_minify
 	cat $< | $(SLIMIT) > $@
 
 STYLES = $(CSS_DIR)/settlers.css $(CSS_DIR)/pages/settings.css $(CSS_DIR)/pages/game.css $(CSS_DIR)/pages/admin.css $(CSS_DIR)/pages/maintenance.css \
-         $(CSS_DIR)/pages/monitor.css \
+         $(CSS_DIR)/pages/monitor.css $(CSS_DIR)/pages/tournament.css \
 				 $(CSS_DIR)/games/settlers/settlers.css
 
 styles_compile: $(STYLES)
