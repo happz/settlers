@@ -19,3 +19,6 @@ lib/*
 
 # Per-instance HTML status pages
 static/status/*.html
+
+static/script/realchat/client.js
+static/script/realchat/node_modules

@@ -78,7 +78,8 @@ SCRIPTS := $(SCRIPT_DIR)/hlib/hlib.js $(SCRIPT_DIR)/hlib/ajax.js $(SCRIPT_DIR)/h
 					 $(SCRIPT_DIR)/pages/issues.js $(SCRIPT_DIR)/pages/home.js $(SCRIPT_DIR)/pages/login.js $(SCRIPT_DIR)/pages/chat.js $(SCRIPT_DIR)/pages/settings.js \
 					 $(SCRIPT_DIR)/pages/admin.js $(SCRIPT_DIR)/pages/monitor.js $(SCRIPT_DIR)/pages/loginas.js $(SCRIPT_DIR)/pages/registration.js $(SCRIPT_DIR)/pages/password_recovery.js \
 					 $(SCRIPT_DIR)/pages/new.js $(SCRIPT_DIR)/pages/maintenance.js $(SCRIPT_DIR)/pages/stats.js $(SCRIPT_DIR)/pages/tournament.js \
-					 $(SCRIPT_DIR)/games/settlers/settlers.js $(SCRIPT_DIR)/games/settlers/settlers-board.js
+					 $(SCRIPT_DIR)/games/settlers/settlers.js $(SCRIPT_DIR)/games/settlers/settlers-board.js \
+					 $(SCRIPT_DIR)/realchat/client.js
 
 LIB_SCRIPTS := $(LIB_DIR)/jquery-ui.js \
                $(LIB_DIR)/jquery.form/jquery.form.js $(LIB_DIR)/jquery.timers.js $(LIB_DIR)/jquery.sound.js \
