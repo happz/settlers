@@ -2,6 +2,7 @@ window.settlers = window.settlers || {};
 
 window.settlers.i18n_table = {
     '# pieces of ...': '# kusů ...',
+    '%(count)s remaining cards': '%(count)s zbývá karet v balíčku',
     '%(count)s unused cards': '%(count)s nepoužitých karet',
     '%(wood)i wood, %(clay)i clay, %(sheep)i sheep, %(grain)i grain, %(rock)i rock': '%(wood)i dřevo, %(clay)i hlína, %(sheep)i ovce, %(grain)i obilí, %(rock)i kámen',
     '1 day': '1 den',
@@ -206,6 +207,7 @@ window.settlers.i18n_table = {
     'Language:': 'Jazyk:',
     'Languages': 'Jazyky',
     'Last': 'Poslední',
+    'Last 100 messages only. Type in your message and press Enter. Press Escape or click Close to close this window.': 'Pouze posledních 100 zpráv. Napište svojí a zmáčkněte Enter. Pro uzavření stiskněte Escape nebo klikněte na křížek vpravo nahoře.',
     'Last action': 'Poslední akce',
     'Last numbers': 'Poslední hozená čísla',
     'Light blue': 'Světle modrá',
