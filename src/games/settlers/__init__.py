@@ -1078,7 +1078,8 @@ class Game(games.Game):
 
     d.update({
       'last_numbers':		self.last_numbers,
-      'board':			ApiBoard(self.board)
+      'board':			ApiBoard(self.board),
+      'remaining_cards': 25 - self.card_index
     })
 
     if self.type == games.Game.TYPE_FINISHED:

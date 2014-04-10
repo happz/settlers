@@ -233,7 +233,7 @@
       ${menu_entry('show_chat',     'comment-3', 'Show chat')}
       ${menu_entry('roll_dice',     'windows8', 'Roll dice')}
       ${menu_entry('pass_turn',     'user-5', 'Pass turn')}
-      ${menu_entry('buy_card',      'document', 'Buy card')}
+      ${menu_entry('buy_card',      'document', 'Buy card', content = '<span class="badge badge-info menu-alert"></span>')}
       ${menu_entry('show_cards',    'docs', 'Show cards', content = '<span class="badge badge-info menu-alert"></span>')}
       ${menu_entry('show_exchange', 'transfer', 'Exchange resources')}
       ${menu_entry('refresh',       'refresh', 'Refresh')}

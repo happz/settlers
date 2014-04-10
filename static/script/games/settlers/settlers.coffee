@@ -994,6 +994,7 @@ window.settlers.update_game_ui_cards = () ->
   G = window.settlers.game
 
   window.settlers.hide_menu_alert 'show_cards', 'badge-info'
+  window.settlers.hide_menu_alert 'show_cards', 'badge-important'
   $('#new_card_form').hide()
 
   if G.state == 1 and G.my_player.resources.rock >= 1 and G.my_player.resources.grain >= 1 and G.my_player.resources.sheep >= 1
@@ -1071,6 +1072,9 @@ window.settlers.update_game_ui_cards = () ->
 
   if G.my_player.cards.unused_cards > 0
     window.settlers.show_menu_alert 'show_cards', G.my_player.cards.unused_cards, 'badge-info', (window.hlib.format_string (window.hlib._g '%(count)s unused cards'), {count: G.my_player.cards.unused_cards})
+
+  if G.hasOwnProperty 'remaining_cards'
+    window.settlers.show_menu_alert 'buy_card', G.remaining_cards, 'badge-info', (window.hlib.format_string (window.hlib._g '%(count)s remaining cards'), {count: G.remaining_cards})
 
   $('#apply_points').hide()
   if G.state == 12 or G.state == 1
