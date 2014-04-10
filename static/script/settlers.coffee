@@ -254,6 +254,8 @@ $(window).bind 'hlib_startup', () ->
         url:			'/logout/'
       return false
 
+    window.settlers.realchat.chat = new window.settlers.realchat.Chat
+
   else
     new window.hlib.Ajax
       url:			'/trumpet'

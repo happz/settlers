@@ -8,6 +8,8 @@
 
   import lib
   import lib.datalayer
+
+  import games.settlers
 %>
 
 <%namespace file="hlib_ui.mako" import="*" />
@@ -93,6 +95,8 @@
   ${script('/static/script/settlers.min.js')}
   ${script('/static/script/validators.min.js')}
 
+  ${script('/static/script/realchat/client.min.js')}
+
   % if self.uri.startswith('games/'):
     <%
       kind = self.uri.split('/')[1].split('.')[0]
@@ -148,7 +152,8 @@
       window.settlers.user = {
         name:                   "${hruntime.user.name}",
         sound:                  ${'true' if hruntime.user.sound == True else 'false'},
-        name: "${hruntime.user.avatar_name}"
+        name: "${hruntime.user.avatar_name}",
+        color: "${hruntime.user.color(games.settlers.COLOR_SPACE).color}"
       };
     % endif
   </script>
@@ -180,18 +185,19 @@
   <div class="container-fluid">
 </%def>
 
-<%def name="menu_entry(icon, label, href = None, id = None, content = None)">
+<%def name="menu_entry(icon, label, href = None, id = None, content = None, toggle = None, badge = 'important')">
   <%
     href = href or '#'
     id = 'id="' + id + '"' if id else ''
     content = content or ''
+    toggle = 'data-toggle="%s"' % toggle if toggle else ''
   %>
 
-  <a class="win-command" href="${href}" title="${_(label)}" rel="tooltip" data-placement="top" ${id} style="position: relative">
+  <a class="win-command" href="${href}" title="${_(label)}" rel="tooltip" data-placement="top" ${id} style="position: relative" ${toggle}>
     <span class="win-commandicon win-commandring icon-${icon}"></span>
     <span class="win-label">${_(label)}</span>
     % if len(id) > 0:
-      <span class="badge badge-important menu-alert"></span>
+    <span class="badge badge-${badge} menu-alert"></span>
       ${content}
     % endif
   </a>
@@ -233,11 +239,31 @@
           <hr class="win-command" />
 
           ${menu_entry('bug', 'Report issue', href = '/issues/')}
-          ${menu_entry('info', 'About ...', href = '/about/')}
+          <!-- ${menu_entry('info', 'About ...', href = '/about/')} -->
+
+          <hr class="win-command" />
+
+          ${menu_entry('chat', 'Chat', href = '#realchat_dialog', toggle = 'modal', id = 'menu_realchat', badge = 'info')}
         </div>
       </div>
     </div>
   </footer>
+
+  <div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" id="realchat_dialog">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+      <h3>Chat</h3>
+    </div>
+    <div class="modal-body">
+      <p>${_('Last 100 messages only. Type in your message and press Enter. Press Escape or click Close to close this window.')}</p>
+      <p><input type="text" class="input-large" id="realchat_input" /></p>
+      <ul>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <a href="#" data-dismiss="modal" class="btn">Close</a>
+    </div>
+  </div>
 </%def>
 
 <%def name="page_footer_public()">
