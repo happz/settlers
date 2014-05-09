@@ -45,7 +45,9 @@ class Handler(handlers.GenericHandler):
       import tournaments
 
       re = RecentEvents()
+      re.finished_chat = 0
 
+      # Active games
       for g in games.f_active(hruntime.user):
         ga = g.to_api()
 
@@ -54,16 +56,14 @@ class Handler(handlers.GenericHandler):
         else:
           re.free.append(ga)
 
-      cnt = 0
+      # Inactive games
       for g in games.f_inactive(hruntime.user):
         re.finished.append(g.to_api())
 
         if g.my_player.chat.unread > 0:
-          cnt += 1
+          re.finished_chat += 1
 
-      if cnt > 0:
-        re.finished_chat = cnt
-
+      # Active tournaments
       for t in tournaments.f_active(hruntime.user):
         ta = t.to_api()
 
@@ -71,6 +71,13 @@ class Handler(handlers.GenericHandler):
           re.playable.append(ta)
         else:
           re.free.append(ta)
+
+      # Inactive tournaments
+      for t in tournaments.f_inactive(hruntime.user):
+        re.finished.append(t.to_api())
+
+        if t.my_player.chat.unread > 0:
+          re.finished_chat += 1
 
       return hlib.api.Reply(200, events = re)
 

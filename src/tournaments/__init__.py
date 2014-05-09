@@ -58,7 +58,7 @@ STATS.set('Tournaments lists', OrderedDict([
 ]))
 
 class TournamentCreationFlags(games.GameCreationFlags):
-  FLAGS = ['name', 'desc', 'kind', 'owner', 'engine', 'password', 'num_players', 'num_round']
+  FLAGS = ['name', 'desc', 'kind', 'owner', 'engine', 'password', 'num_players', 'limit_rounds']
   MAX_OPPONENTS = 24
 
 class Player(lib.play.Player):
@@ -68,22 +68,23 @@ class Player(lib.play.Player):
     self.tournament = tournament
     self.active = True
 
+    self.points = 0
+    self.wins = 0
+
   def __getattr__(self, name):
     if name == 'chat':
       return lib.chat.ChatPagerTournament(self.tournament)
 
-    if name == 'points':
-      return 0
-
     return lib.play.Player.__getattr__(self, name)
 
   def __str__(self):
-    return 'Player(name = "%s", active = %s)' % (self.user.name, self.active)
+    return 'Player(name = "%s", active = %s, points = %i, wins = %i)' % (self.user.name, self.active, self.points, self.wins)
 
   def to_state(self):
     d = lib.play.Player.to_state(self)
 
     d['points'] = self.points
+    d['wins'] = self.wins
 
     return d
 
@@ -122,10 +123,10 @@ class Group(hlib.database.DBObject):
 
   def to_state(self):
     def __game_to_state(g):
-      if self.round == self.tournament.round:
-        __player_to_state = lambda x: {'user': hlib.api.User(x.user)}
-      else:
+      if not self.tournament.is_active or self.round != self.tournament.round:
         __player_to_state = lambda x: {'user': hlib.api.User(x.user), 'points': x.points}
+      else:
+        __player_to_state = lambda x: {'user': hlib.api.User(x.user)}
 
       return {
         'id': g.id,
@@ -159,6 +160,7 @@ class Tournament(lib.play.Playable):
     self.stage = Tournament.STAGE_FREE
 
     self.players = hlib.database.SimpleMapping()
+    self.winner_player = None
 
     self._v_engine = None
     self.engine_class = tournaments.engines.engines[self.flags.engine]
@@ -182,11 +184,11 @@ class Tournament(lib.play.Playable):
     if name == 'chat':
       return lib.chat.ChatPagerTournament(self)
 
-    if name == 'groups':
+    if name == 'current_round':
       return self.rounds[self.round]
 
-    if name == 'completed_groups':
-      return [group for group in self.groups if len(group.completed_games) == len(group.games)]
+    if name == 'completed_current_round':
+      return [group for group in self.current_round if len(group.completed_games) == len(group.games)]
 
     return lib.play.Playable.__getattr__(self, name)
 
@@ -199,6 +201,8 @@ class Tournament(lib.play.Playable):
     d['is_game'] = False
     d['limit'] = self.limit
     d['limit_per_game'] = self.game_flags.limit
+    d['limit_rounds'] = self.flags.limit_rounds
+    d['winner'] = self.winner_player.to_state()
 
     return d
 
@@ -208,6 +212,8 @@ class Tournament(lib.play.Playable):
     d['tid'] = self.id
     d['stage'] = self.stage
     d['limit'] = self.limit
+    d['limit_rounds'] = self.flags.limit_rounds
+    d['winner'] = self.winner_player.to_state()
 
     d['rounds'] = [[g.to_state() for g in self.rounds[round]] for round in sorted(self.rounds.keys())]
 
@@ -248,7 +254,7 @@ class Tournament(lib.play.Playable):
   def next_round(self):
     self.engine.round_finished()
 
-    if self.round == self.limit:
+    if self.round == self.flags.limit_rounds:
       self.finish()
       return
 

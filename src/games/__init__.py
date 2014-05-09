@@ -431,6 +431,14 @@ class Game(lib.play.Playable):
       }
     })
 
+    if self.tournament:
+      d.update({
+        'tournament': {
+          'tid': self.tournament.id,
+          'name': self.tournament.name
+        }
+      })
+
     return d
 
   def is_personal_free(self, user):

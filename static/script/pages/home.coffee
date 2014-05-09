@@ -13,7 +13,12 @@ window.settlers.templates.recent_events.playable = doT.template '
     <td>{{= it.players_list}}</td>
     <td>
       {{? it.is_finished}}
-        {{= window.hlib._g(\'Winner is\')}} {{= window.settlers.fmt_player({user: it.forhont})}}
+        {{= window.hlib._g(\'Winner is\')}}
+        {{? it.is_game}}
+          {{= window.settlers.fmt_player({user: it.forhont})}}
+        {{??}}
+          {{= window.settlers.fmt_player({user: it.winner.user})}}
+        {{?}}
       {{?}}
     </td>
     <td>
@@ -36,7 +41,7 @@ window.settlers.templates.recent_events.playable = doT.template '
                 <a class="btn" href="/tournament/?tid={{= it.id}}#chat" title="{{= window.hlib._g("Show chat")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_chat" style="position: relative"><span class="icon-comment-3"></span><span class="badge badge-important menu-alert"></span></a>
                 <a class="btn" href="/tournament/?tid={{= it.id}}#rounds" title="{{= window.hlib._g("Show rounds")}}" rel="tooltip" data-placement="top"><span class="icon-table-2" style="position: relative"></span></a>
                 {{? it.is_finished}}
-                  <a class="btn" href="/tournament/?tid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><i class="icon-bars-3"></span></a>
+                  <a class="btn" href="/tournament/?tid={{= it.id}}#stats" title="{{= window.hlib._g("Show stats")}}" rel="tooltip" data-placement="top" id="{{= it.eid}}_stats" style="position: relative"><span class="icon-bars-3"></span></a>
                 {{?}}
               {{?}}
             {{?}}

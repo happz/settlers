@@ -110,7 +110,7 @@ ${ui_section_header('tournament', 'Tournament')}
         ${ui_select_end()}
 
         <!-- Number of rounds -->
-        ${ui_select_start(form_name = 'num_rounds', label = 'Number of rounds', required = True)}
+        ${ui_select_start(form_name = 'limit_rounds', label = 'Number of rounds', required = True)}
           ${ui_select_option(value = '4', selected = True, label = '4')}
           ${ui_select_option(value = '5', selected = True, label = '5')}
         ${ui_select_end()}

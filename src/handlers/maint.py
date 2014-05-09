@@ -90,11 +90,11 @@ class ActiveTournamentsThread(hlib.server.Producer):
       if t.stage != tournaments.Tournament.STAGE_RUNNING:
         continue
 
-      if len(t.completed_groups) != len(t.groups):
+      if len(t.completed_current_round) != len(t.groups):
         continue
 
       t.next_round()
-      pushed.append((t.id, t.round))
+      pushed.append({'id': t.id, 'round': t.round, 'stage': t.stage, 'rounds': len(t.rounds)})
 
     return pushed
 

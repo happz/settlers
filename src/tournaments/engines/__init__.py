@@ -15,4 +15,7 @@ class Engine(object):
   def round_finished(self):
     raise hlib.error.UnimplementedError(obj = self)
 
+  def recalculate_all(self):
+    raise hlib.error.UnimplementedError(obj = self)
+
 engines = {}

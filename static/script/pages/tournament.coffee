@@ -81,16 +81,22 @@ $(window).on 'page_startup', () ->
     $('#tournament_id').html T.tid
     $('#tournament_name').html T.name
     $('#tournament_round').html T.round
+    $('#tournament_limit_round').html T.limit_rounds
     $('#tournament_num_players').html T.limit
 
     $('#tournament_status').hide()
 
     if T.stage == 0
       $('#tournament_status').html(window.hlib._g 'Waiting for more players').show()
+    else if T.stage == 2
+      $('#tournament_status').html(window.hlib._g('Tournament finished, winner is {0}').format(T.winner.user.name)).show()
 
     window.hlib.disableIcon '#show_stats'
     if T.stage == 2
-      window.hlib.enableIcon '#show_stats', window.settlers.show_stats
+      __show_stats = () ->
+        tabs.show 'stats'
+
+      window.hlib.enableIcon '#show_stats', __show_stats
 
     tabs.render()
 
@@ -103,10 +109,19 @@ $(window).on 'page_startup', () ->
       {{?}}
         <td>{{= it.user.name}}</td>
         <td>{{= it.points}}</td>
+        <td>{{= it.wins}}</td>
       </tr>'
 
     window.settlers.tournament.players.sort (x, y) ->
-      return y.points - x.points
+      if x.points < y.points
+        return -1
+      if x.points > y.points
+        return 1
+      if x.wins < y.wins
+        return -1
+      if x.wins > y.wins
+        return 1
+    window.settlers.tournament.players.reverse()
 
     $('#players table tbody').html ''
     $('#players table tbody').append(tmpl(player)) for player in window.settlers.tournament.players

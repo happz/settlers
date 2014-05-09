@@ -131,8 +131,9 @@ class ChatPagerGame(ChatPager):
     hlib.events.trigger('game.ChatPost', self.entity, hidden = True, user = hruntime.user, game = self.entity)
 
 class ChatPagerTournament(ChatPager):
-  def __init__(self, tour):
-    super(ChatPagerTournament, self).__init__(tour, tour.my_player)
+  def __init__(self, tour, accessed_by = None):
+    accessed_by = accessed_by or tour.my_player
+    super(ChatPagerTournament, self).__init__(tour, accessed_by)
 
   def update_last_access(self, new_last):
     super(ChatPagerTournament, self).update_last_access(new_last)

@@ -47,6 +47,7 @@
             <tr>
               <th style="width: 25%;">${_('Name')}</th>
               <th style="width: 15%;">${_('Points')}</th>
+              <th style="width: 15%;">${_('Won games')}</th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +107,7 @@
       <header><h3>${_('Tournament')}&nbsp;#<span id="tournament_id"></span></h3></header>
 
       <div id="tournament_name"></div>
-      <div><span id="tournament_round"></span>. ${_('round')}</div>
+      <div><span id="tournament_round"></span>. ${_('round')} / <span id="tournament_limit_round"></span></div>
       <div><span id="tournament_num_players"></span> ${_('players')}</span></div>
     </div>
 
