@@ -36,19 +36,15 @@ window.settlers.templates.game_stage = doT.template '
 '
 
 window.settlers.templates.chat_post = doT.template '
- <tr id="chat_post_{{= it.id}}">
+  <tr id="chat_post_{{= it.id}}">
     <td>
       <h3>
-        <span class="chat-post-unread label label-important hide">Unread</span>
-        {{? it.user.is_online}}
-          <span class="user-online">
-        {{?}}
-        {{= it.user.name}}
-        {{? it.user.is_online}}
-          </span>
-        {{?}} - {{= it.time}}
+        <span class="chat-post-unread label label-important hide">{{= window.hlib._g("Unread")}}</span>
+        {{= window.settlers.fmt_player(it) }} - {{= it.time}}
+        <a href="#" rel="tooltip" data-placement="right" title="{{= window.hlib._g(\'Quote\')}}" data-chat-post="{{= it.id}}">
+          <span class="icon-comment-alt2-stroke"></span>
+        </a>
       </h3>
-
       <div>
         <p>{{= it.message}}</p>
       </div>
