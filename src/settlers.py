@@ -17,8 +17,22 @@ config_defaults = {
     'port':			8082,
     'queue.workers':			10
   },
-  'log':			{
-    'access_format':		'{date} {time} - {tid} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}'
+  'log.access':			{
+    'enabled': 'yes',
+    'format':  '{date} {time} - {tid} - {request_line} - {response_status} {response_length} - {request_ip} {request_user}',
+    'channels': '<default log>'
+  },
+  'log.error': {
+    'enabled': 'yes',
+    'channels': '<default log>, <stderr>'
+  },
+  'log.transactions': {
+    'enabled': 'no',
+    'channels': '<default log>'
+  },
+  'log.events': {
+    'enabled': 'yes',
+    'channels': '<default log>, <stderr>'
   },
   'session':			{
     'time':			3600
@@ -46,9 +60,11 @@ def on_request_started(e):
 
 hlib.events.Hook('engine.RequestStarted', on_request_started)
 
-def on_app_config(app, config):
-  app.config['system_games.limit']  = int(config.get('system_games', 'limit'))
-  app.config['system_games.sleep']  = int(config.get('system_games', 'sleep'))
+def on_app_started(e):
+  e.app.config['system_games.limit'] = e.app.config_file.getint('system_games', 'limit')
+  e.app.config['system_games.sleep'] = e.app.config_file.getint('system_games', 'sleep')
+
+hlib.events.Hook('app.Started', on_app_started)
 
 import hlib.runners.standalone
-hlib.runners.standalone.main(handlers.root.Handler(), config_defaults, on_app_config)
+hlib.runners.standalone.main(handlers.root.Handler(), config_defaults)
