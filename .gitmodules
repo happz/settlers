@@ -32,5 +32,5 @@
 	ignore = dirty
 [submodule "libs/offline"]
 	path = libs/offline
-	url = https://github.com/HubSpot/offline.git
-	ignore = dirty
+	url = https://github.org/happz/offline.git
+	branch = i18n-czech
