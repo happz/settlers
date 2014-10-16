@@ -1,184 +1,337 @@
-__author__			= 'Milos Prchlik'
-__copyright__			= 'Copyright 2010 - 2012, Milos Prchlik'
-__contact__			= 'happz@happz.cz'
-__license__			= 'http://www.php-suit.com/dpl'
+__author__ = 'Milos Prchlik'
+__copyright__ = 'Copyright 2010 - 2014, Milos Prchlik'
+__contact__ = 'happz@happz.cz'
+__license__ = 'http://www.php-suit.com/dpl'
 
+import collections
 import random
+
+import lib.datalayer
+import tournaments
+import tournaments.engines
 
 import hlib.database
 
-import tournaments.engines
-
 __all__ = []
 
-class Player(tournaments.Player):
-  FIELDS = ['winning_points', 'success', 'points', 'place_1', 'place_2', 'place_3']
+class RoundStats(hlib.datalayer.DBObject):
+  def __init__(self, round = None):
+    hlib.datalayer.DBObject.__init__(self)
 
+    self.round = round or 0.0
+
+    self.winning_points = 0.0
+    self.success = 0.0
+    self.game_points = 0.0
+    self.rand = 0.0
+    self.placed_1 = 0.0
+    self.placed_2 = 0.0
+    self.placed_3 = 0.0
+
+    self.finished = False
+
+  def __enter__(self):
+    return self
+
+  def __exit__(self, *args):
+    return False
+
+  def __str__(self):
+    d = collections.OrderedDict()
+    d['round'] = self.round
+    d['wps'] = self.winning_points
+    d['success'] = self.success
+    d['gps'] = self.game_points
+    d['placed_1'] = self.placed_1
+    d['placed_2'] = self.placed_2
+    d['placed_3'] = self.placed_3
+    d['rand'] = self.rand
+    d['finished'] = self.finished
+
+    return ', '.join(['{}={:>9}'.format(key, '%.2f' % value) for key, value in d.items()])
+
+class Player(tournaments.Player):
   def __init__(self, tournament, user):
     tournaments.Player.__init__(self, tournament, user)
 
-    for field in Player.FIELDS:
-      setattr(self, field, 0.0)
-      setattr(self, 'curr_' + field, 0.0)
+    self.round_stats = hlib.database.SimpleList()
+    self._v_summary_stats = None
 
-    self.rand = 0.0
+    self.bye_player = False
 
-  def reset_current(self):
-    for field in self.FIELDS:
-      setattr(self, 'curr_' + field, 0.0)
+  def __getattr__(self, name):
+    if name == 'last_stats':
+      return self.round_stats[-1] if len(self.round_stats) > 0 else None
 
-    self.rand = random.randrange(0, 1000000)
+    if name == 'finished_stats':
+      return [s for s in self.round_stats if s.finished == True]
 
-  def save_current(self):
-    for field in Player.FIELDS:
-      setattr(self, field, getattr(self, field) + getattr(self, 'curr_' + field))
+    if name == 'summary_stats':
+      if not self._v_summary_stats:
+        finished_stats = self.finished_stats
+        finished_stats_cnt = float(len(finished_stats))
 
-    # pylint: disable-msg=E1101
-    self.success /= 2.0
+        self._v_summary_stats = RoundStats()
 
-  def __str__(self):
-    # pylint: disable-msg=E1101
-    return '%i:\t%.2f\t%.2f\t%i\t%i\t%i\t%i' % (self.user.id, self.winning_points, self.success, self.points, self.place_1, self.place_2, self.place_3)
+        if finished_stats_cnt > 0:
+          with self._v_summary_stats as ss:
+            ss.winning_points = sum([s.winning_points for s in finished_stats])
+            ss.success = sum([s.success for s in finished_stats]) / finished_stats_cnt
+            ss.game_points = sum([s.game_points for s in finished_stats])
+            ss.placed_1 = sum([s.placed_1 for s in finished_stats])
+            ss.placed_2 = sum([s.placed_2 for s in finished_stats])
+            ss.placed_3 = sum([s.placed_3 for s in finished_stats])
 
-def __sort_players(a, b):
-  if a.winning_points > b.winning_points:
-    return 1
+      return self._v_summary_stats
 
-  if b.winning_points > a.winning_points:
-    return -1
+    return hlib.database.DBObject.__getattr__(self, name)
 
-  if a.success > b.success:
-    return 1
-  if b.success > a.success:
-    return -1
+  def __repr__(self):
+    return '%s' % self.user.name
 
-  if a.points > b.points:
-    return 1
-  if b.points > a.points:
-    return -1
+  def start_round_stats(self):
+    self.round_stats.append(RoundStats(round = self.tournament.round))
 
-  if a.place_1 > b.place_1:
-    return 1
-  if b.place_1 > a.place_1:
-    return -1
+  def reset_summary_stats(self):
+    self._v_summary_stats = None
 
-  if a.place_2 > b.place_2:
-    return 1
-  if b.place_2 > a.place_2:
-    return -1
+def sort_players_cmp(a, b):
+  with a.summary_stats as ssa, b.summary_stats as ssb:
+    if ssa.winning_points > ssb.winning_points:
+      return 1
+    if ssb.winning_points > ssa.winning_points:
+      return -1
 
-  if a.place_3 > b.place_3:
-    return 1
-  if b.place_3 > a.place_3:
-    return -1
+    if ssa.success > ssb.success:
+      return 1
+    if ssb.success > ssa.success:
+      return -1
 
-  if a.rand > b.rand:
-    return 1
-  if b.rand > a.rand:
-    return -1
+    if ssa.game_points > ssb.game_points:
+      return 1
+    if ssb.game_points > ssa.game_points:
+      return -1
+
+    if ssa.placed_1 > ssb.placed_1:
+      return 1
+    if ssb.placed_1 > ssa.placed_1:
+      return -1
+
+    if ssa.placed_2 > ssb.placed_2:
+      return 1
+    if ssb.placed_2 > ssa.placed_2:
+      return -1
+
+    if ssa.placed_3 > ssb.placed_3:
+      return 1
+    if ssb.placed_3 > ssa.placed_3:
+      return -1
+
+    if a.last_stats.rand > b.last_stats.rand:
+      return 1
+    if b.last_stats.rand > a.last_stats.rand:
+      return -1
 
   return 0
-
-def sort_players(players):
-  return sorted(players, cmp = __sort_players, reverse = True)
 
 class Engine(tournaments.engines.Engine):
   player_class = Player
 
-  def randomize_players(self):
-    for p in self.tournament.players.values():
-      p.rand = random.randrange(0, 1000000)
+  def sort_players(self, players, reverse = False):
+    reverse = not reverse
+    return sorted(players, cmp = sort_players_cmp, reverse = reverse)
 
   def create_groups(self):
-    t = self.tournament
+    T = self.tournament
 
-    # refresh random marks on players
-    self.randomize_players()
+    # create round stats for each player and randomize
+    for p in T.players.values():
+      p.reset_summary_stats()
+      p.start_round_stats()
+      p.last_stats.rand = random.randrange(0, 1000000)
 
-    groups = hlib.database.SimpleList()
+    players = self.sort_players([p for p in T.players.values()], reverse = True)
+    groups = []
 
-    players = sort_players(t.players.values())
+    missing_player = Engine.player_class(T, tournaments.Tournament.MISSING_USER)
 
-    for i in range(0, t.num_players / t.flags.limit):
-      group_players = hlib.database.SimpleList()
+    def __player_lister_0(gid):
+      """
+      No missing player
+      """
 
-      for j in range(0, t.flags.limit):
-        group_players.append(players[i * t.flags.limit + j])
+      start = T.game_flags.limit * gid
+      end   = start + T.game_flags.limit
 
-      group = tournaments.Group(i, t, t.round, group_players)
-      groups.append(group)
+      return players[start:end]
+
+    def __player_lister_3(gid):
+      placeholders = []
+      if gid == 0:
+        start = 0
+        end   = T.game_flags.limit - 1
+        placeholders = [missing_player]
+      else:
+        start = T.game_flags.limit - 1 + T.game_flags.limit * (gid - 1)
+        end   = start + T.game_flags.limit
+
+      return players[start:end] + placeholders
+
+    def __player_lister_2(gid):
+      placeholders = []
+      if gid in (0, 1):
+        start = (T.game_flags.limit - 1) * gid
+        end   = start + T.game_flags.limit - 1
+        placeholders = [missing_player]
+      else:
+        start = (T.game_flags.limit - 1) * 2 + T.game_flags.limit * (gid - 2)
+        end   = start + T.game_flags.limit
+
+      return players[start:end] + placeholders
+
+    def __player_lister_1(gid):
+      if gid == 0:
+        players[0].bye_player = True
+
+        start = 1
+        end   = start + T.game_flags.limit
+      else:
+        start = 1 + T.game_flags.limit * gid
+        end   = start + T.game_flags.limit
+
+      return players[start:end]
+
+    group_size      = T.flags.limit / T.game_flags.limit
+    group_remainder = T.flags.limit % T.game_flags.limit
+
+    player_listers = [
+      __player_lister_0,
+      __player_lister_1,
+      __player_lister_2,
+      __player_lister_3
+    ]
+
+    group_counts = [
+      group_size,
+      group_size,
+      group_size + 1,
+      group_size + 1
+    ]
+
+    for i in range(0, group_counts[group_remainder]):
+      group_players = player_listers[group_remainder](i)
+      groups.append(tournaments.Group(i, T, T.round, group_players))
 
     return groups
 
-  def rate_game(self, g):
-    up = self.tournament.user_to_player
+  def __evaluate_game(self, G):
+    T = self.tournament
+    UP = T.user_to_player
 
     ## winning points
-    players = sorted([p for p in g.players.values() if p != g.forhont_player], key = lambda x: x.points)
-    points = [p.points for p in players]
+    loosers = sorted([p for p in G.players.values() if p != G.forhont_player],
+                     key = lambda x: x.points, reverse = True)
+    loosers_points = [min(p.points, 10) for p in loosers]
 
-    up[g.forhont_player.user].curr_winning_points = 4.0
+    with UP[G.forhont_player.user].last_stats as ls:
+      ls.winning_points = 4.0
+      ls.placed_1 = 1.0
 
-    if points[0] == points[1]:
-      if g.limit == 4:
-        if points[1] == points[2]:
-          up[players[0].user].curr_winning_points = 2.0
-          up[players[1].user].curr_winning_points = 2.0
-          up[players[2].user].curr_winning_points = 2.0
+    if loosers_points[0] == loosers_points[1]:
+      if len(G.players) == 4:
+        if loosers_points[1] == loosers_points[2]:
+          with UP[loosers[0].user].last_stats as ls:
+            ls.winning_points = 2.0
+            ls.placed_2 = 1.0
+          with UP[loosers[1].user].last_stats as ls:
+            ls.winning_points = 2.0
+            ls.placed_2 = 1.0
+          with UP[loosers[2].user].last_stats as ls:
+            ls.winning_points = 2.0
+            ls.placed_2 = 1.0
           ##
 
         else:
-          up[players[0].user].curr_winning_points = 3.0
-          up[players[1].user].curr_winning_points = 2.0
-          up[players[2].user].curr_winning_points = 1.0
+          with UP[loosers[0].user].last_stats as ls:
+            ls.winning_points = 2.5
+            ls.placed_2 = 1.0
+          with UP[loosers[1].user].last_stats as ls:
+            ls.winning_points = 2.5
+            ls.placed_2 = 1.0
+          with UP[loosers[2].user].last_stats as ls:
+            ls.winning_points = 1.0
+            # no placed_4
           ##
 
       else:
-        up[players[0].user].curr_winning_points = 2.5
-        up[players[1].user].curr_winning_points = 2.5
+        with UP[loosers[0].user].last_stats as ls:
+          ls.winning_points = 2.5
+          ls.placed_2 = 1.0
+        with UP[loosers[1].user].last_stats as ls:
+          ls.winning_points = 2.5
+          ls.placed_2 = 1.0
         ##
 
     else:
-      up[players[0].user].curr_winning_points = 3.0
+      with UP[loosers[0].user].last_stats as ls:
+        ls.winning_points = 3.0
+        ls.placed_2 = 1.0
 
-      if g.limit == 4:
-        if points[1] == points[2]:
-          up[players[1].user].curr_winning_points = 1.5
-          up[players[2].user].curr_winning_points = 1.5
+      if len(G.players) == 4:
+        if loosers_points[1] == loosers_points[2]:
+          with UP[loosers[1].user].last_stats as ls:
+            ls.winning_points = 1.5
+            ls.placed_3 = 1.0
+          with UP[loosers[2].user].last_stats as ls:
+            ls.winning_points = 1.5
+            ls.placed_3 = 1.0
           ##
 
         else:
-          up[players[1].user].curr_winning_points = 2.0
-          up[players[2].user].curr_winning_points = 1.0
+          with UP[loosers[1].user].last_stats as ls:
+            ls.winning_points = 2.0
+            ls.placed_3 = 1.0
+          with UP[loosers[2].user].last_stats as ls:
+            ls.winning_points = 1.0
+            # no placed_4
           ##
 
       else:
-        up[players[2].user].curr_winning_points = 2.0
+        with UP[loosers[1].user].last_stats as ls:
+          ls.winning_points = 2.0
+          ls.placed_3 = 1.0
 
-    ## success rate
-    sum_points = float(sum([p.points for p in g.players.values()]))
-    for p in g.players.values():
-      up[p.user].curr_success = float(p.points) / sum_points
+    ## points and success rate
+    sum_points = float(sum([min(p.points, 10) for p in G.players.values()]))
+    for p in G.players.values():
+      UP[p.user].last_stats.game_points = min(p.points, 10)
+      UP[p.user].last_stats.success = float(min(p.points, 10)) / sum_points
 
-    ## points
-    for p in g.players.values():
-      up[p.user].curr_points = p.points
+  def __evaluate_round(self, groups):
+    T = self.tournament
 
-    ## places
-    players = [g.forhont_player] + sorted([p for p in g.players.values() if p != g.forhont_player], key = lambda x: x.points)
-    up[players[0].user].curr_place_1 = 1
-    up[players[1].user].curr_place_2 = 1
-    up[players[2].user].curr_place_3 = 1
+    for p in T.players.values():
+      p.reset_summary_stats()
 
-  def rate_group(self, group):
-    t = self.tournament
+    for group in groups:
+      for game in group.completed_games:
+        self.__evaluate_game(game)
 
-    for game in group.games.values():
-      for player in game.players.values():
-        t.user_to_player[player.user].reset_current()
+    for p in T.players.values():
+      p.last_stats.finished = True
 
-      self.rate_game(game)
-      for player in game.players.values():
-        t.user_to_player[player.user].save_current()
+  def __evaluate_finals(self):
+    T = self.tournament
+
+    players = self.sort_players(T.players.values()[:])
+    T.winner_player = players[0]
+
+  def round_finished(self):
+    T = self.tournament
+
+    self.__evaluate_round(T.current_round)
+
+    if T.round == T.flags.limit_rounds:
+      self.__evaluate_finals()
 
 tournaments.engines.engines['swiss'] = Engine

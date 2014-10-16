@@ -59,7 +59,7 @@ STATS.set('Tournaments lists', OrderedDict([
 
 class TournamentCreationFlags(games.GameCreationFlags):
   FLAGS = ['name', 'desc', 'kind', 'owner', 'engine', 'password', 'num_players', 'limit_rounds']
-  MAX_OPPONENTS = 24
+  MAX_OPPONENTS = 48
 
 class Player(lib.play.Player):
   def __init__(self, tournament, user):
@@ -147,11 +147,14 @@ class Tournament(lib.play.Playable):
   STAGE_FINISHED = 2
   STAGE_CANCELED = 3
 
+  MISSING_USER = lib.datalayer.User('"MISSING" player', 'foobar', 'osadnici@happz.cz')
+  BYE_USER     = lib.datalayer.User('"BYE" player', 'foobar', 'osadnici@happz.cz')
+
   def __init__(self, tournament_flags, game_flags):
     lib.play.Playable.__init__(self, tournament_flags)
 
-    if tournament_flags.limit % game_flags.limit != 0:
-      raise WrongNumberOfPlayers()
+    #if tournament_flags.limit % game_flags.limit != 0:
+    #  raise WrongNumberOfPlayers()
 
     self.game_flags = game_flags
 
@@ -231,17 +234,18 @@ class Tournament(lib.play.Playable):
 
       ROUND.append(GROUP)
 
+      real_players = [p for p in GROUP.players if p.user.name != '"MISSING" player']
+
       kwargs = {
-        'limit': self.game_flags.limit,
+        'limit': len(real_players),
         'turn_limit': self.game_flags.turn_limit,
         'dont_shuffle': True,
-        'owner': GROUP.players[0].user,
+        'owner': real_players[0].user,
         'label': 'Turnajovka \'%s\' - %i-%i' % (self.name, self.round, group_id + 1)
       }
 
-      # player_id 0 is game owner
-      for player_id in range(1, self.game_flags.limit):
-        kwargs['opponent' + str(player_id)] = GROUP.players[player_id].user.name
+      for player_id in range(1, len(real_players)):
+        kwargs['opponent' + str(player_id)] = real_players[player_id].user.name
 
       # pylint: disable-msg=W0142
       g = games.create_system_game(self.flags.kind, **kwargs)
@@ -286,12 +290,12 @@ class Tournament(lib.play.Playable):
     if self.is_password_protected and (password == None or len(password) <= 0 or lib.pwcrypt(password) != self.password):
       raise lib.play.WrongPasswordError()
 
-    player = Player(self, user)
+    player = self.engine_class.player_class(self, user)
     self.players[user.name] = player
 
     hlib.events.trigger('tournament.PlayerJoined', self, tournament = self, user = user)
 
-    if len(self.players) >= self.flags.limit:
+    if len(self.players) == self.flags.limit:
       self.begin()
 
     return player
@@ -302,7 +306,8 @@ class Tournament(lib.play.Playable):
 
     hlib.events.trigger('tournament.Created', t, tournament = t)
 
-    t.join_player(tournament_flags.owner, tournament_flags.password)
+    if tournament_flags.owner != hruntime.dbroot.users['SYSTEM']:
+      t.join_player(tournament_flags.owner, tournament_flags.password)
 
     return t
 

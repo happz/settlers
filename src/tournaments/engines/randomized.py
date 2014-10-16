@@ -7,6 +7,8 @@ import random
 
 import tournaments.engines
 
+__all__ = []
+
 class Engine(tournaments.engines.Engine):
   player_class = tournaments.Player
 
@@ -18,7 +20,7 @@ class Engine(tournaments.engines.Engine):
     random.shuffle(players)
 
     for i in range(0, len(players), T.game_flags.limit):
-      groups.append(tournaments.Group(i / 3, T, T.round, players[i:i + T.game_flags.limit]))
+      groups.append(tournaments.Group(i / T.game_flags.limit, T, T.round, players[i:i + T.game_flags.limit]))
 
     return groups
 
@@ -63,16 +65,5 @@ class Engine(tournaments.engines.Engine):
 
     if T.round == T.flags.limit_rounds:
       self.__evaluate_finals()
-
-  def recalculate_all(self):
-    T = self.tournament
-
-    for p in T.players.values():
-      p.points = p.wins = 0
-
-    for groups in T.rounds.values():
-      self.__evaluate_round(groups)
-
-    self.__evaluate_finals()
 
 tournaments.engines.engines['randomized'] = Engine
