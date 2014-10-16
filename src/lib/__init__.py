@@ -11,8 +11,10 @@ Simple and common functions
 import hashlib
 import os
 import os.path
+import types
 import sys
 
+import hlib
 import hruntime  # @UnresolvedImport
 
 class UserToPlayerMap(object):
@@ -22,8 +24,10 @@ class UserToPlayerMap(object):
     self.container = container
 
   def __getitem__(self, user):
+    username = user if type(user) in types.StringTypes else user.name
+
     for p in self.container.players.values():
-      if user == p.user:
+      if username == p.user.name:
         return p
 
     return None

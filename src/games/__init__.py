@@ -577,7 +577,7 @@ class Game(lib.play.Playable):
 
     hlib.events.trigger('game.GameCreated', g, game = g)
 
-    if flags.owner != hruntime.dbroot.users['SYSTEM']:
+    if flags.owner.name != hruntime.dbroot.users['SYSTEM'].name:
       g.join_player(flags.owner, flags.password)
 
     for u in opponents:
