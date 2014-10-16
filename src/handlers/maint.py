@@ -29,8 +29,7 @@ class StatsRefreshThread(hlib.server.Producer):
     self.kind = kind
 
   def produce(self):
-    gm = games.game_module(self.kind, submodule = 'stats')
-    gm.stats.refresh_stats()
+    games.game_module(self.kind, submodule = 'stats').stats.refresh_stats()
 
 class ArchiveDeadlinesThread(hlib.server.Producer):
   def produce(self):
