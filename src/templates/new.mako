@@ -83,16 +83,16 @@ ${ui_section_header('tournament', 'Tournament')}
       ${ui_form_start(action = '/tournament/new', legend = 'New tournament', id = 'new_tournament')}
 
         <!-- Engine -->
-        ${ui_select_start(form_name = 'engine', label = 'Engine', required = True, default = 'Choose...')}
+        ${ui_select_start(form_name = 'engine', label = 'Engine', required = True)}
           % for engine_name in tournaments.engines.engines.keys():
-            ${ui_select_option(value = engine_name, selected = False, label = engine_name)}
+            ${ui_select_option(value = engine_name, selected = (True if engine_name == 'swiss' else False), label = engine_name)}
           % endfor
         ${ui_select_end()}
 
         <!-- Kind -->
-        ${ui_select_start(form_name = 'kind', label = 'Game kind', default = 'Choose...', required = True)}
+        ${ui_select_start(form_name = 'kind', label = 'Game kind', required = True)}
           % for kind in games.GAME_KINDS:
-            ${ui_select_option(value = kind, selected = False, label = kind)}
+            ${ui_select_option(value = kind, selected = (True if kind == 'settlers' else False), label = kind)}
           % endfor
         ${ui_select_end()}
 
@@ -100,19 +100,24 @@ ${ui_section_header('tournament', 'Tournament')}
         ${ui_input(form_name = 'name', type = 'text', label = 'Tournament name', required = True)}
 
         <!-- Number of players -->
-        ${ui_input(form_name = 'num_players', type = 'text', label = 'Number of players in tournament', required = True)}
-
-        <!-- Number of players per game -->
-        ${ui_select_start(form_name = 'limit', label = 'Number of players per game', required = True)}
-          % for i in range(3, 5):
+        ${ui_select_start(form_name = 'num_players', label = 'Number of players in tournament', default = 'Choose...', required = True)}
+          % for i in range(6, 49):
             ${ui_select_option(value = i, selected = False, label = str(i))}
           % endfor
         ${ui_select_end()}
 
+        <!-- Number of players per game -->
+        ${ui_select_start(form_name = 'limit', label = 'Number of players per game', required = True)}
+          % for i in range(3, 5):
+            ${ui_select_option(value = i, selected = (True if i == 4 else False), label = str(i))}
+          % endfor
+        ${ui_select_end()}
+
         <!-- Number of rounds -->
-        ${ui_select_start(form_name = 'limit_rounds', label = 'Number of rounds', required = True)}
-          ${ui_select_option(value = '4', selected = True, label = '4')}
-          ${ui_select_option(value = '5', selected = True, label = '5')}
+        ${ui_select_start(form_name = 'limit_rounds', label = 'Number of rounds', default = 'Choose...', required = True)}
+          % for i in range(4, 6):
+            ${ui_select_option(value = i, selected = False, label = str(i))}
+          % endfor
         ${ui_select_end()}
 
         <!-- Description -->

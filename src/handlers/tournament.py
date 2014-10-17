@@ -126,7 +126,7 @@ class Handler(handlers.GenericHandler):
     engine = validator_factory(hlib.input.CommonString(), hlib.input.OneOf(tournaments.engines.engines.keys()))
     name = validator_factory(hlib.input.CommonString(), hlib.input.MinLength(2), hlib.input.MaxLength(64))
     limit = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([3, 4]))
-    num_players = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(min = 6, max = 24))
+    num_players = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(min = 6, max = 48))
     limit_rounds = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(min = 4, max = 5))
     turn_limit = validator_factory(hlib.input.NotEmpty(), hlib.input.Int(), hlib.input.OneOf([0, 43200, 86400, 172800, 259200, 604800, 1209600]))
     kind = ValidateKind()

@@ -51,6 +51,8 @@
   ${style('/static/metro/css/datepicker.css')}
 
   ${style('/static/css/offline-theme-default.css')}
+  ${style('/static/css/offline-language-czech.css')}
+
   ${style('/static/css/settlers.css')}
 
   <meta name="google-site-verification" content="wA0CBzot_CglwqnQRXErsh8JDRgkX9FhbhnmPyaxtOA" />
