@@ -1,1 +1,0 @@
-../../libs/holder/holder.min.js

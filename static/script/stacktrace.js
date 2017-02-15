@@ -1,1 +1,0 @@
-../../libs/stacktrace/stacktrace.min.js

@@ -2,8 +2,6 @@ import collections
 
 class Color(object):
   def __init__(self, name, label, color):
-    super(Color, self).__init__()
-
     self.name		= name
     self.label		= label
     self.color		= color

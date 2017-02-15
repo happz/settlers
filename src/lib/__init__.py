@@ -17,6 +17,10 @@ import sys
 import hlib
 import hruntime  # @UnresolvedImport
 
+def dictUpdate(dst, src):
+    dst.update(src)
+    return dst
+
 class UserToPlayerMap(object):
   def __init__(self, container):
     super(UserToPlayerMap, self).__init__()

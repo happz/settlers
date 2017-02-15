@@ -1,1 +1,0 @@
-../../libs/jquery-ui.min.js

@@ -49,6 +49,11 @@
   <link rel="stylesheet" href="/static/css/sh_style.css" type="text/css" />
 </%def>
 
+<div class="hidden-phone hidden-tablet">This should not be visible on phone nor tablet.</div>
+<div class="hidden-desktop">This should not be visible on desktop.</div>
+<div class="visible-tablet">This should be visible on tablet.</div>
+<div class="visible-desktop">This should be visible on desktop.</div>
+
 ${ui_page_header('Monitor')}
 
 <div class="row-fluid">

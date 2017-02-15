@@ -184,6 +184,8 @@ class I18NHandler(handlers.GenericHandler):
 
     if lang.coverage:
       coverage = lang.coverage.coverage(lang)
+    else:
+      coverage = ([], {})
 
     return hlib.api.Reply(200, tokens = [{'name': name} for name in coverage[1].keys()])
 

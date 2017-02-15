@@ -35,6 +35,25 @@ class ThiefEvent(Event):
 
     return d
 
+  def serialize(self, container, **kwargs):
+    Event.serialize(self, container, **kwargs)
+
+    container.extend(self, 'am_i_thief', 'am_i_victim')
+
+    if self.thief is None:
+      container['thief'] = None
+
+    else:
+      container['thief'] = hlib.serialize.Container()
+      self.thief.serialize(container['thief'], **kwargs)
+
+    if self.victim is None:
+      container['victim'] = None
+
+    else:
+      container['victim'] = hlib.serialize.Container()
+      self.victim.serialize(container['victim'], **kwargs)
+
 def resources_to_api(rs):
   d = {}
 
@@ -66,6 +85,10 @@ class ResourceStolen(ThiefEvent):
 
     return d
 
+  def serialize(self, container, **kwargs):
+    ThiefEvent.serialize(self, container, **kwargs)
+    container['resource'] = self.resource
+
 class ResourcesStolen(ThiefEvent):
   def __init__(self, resources = None, **kwargs):
     ThiefEvent.__init__(self, **kwargs)
@@ -78,6 +101,10 @@ class ResourcesStolen(ThiefEvent):
     d['resources'] = resources_to_api(self.resources)
 
     return d
+
+  def serialize(self, container, **kwargs):
+    ThiefEvent.serialize(self, container, **kwargs)
+    container['resources'] = resources_to_api(self.resources)
 
 class DiceRolled(UserEvent):
   def __init__(self, dice = None, **kwargs):
@@ -117,6 +144,10 @@ class ResourcesReceived(UserEvent):
 
     return d
 
+  def serialize(self, container, **kwargs):
+    UserEvent.serialize(self, container, **kwargs)
+    container['resources'] = resources_to_api(self.resources)
+
 class ResourcesExchanged(UserEvent):
   def __init__(self, src = None, dst = None, **kwargs):
     UserEvent.__init__(self, **kwargs)
@@ -132,6 +163,11 @@ class ResourcesExchanged(UserEvent):
 
     return d
 
+  def serialize(self, container, **kwargs):
+    UserEvent.serialize(self, container, **kwargs)
+    container['src'] = resources_to_api(self.src)
+    container['dst'] = resources_to_api(self.dst)
+
 class Monopoly(ThiefEvent):
   def __init__(self, resources = None, **kwargs):
     ThiefEvent.__init__(self, **kwargs)
@@ -144,6 +180,10 @@ class Monopoly(ThiefEvent):
     d['resources'] = resources_to_api(self.resources)
 
     return d
+
+  def serialize(self, container, **kwargs):
+    UserEvent.serialize(self, container, **kwargs)
+    container['resources'] = resources_to_api(self.resources)
 
 class ThiefPlaced(UserEvent):
   def __init__(self, field = None, **kwargs):

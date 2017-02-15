@@ -28,6 +28,8 @@ import lib.play
 # pylint: disable-msg=F0401
 import hruntime  # @UnresolvedImport
 
+from functools import partial
+
 GAME_KINDS = ['settlers']
 """
 List of all known game kinds.
@@ -46,49 +48,53 @@ class GenericValidateGID(hlib.input.SchemaValidator):
   gid = ValidateGID()
 
 # ----- Lists --------------------------------
-class GameLists(lib.play.PlayableLists):
-  def get_objects(self, l):
-    ret = []
+class GameListCache(lib.play.PlayableListCache):
+    def __init__(self, bus, workerThread):
+        super(GameListCache, self).__init__(bus, workerThread)
 
-    for gid in l:
-      if gid in hruntime.dbroot.games:
-        ret.append(hruntime.dbroot.games[gid])
-      if gid in hruntime.dbroot.games_archived:
-        ret.append(hruntime.dbroot.games_archived[gid])
+        def _create_active_list(dbroot, user):
+            bus.log.debug('_create_active_list: user=%s' % user.name)
 
-    return ret
+            return [game for game in dbroot.games.values() if game.is_active and (game.has_player(user) or (game.is_global_free() or game.is_personal_free(user)))]
 
-  def get_active(self, user):
-    return [g.id for g in hruntime.dbroot.games.values() if g.is_active and (g.has_player(user) or (g.is_global_free() or g.is_personal_free(user)))]
+        self.active_games = partial(self._get_filtered_list, self._active, _create_active_list)
 
-  def get_inactive(self, user):
-    return [g.id for g in hruntime.dbroot.games.values() if not g.is_active and g.has_player(user)]
+        def _create_inactive_list(dbroot, user):
+            bus.log.debug('_create_inactive_list: user=%s' % user.name)
 
-  def get_archived(self, user):
-    ret = []
-    for g in hruntime.dbroot.games_archived.values():
-      try:
-        if g.has_player(user):
-          ret.append(g.id)
-      except AttributeError:
-        print >> sys.stderr, ('Game %i caused AttributeError when accessed in archive' % g.id)
-        continue
+            return [game for game in dbroot.games.values() if not game.is_active and game.has_player(user)]
 
-    return ret
+        self.inactive_games = partial(self._get_filtered_list, self._inactive, _create_inactive_list)
 
-  # Shortcuts
-  def created(self, g):
-    with self._lock:
-      super(GameLists, self).created(g)
-      hruntime.dbroot.games.push(g)
+        def _create_archived_list(dbroot, user):
+            bus.log.debug('_create_archived_list: user=%s' % user.name)
 
-    return True
+            ret = []
 
-_game_lists = GameLists()
+            for game in dbroot.games_archived.values():
+                try:
+                    if game.has_player(user):
+                        ret.append(game)
 
-f_active	= _game_lists.f_active
-f_inactive	= _game_lists.f_inactive
-f_archived	= _game_lists.f_archived
+                except AttributeError:
+                    print >> sys.stderr, ('Game %i caused AttributeError when accessed in archive' % game.id)
+
+            return ret
+
+        self.archived_games = partial(self._get_filtered_list, self._archived, _create_archived_list)
+
+        bus.subscribe('game.GameCreated', self.onCreated)
+        bus.subscribe('game.GameStarted', self.onStarted)
+        bus.subscribe('game.GameFinished', self.onFinished)
+        bus.subscribe('game.GameArchived', self.onArchived)
+        bus.subscribe('game.GameCanceled', self.onCanceled)
+        bus.subscribe('game.PlayerJoined', self.onPlayerJoined)
+        bus.subscribe('game.PlayerInvited', self.onPlayerInvited)
+
+    def onCreated(self, dbroot, game, *args, **kwargs):
+        super(GameListCache, self).onCreated(dbroot, game, *args, **kwargs)
+
+        dbroot.games.push(game)
 
 from hlib.stats import stats as STATS
 STATS.set('Games lists', OrderedDict([
@@ -193,6 +199,9 @@ class Card(hlib.database.DBObject):
       'can_be_used':	self.can_be_used
     }
 
+  def serialize(self, container, **kwargs):
+    container.extend(**dict((field, getattr(self, field)) for field in ['id', 'type', 'bought', 'used', 'can_be_used']))
+
 class Player(lib.play.Player):
   def __init__(self, game, user):
     lib.play.Player.__init__(self, user)
@@ -293,6 +302,14 @@ class Game(lib.play.Playable):
     self.players	= hlib.database.IndexedMapping()
 
     self.board		= None
+
+  def _createAPIData_Summary(self, user):
+      data = lib.play.Playable._createAPIData_Summary(self, user)
+
+      forhontPlayer = self.forhont_player
+      data['forhont'] = forhontPlayer.toAPI(user, summary = True) if forhontPlayer is not None else None
+
+      return data
 
   def __getattr__(self, name):
     if name == 'forhont_player':
@@ -563,7 +580,9 @@ class Game(lib.play.Playable):
       opponent = hruntime.dbroot.users[opponent_name]
 
       if opponent == flags.owner and system_game != True:
-        raise WrongInviteError()
+        #raise WrongInviteError()
+        # some browsers keep inserting owner's name as a third opponent...
+        continue
 
       if opponent in opponents:
         raise DoubleInviteError()
@@ -744,17 +763,5 @@ def create_system_game(kind, label = None, owner = None, **kwargs):
 
   return g
 
-# Event hooks
-hlib.events.Hook('game.GameCreated',  lambda e: _game_lists.created(e.game))
-hlib.events.Hook('game.GameStarted',  lambda e: _game_lists.started(e.game))
-hlib.events.Hook('game.GameFinished', lambda e: _game_lists.finished(e.game))
-hlib.events.Hook('game.GameArchived', lambda e: _game_lists.archived(e.game))
-hlib.events.Hook('game.GameCanceled', lambda e: _game_lists.canceled(e.game))
-hlib.events.Hook('game.PlayerJoined', lambda e: _game_lists.inval_players(e.game))
-hlib.events.Hook('game.PlayerInvited', lambda e: _game_lists.inval_players(e.game))
-hlib.events.Hook('game.ChatPost', lambda e: hruntime.cache.remove_for_users([p.user for p in e.game.players.values()], 'recent_events'))
-hlib.events.Hook('game.Pass', lambda e: hruntime.cache.remove_for_users([p.user for p in e.game.players.values()], 'recent_events'))
-
 import games.settlers
-
 import events.game

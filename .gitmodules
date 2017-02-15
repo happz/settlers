@@ -30,7 +30,3 @@
 	path = libs/holder
 	url = https://github.com/imsky/holder.git
 	ignore = dirty
-[submodule "libs/offline"]
-	path = libs/offline
-	url = https://github.com/happz/offline.git
-	branch = i18n-czech

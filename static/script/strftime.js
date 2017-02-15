@@ -1,1 +1,0 @@
-../../libs/strftime.min.js

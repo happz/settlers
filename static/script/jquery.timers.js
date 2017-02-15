@@ -1,1 +1,0 @@
-../../libs/jquery.timers.min.js

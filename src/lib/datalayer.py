@@ -8,7 +8,12 @@ Data layer objects and method
 
 import os.path
 import threading
+import time
 import urllib
+
+import persistent
+import ZODB.POSException
+import BTrees
 
 import hlib.database
 import hlib.datalayer
@@ -17,8 +22,121 @@ import hlib.locks
 
 import lib.chat
 
-# pylint: disable-msg=F0401
-import hruntime  # @UnresolvedImport
+
+class DBObject(persistent.Persistent):
+  def __getattr__(self, name):
+    raise AttributeError(name)
+
+  def __resolve_conflict_diff(self, oldState, savedState, newState):
+    diff = []
+
+    for key in oldState.keys():
+      value = oldState[key]
+      if value != savedState[key] or value != newState[key]:
+        diff.append(key)
+
+    return diff
+
+  def __resolve_conflict(self, key, oldState, savedState, newState, resultState):
+    return False
+
+  def _p_resolveConflict(self, oldState, savedState, newState):
+    # just log and fail
+    resolved = True
+    resultState = savedState.copy()
+
+    try:
+      print >> sys.stderr, 'DB Conflict detected:'
+
+      diff = self.__resolve_conflict_diff(oldState, savedState, newState)
+      print >> sys.stderr, '  Conflicting keys: %s' % ', '.join(diff)
+
+      for key in diff:
+        if self.__resolve_conflict(key, oldState, savedState, newState, resultState) == True:
+          continue
+
+        print >> sys.stderr, '  Key %s unresolved' % key
+        resolved = False
+        break
+
+    except Exception, e:
+      print >> sys.stderr, 'DB Conflict resolution failed'
+      print >> sys.stderr, e
+
+    finally:
+      if not resolved:
+        raise ZODB.POSException.ConflictError
+
+      return resultState
+
+class IndexedMapping(DBObject):
+    def __len__(self):
+        return len(self._data)
+
+    def __iter__(self):
+        return self._data.__iter__()
+
+    def __setitem__(self, *args, **kwargs):
+        return self._data.__setitem__(*args, **kwargs)
+
+    def __getitem__(self, *args, **kwargs):
+        return self._data.__getitem__(*args, **kwargs)
+
+    def __delitem__(self, *args, **kwargs):
+        return self._data.__delitem__(*args, **kwargs)
+
+    def __contains__(self, *args, **kwargs):
+        return self._data.__contains__(*args, **kwargs)
+
+    def iteritems(self, *args, **kwargs):
+        return self._data.iteritems(*args, **kwargs)
+
+    def iterkeys(self, *args, **kwargs):
+        return self._data.iterkeys(*args, **kwargs)
+
+    def itervalues(self, *args, **kwargs):
+        return self._data.itervalues(*args, **kwargs)
+
+    def items(self, *args, **kwargs):
+        return self._data.items(*args, **kwargs)
+
+    def keys(self, *args, **kwargs):
+        return self._data.keys(*args, **kwargs)
+
+    def values(self, *args, **kwargs):
+        return self._data.values(*args, **kwargs)
+
+    def max_key(self, *args, **kwargs):
+        return self._data.maxKey()
+
+    def __init__(self, first_key = None, *args, **kwargs):
+        DBObject.__init__(self, *args, **kwargs)
+
+        self._data = BTrees.IOBTree.IOBTree()
+        self._first_key = first_key or 0
+
+    def __setstate__(self, *args, **kwargs):
+        DBObject.__setstate__(self, *args, **kwargs)
+
+        if not hasattr(self, '_data'):
+            self._data = self.data
+            del self.data
+
+        if not hasattr(self, '_first_key'):
+            self._first_key = self.first_key
+            del self.first_key
+
+    def push(self, o):
+        index = self._first_key if len(self) == 0 else (self.max_key() + 1)
+
+        o.id = index
+        self[index] = o
+
+    def pop(self):
+        del self[self.max_key()]
+
+    def last(self):
+        return self[self.max_key()]
 
 def SystemUser():
   if not hasattr(SystemUser, 'user_instance'):
@@ -108,103 +226,118 @@ class Vacation(hlib.database.DBObject):
     self.length = None
     self.killed = None
 
-class User(hlib.datalayer.User):
-  AFTER_PASS_TURN_STAY = 0
-  AFTER_PASS_TURN_NEXT = 1
-  AFTER_PASS_TURN_CURR = 2
+class User(DBObject):
+    AFTER_PASS_TURN_STAY = 0
+    AFTER_PASS_TURN_NEXT = 1
+    AFTER_PASS_TURN_CURR = 2
 
-  VACATION_STATE_NOP     = 0
-  VACATION_STATE_ENTERED = 1
+    VACATION_STATE_NOP     = 0
+    VACATION_STATE_ENTERED = 1
 
-  def __init__(self, name, password, email):
-    hlib.datalayer.User.__init__(self, name, password, email)
+    def __init__(self, name, password, email):
+        DBObject.__init__(self)
 
-    self.elo		= 0
-    self.after_pass_turn = User.AFTER_PASS_TURN_NEXT
-    self.last_board	= 0
-    self.board_skin	= 'real'
-    self.vacation	= 604800
-    self.autoplayer	= False
-    self.sound		= False
-    self.table_length   = 20
+        self.name           = unicode(name)
+        self.password       = unicode(password)
+        self.admin          = False
+        self.date_format = '%d/%m/%Y %H:%M:%S'
+        self.email          = unicode(email)
+        self.maintenance_access     = False
 
-    self.vacations      = hlib.database.IndexedMapping()
-    self.colors		= hlib.database.SimpleMapping()
+        self.events         = hlib.database.IndexedMapping()
 
-    self.seen_board	= False
+        self.elo		= 0
+        self.after_pass_turn = User.AFTER_PASS_TURN_NEXT
+        self.last_board	= 0
+        self.board_skin	= 'real'
+        self.autoplayer	= False
+        self.sound		= False
+        self.table_length   = 20
 
-  def __getattr__(self, name):
-    if name == 'is_autoplayer':
-      return self.autoplayer == True
+        self.colors		= hlib.database.SimpleMapping()
 
-    if name == 'has_vacation':
-      return self.last_vacation != None
+        self.seen_board	= False
 
-    if name == 'has_prepared_vacation':
-      return self.has_vacation and hruntime.time < self.last_vacation.start
+        self._v_last_access = None
 
-    if name == 'last_vacation':
-      return None if self.vacation == 0 or len(self.vacations) == 0 else self.vacations.last()
+    def __setstate__(self, *args, **kwargs):
+        DBObject.__setstate__(self, *args, **kwargs)
 
-    if name == 'is_on_vacation':
-      return self.has_vacation and self.last_vacation.killed == None and self.last_vacation.start <= hruntime.time and hruntime.time <= self.last_vacation.start + self.last_vacation.length
+        self._v_last_access = None
 
-    if name == 'avatar_name':
-      return urllib.quote(self.name)
+    def __eq__(self, other):
+        if not isinstance(other, User):
+            return False
 
-    if name == 'avatar_filename':
-      return os.path.join(hruntime.app.config['dir'], 'static', 'images', 'avatars', self.avatar_name + '.jpg')
+        return self.name == other.name
 
-    return hlib.datalayer.User.__getattr__(self, name)
+    def __ne__(self, other):
+        if not isinstance(other, User):
+            return True
 
-  def color(self, color_space, new_color = None):
-    if color_space.kind not in self.colors:
-      self.colors[color_space.kind] = hlib.database.StringMapping()
+        return self.name != other.name
 
-      if new_color:
-        self.colors[color_space.kind][self.name] = new_color.name
+    def __cmp__(self, other):
+        return cmp(self.name, other.name)
 
-      else:
-        self.colors[color_space.kind][self.name] = color_space.DEFAULT_COLOR_NAME
+    def __hash__(self):
+        return hash(self.name)
 
-    if new_color != None:
-      self.colors[color_space.kind][self.name] = new_color.name
+    def touch(self):
+        self._v_last_access = time.time()
 
-    return color_space.colors[self.colors[color_space.kind][self.name]]
+    def _createAPIDataCurrent(self):
+        return {
+            'username':      self.name,
+            'email':         self.email,
+            'afterPassTurn': self.after_pass_turn,
+            'perPage':       self.table_length,
+            'sound':         self.sound,
+            'colors':        {
+                game: self.colors[game][self.name] for game in self.colors.iterkeys()
+            },
+            'isAdmin':       self.admin
+        }
 
-  def used_colors(self, color_space):
-    used_colors  = [self.color(color_space).name]
-    used_colors += self.colors[color_space.kind].values()
+    def _createAPIDataCommon(self):
+        return {
+            'name': self.name,
+            'isOnline': self.is_online
+        }
 
-    return used_colors
+    def toAPI(self, current = False):
+        if current is True:
+            return self._createAPIDataCurrent()
 
-  def vacation_revoke(self):
-    if self.has_prepared_vacation:
-      self.vacation += self.last_vacation.length
-      self.vacations.pop()
+        else:
+            return self._createAPIDataCommon()
 
-  def vacation_kill(self):
-    if self.is_on_vacation:
-      self.last_vacation.killed = hruntime.time
+    def __getattr__(self, name):
+        if name == 'is_online':
+            if self._v_last_access is None:
+                return False
 
-  def vacation_prepare(self, start, end):
-    if end <= start:
-      raise hlib.error.BaseError('You can not finish vacation before it begin')
+            return True if (time.time() - self._v_last_access) <= 30 * 60 else False
 
-    if start < hruntime.time:
-      raise hlib.error.BaseError('Start time can not be in past')
+        return DBObject.__getattr__(self, name)
 
-    length = end - start
-    if self.vacation < length:
-      raise hlib.error.BaseError('You do not have enough vacation available')
+    def color(self, color_space, new_color = None):
+        if color_space.kind not in self.colors:
+            self.colors[color_space.kind] = hlib.database.StringMapping()
 
-    self.vacation -= length
+        if new_color:
+            self.colors[color_space.kind][self.name] = new_color.name
 
-    v = Vacation()
-    v.start = start
-    v.length = length
+        else:
+            self.colors[color_space.kind][self.name] = color_space.DEFAULT_COLOR_NAME
 
-    self.vacations.push(v)
+        if new_color != None:
+            self.colors[color_space.kind][self.name] = new_color.name
 
-  def vacation_add_game(self):
-    self.vacation = max(self.vacation + 86400, 2592000)
+        return color_space.colors[self.colors[color_space.kind][self.name]]
+
+    def used_colors(self, color_space):
+        used_colors  = [self.color(color_space).name]
+        used_colors += self.colors[color_space.kind].values()
+
+        return used_colors

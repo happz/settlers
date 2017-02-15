@@ -8,6 +8,7 @@ Game-wide events.
 
 import hlib.api
 import hlib.events
+#import hlib.serialize
 
 #
 # Base classes
@@ -32,6 +33,12 @@ class Event(hlib.events.Event):
 
     return d
 
+  def serialize(self, container, *properties, **kwargs):
+    properties = properties or [lambda x: ('gid', x.game.id), 'round']
+
+    hlib.events.Event.serialize(self, container, **kwargs)
+    container.extend(self, *properties)
+
 class UserEvent(Event):
   def __init__(self, user = None, **kwargs):
     Event.__init__(self, **kwargs)
@@ -45,6 +52,13 @@ class UserEvent(Event):
       d['user'] = hlib.api.User(self.user)
 
     return d
+
+  def serialize(self, container, *properties, **kwargs):
+    Event.serialize(self, container, **kwargs)
+
+    if self.user:
+      container['user'] = hlib.serialize.Container()
+      self.user.serialize(container['user'], **kwargs)
 
 class CardEvent(UserEvent):
   def __init__(self, card = None, **kwargs):
@@ -62,6 +76,12 @@ class CardEvent(UserEvent):
     }
 
     return d
+
+  def serialize(self, container, **kwargs):
+    UserEvent.serialize(self, container, **kwargs)
+
+    container['card'] = hlib.serialize.Container()
+    container['card'].extend(self.card, 'type', 'bought', 'used')
 
 #
 # Real events
@@ -89,6 +109,11 @@ class GameCanceled(UserEvent):
     d['reason'] = self.reason
 
     return d
+
+  def serialize(self, container, **kwargs):
+    UserEvent.serialize(self, container, **kwargs)
+
+    container['reason'] = self.reason
 
 class GameArchived(Event):
   pass
@@ -122,6 +147,15 @@ class Pass(Event):
     d['next'] = hlib.api.User(self.next)
 
     return d
+
+  def serialize(self, container, **kwargs):
+    Event.serialize(self, container, **kwargs)
+
+    container['prev'] = hlib.serialize.Container()
+    self.prev.serialize(container['prev'], **kwargs)
+
+    container['next'] = hlib.serialize.Container()
+    self.next.serialize(container['next'], **kwargs)
 
 class PlayerInvited(UserEvent):
   pass

@@ -4,6 +4,7 @@ __contact__                     = 'happz@happz.cz'
 __license__                     = 'http://www.php-suit.com/dpl'
 
 import threading
+import time
 
 import hlib.api
 import hlib.database
@@ -14,6 +15,8 @@ import lib.chat
 
 # pylint: disable-msg=F0401
 import hruntime  # @UnresolvedImport
+
+from functools import partial
 
 class PlayableError(hlib.error.BaseError):
   pass
@@ -65,9 +68,12 @@ class Player(hlib.database.DBObject):
 
   def __getattr__(self, name):
     if name == 'is_on_turn':
-      return False
+        return False
 
     return hlib.database.DBObject.__getattr__(self, name)
+
+  def touch(self):
+      self._v_last_access = time.time()
 
   def to_api(self):
     return {
@@ -80,6 +86,22 @@ class Player(hlib.database.DBObject):
     return {
       'user':			hlib.api.User(self.user)
     }
+
+  def _createAPIDataSummary(self, user):
+      my_player = self.game.my_player(user)
+
+      return {
+          'user': self.user.toAPI(),
+          'color': '',
+          'isConfirmed': self.confirmed,
+          'isOnTurn': self.is_on_turn,
+          'isMyPlayer': False if my_player is None else (self.id == my_player.id),
+          'id': self.id
+      }
+
+  def toAPI(self, user, summary = True):
+      if summary is True:
+          return self._createAPIDataSummary(user)
 
 class Playable(hlib.database.DBObject):
   def __init__(self, flags):
@@ -108,15 +130,15 @@ class Playable(hlib.database.DBObject):
     else:
       self.password = lib.pwcrypt(flags.password)
 
+  def my_player(self, user):
+      return self.user_to_player[user]
+
   def __getattr__(self, name):
     if name == 'user_to_player':
       if not hasattr(self, '_v_user_to_player') or self._v_user_to_player == None:
         self._v_user_to_player = lib.UserToPlayerMap(self)
 
       return self._v_user_to_player
-
-    if name == 'my_player':
-      return self.user_to_player[hruntime.user]
 
     if name == 'is_password_protected':
       return self.password != None and len(self.password) > 0
@@ -148,6 +170,14 @@ class Playable(hlib.database.DBObject):
 
     if name == 'can_be_archived':
       try:
+        if self.is_active:
+          raise CannotBeArchivedError()
+
+        for p in self.players.values():
+          chat_lister = self.chat_class(self, accessed_by = p)
+          if chat_lister.unread > 0:
+            raise CannotBeArchivedError()
+
         if hruntime.time > self.archive_deadline_hard:
           return True
 
@@ -188,6 +218,27 @@ class Playable(hlib.database.DBObject):
 
     return ret
 
+  def _createAPIData_Summary(self, user):
+      return {
+          'id': self.id,
+          'kind': self.kind,
+          'name': self.name,
+          'round': self.round,
+          'limit': self.limit,
+          'hasPassword': self.is_password_protected,
+          'players': [ player.toAPI(user, summary = True) for player in self.players.itervalues() ],
+          'isPresent': self.has_player(user),
+          'isInvited': self.has_player(user) and not self.has_confirmed_player(user),
+          'isFinished': self.is_finished
+      }
+
+  def toAPI(self, user, summary = True):
+    if summary is True:
+      return self._createAPIData_Summary(user)
+
+    else:
+      return {}
+
   def to_state(self):
     return {
       'name':			self.name,
@@ -197,117 +248,55 @@ class Playable(hlib.database.DBObject):
       'events':			[e.to_api() for e in self.events.values() if e.hidden != True]
     }
 
-class PlayableLists(object):
-  def __init__(self):
-    super(PlayableLists, self).__init__()
+class PlayableListCache(object):
+    def __init__(self, bus, workerThread):
+        self._bus = bus
+        self._workerThread = workerThread
 
-    self._lock          = hlib.locks.RLock(name = 'Playable lists')
+        self._active = {}
+        self._inactive = {}
+        self._archived = {}
 
-    self._active        = {}
-    self._inactive      = {}
-    self._archived      = {}
+    def _get_filtered_list(self, cache, creator, dbroot, user):
+        if user not in cache:
+            cache[user] = creator(dbroot, user)
 
-  def __get_f_list(self, name, user):
-    with self._lock:
-      cache = getattr(self, '_' + name)
+        return cache[user]
 
-      if user not in cache:
-        update = getattr(self, 'get_' + name)
-        cache[user] = update(user)
+    def _invalidate_user(self, user):
+        if user in self._active:
+            del self._active[user]
 
-      return self.get_objects(cache[user])
+        if user in self._inactive:
+            del self._inactive[user]
 
-  def get_objects(self, l):
-    # pylint: disable-msg=W0613
-    return []
+        if user in self._archived:
+            del self._archived[user]
 
-  def get_active(self, user):
-    # pylint: disable-msg=W0613
-    return []
+    def _invalidate_players(self, playable):
+        for player in playable.players.itervalues():
+            self._invalidate_user(player.user)
 
-  def get_inactive(self, user):
-    # pylint: disable-msg=W0613
-    return []
+    def _invalidate_all(self, key):
+        setattr(self, '_' + key, {})
 
-  def get_archived(self, user):
-    # pylint: disable-msg=W0613
-    return []
+    def onCreated(self, *args, **kwargs):
+        self._workerThread.enqueuePriorityTask(self._invalidate_all, 'active')
 
-  def f_active(self, user):
-    return self.__get_f_list('active', user)
+    def onStarted(self, *args, **kwargs):
+        self._workerThread.enqueuePriorityTask(self._invalidate_all, 'active')
 
-  def f_inactive(self, user):
-    return self.__get_f_list('inactive', user)
+    def onFinished(self, playable, *args, **kwargs):
+        self._workerThread.enqueuePriorityTask(self._invalidate_players, playable)
 
-  def f_archived(self, user):
-    return self.__get_f_list('archived', user)
+    def onArchived(self, playable, *args, **kwargs):
+        self._workerThread.enqueuePriorityTask(self._invalidate_players, playable)
 
-  def snapshot(self, l):
-    with self._lock:
-      return getattr(self, '_' + l).copy()
+    def onCanceled(self, playable, *args, **kwargs):
+        self._workerThread.enqueuePriorityTask(self._invalidate_all, 'active')
 
-  # Cache invalidation
-  def _inval_user(self, user):
-    with self._lock:
-      try:
-        del self._active[user]
-      except KeyError:
-        pass
+    def onPlayerJoined(self, playable, *args, **kwargs):
+        self._workerThread.enqueuePriorityTask(self._invalidate_players, playable)
 
-      try:
-        del self._inactive[user]
-      except KeyError:
-        pass
-
-      try:
-        del self._archived[user]
-      except KeyError:
-        pass
-
-    return True
-
-  def inval_players(self, p):
-    with self._lock:
-      for player in p.players.values():
-        self._inval_user(player.user)
-
-        hruntime.cache.remove(player.user, 'recent_events')
-
-    return True
-
-  def inval_all(self, l):
-    with self._lock:
-      setattr(self, '_' + l, {})
-
-      hruntime.cache.remove_for_all_users('recent_events')
-
-  # Shortcuts
-  def created(self, p):
-    # pylint: disable-msg=W0613
-    self.inval_all('active')
-
-    return True
-
-  def started(self, p):
-    # pylint: disable-msg=W0613
-    self.inval_all('active')
-
-    return True
-
-  def finished(self, p):
-    with self._lock:
-      self.inval_players(p)
-
-    return True
-
-  def archived(self, p):
-    with self._lock:
-      self.inval_players(p)
-
-    return True
-
-  def canceled(self, p):
-    with self._lock:
-      self.inval_all('active')
-
-    return True
+    def onPlayerInvited(self, playable, *args, **kwargs):
+        self._workerThread.enqueuePriorityTask(self._invalidate_players, playable)
