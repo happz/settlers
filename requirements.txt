@@ -21,6 +21,7 @@ MarkupSafe==0.23
 packaging==16.8
 perfmetrics==2.0
 persistent==4.2.2
+psycopg2==2.6.2
 pycparser==2.17
 pycrypto==2.6.1
 PyGithub==1.32
